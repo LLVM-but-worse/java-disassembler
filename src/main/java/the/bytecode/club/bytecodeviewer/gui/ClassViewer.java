@@ -1,6 +1,5 @@
 package the.bytecode.club.bytecodeviewer.gui;
 
-import com.jhe.hexed.JHexEditor;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.objectweb.asm.tree.ClassNode;
@@ -331,12 +330,8 @@ public class ClassViewer extends Viewer
         this.setLayout(new BorderLayout());
 
         this.sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panels.get(0), panels.get(1));
-        JHexEditor hex = new JHexEditor(BytecodeViewer.getClassBytes(container, cn.name + ".class"));
         this.sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sp, panels.get(2));
         this.add(sp2, BorderLayout.CENTER);
-
-        hex.setMaximumSize(new Dimension(0, Integer.MAX_VALUE));
-        hex.setSize(0, Integer.MAX_VALUE);
 
         BytecodeViewer.viewer.setIcon(true);
         startPaneUpdater(null);

@@ -9,7 +9,6 @@ import the.bytecode.club.bytecodeviewer.decompilers.FernFlowerDecompiler;
 import the.bytecode.club.bytecodeviewer.decompilers.ProcyonDecompiler;
 import the.bytecode.club.bytecodeviewer.decompilers.bytecode.ClassNodeDecompiler;
 import the.bytecode.club.bytecodeviewer.plugin.PluginManager;
-import the.bytecode.club.bytecodeviewer.plugin.preinstalled.CodeSequenceDiagram;
 import the.bytecode.club.bytecodeviewer.plugin.preinstalled.ShowAllStrings;
 import the.bytecode.club.bytecodeviewer.plugin.preinstalled.ShowMainMethods;
 
@@ -114,7 +113,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JMenu menu = new JMenu("Pane " + (id + 1));
         JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
         JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
-        JRadioButtonMenuItem hexcode = new JRadioButtonMenuItem("Hexcode");
+        JRadioButtonMenuItem hexcode = new JRadioButtonMenuItem("Hex Dump");
         ButtonGroup group = allPanes.get(id);
 
         group.add(none);
@@ -170,8 +169,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
     public WorkPane workPane = new WorkPane(this);
     public final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
     public AboutWindow aboutWindow = new AboutWindow();
-    public final JMenuItem mntmCodeSequenceDiagram = new JMenuItem("Code Sequence Diagram");
-    //public final JMenuItem mntmSetJreRt = new JMenuItem("Set JRE RT Library");
     public final JMenuItem mntmRun = new JMenuItem("Run");
     public final ButtonGroup panelGroup1 = new ButtonGroup();
     public final ButtonGroup panelGroup2 = new ButtonGroup();
@@ -933,21 +930,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         pluginsMenu.add(new JSeparator());
         pluginsMenu.add(mnRecentPlugins);
         pluginsMenu.add(new JSeparator());
-        mntmCodeSequenceDiagram.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
-                if (BytecodeViewer.getLoadedClasses().isEmpty())
-                {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
-                    return;
-                }
-                PluginManager.runPlugin(new CodeSequenceDiagram());
-            }
-        });
 
-        pluginsMenu.add(mntmCodeSequenceDiagram);
         pluginsMenu.add(mntmNewMenuItem_1);
         pluginsMenu.add(mntmShowMainMethods);
         pluginsMenu.add(mntmShowAllStrings);

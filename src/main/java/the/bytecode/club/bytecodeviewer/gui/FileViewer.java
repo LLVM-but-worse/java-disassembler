@@ -1,6 +1,5 @@
 package the.bytecode.club.bytecodeviewer.gui;
 
-import com.jhe.hexed.JHexEditor;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -113,8 +112,7 @@ public class FileViewer extends Viewer
             }
             else
             {
-                JHexEditor hex = new JHexEditor(contents);
-                panel2.add(hex);
+                // todo: fallback
                 return;
             }
         }

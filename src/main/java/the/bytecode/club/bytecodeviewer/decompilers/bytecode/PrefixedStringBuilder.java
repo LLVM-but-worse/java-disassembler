@@ -37,6 +37,7 @@ public class PrefixedStringBuilder
         return append(o.toString());
     }
 
+    @SuppressWarnings("unused")
     public void setPrefix(String prefix)
     {
         this.prefix = prefix;
@@ -58,6 +59,7 @@ public class PrefixedStringBuilder
         prefix += s;
     }
 
+    @SuppressWarnings("unused")
     public String getPrefix()
     {
         return prefix;
