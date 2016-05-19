@@ -137,7 +137,7 @@ public class JarUtils
             try
             {
                 final String name = entry.getName();
-                if (!name.endsWith(".class") && !name.endsWith(".dex"))
+                if (!name.endsWith(".class"))
                 {
                     if (!entry.isDirectory())
                         files.put(name, getBytes(jis));

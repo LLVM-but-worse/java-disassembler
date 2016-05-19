@@ -50,15 +50,11 @@ public class AboutWindow extends JFrame
                 "	Python 3.X (or PyPy): " + Settings.PYTHON3_LOCATION.get() + BytecodeViewer.nl +
                 "	RT.jar:" + Settings.RT_LOCATION.get() + BytecodeViewer.nl +
                 "	Optional Lib: " + Settings.PATH.get() + BytecodeViewer.nl +
-                "	BCV Krakatau: v" + BytecodeViewer.krakatauVersion + BytecodeViewer.nl +
-                "	Krakatau Dir: " + BytecodeViewer.krakatauDirectory.getAbsolutePath() + BytecodeViewer.nl +
-                "	BCV Enjarify: v" + BytecodeViewer.enjarifyVersion + BytecodeViewer.nl +
-                "	Enjarify Dir: " + BytecodeViewer.enjarifyDirectory.getAbsolutePath() + BytecodeViewer.nl + BytecodeViewer.nl +
                 "Command Line Input:" + BytecodeViewer.nl +
                 "	-help                         Displays the help menu" + BytecodeViewer.nl +
                 "	-list                         Displays the available decompilers" + BytecodeViewer.nl +
                 "	-decompiler <decompiler>      Selects the decompiler, procyon by default" + BytecodeViewer.nl +
-                "	-i <input file>               Selects the input file (Jar, Class, APK, ZIP, DEX all work automatically)" + BytecodeViewer.nl +
+                "	-i <input file>               Selects the input file (Jar, Class, ZIP, all work automatically)" + BytecodeViewer.nl +
                 "	-o <output file>              Selects the output file (Java or Java-Bytecode)" + BytecodeViewer.nl +
                 "	-t <target classname>         Must either be the fully qualified classname or \"all\" to decompile all as zip" + BytecodeViewer.nl +
                 "	-nowait                       Doesn't wait for the user to read the CLI messages" + BytecodeViewer.nl + BytecodeViewer.nl +
@@ -66,25 +62,18 @@ public class AboutWindow extends JFrame
                 "	CTRL + O: Open/add new jar/class/apk" + BytecodeViewer.nl +
                 "	CTLR + N: Reset the workspace" + BytecodeViewer.nl +
                 "	CTRL + W: Closes the currently opened tab" + BytecodeViewer.nl +
-                "	CTRL + T: Compile" + BytecodeViewer.nl +
                 "	CTRL + S: Save classes as zip" + BytecodeViewer.nl +
                 "	CTRL + R: Run (EZ-Inject) - dynamically load the classes and invoke a main class" + BytecodeViewer.nl +
                 BytecodeViewer.nl +
                 "Code from various projects has been used, including but not limited to:" + BytecodeViewer.nl +
                 "	J-RET by WaterWolf" + BytecodeViewer.nl +
-                "	JHexPane by Sam Koivu" + BytecodeViewer.nl +
-                "	RSynaxPane by Robert Futrell" + BytecodeViewer.nl +
+                "	RSyntaxPane by Robert Futrell" + BytecodeViewer.nl +
                 "	Commons IO by Apache" + BytecodeViewer.nl +
                 "	ASM by OW2" + BytecodeViewer.nl +
                 "	FernFlower by Stiver" + BytecodeViewer.nl +
                 "	Procyon by Mstrobel" + BytecodeViewer.nl +
                 "	CFR by Lee Benfield" + BytecodeViewer.nl +
                 "	CFIDE by Bibl" + BytecodeViewer.nl +
-                "	Smali by JesusFreke" + BytecodeViewer.nl +
-                "	Dex2Jar by pxb1..?" + BytecodeViewer.nl +
-                "	Krakatau by Storyyeller" + BytecodeViewer.nl +
-                "	JD-GUI + JD-Core by The Java-Decompiler Team" + BytecodeViewer.nl +
-                "	Enjarify by Storyyeller" + BytecodeViewer.nl +
                 BytecodeViewer.nl +
                 "If you're interested in Java Reverse Engineering, join The Bytecode Club - https://the.bytecode.club");
     }
