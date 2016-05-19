@@ -1,3 +1,6 @@
+/lib
+/libs
+/out/
 /bin/
 .classpath
 .project
