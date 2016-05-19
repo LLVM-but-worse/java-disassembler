@@ -22,7 +22,7 @@ public class AboutWindow extends JFrame
         this.setIconImages(Resources.iconList);
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         setType(Type.UTILITY);
-        setTitle("Bytecode Viewer - About - https://bytecodeviewer.com | https://the.bytecode.club");
+        setTitle("Java DisAssembler - About - https://bytecodeviewer.com | https://the.bytecode.club");
         getContentPane().setLayout(new CardLayout(0, 0));
         JScrollPane scrollPane = new JScrollPane();
         getContentPane().add(scrollPane, "name_322439757638784");
@@ -39,13 +39,13 @@ public class AboutWindow extends JFrame
     {
         super.setVisible(b);
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
-        textArea.setText("Bytecode Viewer " + BytecodeViewer.version + " is an open source program developed and maintained by Konloch (konloch@gmail.com) and samczsun 100% free and open sourced licensed under GPL v3 CopyLeft" + BytecodeViewer.nl +
+        textArea.setText("Java DisAssembler " + BytecodeViewer.version + " is an open source program developed and maintained by Konloch (konloch@gmail.com) and samczsun 100% free and open sourced licensed under GPL v3 CopyLeft" + BytecodeViewer.nl +
                 BytecodeViewer.nl +
                 "Settings:" + BytecodeViewer.nl +
                 "	Preview Copy: " + BytecodeViewer.previewCopy + BytecodeViewer.nl +
                 "	Java: " + Settings.JAVA_LOCATION.get() + BytecodeViewer.nl +
                 "	Javac: " + Settings.JAVAC_LOCATION.get() + BytecodeViewer.nl +
-                "	BCV Dir: " + BytecodeViewer.getBCVDirectory() + BytecodeViewer.nl +
+                "	JDA Dir: " + BytecodeViewer.getJDADirectory() + BytecodeViewer.nl +
                 "	Python 2.7 (or PyPy): " + Settings.PYTHON2_LOCATION.get() + BytecodeViewer.nl +
                 "	Python 3.X (or PyPy): " + Settings.PYTHON3_LOCATION.get() + BytecodeViewer.nl +
                 "	RT.jar:" + Settings.RT_LOCATION.get() + BytecodeViewer.nl +
