@@ -31,7 +31,7 @@ public class InitialBootScreen extends JFrame
         else
             setSize(Toolkit.getDefaultToolkit().getScreenSize());
 
-        setTitle("Bytecode Viewer Boot Screen - Starting Up");
+        setTitle("Java DisAssembler Boot Screen - Starting Up");
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

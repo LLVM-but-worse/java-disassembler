@@ -34,7 +34,7 @@ public class CommandLineInput
     static
     {
         options.addOption(new Option("help", null, false, "prints the help menu."));
-        options.addOption(new Option("list", null, false, "lists all the available decompilers for BCV " + BytecodeViewer.version + "."));
+        options.addOption(new Option("list", null, false, "lists all the available decompilers for JDA " + BytecodeViewer.version + "."));
         options.addOption(new Option("decompiler", null, true, "sets the decompiler, procyon by default."));
         options.addOption(new Option("i", null, true, "sets the input."));
         options.addOption(new Option("o", null, true, "sets the output."));
@@ -188,7 +188,7 @@ public class CommandLineInput
                 }
             }
             System.out.println("Finished.");
-            System.out.println("Bytecode Viewer CLI v" + BytecodeViewer.version + " by @Konloch - http://bytecodeviewer.com");
+            System.out.println("Java DisAssembler CLI v" + BytecodeViewer.version + " by @Konloch - http://bytecodeviewer.com");
             System.exit(0);
         }
         catch (Exception e)

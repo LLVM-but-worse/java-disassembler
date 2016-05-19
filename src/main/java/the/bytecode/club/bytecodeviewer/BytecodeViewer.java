@@ -28,16 +28,16 @@ public class BytecodeViewer
 {
 
     /*per version*/
-    public static final String version = "3.0.0";
+    public static final String version = "0.0.0";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
     public static final String nl = System.getProperty("line.separator");
-    public static final File dataDir = new File(System.getProperty("user.home") + fs + ".Bytecode-Viewer");
-    public static final File filesFile = new File(dataDir, "recentfiles.bcv");
-    public static final File pluginsFile = new File(dataDir, "recentplugins.bcv");
-    public static final File settingsFile = new File(dataDir, "settings.bcv");
-    @Deprecated public static final File tempDir = new File(dataDir, "bcv_temp");
+    public static final File dataDir = new File(System.getProperty("user.home") + fs + ".jda");
+    public static final File filesFile = new File(dataDir, "recentfiles.jda");
+    public static final File pluginsFile = new File(dataDir, "recentplugins.jda");
+    public static final File settingsFile = new File(dataDir, "settings.jda");
+    @Deprecated public static final File tempDir = new File(dataDir, "jda_temp");
     private static final long start = System.currentTimeMillis();
     /*the rest*/
     public static MainViewerGUI viewer = null;
@@ -71,11 +71,12 @@ public class BytecodeViewer
         try
         {
             System.setSecurityManager(sm);
-            System.out.println("https://the.bytecode.club - Created by @Konloch and @samczsun - Bytecode Viewer " + version);
+            System.out.println("Java DisAssembler (BCV Fork) " + version);
             CommandLineInput input = new CommandLineInput(args);
             if (previewCopy && !input.containsCommand())
                 showMessage("WARNING: This is a preview/dev copy, you WON'T be alerted when " + version + " is actually out if you use this." + nl +
                         "Make sure to watch the repo: https://github.com/Konloch/bytecode-viewer for " + version + "'s release");
+            getJDADirectory();
             if (!filesFile.exists() && !filesFile.createNewFile())
             {
                 throw new RuntimeException("Could not create recent files file");
@@ -113,6 +114,7 @@ public class BytecodeViewer
      */
     private static final Thread versionChecker = new Thread()
     {
+        // todo: rewrite
         @Override
         public void run()
         {
@@ -132,7 +134,7 @@ public class BytecodeViewer
 
                 }
 
-                if (!BytecodeViewer.version.equals(version))
+                if (!BytecodeViewer.version.equals(version) && false)
                 {
                     r = new HTTPRequest(new URL("https://raw.githubusercontent.com/Konloch/bytecode-viewer/master/README.txt"));
                     String[] readme = r.read();
@@ -161,7 +163,7 @@ public class BytecodeViewer
                     Object[] options = new String[] { "Open The Download Page", "Download The Updated Jar",
                             "Do Nothing" };
                     pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Outdated Version");
+                    JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Outdated Version");
                     dialog.setVisible(true);
                     Object obj = pane.getValue();
                     int result = -1;
@@ -219,7 +221,7 @@ public class BytecodeViewer
                                 pane = new JOptionPane("The file " + file + " exists, would you like to overwrite it?");
                                 options = new String[] { "Yes", "No" };
                                 pane.setOptions(options);
-                                dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Overwrite File");
+                                dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
                                 dialog.setVisible(true);
                                 obj = pane.getValue();
                                 result = -1;
@@ -329,33 +331,6 @@ public class BytecodeViewer
             }
         }
     };
-
-    public static void pingback()
-    {
-        JOptionPane pane = new JOptionPane("Would you like to 'pingback' to https://bytecodeviewer.com to be counted in the global users for BCV?");
-        Object[] options = new String[] { "Yes", "No" };
-        pane.setOptions(options);
-        JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Optional Pingback");
-        dialog.setVisible(true);
-        Object obj = pane.getValue();
-        int result = -1;
-        for (int k = 0; k < options.length; k++)
-            if (options[k].equals(obj))
-                result = k;
-
-        if (result == 0)
-        {
-            try
-            {
-                if (!PingBack.isAlive())
-                    PingBack.start();
-            }
-            catch (Exception e)
-            {
-                new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-            }
-        }
-    }
 
     /**
      * Boot after all of the libraries have been loaded
@@ -509,6 +484,8 @@ public class BytecodeViewer
         {
             for (String s : container.files.keySet())
             {
+                if (!s.endsWith(".class"))
+                    continue;
                 ClassNode loaded = container.getClassNode(s.substring(0, s.length() - 6));
                 if (loaded != null)
                 {
@@ -733,7 +710,7 @@ public class BytecodeViewer
             JOptionPane pane = new JOptionPane("Are you sure you want to reset the workspace?\n\rIt will also reset your file navigator and search.");
             Object[] options = new String[] { "Yes", "No" };
             pane.setOptions(options);
-            JDialog dialog = pane.createDialog(viewer, "Bytecode Viewer - Reset Workspace");
+            JDialog dialog = pane.createDialog(viewer, "Java DisAssembler - Reset Workspace");
             dialog.setVisible(true);
             Object obj = pane.getValue();
             int result = -1;
@@ -895,7 +872,7 @@ public class BytecodeViewer
      *
      * @return the static BCV directory
      */
-    public static String getBCVDirectory()
+    public static String getJDADirectory()
     {
         while (!dataDir.exists())
             dataDir.mkdirs();
@@ -1059,7 +1036,7 @@ public class BytecodeViewer
                             JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                             Object[] options = new String[] { "Yes", "No" };
                             pane.setOptions(options);
-                            JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Overwrite File");
+                            JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
                             dialog.setVisible(true);
                             Object obj = pane.getValue();
                             int result = -1;

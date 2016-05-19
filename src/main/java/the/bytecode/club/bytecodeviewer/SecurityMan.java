@@ -56,13 +56,13 @@ public class SecurityMan extends SecurityManager
             System.out.println("Allowing exec:" + cmd);
         }
         else
-            throw new SecurityException("BCV is awesome, blocking " + cmd);
+            throw new SecurityException("JDA is awesome, blocking " + cmd);
     }
 
     @Override
     public void checkListen(int port)
     {
-        throw new SecurityException("BCV is awesome, blocking port " + port + " from listening");
+        throw new SecurityException("JDA is awesome, blocking port " + port + " from listening");
     }
 
     @Override

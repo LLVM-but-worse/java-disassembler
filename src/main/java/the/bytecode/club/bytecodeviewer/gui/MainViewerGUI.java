@@ -354,7 +354,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                 JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                                 Object[] options = new String[] { "Yes", "No" };
                                 pane.setOptions(options);
-                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Overwrite File");
+                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
                                 dialog.setVisible(true);
                                 Object obj = pane.getValue();
                                 int result = -1;
@@ -400,7 +400,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                 JOptionPane pane = new JOptionPane("Are you sure you wish to reload the resources?");
                 Object[] options = new String[] { "Yes", "No" };
                 pane.setOptions(options);
-                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Reload Resources");
+                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Reload Resources");
                 dialog.setVisible(true);
                 Object obj = pane.getValue();
                 int result = -1;
@@ -469,7 +469,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                 JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                                 Object[] options = new String[] { "Yes", "No" };
                                 pane.setOptions(options);
-                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Overwrite File");
+                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
                                 dialog.setVisible(true);
                                 Object obj = pane.getValue();
                                 int result = -1;
@@ -559,7 +559,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                 JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                                 Object[] options = new String[] { "Yes", "No" };
                                 pane.setOptions(options);
-                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Overwrite File");
+                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
                                 dialog.setVisible(true);
                                 Object obj = pane.getValue();
                                 int result = -1;
@@ -584,7 +584,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                             JOptionPane pane = new JOptionPane("What decompiler will you use?");
                             Object[] options = new String[] { "Procyon", "CFR", "Fernflower", "Cancel" };
                             pane.setOptions(options);
-                            JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Select Decompiler");
+                            JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Select Decompiler");
                             dialog.setVisible(true);
                             Object obj = pane.getValue();
                             int result = -1;
@@ -710,7 +710,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                 JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                                 Object[] options = new String[] { "Yes", "No" };
                                 pane.setOptions(options);
-                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Overwrite File");
+                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
                                 dialog.setVisible(true);
                                 Object obj = pane.getValue();
                                 int result = -1;
@@ -731,7 +731,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                             JOptionPane pane = new JOptionPane("What decompiler will you use?");
                             Object[] options = new String[] { "Procyon", "CFR", "Fernflower", "Cancel" };
                             pane.setOptions(options);
-                            JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Select Decompiler");
+                            JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Select Decompiler");
                             dialog.setVisible(true);
                             Object obj = pane.getValue();
                             int result = -1;
@@ -845,7 +845,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                 JOptionPane pane = new JOptionPane("Are you sure you want to exit?");
                 Object[] options = new String[] { "Yes", "No" };
                 pane.setOptions(options);
-                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Exit");
+                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Exit");
                 dialog.setVisible(true);
                 Object obj = pane.getValue();
                 int result = -1;
@@ -940,7 +940,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (BytecodeViewer.getLoadedClasses().isEmpty())
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+                    BytecodeViewer.showMessage("First open a class file.");
                     return;
                 }
                 new ReplaceStringsOptions().setVisible(true);
@@ -1009,9 +1009,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         setSize(new Dimension(800, 400));
         if (BytecodeViewer.previewCopy)
-            setTitle("Bytecode Viewer " + BytecodeViewer.version + " Preview - https://bytecodeviewer.com | https://the.bytecode.club - @Konloch");
+            setTitle("Java DisAssembler " + BytecodeViewer.version + " Preview - https://bytecodeviewer.com | https://the.bytecode.club - @Konloch");
         else
-            setTitle("Bytecode Viewer " + BytecodeViewer.version + " - https://bytecodeviewer.com | https://the.bytecode.club - @Konloch");
+            setTitle("Java DisAssembler " + BytecodeViewer.version + " - https://bytecodeviewer.com | https://the.bytecode.club - @Konloch");
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 

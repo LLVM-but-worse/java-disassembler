@@ -118,7 +118,7 @@ public final class PluginManager
         @Override
         public String getDescription()
         {
-            return "BCV Plugins";
+            return "JDA Plugins";
         }
     }
 }

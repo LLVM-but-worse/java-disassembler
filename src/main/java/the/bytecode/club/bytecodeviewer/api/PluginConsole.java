@@ -32,7 +32,7 @@ public class PluginConsole extends JFrame
     public PluginConsole(String pluginName)
     {
         this.setIconImages(Resources.iconList);
-        setTitle("Bytecode Viewer - Plugin Console - " + pluginName);
+        setTitle("Java DisAssembler - Plugin Console - " + pluginName);
         setSize(new Dimension(542, 316));
 
         getContentPane().add(scrollPane, BorderLayout.CENTER);
