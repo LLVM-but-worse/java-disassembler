@@ -1,6 +1,5 @@
 package the.bytecode.club.bytecodeviewer.gui;
 
-import com.jhe.hexed.JHexEditor;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -88,15 +87,7 @@ public class PaneUpdaterThread extends Thread
             }
             else
             {
-                final JHexEditor hex = new JHexEditor(b);
-                hex.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    public void run()
-                    {
-                        target.add(hex);
-                    }
-                });
+                // initialize fallback
             }
         }
         catch (Exception e)
