@@ -8,9 +8,6 @@ import the.bytecode.club.bytecodeviewer.decompilers.Decompiler;
 import the.bytecode.club.bytecodeviewer.decompilers.FernFlowerDecompiler;
 import the.bytecode.club.bytecodeviewer.decompilers.ProcyonDecompiler;
 import the.bytecode.club.bytecodeviewer.decompilers.bytecode.ClassNodeDecompiler;
-import the.bytecode.club.bytecodeviewer.obfuscators.rename.RenameClasses;
-import the.bytecode.club.bytecodeviewer.obfuscators.rename.RenameFields;
-import the.bytecode.club.bytecodeviewer.obfuscators.rename.RenameMethods;
 import the.bytecode.club.bytecodeviewer.plugin.PluginManager;
 import the.bytecode.club.bytecodeviewer.plugin.preinstalled.*;
 
@@ -99,7 +96,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
     private JMenu generateDecompilerMenu(Decompiler decompiler, int panelId) {
         ButtonGroup group = allPanes.get(panelId);
         JMenu menu = new JMenu(decompiler.getName());
-        JRadioButtonMenuItem java = new JRadioButtonMenuItem(decompiler == Decompiler.SMALI ? "Smali" : "Java");
+        JRadioButtonMenuItem java = new JRadioButtonMenuItem("Java");
         java.addActionListener(listener);
         JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
         JCheckBoxMenuItem editable = new JCheckBoxMenuItem("Editable");
@@ -108,12 +105,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         group.add(java);
         allDecompilers.get(group).put(java, decompiler);
         allDecompilersRev.get(group).put(decompiler, java);
-        if (decompiler == Decompiler.KRAKATAU) {
-            menu.add(bytecode);
-            group.add(bytecode);
-            bytecode.addActionListener(listener);
-            allDecompilers.get(group).put(bytecode, Decompiler.KRAKATAU_DA);
-        }
         menu.add(separator);
         menu.add(editable);
         editButtons.get(group).put(decompiler, editable);
@@ -141,11 +132,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         menu.add(new JSeparator());
         menu.add(generateDecompilerMenu(Decompiler.PROCYON, id));
         menu.add(generateDecompilerMenu(Decompiler.CFR, id));
-        menu.add(generateDecompilerMenu(Decompiler.JDGUI, id));
         menu.add(generateDecompilerMenu(Decompiler.FERNFLOWER, id));
-        menu.add(generateDecompilerMenu(Decompiler.KRAKATAU, id));
         menu.add(new JSeparator());
-        menu.add(generateDecompilerMenu(Decompiler.SMALI, id));
         menu.add(new JSeparator());
         menu.add(bytecode);
         menu.add(hexcode);
@@ -171,52 +159,26 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
     public final JMenuItem mntmAbout = new JMenuItem("About");
     public final JMenuItem mntmStartExternalPlugin = new JMenuItem("Open Plugin..");
     public JMenu mnRecentPlugins = new JMenu("Recent Plugins");
-    public final JMenuItem mntmStartZkmString = new JMenuItem("ZKM String Decrypter");
     public final JMenuItem mntmNewMenuItem_1 = new JMenuItem("Malicious Code Scanner");
-    public final JMenuItem mntmNewMenuItem_2 = new JMenuItem("Allatori String Decrypter");
     public final JMenuItem mntmShowAllStrings = new JMenuItem("Show All Strings");
     public final JMenuItem mntmShowMainMethods = new JMenuItem("Show Main Methods");
     public final JMenuItem mntmNewMenuItem_3 = new JMenuItem("Save As Runnable Jar..");
     public final JMenuItem mntmReplaceStrings = new JMenuItem("Replace Strings");
     public final JCheckBoxMenuItem chckbxmntmNewCheckItem_12 = new JCheckBoxMenuItem("Update Check");
-    public final JMenuItem mntmNewMenuItem_6 = new JMenuItem("Rename Fields");
-    public final JMenuItem mntmNewMenuItem_7 = new JMenuItem("Rename Methods");
-    public final JMenuItem mntmNewMenuItem_8 = new JMenuItem("Move All Classes Into Root Package");
-    public final JMenuItem mntmNewMenuItem_9 = new JMenuItem("Control Flow");
-    public final JMenuItem mntmNewMenuItem_10 = new JMenuItem("Junk Code");
-    public final ButtonGroup obfuscatorGroup = new ButtonGroup();
-    public final JRadioButtonMenuItem strongObf = new JRadioButtonMenuItem("Strong Obfuscation");
-    public final JRadioButtonMenuItem lightObf = new JRadioButtonMenuItem("Light Obfuscation");
-    public final JMenuItem mntmNewMenuItem_11 = new JMenuItem("Rename Classes");
     public final JMenuItem mntmNewMenuItem_12 = new JMenuItem("Decompile & Save Opened Class..");
     public WorkPane workPane = new WorkPane(this);
     public final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
     public AboutWindow aboutWindow = new AboutWindow();
-    public final JMenuItem mntmSaveAsApk = new JMenuItem("Save As DEX..");
     public final JMenuItem mntmCodeSequenceDiagram = new JMenuItem("Code Sequence Diagram");
-    public final JCheckBoxMenuItem autoCompileSmali = new JCheckBoxMenuItem("Compile On Save");
-    public final JMenuItem mntmNewMenuItem_13 = new JMenuItem("Compile");
-    public final JCheckBoxMenuItem autoCompileOnRefresh = new JCheckBoxMenuItem("Compile On Refresh");
-    public final JMenuItem mntmSetPythonDirectory = new JMenuItem("Set Python 2.7 Executable");
-    public final JMenuItem mntmSetJreRt = new JMenuItem("Set JRE RT Library");
-    public final JMenuItem mntmZstringarrayDecrypter = new JMenuItem("ZStringArray Decrypter");
+    //public final JMenuItem mntmSetJreRt = new JMenuItem("Set JRE RT Library");
     public final JMenuItem mntmRun = new JMenuItem("Run");
-    public final JCheckBoxMenuItem decodeAPKResources = new JCheckBoxMenuItem("Decode APK Resources");
     public final ButtonGroup panelGroup1 = new ButtonGroup();
     public final ButtonGroup panelGroup2 = new ButtonGroup();
     public final ButtonGroup panelGroup3 = new ButtonGroup();
     public final JCheckBox mnShowContainer = new JCheckBox("Show Containing File's Name");
     private final JMenuItem mntmSetOpitonalLibrary = new JMenuItem("Set Optional Library Folder");
-    private final JMenuItem mntmPingback = new JMenuItem("Pingback");
     private final JMenu mnFontSize = new JMenu("Font Size");
-    private final JCheckBoxMenuItem chckbxmntmDeleteForiegnoutdatedLibs = new JCheckBoxMenuItem("Delete Foreign/Outdated Libs");
-    private final JMenu mnApkConversion = new JMenu("APK Conversion");
-    public final ButtonGroup apkConversionGroup = new ButtonGroup();
-    public final JRadioButtonMenuItem apkConversionDex = new JRadioButtonMenuItem("Dex2Jar");
-    public final JRadioButtonMenuItem apkConversionEnjarify = new JRadioButtonMenuItem("Enjarify");
-    private final JMenuItem mntmSetPythonx = new JMenuItem("Set Python 3.X Executable");
     private final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
-    private final JMenuItem mntmSetJavacExecutable = new JMenuItem("Set Javac Executable");
     public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
     public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
     public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
@@ -259,14 +221,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         JMenu fileMenu = new JMenu("File");
         JMenu viewMenu = new JMenu("View");
         JMenu settingsMenu = new JMenu("Settings");
-        JMenu obfuscateMenu = new JMenu("Obfuscate");
         JMenu pluginsMenu = new JMenu("Plugins");
-        obfuscateMenu.setVisible(false);
         setJMenuBar(menuBar);
 
-        obfuscatorGroup.add(strongObf);
-        obfuscatorGroup.add(lightObf);
-        obfuscatorGroup.setSelected(strongObf.getModel(), true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
@@ -297,7 +254,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
 
                         String extension = MiscUtils.extension(f.getAbsolutePath());
                         if (extension != null)
-                            if (extension.equals("jar") || extension.equals("zip") || extension.equals("class") || extension.equals("apk") || extension.equals("dex"))
+                            if (extension.equals("jar") || extension.equals("zip") || extension.equals("class"))
                                 return true;
 
                         return false;
@@ -341,7 +298,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                 }
                 Thread t = new Thread() {
                     public void run() {
-                        if (autoCompileSmali.isSelected() && !BytecodeViewer.compile(false)) return;
                         JFileChooser fc = new JFileChooser();
                         fc.setFileFilter(new FileFilter() {
                             @Override
@@ -436,7 +392,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                 }
                 Thread t = new Thread() {
                     public void run() {
-                        if (autoCompileSmali.isSelected() && !BytecodeViewer.compile(false)) return;
                         JFileChooser fc = new JFileChooser();
                         fc.setFileFilter(new FileFilter() {
                             @Override
@@ -482,17 +437,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                 t.start();
             }
         });
-        mntmNewMenuItem_13.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                Thread t = new Thread() {
-                    public void run() {
-                        BytecodeViewer.compile(true);
-                    }
-                };
-                t.start();
-            }
-        });
         mntmRun.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -506,89 +450,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
 
         fileMenu.add(mntmRun);
 
-        fileMenu.add(mntmNewMenuItem_13);
-
         fileMenu.add(new JSeparator());
 
         fileMenu.add(mntmNewMenuItem_3);
-        mntmSaveAsApk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if (BytecodeViewer.getLoadedBytes().isEmpty()) {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
-                    return;
-                }
 
-                Thread t = new Thread() {
-                    public void run() {
-                        if (autoCompileSmali.isSelected() && !BytecodeViewer.compile(false)) return;
-                        JFileChooser fc = new JFileChooser();
-                        fc.setFileFilter(new FileFilter() {
-                            @Override
-                            public boolean accept(File f) {
-                                return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("dex");
-                            }
-
-                            @Override
-                            public String getDescription() {
-                                return "Android DEX Files";
-                            }
-                        });
-                        fc.setFileHidingEnabled(false);
-                        fc.setAcceptAllFileFilterUsed(false);
-                        int returnVal = fc.showSaveDialog(MainViewerGUI.this);
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            final File file = fc.getSelectedFile();
-                            String output = file.getAbsolutePath();
-                            if (!output.endsWith(".dex")) output = output + ".dex";
-
-                            final File file2 = new File(output);
-
-                            if (file2.exists()) {
-                                JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
-                                Object[] options = new String[]{"Yes", "No"};
-                                pane.setOptions(options);
-                                JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Overwrite File");
-                                dialog.setVisible(true);
-                                Object obj = pane.getValue();
-                                int result = -1;
-                                for (int k = 0; k < options.length; k++)
-                                    if (options[k].equals(obj)) result = k;
-
-                                if (result == 0) {
-                                    file.delete();
-                                } else {
-                                    return;
-                                }
-                            }
-
-                            Thread t = new Thread() {
-                                @Override
-                                public void run() {
-                                    BytecodeViewer.viewer.setIcon(true);
-                                    final String input = BytecodeViewer.tempDir.getAbsolutePath() + BytecodeViewer.fs + BytecodeViewer.getRandomizedName() + ".jar";
-                                    JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), input);
-
-                                    Thread t = new Thread() {
-                                        @Override
-                                        public void run() {
-                                            Dex2Jar.saveAsDex(new File(input), file2);
-
-                                            BytecodeViewer.viewer.setIcon(false);
-                                        }
-                                    };
-                                    t.start();
-                                }
-                            };
-                            t.start();
-                        }
-                    }
-                };
-                t.start();
-            }
-        });
-
-        fileMenu.add(mntmSaveAsApk);
         fileMenu.add(mntmSave);
         mntmNewMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -600,7 +465,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
 
                 Thread t = new Thread() {
                     public void run() {
-                        if (autoCompileSmali.isSelected() && !BytecodeViewer.compile(false)) return;
                         JFileChooser fc = new JFileChooser();
                         fc.setFileFilter(new FileFilter() {
                             @Override
@@ -644,7 +508,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                             // string is final
 
                             JOptionPane pane = new JOptionPane("What decompiler will you use?");
-                            Object[] options = new String[]{"Procyon", "CFR", "Fernflower", "Krakatau", "JD-GUI", "Cancel"};
+                            Object[] options = new String[]{"Procyon", "CFR", "Fernflower", "Cancel"};
                             pane.setOptions(options);
                             JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Select Decompiler");
                             dialog.setVisible(true);
@@ -694,33 +558,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                                     }
                                 };
                                 t.start();
-                            }
-
-                            if (result == 3) {
-                                Thread t = new Thread() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            Decompiler.KRAKATAU.decompileToZip(path);
-                                            BytecodeViewer.viewer.setIcon(false);
-                                        } catch (Exception e) {
-                                            new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-                                        }
-                                    }
-                                };
-                                t.start();
-                            } else if (result == 4) {
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            Decompiler.JDGUI.decompileToZip(path);
-                                            BytecodeViewer.viewer.setIcon(false);
-                                        } catch (Exception e) {
-                                            new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-                                        }
-                                    }
-                                }.start();
                             } else {
                                 BytecodeViewer.viewer.setIcon(false);
                             }
@@ -740,7 +577,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
 
                 Thread t = new Thread() {
                     public void run() {
-                        if (autoCompileSmali.isSelected() && !BytecodeViewer.compile(false)) return;
                         final String s = workPane.getCurrentViewer().name;
 
                         JFileChooser fc = new JFileChooser();
@@ -784,7 +620,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                             }
 
                             JOptionPane pane = new JOptionPane("What decompiler will you use?");
-                            Object[] options = new String[]{"Procyon", "CFR", "Fernflower", "Krakatau", "Cancel"};
+                            Object[] options = new String[]{"Procyon", "CFR", "Fernflower", "Cancel"};
                             pane.setOptions(options);
                             JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Bytecode Viewer - Select Decompiler");
                             dialog.setVisible(true);
@@ -845,23 +681,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                                 };
                                 t.start();
                             }
-                            if (result == 3) {
-                                Thread t = new Thread() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            ClassNode cn = BytecodeViewer.getClassNode(containerName, s);
-                                            byte[] bytes = BytecodeViewer.getClassBytes(containerName, s);
-                                            String contents = Decompiler.KRAKATAU.decompileClassNode(cn, bytes);
-                                            FileUtils.write(new File(path), contents, "UTF-8", false);
-                                            BytecodeViewer.viewer.setIcon(false);
-                                        } catch (Exception e) {
-                                            new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-                                        }
-                                    }
-                                };
-                                t.start();
-                            }
                             if (result == 4) {
                                 BytecodeViewer.viewer.setIcon(false);
                             }
@@ -905,14 +724,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                 }
             }
         });
-        mntmPingback.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                BytecodeViewer.pingback();
-            }
-        });
 
-        fileMenu.add(mntmPingback);
         fileMenu.add(mntmExit);
 
         menuBar.add(viewMenu);
@@ -920,66 +732,16 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         viewMenu.add(generatePane(1));
         viewMenu.add(generatePane(2));
 
-
-        autoCompileSmali.setSelected(true);
-
-        settingsMenu.add(autoCompileSmali);
-        autoCompileOnRefresh.setSelected(true);
-
-        settingsMenu.add(autoCompileOnRefresh);
-
         settingsMenu.add(refreshOnChange);
 
         settingsMenu.add(new JSeparator());
-        decodeAPKResources.setSelected(true);
-
-        settingsMenu.add(decodeAPKResources);
-
-        settingsMenu.add(mnApkConversion);
-
-        mnApkConversion.add(apkConversionDex);
-
-        mnApkConversion.add(apkConversionEnjarify);
 
         settingsMenu.add(new JSeparator());
         chckbxmntmNewCheckItem_12.setSelected(true);
         settingsMenu.add(chckbxmntmNewCheckItem_12);
-        chckbxmntmDeleteForiegnoutdatedLibs.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                if (!chckbxmntmDeleteForiegnoutdatedLibs.isSelected()) {
-                    BytecodeViewer.showMessage("WARNING: With this being toggled off outdated libraries will NOT be removed. It's also a security issue. ONLY TURN IT OFF IF YOU KNOW WHAT YOU'RE DOING.");
-                }
-                BytecodeViewer.deleteForiegnLibraries = chckbxmntmDeleteForiegnoutdatedLibs.isSelected();
-            }
-        });
-        chckbxmntmDeleteForiegnoutdatedLibs.setSelected(true);
-
-        settingsMenu.add(chckbxmntmDeleteForiegnoutdatedLibs);
 
         settingsMenu.add(new JSeparator());
-        mntmSetPythonDirectory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                pythonC();
-            }
-        });
 
-        settingsMenu.add(mntmSetPythonDirectory);
-        mntmSetJreRt.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                rtC();
-            }
-        });
-        mntmSetPythonx.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                pythonC3();
-            }
-        });
-
-        settingsMenu.add(mntmSetPythonx);
-
-        settingsMenu.add(mntmSetJreRt);
         mntmSetOpitonalLibrary.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -988,13 +750,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         });
 
         settingsMenu.add(mntmSetOpitonalLibrary);
-        mntmSetJavacExecutable.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                javac();
-            }
-        });
-
-        settingsMenu.add(mntmSetJavacExecutable);
 
         settingsMenu.add(new JSeparator());
 
@@ -1027,64 +782,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         settingsMenu.add(bytecodeSettingsMenu);
 
         menuBar.add(settingsMenu);
-        menuBar.add(obfuscateMenu);
-        mntmNewMenuItem_6.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if (BytecodeViewer.runningObfuscation) {
-                    BytecodeViewer.showMessage("You're currently running an obfuscation task, wait for this to finish.");
-                    return;
-                }
-                new RenameFields().start();
-                workPane.refreshClass.doClick();
-                cn.tree.updateUI();
-            }
-        });
-
-        obfuscateMenu.add(strongObf);
-
-        obfuscateMenu.add(lightObf);
-
-        obfuscateMenu.add(new JSeparator());
-        mntmNewMenuItem_8.setEnabled(false);
-
-        obfuscateMenu.add(mntmNewMenuItem_8);
-
-        obfuscateMenu.add(mntmNewMenuItem_6);
-        mntmNewMenuItem_7.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if (BytecodeViewer.runningObfuscation) {
-                    BytecodeViewer.showMessage("You're currently running an obfuscation task, wait for this to finish.");
-                    return;
-                }
-                new RenameMethods().start();
-                workPane.refreshClass.doClick();
-                cn.tree.updateUI();
-            }
-        });
-
-        obfuscateMenu.add(mntmNewMenuItem_7);
-        mntmNewMenuItem_11.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if (BytecodeViewer.runningObfuscation) {
-                    BytecodeViewer.showMessage("You're currently running an obfuscation task, wait for this to finish.");
-                    return;
-                }
-                new RenameClasses().start();
-                workPane.refreshClass.doClick();
-                cn.tree.updateUI();
-            }
-        });
-
-        obfuscateMenu.add(mntmNewMenuItem_11);
-        mntmNewMenuItem_9.setEnabled(false);
-
-        obfuscateMenu.add(mntmNewMenuItem_9);
-        mntmNewMenuItem_10.setEnabled(false);
-
-        obfuscateMenu.add(mntmNewMenuItem_10);
 
         menuBar.add(pluginsMenu);
         pluginsMenu.add(mntmStartExternalPlugin);
@@ -1118,16 +815,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         });
 
         pluginsMenu.add(mntmReplaceStrings);
-        pluginsMenu.add(mntmNewMenuItem_2);
-        pluginsMenu.add(mntmStartZkmString);
-        mntmZstringarrayDecrypter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                PluginManager.runPlugin(new ZStringArrayDecrypter());
-            }
-        });
-
-        pluginsMenu.add(mntmZstringarrayDecrypter);
 
         menuBar.add(spinnerMenu);
 
@@ -1149,22 +836,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
                 }
             }
         });
-        mntmStartZkmString.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PluginManager.runPlugin(new ZKMStringDecrypter());
-            }
-        });
-        mntmNewMenuItem_2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if (BytecodeViewer.getLoadedClasses().isEmpty()) {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
-                    return;
-                }
-                new AllatoriStringDecrypterOptions().setVisible(true);
-            }
-        });
+
         mntmNewMenuItem_1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1218,10 +890,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
         rfComps.add(s);
         rfComps.add(workPane);
 
-        apkConversionGroup.add(apkConversionDex);
-        apkConversionGroup.add(apkConversionEnjarify);
-        apkConversionGroup.setSelected(apkConversionDex.getModel(), true);
-
         fontSpinner.setPreferredSize(new Dimension(42, 20));
         fontSpinner.setSize(new Dimension(42, 20));
         fontSpinner.setModel(new SpinnerNumberModel(12, 1, null, 1));
@@ -1271,7 +939,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier {
     }
 
     public void calledAfterLoad() {
-        chckbxmntmDeleteForiegnoutdatedLibs.setSelected(BytecodeViewer.deleteForiegnLibraries);
     }
 
     @Override

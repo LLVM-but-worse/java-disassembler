@@ -47,10 +47,6 @@ public abstract class Decompiler {
     public final static Decompiler FERNFLOWER = new FernFlowerDecompiler();
     public final static Decompiler PROCYON = new ProcyonDecompiler();
     public final static Decompiler CFR = new CFRDecompiler();
-    public final static Decompiler KRAKATAU = new KrakatauDecompiler();
-    public final static Decompiler JDGUI = new JDGUIDecompiler();
-    public final static Decompiler KRAKATAU_DA = new KrakatauDisassembler();
-    public final static Decompiler SMALI = new SmaliDisassembler();
     public final static Decompiler HEXCODE = new Decompiler() {
         @Override
         public String decompileClassNode(ClassNode cn, byte[] b) {

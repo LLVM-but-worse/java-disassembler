@@ -74,13 +74,7 @@ public class ClassViewer extends Viewer {
     }
 
     public void updatePane(int pane, RSyntaxTextArea text, Decompiler decompiler) {
-        if (decompiler == Decompiler.KRAKATAU_DA) {
-            krakataus.set(pane, text);
-        } else if (decompiler == Decompiler.SMALI) {
-            smalis.set(pane, text);
-        } else {
-            javas.set(pane, text);
-        }
+        javas.set(pane, text);
     }
 
     /**
@@ -127,8 +121,6 @@ public class ClassViewer extends Viewer {
     public List<JCheckBox> exacts = Arrays.asList(new JCheckBox("Exact"), new JCheckBox("Exact"), new JCheckBox("Exact"));
     public List<JTextField> fields = Arrays.asList(new JTextField(), new JTextField(), new JTextField());
     public List<RSyntaxTextArea> javas = Arrays.asList(null, null, null);
-    public List<RSyntaxTextArea> smalis = Arrays.asList(null, null, null);
-    public List<RSyntaxTextArea> krakataus = Arrays.asList(null, null, null);
 
     /**
      * This was really interesting to write.
@@ -374,10 +366,6 @@ public class ClassViewer extends Viewer {
         for (int i = 0; i < javas.size(); i++) {
             javas.set(i, null);
         }
-        for (int i = 0; i < smalis.size(); i++) {
-            smalis.set(i, null);
-        }
-
         if (this.cn == null) {
             for (JPanel jpanel : panels) {
                 jpanel.add(new JLabel("This file has been removed from the reload."));
@@ -395,26 +383,6 @@ public class ClassViewer extends Viewer {
                 t.start();
             }
         }
-    }
-
-    public Object[] getSmali() {
-        for (int i = 0; i < smalis.size(); i++) {
-            RSyntaxTextArea text = smalis.get(i);
-            if (text != null) {
-                return new Object[]{cn, text.getText()};
-            }
-        }
-        return null;
-    }
-
-    public Object[] getKrakatau() {
-        for (int i = 0; i < krakataus.size(); i++) {
-            RSyntaxTextArea text = krakataus.get(i);
-            if (text != null) {
-                return new Object[]{cn, text.getText()};
-            }
-        }
-        return null;
     }
 
     public Object[] getJava() {
