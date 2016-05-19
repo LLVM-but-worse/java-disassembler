@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,11 +35,12 @@ import org.objectweb.asm.signature.SignatureVisitor;
 /**
  * A {@link SignatureVisitor} that prints a disassembled view of the signature
  * it visits.
- * 
+ *
  * @author Eugene Kuleshov
  * @author Eric Bruneton
  */
-public final class TraceSignatureVisitor extends SignatureVisitor {
+public final class TraceSignatureVisitor extends SignatureVisitor
+{
 
     private final StringBuffer declaration;
 
@@ -74,33 +75,38 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
 
     private String separator = "";
 
-    public TraceSignatureVisitor(final int access) {
+    public TraceSignatureVisitor(final int access)
+    {
         super(Opcodes.ASM5);
         isInterface = (access & Opcodes.ACC_INTERFACE) != 0;
         this.declaration = new StringBuffer();
     }
 
-    private TraceSignatureVisitor(final StringBuffer buf) {
+    private TraceSignatureVisitor(final StringBuffer buf)
+    {
         super(Opcodes.ASM5);
         this.declaration = buf;
     }
 
     @Override
-    public void visitFormalTypeParameter(final String name) {
+    public void visitFormalTypeParameter(final String name)
+    {
         declaration.append(seenFormalParameter ? ", " : "<").append(name);
         seenFormalParameter = true;
         seenInterfaceBound = false;
     }
 
     @Override
-    public SignatureVisitor visitClassBound() {
+    public SignatureVisitor visitClassBound()
+    {
         separator = " extends ";
         startType();
         return this;
     }
 
     @Override
-    public SignatureVisitor visitInterfaceBound() {
+    public SignatureVisitor visitInterfaceBound()
+    {
         separator = seenInterfaceBound ? ", " : " extends ";
         seenInterfaceBound = true;
         startType();
@@ -108,7 +114,8 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitSuperclass() {
+    public SignatureVisitor visitSuperclass()
+    {
         endFormals();
         separator = " extends ";
         startType();
@@ -116,20 +123,24 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitInterface() {
-        separator = seenInterface ? ", " : isInterface ? " extends "
-                : " implements ";
+    public SignatureVisitor visitInterface()
+    {
+        separator = seenInterface ? ", " : isInterface ? " extends " : " implements ";
         seenInterface = true;
         startType();
         return this;
     }
 
     @Override
-    public SignatureVisitor visitParameterType() {
+    public SignatureVisitor visitParameterType()
+    {
         endFormals();
-        if (seenParameter) {
+        if (seenParameter)
+        {
             declaration.append(", ");
-        } else {
+        }
+        else
+        {
             seenParameter = true;
             declaration.append('(');
         }
@@ -138,11 +149,15 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitReturnType() {
+    public SignatureVisitor visitReturnType()
+    {
         endFormals();
-        if (seenParameter) {
+        if (seenParameter)
+        {
             seenParameter = false;
-        } else {
+        }
+        else
+        {
             declaration.append('(');
         }
         declaration.append(')');
@@ -151,10 +166,14 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitExceptionType() {
-        if (exceptions == null) {
+    public SignatureVisitor visitExceptionType()
+    {
+        if (exceptions == null)
+        {
             exceptions = new StringBuffer();
-        } else {
+        }
+        else
+        {
             exceptions.append(", ");
         }
         // startType();
@@ -162,66 +181,75 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public void visitBaseType(final char descriptor) {
-        switch (descriptor) {
-        case 'V':
-            declaration.append("void");
-            break;
-        case 'B':
-            declaration.append("byte");
-            break;
-        case 'J':
-            declaration.append("long");
-            break;
-        case 'Z':
-            declaration.append("boolean");
-            break;
-        case 'I':
-            declaration.append("int");
-            break;
-        case 'S':
-            declaration.append("short");
-            break;
-        case 'C':
-            declaration.append("char");
-            break;
-        case 'F':
-            declaration.append("float");
-            break;
-        // case 'D':
-        default:
-            declaration.append("double");
-            break;
+    public void visitBaseType(final char descriptor)
+    {
+        switch (descriptor)
+        {
+            case 'V':
+                declaration.append("void");
+                break;
+            case 'B':
+                declaration.append("byte");
+                break;
+            case 'J':
+                declaration.append("long");
+                break;
+            case 'Z':
+                declaration.append("boolean");
+                break;
+            case 'I':
+                declaration.append("int");
+                break;
+            case 'S':
+                declaration.append("short");
+                break;
+            case 'C':
+                declaration.append("char");
+                break;
+            case 'F':
+                declaration.append("float");
+                break;
+            // case 'D':
+            default:
+                declaration.append("double");
+                break;
         }
         endType();
     }
 
     @Override
-    public void visitTypeVariable(final String name) {
+    public void visitTypeVariable(final String name)
+    {
         declaration.append(name);
         endType();
     }
 
     @Override
-    public SignatureVisitor visitArrayType() {
+    public SignatureVisitor visitArrayType()
+    {
         startType();
         arrayStack |= 1;
         return this;
     }
 
     @Override
-    public void visitClassType(final String name) {
-        if ("java/lang/Object".equals(name)) {
+    public void visitClassType(final String name)
+    {
+        if ("java/lang/Object".equals(name))
+        {
             // Map<java.lang.Object,java.util.List>
             // or
             // abstract public V get(Object key); (seen in Dictionary.class)
             // should have Object
             // but java.lang.String extends java.lang.Object is unnecessary
             boolean needObjectClass = argumentStack % 2 != 0 || seenParameter;
-            if (needObjectClass) {
+            if (needObjectClass)
+            {
                 declaration.append(separator).append(name.replace('/', '.'));
             }
-        } else {
+        }
+        else
+        {
             declaration.append(separator).append(name.replace('/', '.'));
         }
         separator = "";
@@ -229,8 +257,10 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public void visitInnerClassType(final String name) {
-        if (argumentStack % 2 != 0) {
+    public void visitInnerClassType(final String name)
+    {
+        if (argumentStack % 2 != 0)
+        {
             declaration.append('>');
         }
         argumentStack /= 2;
@@ -241,28 +271,39 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public void visitTypeArgument() {
-        if (argumentStack % 2 == 0) {
+    public void visitTypeArgument()
+    {
+        if (argumentStack % 2 == 0)
+        {
             ++argumentStack;
             declaration.append('<');
-        } else {
+        }
+        else
+        {
             declaration.append(", ");
         }
         declaration.append('?');
     }
 
     @Override
-    public SignatureVisitor visitTypeArgument(final char tag) {
-        if (argumentStack % 2 == 0) {
+    public SignatureVisitor visitTypeArgument(final char tag)
+    {
+        if (argumentStack % 2 == 0)
+        {
             ++argumentStack;
             declaration.append('<');
-        } else {
+        }
+        else
+        {
             declaration.append(", ");
         }
 
-        if (tag == EXTENDS) {
+        if (tag == EXTENDS)
+        {
             declaration.append("? extends ");
-        } else if (tag == SUPER) {
+        }
+        else if (tag == SUPER)
+        {
             declaration.append("? super ");
         }
 
@@ -271,44 +312,57 @@ public final class TraceSignatureVisitor extends SignatureVisitor {
     }
 
     @Override
-    public void visitEnd() {
-        if (argumentStack % 2 != 0) {
+    public void visitEnd()
+    {
+        if (argumentStack % 2 != 0)
+        {
             declaration.append('>');
         }
         argumentStack /= 2;
         endType();
     }
 
-    public String getDeclaration() {
+    public String getDeclaration()
+    {
         return declaration.toString();
     }
 
-    public String getReturnType() {
+    public String getReturnType()
+    {
         return returnType == null ? null : returnType.toString();
     }
 
-    public String getExceptions() {
+    public String getExceptions()
+    {
         return exceptions == null ? null : exceptions.toString();
     }
 
     // -----------------------------------------------
 
-    private void endFormals() {
-        if (seenFormalParameter) {
+    private void endFormals()
+    {
+        if (seenFormalParameter)
+        {
             declaration.append('>');
             seenFormalParameter = false;
         }
     }
 
-    private void startType() {
+    private void startType()
+    {
         arrayStack *= 2;
     }
 
-    private void endType() {
-        if (arrayStack % 2 == 0) {
+    private void endType()
+    {
+        if (arrayStack % 2 == 0)
+        {
             arrayStack /= 2;
-        } else {
-            while (arrayStack % 2 != 0) {
+        }
+        else
+        {
+            while (arrayStack % 2 != 0)
+            {
                 arrayStack /= 2;
                 declaration.append("[]");
             }

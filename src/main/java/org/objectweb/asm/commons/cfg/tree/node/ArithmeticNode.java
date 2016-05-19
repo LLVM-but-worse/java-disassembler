@@ -6,73 +6,91 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 /**
  * @author Tyler Sedlar
  */
-public class ArithmeticNode extends AbstractNode {
+public class ArithmeticNode extends AbstractNode
+{
 
-    public ArithmeticNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing) {
+    public ArithmeticNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing)
+    {
         super(tree, insn, collapsed, producing);
     }
 
-    public boolean isInt() {
+    public boolean isInt()
+    {
         return opcode() == IADD || opcode() == ISUB || opcode() == IMUL || opcode() == IDIV;
     }
 
-    public boolean isDouble() {
+    public boolean isDouble()
+    {
         return opcode() == DADD || opcode() == DSUB || opcode() == DMUL || opcode() == DDIV;
     }
 
-    public boolean isLong() {
+    public boolean isLong()
+    {
         return opcode() == LADD || opcode() == LSUB || opcode() == LMUL || opcode() == LDIV;
     }
 
-    public boolean isFloat() {
+    public boolean isFloat()
+    {
         return opcode() == FADD || opcode() == FSUB || opcode() == FMUL || opcode() == FDIV;
     }
 
-    public boolean adding() {
+    public boolean adding()
+    {
         return opcode() == IADD || opcode() == DADD || opcode() == LADD || opcode() == FADD;
     }
 
-    public boolean subtracting() {
+    public boolean subtracting()
+    {
         return opcode() == ISUB || opcode() == DSUB || opcode() == LSUB || opcode() == FSUB;
     }
 
-    public boolean multiplying() {
+    public boolean multiplying()
+    {
         return opcode() == IMUL || opcode() == DMUL || opcode() == LMUL || opcode() == FMUL;
     }
 
-    public boolean dividing() {
+    public boolean dividing()
+    {
         return opcode() == IDIV || opcode() == DDIV || opcode() == LDIV || opcode() == FDIV;
     }
 
-    public boolean negating() {
+    public boolean negating()
+    {
         return opcode() == INEG || opcode() == DNEG || opcode() == LNEG || opcode() == FNEG;
     }
 
-    public boolean remainding() {
+    public boolean remainding()
+    {
         return opcode() == IREM || opcode() == DREM || opcode() == LREM || opcode() == FREM;
     }
 
-    public boolean shifting() {
+    public boolean shifting()
+    {
         return rightShifting() || leftShifiting();
     }
 
-    public boolean rightShifting() {
+    public boolean rightShifting()
+    {
         return opcode() == ISHR || opcode() == LSHR || opcode() == IUSHR || opcode() == LUSHR;
     }
 
-    public boolean leftShifiting() {
+    public boolean leftShifiting()
+    {
         return opcode() == ISHL || opcode() == LSHL;
     }
 
-    public boolean including() {
+    public boolean including()
+    {
         return opcode() == IAND || opcode() == LAND;
     }
 
-    public boolean comparing() {
+    public boolean comparing()
+    {
         return opcode() == IXOR || opcode() == LXOR || opcode() == IOR || opcode() == LOR;
     }
 
-    public boolean bitwise() {
+    public boolean bitwise()
+    {
         return negating() || remainding() || shifting() || including() || comparing();
     }
 }

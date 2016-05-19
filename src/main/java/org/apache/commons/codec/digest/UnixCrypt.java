@@ -37,23 +37,23 @@ import java.util.Random;
  * @version $Id$
  * @since 1.7
  */
-public class UnixCrypt {
+public class UnixCrypt
+{
 
     private static final int CON_SALT[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 5, 6,
-            7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
-            34, 35, 36, 37, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
-            54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 0, 0, 0, 0, 0 };
+            7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+            35, 36, 37, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
+            56, 57, 58, 59, 60, 61, 62, 63, 0, 0, 0, 0, 0 };
 
-    private static final int COV2CHAR[] = { 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70,
-            71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102,
-            103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122 };
+    private static final int COV2CHAR[] = { 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71,
+            72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103,
+            104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122 };
 
-    private static final char SALT_CHARS[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./"
-            .toCharArray();
+    private static final char SALT_CHARS[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./".toCharArray();
 
-    private static final boolean SHIFT2[] = { false, false, true, true, true, true, true, true, false, true, true,
-            true, true, true, true, false };
+    private static final boolean SHIFT2[] = { false, false, true, true, true, true, true, true, false, true, true, true,
+            true, true, true, false };
 
     private static final int SKB[][] = {
             { 0, 16, 0x20000000, 0x20000010, 0x10000, 0x10010, 0x20010000, 0x20010010, 2048, 2064, 0x20000800,
@@ -81,9 +81,9 @@ public class UnixCrypt {
                     4360, 0x101108, 0x4000000, 0x4100000, 0x4000100, 0x4100100, 0x4000008, 0x4100008, 0x4000108,
                     0x4100108, 0x4001000, 0x4101000, 0x4001100, 0x4101100, 0x4001008, 0x4101008, 0x4001108, 0x4101108,
                     0x20000, 0x120000, 0x20100, 0x120100, 0x20008, 0x120008, 0x20108, 0x120108, 0x21000, 0x121000,
-                    0x21100, 0x121100, 0x21008, 0x121008, 0x21108, 0x121108, 0x4020000, 0x4120000, 0x4020100,
-                    0x4120100, 0x4020008, 0x4120008, 0x4020108, 0x4120108, 0x4021000, 0x4121000, 0x4021100, 0x4121100,
-                    0x4021008, 0x4121008, 0x4021108, 0x4121108 },
+                    0x21100, 0x121100, 0x21008, 0x121008, 0x21108, 0x121108, 0x4020000, 0x4120000, 0x4020100, 0x4120100,
+                    0x4020008, 0x4120008, 0x4020108, 0x4120108, 0x4021000, 0x4121000, 0x4021100, 0x4121100, 0x4021008,
+                    0x4121008, 0x4021108, 0x4121108 },
             { 0, 0x10000000, 0x10000, 0x10010000, 4, 0x10000004, 0x10004, 0x10010004, 0x20000000, 0x30000000,
                     0x20010000, 0x30010000, 0x20000004, 0x30000004, 0x20010004, 0x30010004, 0x100000, 0x10100000,
                     0x110000, 0x10110000, 0x100004, 0x10100004, 0x110004, 0x10110004, 0x20100000, 0x30100000,
@@ -116,12 +116,12 @@ public class UnixCrypt {
 
     private static final int SPTRANS[][] = {
             { 0x820200, 0x20000, 0x80800000, 0x80820200, 0x800000, 0x80020200, 0x80020000, 0x80800000, 0x80020200,
-                    0x820200, 0x820000, 0x80000200, 0x80800200, 0x800000, 0, 0x80020000, 0x20000, 0x80000000,
-                    0x800200, 0x20200, 0x80820200, 0x820000, 0x80000200, 0x800200, 0x80000000, 512, 0x20200,
-                    0x80820000, 512, 0x80800200, 0x80820000, 0, 0, 0x80820200, 0x800200, 0x80020000, 0x820200,
-                    0x20000, 0x80000200, 0x800200, 0x80820000, 512, 0x20200, 0x80800000, 0x80020200, 0x80000000,
-                    0x80800000, 0x820000, 0x80820200, 0x20200, 0x820000, 0x80800200, 0x800000, 0x80000200, 0x80020000,
-                    0, 0x20000, 0x800000, 0x80800200, 0x820200, 0x80000000, 0x80820000, 512, 0x80020200 },
+                    0x820200, 0x820000, 0x80000200, 0x80800200, 0x800000, 0, 0x80020000, 0x20000, 0x80000000, 0x800200,
+                    0x20200, 0x80820200, 0x820000, 0x80000200, 0x800200, 0x80000000, 512, 0x20200, 0x80820000, 512,
+                    0x80800200, 0x80820000, 0, 0, 0x80820200, 0x800200, 0x80020000, 0x820200, 0x20000, 0x80000200,
+                    0x800200, 0x80820000, 512, 0x20200, 0x80800000, 0x80020200, 0x80000000, 0x80800000, 0x820000,
+                    0x80820200, 0x20200, 0x820000, 0x80800200, 0x800000, 0x80000200, 0x80020000, 0, 0x20000, 0x800000,
+                    0x80800200, 0x820200, 0x80000000, 0x80820000, 512, 0x80020200 },
             { 0x10042004, 0, 0x42000, 0x10040000, 0x10000004, 8196, 0x10002000, 0x42000, 8192, 0x10040004, 4,
                     0x10002000, 0x40004, 0x10042000, 0x10040000, 4, 0x40000, 0x10002004, 0x10040004, 8192, 0x42004,
                     0x10000000, 0, 0x40004, 0x10002004, 0x42004, 0x10042000, 0x10000004, 0x10000000, 0x40000, 8196,
@@ -130,25 +130,24 @@ public class UnixCrypt {
                     0x10000004, 4, 0x10042004, 0x42000, 0x10040000, 0x10040004, 0x40000, 8196, 0x10002000, 0x10002004,
                     4, 0x10040000, 0x42000 },
             { 0x41000000, 0x1010040, 64, 0x41000040, 0x40010000, 0x1000000, 0x41000040, 0x10040, 0x1000040, 0x10000,
-                    0x1010000, 0x40000000, 0x41010040, 0x40000040, 0x40000000, 0x41010000, 0, 0x40010000, 0x1010040,
-                    64, 0x40000040, 0x41010040, 0x10000, 0x41000000, 0x41010000, 0x1000040, 0x40010040, 0x1010000,
-                    0x10040, 0, 0x1000000, 0x40010040, 0x1010040, 64, 0x40000000, 0x10000, 0x40000040, 0x40010000,
-                    0x1010000, 0x41000040, 0, 0x1010040, 0x10040, 0x41010000, 0x40010000, 0x1000000, 0x41010040,
-                    0x40000000, 0x40010040, 0x41000000, 0x1000000, 0x41010040, 0x10000, 0x1000040, 0x41000040,
-                    0x10040, 0x1000040, 0, 0x41010000, 0x40000040, 0x41000000, 0x40010040, 64, 0x1010000 },
+                    0x1010000, 0x40000000, 0x41010040, 0x40000040, 0x40000000, 0x41010000, 0, 0x40010000, 0x1010040, 64,
+                    0x40000040, 0x41010040, 0x10000, 0x41000000, 0x41010000, 0x1000040, 0x40010040, 0x1010000, 0x10040,
+                    0, 0x1000000, 0x40010040, 0x1010040, 64, 0x40000000, 0x10000, 0x40000040, 0x40010000, 0x1010000,
+                    0x41000040, 0, 0x1010040, 0x10040, 0x41010000, 0x40010000, 0x1000000, 0x41010040, 0x40000000,
+                    0x40010040, 0x41000000, 0x1000000, 0x41010040, 0x10000, 0x1000040, 0x41000040, 0x10040, 0x1000040,
+                    0, 0x41010000, 0x40000040, 0x41000000, 0x40010040, 64, 0x1010000 },
             { 0x100402, 0x4000400, 2, 0x4100402, 0, 0x4100000, 0x4000402, 0x100002, 0x4100400, 0x4000002, 0x4000000,
                     1026, 0x4000002, 0x100402, 0x100000, 0x4000000, 0x4100002, 0x100400, 1024, 2, 0x100400, 0x4000402,
-                    0x4100000, 1024, 1026, 0, 0x100002, 0x4100400, 0x4000400, 0x4100002, 0x4100402, 0x100000,
-                    0x4100002, 1026, 0x100000, 0x4000002, 0x100400, 0x4000400, 2, 0x4100000, 0x4000402, 0, 1024,
-                    0x100002, 0, 0x4100002, 0x4100400, 1024, 0x4000000, 0x4100402, 0x100402, 0x100000, 0x4100402, 2,
-                    0x4000400, 0x100402, 0x100002, 0x100400, 0x4100000, 0x4000402, 1026, 0x4000000, 0x4000002,
-                    0x4100400 },
+                    0x4100000, 1024, 1026, 0, 0x100002, 0x4100400, 0x4000400, 0x4100002, 0x4100402, 0x100000, 0x4100002,
+                    1026, 0x100000, 0x4000002, 0x100400, 0x4000400, 2, 0x4100000, 0x4000402, 0, 1024, 0x100002, 0,
+                    0x4100002, 0x4100400, 1024, 0x4000000, 0x4100402, 0x100402, 0x100000, 0x4100402, 2, 0x4000400,
+                    0x100402, 0x100002, 0x100400, 0x4100000, 0x4000402, 1026, 0x4000000, 0x4000002, 0x4100400 },
             { 0x2000000, 16384, 256, 0x2004108, 0x2004008, 0x2000100, 16648, 0x2004000, 16384, 8, 0x2000008, 16640,
-                    0x2000108, 0x2004008, 0x2004100, 0, 16640, 0x2000000, 16392, 264, 0x2000100, 16648, 0, 0x2000008,
-                    8, 0x2000108, 0x2004108, 16392, 0x2004000, 256, 264, 0x2004100, 0x2004100, 0x2000108, 16392,
-                    0x2004000, 16384, 8, 0x2000008, 0x2000100, 0x2000000, 16640, 0x2004108, 0, 16648, 0x2000000, 256,
-                    16392, 0x2000108, 256, 0, 0x2004108, 0x2004008, 0x2004100, 264, 16384, 16640, 0x2004008,
-                    0x2000100, 264, 8, 16648, 0x2004000, 0x2000008 },
+                    0x2000108, 0x2004008, 0x2004100, 0, 16640, 0x2000000, 16392, 264, 0x2000100, 16648, 0, 0x2000008, 8,
+                    0x2000108, 0x2004108, 16392, 0x2004000, 256, 264, 0x2004100, 0x2004100, 0x2000108, 16392, 0x2004000,
+                    16384, 8, 0x2000008, 0x2000100, 0x2000000, 16640, 0x2004108, 0, 16648, 0x2000000, 256, 16392,
+                    0x2000108, 256, 0, 0x2004108, 0x2004008, 0x2004100, 264, 16384, 16640, 0x2004008, 0x2000100, 264, 8,
+                    16648, 0x2004000, 0x2000008 },
             { 0x20000010, 0x80010, 0, 0x20080800, 0x80010, 2048, 0x20000810, 0x80000, 2064, 0x20080810, 0x80800,
                     0x20000000, 0x20000800, 0x20000010, 0x20080000, 0x80810, 0x80000, 0x20000810, 0x20080010, 0, 2048,
                     16, 0x20080800, 0x20080010, 0x20080810, 0x20080000, 0x20000000, 2064, 16, 0x80800, 0x80810,
@@ -161,24 +160,24 @@ public class UnixCrypt {
                     0x401080, 1, 4225, 0x401001, 128, 0x400000, 4225, 0x401000, 0x401001, 129, 4096, 128, 0x400000,
                     0x401001, 0x400081, 4225, 4224, 0, 128, 0x400001, 1, 0x400080, 0, 0x400081, 0x400080, 4224, 129,
                     4096, 0x401081, 0x400000, 0x401080, 1, 4097, 0x401081, 0x400001, 0x401080, 0x401000, 4097 },
-            { 0x8200020, 0x8208000, 32800, 0, 0x8008000, 0x200020, 0x8200000, 0x8208020, 32, 0x8000000, 0x208000,
-                    32800, 0x208020, 0x8008020, 0x8000020, 0x8200000, 32768, 0x208020, 0x200020, 0x8008000, 0x8208020,
+            { 0x8200020, 0x8208000, 32800, 0, 0x8008000, 0x200020, 0x8200000, 0x8208020, 32, 0x8000000, 0x208000, 32800,
+                    0x208020, 0x8008020, 0x8000020, 0x8200000, 32768, 0x208020, 0x200020, 0x8008000, 0x8208020,
                     0x8000020, 0, 0x208000, 0x8000000, 0x200000, 0x8008020, 0x8200020, 0x200000, 32768, 0x8208000, 32,
                     0x200000, 32768, 0x8000020, 0x8208020, 32800, 0x8000000, 0, 0x208000, 0x8200020, 0x8008020,
-                    0x8008000, 0x200020, 0x8208000, 32, 0x200020, 0x8008000, 0x8208020, 0x200000, 0x8200000,
-                    0x8000020, 0x208000, 32800, 0x8008020, 0x8200000, 32, 0x8208000, 0x208020, 0, 0x8000000,
-                    0x8200020, 32768, 0x208020 } };
+                    0x8008000, 0x200020, 0x8208000, 32, 0x200020, 0x8008000, 0x8208020, 0x200000, 0x8200000, 0x8000020,
+                    0x208000, 32800, 0x8008020, 0x8200000, 32, 0x8208000, 0x208020, 0, 0x8000000, 0x8200020, 32768,
+                    0x208020 } };
 
     /**
      * Generates a crypt(3) compatible hash using the DES algorithm.
      * <p>
      * As no salt is given, a random one will be used.
      *
-     * @param original
-     *            plaintext password
+     * @param original plaintext password
      * @return a 13 character string starting with the salt string
      */
-    public static String crypt(final byte[] original) {
+    public static String crypt(final byte[] original)
+    {
         return crypt(original, null);
     }
 
@@ -187,21 +186,22 @@ public class UnixCrypt {
      * <p>
      * Using unspecified characters as salt results incompatible hash values.
      *
-     * @param original
-     *            plaintext password
-     * @param salt
-     *            a two character string drawn from [a-zA-Z0-9./] or null for a random one
+     * @param original plaintext password
+     * @param salt     a two character string drawn from [a-zA-Z0-9./] or null for a random one
      * @return a 13 character string starting with the salt string
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
      */
-    public static String crypt(final byte[] original, String salt) {
-        if (salt == null) {
+    public static String crypt(final byte[] original, String salt)
+    {
+        if (salt == null)
+        {
             final Random randomGenerator = new Random();
             final int numSaltChars = SALT_CHARS.length;
             salt = "" + SALT_CHARS[randomGenerator.nextInt(numSaltChars)] +
                     SALT_CHARS[randomGenerator.nextInt(numSaltChars)];
-        } else if (!salt.matches("^[" + B64.B64T + "]{2,}$")) {
+        }
+        else if (!salt.matches("^[" + B64.B64T + "]{2,}$"))
+        {
             throw new IllegalArgumentException("Invalid salt value: " + salt);
         }
 
@@ -213,11 +213,13 @@ public class UnixCrypt {
         final int eSwap0 = CON_SALT[charZero];
         final int eSwap1 = CON_SALT[charOne] << 4;
         final byte key[] = new byte[8];
-        for (int i = 0; i < key.length; i++) {
+        for (int i = 0; i < key.length; i++)
+        {
             key[i] = 0;
         }
 
-        for (int i = 0; i < key.length && i < original.length; i++) {
+        for (int i = 0; i < key.length && i < original.length; i++)
+        {
             final int iChar = original[i];
             key[i] = (byte) (iChar << 1);
         }
@@ -231,16 +233,20 @@ public class UnixCrypt {
         int i = 2;
         int y = 0;
         int u = 128;
-        for (; i < 13; i++) {
+        for (; i < 13; i++)
+        {
             int j = 0;
             int c = 0;
-            for (; j < 6; j++) {
+            for (; j < 6; j++)
+            {
                 c <<= 1;
-                if ((b[y] & u) != 0) {
+                if ((b[y] & u) != 0)
+                {
                     c |= 0x1;
                 }
                 u >>>= 1;
-                if (u == 0) {
+                if (u == 0)
+                {
                     y++;
                     u = 128;
                 }
@@ -255,35 +261,36 @@ public class UnixCrypt {
      * <p>
      * As no salt is given, a random one is used.
      *
-     * @param original
-     *            plaintext password
+     * @param original plaintext password
      * @return a 13 character string starting with the salt string
      */
-    public static String crypt(final String original) {
+    public static String crypt(final String original)
+    {
         return crypt(original.getBytes(Charsets.UTF_8));
     }
 
     /**
      * Generates a crypt(3) compatible hash using the DES algorithm.
      *
-     * @param original
-     *            plaintext password
-     * @param salt
-     *            a two character string drawn from [a-zA-Z0-9./] or null for a random one
+     * @param original plaintext password
+     * @param salt     a two character string drawn from [a-zA-Z0-9./] or null for a random one
      * @return a 13 character string starting with the salt string
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
      */
-    public static String crypt(final String original, final String salt) {
+    public static String crypt(final String original, final String salt)
+    {
         return crypt(original.getBytes(Charsets.UTF_8), salt);
     }
 
-    private static int[] body(final int schedule[], final int eSwap0, final int eSwap1) {
+    private static int[] body(final int schedule[], final int eSwap0, final int eSwap1)
+    {
         int left = 0;
         int right = 0;
         int t = 0;
-        for (int j = 0; j < 25; j++) {
-            for (int i = 0; i < 32; i += 4) {
+        for (int j = 0; j < 25; j++)
+        {
+            for (int i = 0; i < 32; i += 4)
+            {
                 left = dEncrypt(left, right, i, eSwap0, eSwap1, schedule);
                 right = dEncrypt(right, left, i + 2, eSwap0, eSwap1, schedule);
             }
@@ -317,12 +324,14 @@ public class UnixCrypt {
         return out;
     }
 
-    private static int byteToUnsigned(final byte b) {
+    private static int byteToUnsigned(final byte b)
+    {
         final int value = b;
         return value < 0 ? value + 256 : value;
     }
 
-    private static int dEncrypt(int el, final int r, final int s, final int e0, final int e1, final int sArr[]) {
+    private static int dEncrypt(int el, final int r, final int s, final int e0, final int e1, final int sArr[])
+    {
         int v = r ^ r >>> 16;
         int u = v & e0;
         v &= e1;
@@ -335,7 +344,8 @@ public class UnixCrypt {
         return el;
     }
 
-    private static int[] desSetKey(final byte key[]) {
+    private static int[] desSetKey(final byte key[])
+    {
         final int schedule[] = new int[32];
         int c = fourBytesToInt(key, 0);
         int d = fourBytesToInt(key, 4);
@@ -357,11 +367,15 @@ public class UnixCrypt {
         d = (d & 0xff) << 16 | d & 0xff00 | (d & 0xff0000) >>> 16 | (c & 0xf0000000) >>> 4;
         c &= 0xfffffff;
         int j = 0;
-        for (int i = 0; i < 16; i++) {
-            if (SHIFT2[i]) {
+        for (int i = 0; i < 16; i++)
+        {
+            if (SHIFT2[i])
+            {
                 c = c >>> 2 | c << 26;
                 d = d >>> 2 | d << 26;
-            } else {
+            }
+            else
+            {
                 c = c >>> 1 | c << 27;
                 d = d >>> 1 | d << 27;
             }
@@ -381,7 +395,8 @@ public class UnixCrypt {
         return schedule;
     }
 
-    private static int fourBytesToInt(final byte b[], int offset) {
+    private static int fourBytesToInt(final byte b[], int offset)
+    {
         int value = byteToUnsigned(b[offset++]);
         value |= byteToUnsigned(b[offset++]) << 8;
         value |= byteToUnsigned(b[offset++]) << 16;
@@ -389,20 +404,23 @@ public class UnixCrypt {
         return value;
     }
 
-    private static int hPermOp(int a, final int n, final int m) {
+    private static int hPermOp(int a, final int n, final int m)
+    {
         final int t = (a << 16 - n ^ a) & m;
         a = a ^ t ^ t >>> 16 - n;
         return a;
     }
 
-    private static void intToFourBytes(final int iValue, final byte b[], int offset) {
+    private static void intToFourBytes(final int iValue, final byte b[], int offset)
+    {
         b[offset++] = (byte) (iValue & 0xff);
         b[offset++] = (byte) (iValue >>> 8 & 0xff);
         b[offset++] = (byte) (iValue >>> 16 & 0xff);
         b[offset++] = (byte) (iValue >>> 24 & 0xff);
     }
 
-    private static void permOp(int a, int b, final int n, final int m, final int results[]) {
+    private static void permOp(int a, int b, final int n, final int m, final int results[])
+    {
         final int t = (a >>> n ^ b) & m;
         a ^= t << n;
         b ^= t;

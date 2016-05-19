@@ -25,13 +25,14 @@ import java.nio.charset.Charset;
 /**
  * Converts hexadecimal Strings. The charset used for certain operation can be set, the default is set in
  * {@link #DEFAULT_CHARSET_NAME}
- *
+ * <p>
  * This class is thread-safe.
  *
- * @since 1.1
  * @version $Id$
+ * @since 1.1
  */
-public class Hex implements BinaryEncoder, BinaryDecoder {
+public class Hex implements BinaryEncoder, BinaryDecoder
+{
 
     /**
      * Default charset name is {@link Charsets#UTF_8}
@@ -50,38 +51,39 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
     /**
      * Used to build output as Hex
      */
-    private static final char[] DIGITS_LOWER =
-        {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private static final char[] DIGITS_LOWER = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+            'e', 'f' };
 
     /**
      * Used to build output as Hex
      */
-    private static final char[] DIGITS_UPPER =
-        {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[] DIGITS_UPPER = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+            'E', 'F' };
 
     /**
      * Converts an array of characters representing hexadecimal values into an array of bytes of those same values. The
      * returned array will be half the length of the passed array, as it takes two characters to represent any given
      * byte. An exception is thrown if the passed char array has an odd number of elements.
      *
-     * @param data
-     *            An array of characters containing hexadecimal digits
+     * @param data An array of characters containing hexadecimal digits
      * @return A byte array containing binary data decoded from the supplied char array.
-     * @throws DecoderException
-     *             Thrown if an odd number or illegal of characters is supplied
+     * @throws DecoderException Thrown if an odd number or illegal of characters is supplied
      */
-    public static byte[] decodeHex(final char[] data) throws DecoderException {
+    public static byte[] decodeHex(final char[] data) throws DecoderException
+    {
 
         final int len = data.length;
 
-        if ((len & 0x01) != 0) {
+        if ((len & 0x01) != 0)
+        {
             throw new DecoderException("Odd number of characters.");
         }
 
         final byte[] out = new byte[len >> 1];
 
         // two characters form the hex value.
-        for (int i = 0, j = 0; j < len; i++) {
+        for (int i = 0, j = 0; j < len; i++)
+        {
             int f = toDigit(data[j], j) << 4;
             j++;
             f = f | toDigit(data[j], j);
@@ -97,11 +99,11 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be double the length of the passed array, as it takes two characters to represent any
      * given byte.
      *
-     * @param data
-     *            a byte[] to convert to Hex characters
+     * @param data a byte[] to convert to Hex characters
      * @return A char[] containing hexadecimal characters
      */
-    public static char[] encodeHex(final byte[] data) {
+    public static char[] encodeHex(final byte[] data)
+    {
         return encodeHex(data, true);
     }
 
@@ -110,12 +112,12 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be double the length of the passed array, as it takes two characters to represent any
      * given byte.
      *
-     * @param data
-     *            a byte buffer to convert to Hex characters
+     * @param data a byte buffer to convert to Hex characters
      * @return A char[] containing hexadecimal characters
      * @since 1.11
      */
-    public static char[] encodeHex(final ByteBuffer data) {
+    public static char[] encodeHex(final ByteBuffer data)
+    {
         return encodeHex(data, true);
     }
 
@@ -124,14 +126,13 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be double the length of the passed array, as it takes two characters to represent any
      * given byte.
      *
-     * @param data
-     *            a byte[] to convert to Hex characters
-     * @param toLowerCase
-     *            <code>true</code> converts to lowercase, <code>false</code> to uppercase
+     * @param data        a byte[] to convert to Hex characters
+     * @param toLowerCase <code>true</code> converts to lowercase, <code>false</code> to uppercase
      * @return A char[] containing hexadecimal characters
      * @since 1.4
      */
-    public static char[] encodeHex(final byte[] data, final boolean toLowerCase) {
+    public static char[] encodeHex(final byte[] data, final boolean toLowerCase)
+    {
         return encodeHex(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
     }
 
@@ -140,14 +141,13 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be double the length of the passed array, as it takes two characters to represent any
      * given byte.
      *
-     * @param data
-     *            a byte buffer to convert to Hex characters
-     * @param toLowerCase
-     *            <code>true</code> converts to lowercase, <code>false</code> to uppercase
+     * @param data        a byte buffer to convert to Hex characters
+     * @param toLowerCase <code>true</code> converts to lowercase, <code>false</code> to uppercase
      * @return A char[] containing hexadecimal characters
      * @since 1.11
      */
-    public static char[] encodeHex(final ByteBuffer data, final boolean toLowerCase) {
+    public static char[] encodeHex(final ByteBuffer data, final boolean toLowerCase)
+    {
         return encodeHex(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
     }
 
@@ -156,18 +156,18 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be double the length of the passed array, as it takes two characters to represent any
      * given byte.
      *
-     * @param data
-     *            a byte[] to convert to Hex characters
-     * @param toDigits
-     *            the output alphabet
+     * @param data     a byte[] to convert to Hex characters
+     * @param toDigits the output alphabet
      * @return A char[] containing hexadecimal characters
      * @since 1.4
      */
-    protected static char[] encodeHex(final byte[] data, final char[] toDigits) {
+    protected static char[] encodeHex(final byte[] data, final char[] toDigits)
+    {
         final int l = data.length;
         final char[] out = new char[l << 1];
         // two characters form the hex value.
-        for (int i = 0, j = 0; i < l; i++) {
+        for (int i = 0, j = 0; i < l; i++)
+        {
             out[j++] = toDigits[(0xF0 & data[i]) >>> 4];
             out[j++] = toDigits[0x0F & data[i]];
         }
@@ -179,14 +179,13 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be double the length of the passed array, as it takes two characters to represent any
      * given byte.
      *
-     * @param data
-     *            a byte buffer to convert to Hex characters
-     * @param toDigits
-     *            the output alphabet
+     * @param data     a byte buffer to convert to Hex characters
+     * @param toDigits the output alphabet
      * @return A char[] containing hexadecimal characters
      * @since 1.11
      */
-    protected static char[] encodeHex(final ByteBuffer data, final char[] toDigits) {
+    protected static char[] encodeHex(final ByteBuffer data, final char[] toDigits)
+    {
         return encodeHex(data.array(), toDigits);
     }
 
@@ -194,12 +193,12 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * Converts an array of bytes into a String representing the hexadecimal values of each byte in order. The returned
      * String will be double the length of the passed array, as it takes two characters to represent any given byte.
      *
-     * @param data
-     *            a byte[] to convert to Hex characters
+     * @param data a byte[] to convert to Hex characters
      * @return A String containing hexadecimal characters
      * @since 1.4
      */
-    public static String encodeHexString(final byte[] data) {
+    public static String encodeHexString(final byte[] data)
+    {
         return new String(encodeHex(data));
     }
 
@@ -207,29 +206,28 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * Converts a byte buffer into a String representing the hexadecimal values of each byte in order. The returned
      * String will be double the length of the passed array, as it takes two characters to represent any given byte.
      *
-     * @param data
-     *            a byte buffer to convert to Hex characters
+     * @param data a byte buffer to convert to Hex characters
      * @return A String containing hexadecimal characters
      * @since 1.11
      */
-    public static String encodeHexString(final ByteBuffer data) {
+    public static String encodeHexString(final ByteBuffer data)
+    {
         return new String(encodeHex(data));
     }
 
     /**
      * Converts a hexadecimal character to an integer.
      *
-     * @param ch
-     *            A character to convert to an integer digit
-     * @param index
-     *            The index of the character in the source
+     * @param ch    A character to convert to an integer digit
+     * @param index The index of the character in the source
      * @return An integer
-     * @throws DecoderException
-     *             Thrown if ch is an illegal hex character
+     * @throws DecoderException Thrown if ch is an illegal hex character
      */
-    protected static int toDigit(final char ch, final int index) throws DecoderException {
+    protected static int toDigit(final char ch, final int index) throws DecoderException
+    {
         final int digit = Character.digit(ch, 16);
-        if (digit == -1) {
+        if (digit == -1)
+        {
             throw new DecoderException("Illegal hexadecimal character " + ch + " at index " + index);
         }
         return digit;
@@ -240,7 +238,8 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
     /**
      * Creates a new codec with the default charset name {@link #DEFAULT_CHARSET}
      */
-    public Hex() {
+    public Hex()
+    {
         // use default encoding
         this.charset = DEFAULT_CHARSET;
     }
@@ -248,25 +247,23 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
     /**
      * Creates a new codec with the given Charset.
      *
-     * @param charset
-     *            the charset.
+     * @param charset the charset.
      * @since 1.7
      */
-    public Hex(final Charset charset) {
+    public Hex(final Charset charset)
+    {
         this.charset = charset;
     }
 
     /**
      * Creates a new codec with the given charset name.
      *
-     * @param charsetName
-     *            the charset name.
-     * @throws java.nio.charset.UnsupportedCharsetException
-     *             If the named charset is unavailable
-     * @since 1.4
+     * @param charsetName the charset name.
+     * @throws java.nio.charset.UnsupportedCharsetException If the named charset is unavailable
      * @since 1.7 throws UnsupportedCharsetException if the named charset is unavailable
      */
-    public Hex(final String charsetName) {
+    public Hex(final String charsetName)
+    {
         this(Charset.forName(charsetName));
     }
 
@@ -275,15 +272,14 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be half the length of the passed array, as it takes two characters to represent any given
      * byte. An exception is thrown if the passed char array has an odd number of elements.
      *
-     * @param array
-     *            An array of character bytes containing hexadecimal digits
+     * @param array An array of character bytes containing hexadecimal digits
      * @return A byte array containing binary data decoded from the supplied byte array (representing characters).
-     * @throws DecoderException
-     *             Thrown if an odd number of characters is supplied to this function
+     * @throws DecoderException Thrown if an odd number of characters is supplied to this function
      * @see #decodeHex(char[])
      */
     @Override
-    public byte[] decode(final byte[] array) throws DecoderException {
+    public byte[] decode(final byte[] array) throws DecoderException
+    {
         return decodeHex(new String(array, getCharset()).toCharArray());
     }
 
@@ -292,15 +288,14 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * The returned array will be half the length of the passed array, as it takes two characters to represent any given
      * byte. An exception is thrown if the passed char array has an odd number of elements.
      *
-     * @param buffer
-     *            An array of character bytes containing hexadecimal digits
+     * @param buffer An array of character bytes containing hexadecimal digits
      * @return A byte array containing binary data decoded from the supplied byte array (representing characters).
-     * @throws DecoderException
-     *             Thrown if an odd number of characters is supplied to this function
+     * @throws DecoderException Thrown if an odd number of characters is supplied to this function
      * @see #decodeHex(char[])
      * @since 1.11
      */
-    public byte[] decode(final ByteBuffer buffer) throws DecoderException {
+    public byte[] decode(final ByteBuffer buffer) throws DecoderException
+    {
         return decodeHex(new String(buffer.array(), getCharset()).toCharArray());
     }
 
@@ -309,26 +304,35 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * same values. The returned array will be half the length of the passed String or array, as it takes two characters
      * to represent any given byte. An exception is thrown if the passed char array has an odd number of elements.
      *
-     * @param object
-     *            A String, ByteBuffer, byte[], or an array of character bytes containing hexadecimal digits
+     * @param object A String, ByteBuffer, byte[], or an array of character bytes containing hexadecimal digits
      * @return A byte array containing binary data decoded from the supplied byte array (representing characters).
-     * @throws DecoderException
-     *             Thrown if an odd number of characters is supplied to this function or the object is not a String or
-     *             char[]
+     * @throws DecoderException Thrown if an odd number of characters is supplied to this function or the object is not a String or
+     *                          char[]
      * @see #decodeHex(char[])
      */
     @Override
-    public Object decode(final Object object) throws DecoderException {
-        if (object instanceof String) {
+    public Object decode(final Object object) throws DecoderException
+    {
+        if (object instanceof String)
+        {
             return decode(((String) object).toCharArray());
-        } else if (object instanceof byte[]) {
+        }
+        else if (object instanceof byte[])
+        {
             return decode((byte[]) object);
-        } else if (object instanceof ByteBuffer) {
+        }
+        else if (object instanceof ByteBuffer)
+        {
             return decode((ByteBuffer) object);
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 return decodeHex((char[]) object);
-            } catch (final ClassCastException e) {
+            }
+            catch (final ClassCastException e)
+            {
                 throw new DecoderException(e.getMessage(), e);
             }
         }
@@ -343,14 +347,14 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * {@link #getCharset()}.
      * </p>
      *
-     * @param array
-     *            a byte[] to convert to Hex characters
+     * @param array a byte[] to convert to Hex characters
      * @return A byte[] containing the bytes of the hexadecimal characters
-     * @since 1.7 No longer throws IllegalStateException if the charsetName is invalid.
      * @see #encodeHex(byte[])
+     * @since 1.7 No longer throws IllegalStateException if the charsetName is invalid.
      */
     @Override
-    public byte[] encode(final byte[] array) {
+    public byte[] encode(final byte[] array)
+    {
         return encodeHexString(array).getBytes(this.getCharset());
     }
 
@@ -363,13 +367,13 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * {@link #getCharset()}.
      * </p>
      *
-     * @param array
-     *            a byte buffer to convert to Hex characters
+     * @param array a byte buffer to convert to Hex characters
      * @return A byte[] containing the bytes of the hexadecimal characters
      * @see #encodeHex(byte[])
      * @since 1.11
      */
-    public byte[] encode(final ByteBuffer array) {
+    public byte[] encode(final ByteBuffer array)
+    {
         return encodeHexString(array).getBytes(this.getCharset());
     }
 
@@ -382,24 +386,31 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * {@link #getCharset()}.
      * </p>
      *
-     * @param object
-     *            a String, ByteBuffer, or byte[] to convert to Hex characters
+     * @param object a String, ByteBuffer, or byte[] to convert to Hex characters
      * @return A char[] containing hexadecimal characters
-     * @throws EncoderException
-     *             Thrown if the given object is not a String or byte[]
+     * @throws EncoderException Thrown if the given object is not a String or byte[]
      * @see #encodeHex(byte[])
      */
     @Override
-    public Object encode(final Object object) throws EncoderException {
+    public Object encode(final Object object) throws EncoderException
+    {
         byte[] byteArray;
-        if (object instanceof String) {
+        if (object instanceof String)
+        {
             byteArray = ((String) object).getBytes(this.getCharset());
-        } else if (object instanceof ByteBuffer) {
+        }
+        else if (object instanceof ByteBuffer)
+        {
             byteArray = ((ByteBuffer) object).array();
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 byteArray = (byte[]) object;
-            } catch (final ClassCastException e) {
+            }
+            catch (final ClassCastException e)
+            {
                 throw new EncoderException(e.getMessage(), e);
             }
         }
@@ -412,7 +423,8 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * @return the charset.
      * @since 1.7
      */
-    public Charset getCharset() {
+    public Charset getCharset()
+    {
         return this.charset;
     }
 
@@ -422,7 +434,8 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * @return the charset name.
      * @since 1.4
      */
-    public String getCharsetName() {
+    public String getCharsetName()
+    {
         return this.charset.name();
     }
 
@@ -432,7 +445,8 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
      * @return a string representation of the object.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return super.toString() + "[charsetName=" + this.charset + "]";
     }
 }

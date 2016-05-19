@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,11 +32,12 @@ package org.objectweb.asm.signature;
 /**
  * A type signature parser to make a signature visitor visit an existing
  * signature.
- * 
+ *
  * @author Thomas Hallgren
  * @author Eric Bruneton
  */
-public class SignatureReader {
+public class SignatureReader
+{
 
     /**
      * The signature to be read.
@@ -45,12 +46,13 @@ public class SignatureReader {
 
     /**
      * Constructs a {@link SignatureReader} for the given signature.
-     * 
+     *
      * @param signature
      *            A <i>ClassSignature</i>, <i>MethodTypeSignature</i>, or
      *            <i>FieldTypeSignature</i>.
      */
-    public SignatureReader(final String signature) {
+    public SignatureReader(final String signature)
+    {
         this.signature = signature;
     }
 
@@ -65,48 +67,62 @@ public class SignatureReader {
      * <code>signature</code> parameter of the
      * {@link org.objectweb.asm.ClassVisitor#visitMethod
      * ClassVisitor.visitMethod} method).
-     * 
+     *
      * @param v
      *            the visitor that must visit this signature.
      */
-    public void accept(final SignatureVisitor v) {
+    public void accept(final SignatureVisitor v)
+    {
         String signature = this.signature;
         int len = signature.length();
         int pos;
         char c;
 
-        if (signature.charAt(0) == '<') {
+        if (signature.charAt(0) == '<')
+        {
             pos = 2;
-            do {
+            do
+            {
                 int end = signature.indexOf(':', pos);
                 v.visitFormalTypeParameter(signature.substring(pos - 1, end));
                 pos = end + 1;
 
                 c = signature.charAt(pos);
-                if (c == 'L' || c == '[' || c == 'T') {
+                if (c == 'L' || c == '[' || c == 'T')
+                {
                     pos = parseType(signature, pos, v.visitClassBound());
                 }
 
-                while ((c = signature.charAt(pos++)) == ':') {
+                while ((c = signature.charAt(pos++)) == ':')
+                {
                     pos = parseType(signature, pos, v.visitInterfaceBound());
                 }
-            } while (c != '>');
-        } else {
+            }
+            while (c != '>');
+        }
+        else
+        {
             pos = 0;
         }
 
-        if (signature.charAt(pos) == '(') {
+        if (signature.charAt(pos) == '(')
+        {
             pos++;
-            while (signature.charAt(pos) != ')') {
+            while (signature.charAt(pos) != ')')
+            {
                 pos = parseType(signature, pos, v.visitParameterType());
             }
             pos = parseType(signature, pos + 1, v.visitReturnType());
-            while (pos < len) {
+            while (pos < len)
+            {
                 pos = parseType(signature, pos + 1, v.visitExceptionType());
             }
-        } else {
+        }
+        else
+        {
             pos = parseType(signature, pos, v.visitSuperclass());
-            while (pos < len) {
+            while (pos < len)
+            {
                 pos = parseType(signature, pos, v.visitInterface());
             }
         }
@@ -122,17 +138,18 @@ public class SignatureReader {
      * {@link org.objectweb.asm.ClassVisitor#visitField ClassVisitor.visitField}
      * or {@link org.objectweb.asm.MethodVisitor#visitLocalVariable
      * MethodVisitor.visitLocalVariable} methods.
-     * 
+     *
      * @param v
      *            the visitor that must visit this signature.
      */
-    public void acceptType(final SignatureVisitor v) {
+    public void acceptType(final SignatureVisitor v)
+    {
         parseType(this.signature, 0, v);
     }
 
     /**
      * Parses a field type signature and makes the given visitor visit it.
-     * 
+     *
      * @param signature
      *            a string containing the signature that must be parsed.
      * @param pos
@@ -141,88 +158,100 @@ public class SignatureReader {
      *            the visitor that must visit this signature.
      * @return the index of the first character after the parsed signature.
      */
-    private static int parseType(final String signature, int pos,
-            final SignatureVisitor v) {
+    private static int parseType(final String signature, int pos, final SignatureVisitor v)
+    {
         char c;
         int start, end;
         boolean visited, inner;
         String name;
 
-        switch (c = signature.charAt(pos++)) {
-        case 'Z':
-        case 'C':
-        case 'B':
-        case 'S':
-        case 'I':
-        case 'F':
-        case 'J':
-        case 'D':
-        case 'V':
-            v.visitBaseType(c);
-            return pos;
+        switch (c = signature.charAt(pos++))
+        {
+            case 'Z':
+            case 'C':
+            case 'B':
+            case 'S':
+            case 'I':
+            case 'F':
+            case 'J':
+            case 'D':
+            case 'V':
+                v.visitBaseType(c);
+                return pos;
 
-        case '[':
-            return parseType(signature, pos, v.visitArrayType());
+            case '[':
+                return parseType(signature, pos, v.visitArrayType());
 
-        case 'T':
-            end = signature.indexOf(';', pos);
-            v.visitTypeVariable(signature.substring(pos, end));
-            return end + 1;
+            case 'T':
+                end = signature.indexOf(';', pos);
+                v.visitTypeVariable(signature.substring(pos, end));
+                return end + 1;
 
-        default: // case 'L':
-            start = pos;
-            visited = false;
-            inner = false;
-            for (;;) {
-                switch (c = signature.charAt(pos++)) {
-                case '.':
-                case ';':
-                    if (!visited) {
-                        name = signature.substring(start, pos - 1);
-                        if (inner) {
-                            v.visitInnerClassType(name);
-                        } else {
-                            v.visitClassType(name);
-                        }
-                    }
-                    if (c == ';') {
-                        v.visitEnd();
-                        return pos;
-                    }
-                    start = pos;
-                    visited = false;
-                    inner = true;
-                    break;
-
-                case '<':
-                    name = signature.substring(start, pos - 1);
-                    if (inner) {
-                        v.visitInnerClassType(name);
-                    } else {
-                        v.visitClassType(name);
-                    }
-                    visited = true;
-                    top: for (;;) {
-                        switch (c = signature.charAt(pos)) {
-                        case '>':
-                            break top;
-                        case '*':
-                            ++pos;
-                            v.visitTypeArgument();
+            default: // case 'L':
+                start = pos;
+                visited = false;
+                inner = false;
+                for (; ; )
+                {
+                    switch (c = signature.charAt(pos++))
+                    {
+                        case '.':
+                        case ';':
+                            if (!visited)
+                            {
+                                name = signature.substring(start, pos - 1);
+                                if (inner)
+                                {
+                                    v.visitInnerClassType(name);
+                                }
+                                else
+                                {
+                                    v.visitClassType(name);
+                                }
+                            }
+                            if (c == ';')
+                            {
+                                v.visitEnd();
+                                return pos;
+                            }
+                            start = pos;
+                            visited = false;
+                            inner = true;
                             break;
-                        case '+':
-                        case '-':
-                            pos = parseType(signature, pos + 1,
-                                    v.visitTypeArgument(c));
-                            break;
-                        default:
-                            pos = parseType(signature, pos,
-                                    v.visitTypeArgument('='));
-                            break;
-                        }
+
+                        case '<':
+                            name = signature.substring(start, pos - 1);
+                            if (inner)
+                            {
+                                v.visitInnerClassType(name);
+                            }
+                            else
+                            {
+                                v.visitClassType(name);
+                            }
+                            visited = true;
+                            top:
+                            for (; ; )
+                            {
+                                switch (c = signature.charAt(pos))
+                                {
+                                    case '>':
+                                        break top;
+                                    case '*':
+                                        ++pos;
+                                        v.visitTypeArgument();
+                                        break;
+                                    case '+':
+                                    case '-':
+                                        pos = parseType(signature, pos + 1, v.visitTypeArgument(c));
+                                        break;
+                                    default:
+                                        pos = parseType(signature, pos, v.visitTypeArgument('='));
+                                        break;
+                                }
+                            }
                     }
                 }
-            }
         }
     }
 }

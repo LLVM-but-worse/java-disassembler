@@ -22,16 +22,15 @@ package org.apache.commons.codec;
  *
  * @version $Id$
  */
-public interface StringEncoder extends Encoder {
+public interface StringEncoder extends Encoder
+{
 
     /**
      * Encodes a String and returns a String.
      *
-     * @param source
-     *            the String to encode
+     * @param source the String to encode
      * @return the encoded String
-     * @throws EncoderException
-     *             thrown if there is an error condition during the encoding process.
+     * @throws EncoderException thrown if there is an error condition during the encoding process.
      */
     String encode(String source) throws EncoderException;
 }

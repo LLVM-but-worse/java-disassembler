@@ -7,8 +7,8 @@ import java.awt.event.*;
 /**
  * Created by IntelliJ IDEA. User: laullon Date: 08-abr-2003 Time: 13:21:09
  */
-public class JHexEditor extends JPanel implements FocusListener,
-        AdjustmentListener, MouseWheelListener {
+public class JHexEditor extends JPanel implements FocusListener, AdjustmentListener, MouseWheelListener
+{
     private static final long serialVersionUID = 2289328616534802372L;
     byte[] buff;
     public int cursor;
@@ -20,7 +20,8 @@ public class JHexEditor extends JPanel implements FocusListener,
     private int inicio = 0;
     private int lineas = 10;
 
-    public JHexEditor(byte[] buff) {
+    public JHexEditor(byte[] buff)
+    {
         super();
         this.buff = buff;
 
@@ -58,12 +59,14 @@ public class JHexEditor extends JPanel implements FocusListener,
         this.add(panel, BorderLayout.CENTER);
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics g)
+    {
         FontMetrics fn = getFontMetrics(font);
         Rectangle rec = this.getBounds();
         lineas = (rec.height / fn.getHeight()) - 1;
         int n = (buff.length / 16) - 1;
-        if (lineas > n) {
+        if (lineas > n)
+        {
             lineas = n;
             inicio = 0;
         }
@@ -73,67 +76,70 @@ public class JHexEditor extends JPanel implements FocusListener,
         super.paint(g);
     }
 
-    protected void actualizaCursor() {
+    protected void actualizaCursor()
+    {
         int n = (cursor / 16);
 
-        System.out.print("- " + inicio + "<" + n + "<" + (lineas + inicio)
-                + "(" + lineas + ")");
+        System.out.print("- " + inicio + "<" + n + "<" + (lineas + inicio) + "(" + lineas + ")");
 
         if (n < inicio)
             inicio = n;
         else if (n >= inicio + lineas)
             inicio = n - (lineas - 1);
 
-        System.out.println(" - " + inicio + "<" + n + "<" + (lineas + inicio)
-                + "(" + lineas + ")");
+        System.out.println(" - " + inicio + "<" + n + "<" + (lineas + inicio) + "(" + lineas + ")");
 
         repaint();
     }
 
-    protected int getInicio() {
+    protected int getInicio()
+    {
         return inicio;
     }
 
-    protected int getLineas() {
+    protected int getLineas()
+    {
         return lineas;
     }
 
-    protected void fondo(Graphics g, int x, int y, int s) {
+    protected void fondo(Graphics g, int x, int y, int s)
+    {
         FontMetrics fn = getFontMetrics(font);
-        g.fillRect(((fn.stringWidth(" ") + 1) * x) + border,
-                (fn.getHeight() * y) + border, ((fn.stringWidth(" ") + 1) * s),
-                fn.getHeight() + 1);
+        g.fillRect(((fn.stringWidth(" ") + 1) * x) + border, (fn.getHeight() * y) + border, ((fn.stringWidth(" ") + 1) * s), fn.getHeight() + 1);
     }
 
-    protected void cuadro(Graphics g, int x, int y, int s) {
+    protected void cuadro(Graphics g, int x, int y, int s)
+    {
         FontMetrics fn = getFontMetrics(font);
-        g.drawRect(((fn.stringWidth(" ") + 1) * x) + border,
-                (fn.getHeight() * y) + border, ((fn.stringWidth(" ") + 1) * s),
-                fn.getHeight() + 1);
+        g.drawRect(((fn.stringWidth(" ") + 1) * x) + border, (fn.getHeight() * y) + border, ((fn.stringWidth(" ") + 1) * s), fn.getHeight() + 1);
     }
 
-    protected void printString(Graphics g, String s, int x, int y) {
+    protected void printString(Graphics g, String s, int x, int y)
+    {
         FontMetrics fn = getFontMetrics(font);
-        g.drawString(s, ((fn.stringWidth(" ") + 1) * x) + border,
-                ((fn.getHeight() * (y + 1)) - fn.getMaxDescent()) + border);
+        g.drawString(s, ((fn.stringWidth(" ") + 1) * x) + border, ((fn.getHeight() * (y + 1)) - fn.getMaxDescent()) + border);
     }
 
-    public void focusGained(FocusEvent e) {
+    public void focusGained(FocusEvent e)
+    {
         this.repaint();
     }
 
-    public void focusLost(FocusEvent e) {
+    public void focusLost(FocusEvent e)
+    {
         this.repaint();
     }
 
-    public void adjustmentValueChanged(AdjustmentEvent e) {
+    public void adjustmentValueChanged(AdjustmentEvent e)
+    {
         inicio = e.getValue();
         if (inicio < 0)
             inicio = 0;
         repaint();
     }
 
-    public void mouseWheelMoved(MouseWheelEvent e) {
+    public void mouseWheelMoved(MouseWheelEvent e)
+    {
         inicio += (e.getUnitsToScroll());
         if ((inicio + lineas) >= buff.length / 16)
             inicio = (buff.length / 16) - lineas;
@@ -142,8 +148,9 @@ public class JHexEditor extends JPanel implements FocusListener,
         repaint();
     }
 
-    public void keyPressed(KeyEvent e) {
-		/*
+    public void keyPressed(KeyEvent e)
+    {
+        /*
 		 * switch(e.getKeyCode()) { case 33: // rep if(cursor>=(16*lineas))
 		 * cursor-=(16*lineas); actualizaCursor(); break; case 34: // fin
 		 * if(cursor<(buff.length-(16*lineas))) cursor+=(16*lineas);
@@ -157,35 +164,40 @@ public class JHexEditor extends JPanel implements FocusListener,
 		 */
     }
 
-    private class Columnas extends JPanel {
+    private class Columnas extends JPanel
+    {
         private static final long serialVersionUID = -1734199617526339842L;
 
-        public Columnas() {
+        public Columnas()
+        {
             this.setLayout(new BorderLayout(1, 1));
         }
 
-        public Dimension getPreferredSize() {
+        public Dimension getPreferredSize()
+        {
             return getMinimumSize();
         }
 
-        public Dimension getMinimumSize() {
+        public Dimension getMinimumSize()
+        {
             Dimension d = new Dimension();
             FontMetrics fn = getFontMetrics(font);
             int h = fn.getHeight();
             int nl = 1;
-            d.setSize(((fn.stringWidth(" ") + 1) * +((16 * 3) - 1))
-                    + (border * 2) + 1, h * nl + (border * 2) + 1);
+            d.setSize(((fn.stringWidth(" ") + 1) * +((16 * 3) - 1)) + (border * 2) + 1, h * nl + (border * 2) + 1);
             return d;
         }
 
-        public void paint(Graphics g) {
+        public void paint(Graphics g)
+        {
             Dimension d = getMinimumSize();
             g.setColor(Color.white);
             g.fillRect(0, 0, d.width, d.height);
             g.setColor(Color.black);
             g.setFont(font);
 
-            for (int n = 0; n < 16; n++) {
+            for (int n = 0; n < 16; n++)
+            {
                 if (n == (cursor % 16))
                     cuadro(g, n * 3, 0, 2);
                 String s = "00" + Integer.toHexString(n);
@@ -195,46 +207,52 @@ public class JHexEditor extends JPanel implements FocusListener,
         }
     }
 
-    private class Caja extends JPanel {
+    private class Caja extends JPanel
+    {
         private static final long serialVersionUID = -6124062720565016834L;
 
-        public Dimension getPreferredSize() {
+        public Dimension getPreferredSize()
+        {
             return getMinimumSize();
         }
 
-        public Dimension getMinimumSize() {
+        public Dimension getMinimumSize()
+        {
             Dimension d = new Dimension();
             FontMetrics fn = getFontMetrics(font);
             int h = fn.getHeight();
-            d.setSize((fn.stringWidth(" ") + 1) + (border * 2) + 1, h
-                    + (border * 2) + 1);
+            d.setSize((fn.stringWidth(" ") + 1) + (border * 2) + 1, h + (border * 2) + 1);
             return d;
         }
 
     }
 
-    private class Filas extends JPanel {
+    private class Filas extends JPanel
+    {
         private static final long serialVersionUID = 8797347523486018051L;
 
-        public Filas() {
+        public Filas()
+        {
             this.setLayout(new BorderLayout(1, 1));
         }
 
-        public Dimension getPreferredSize() {
+        public Dimension getPreferredSize()
+        {
             return getMinimumSize();
         }
 
-        public Dimension getMinimumSize() {
+        public Dimension getMinimumSize()
+        {
             Dimension d = new Dimension();
             FontMetrics fn = getFontMetrics(font);
             int h = fn.getHeight();
             int nl = getLineas();
-            d.setSize((fn.stringWidth(" ") + 1) * (8) + (border * 2) + 1, h
-                    * nl + (border * 2) + 1);
+            d.setSize((fn.stringWidth(" ") + 1) * (8) + (border * 2) + 1, h * nl + (border * 2) + 1);
             return d;
         }
 
-        public void paint(Graphics g) {
+        public void paint(Graphics g)
+        {
             Dimension d = getMinimumSize();
             g.setColor(Color.white);
             g.fillRect(0, 0, d.width, d.height);
@@ -244,7 +262,8 @@ public class JHexEditor extends JPanel implements FocusListener,
             int ini = getInicio();
             int fin = ini + getLineas();
             int y = 0;
-            for (int n = ini; n < fin; n++) {
+            for (int n = ini; n < fin; n++)
+            {
                 if (n == (cursor / 16))
                     cuadro(g, 0, y, 8);
                 String s = "0000000000000" + Integer.toHexString(n);

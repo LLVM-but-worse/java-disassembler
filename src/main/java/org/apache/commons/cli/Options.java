@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -218,7 +218,7 @@ public class Options implements Serializable
 
     /**
      * Returns the options with a long name starting with the name specified.
-     * 
+     *
      * @param opt the partial name of the option
      * @return the options matching the partial name specified, or an empty list if none matches
      * @since 1.3
@@ -226,7 +226,7 @@ public class Options implements Serializable
     public List<String> getMatchingOptions(String opt)
     {
         opt = Util.stripLeadingHyphens(opt);
-        
+
         List<String> matchingOpts = new ArrayList<String>();
 
         // for a perfect match return the single option only
@@ -242,7 +242,7 @@ public class Options implements Serializable
                 matchingOpts.add(longOpt);
             }
         }
-        
+
         return matchingOpts;
     }
 

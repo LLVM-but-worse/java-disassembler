@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,91 +39,110 @@ import org.objectweb.asm.signature.SignatureWriter;
 /**
  * A class responsible for remapping types and names. Subclasses can override
  * the following methods:
- * 
+ *
  * <ul>
  * <li>{@link #map(String)} - map type</li>
  * <li>{@link #mapFieldName(String, String, String)} - map field name</li>
  * <li>{@link #mapMethodName(String, String, String)} - map method name</li>
  * </ul>
- * 
+ *
  * @author Eugene Kuleshov
  */
-public abstract class Remapper {
+public abstract class Remapper
+{
 
-    public String mapDesc(String desc) {
+    public String mapDesc(String desc)
+    {
         Type t = Type.getType(desc);
-        switch (t.getSort()) {
-        case Type.ARRAY:
-            String s = mapDesc(t.getElementType().getDescriptor());
-            for (int i = 0; i < t.getDimensions(); ++i) {
-                s = '[' + s;
-            }
-            return s;
-        case Type.OBJECT:
-            String newType = map(t.getInternalName());
-            if (newType != null) {
-                return 'L' + newType + ';';
-            }
+        switch (t.getSort())
+        {
+            case Type.ARRAY:
+                String s = mapDesc(t.getElementType().getDescriptor());
+                for (int i = 0; i < t.getDimensions(); ++i)
+                {
+                    s = '[' + s;
+                }
+                return s;
+            case Type.OBJECT:
+                String newType = map(t.getInternalName());
+                if (newType != null)
+                {
+                    return 'L' + newType + ';';
+                }
         }
         return desc;
     }
 
-    private Type mapType(Type t) {
-        switch (t.getSort()) {
-        case Type.ARRAY:
-            String s = mapDesc(t.getElementType().getDescriptor());
-            for (int i = 0; i < t.getDimensions(); ++i) {
-                s = '[' + s;
-            }
-            return Type.getType(s);
-        case Type.OBJECT:
-            s = map(t.getInternalName());
-            return s != null ? Type.getObjectType(s) : t;
-        case Type.METHOD:
-            return Type.getMethodType(mapMethodDesc(t.getDescriptor()));
+    private Type mapType(Type t)
+    {
+        switch (t.getSort())
+        {
+            case Type.ARRAY:
+                String s = mapDesc(t.getElementType().getDescriptor());
+                for (int i = 0; i < t.getDimensions(); ++i)
+                {
+                    s = '[' + s;
+                }
+                return Type.getType(s);
+            case Type.OBJECT:
+                s = map(t.getInternalName());
+                return s != null ? Type.getObjectType(s) : t;
+            case Type.METHOD:
+                return Type.getMethodType(mapMethodDesc(t.getDescriptor()));
         }
         return t;
     }
 
-    public String mapType(String type) {
-        if (type == null) {
+    public String mapType(String type)
+    {
+        if (type == null)
+        {
             return null;
         }
         return mapType(Type.getObjectType(type)).getInternalName();
     }
 
-    public String[] mapTypes(String[] types) {
+    public String[] mapTypes(String[] types)
+    {
         String[] newTypes = null;
         boolean needMapping = false;
-        for (int i = 0; i < types.length; i++) {
+        for (int i = 0; i < types.length; i++)
+        {
             String type = types[i];
             String newType = map(type);
-            if (newType != null && newTypes == null) {
+            if (newType != null && newTypes == null)
+            {
                 newTypes = new String[types.length];
-                if (i > 0) {
+                if (i > 0)
+                {
                     System.arraycopy(types, 0, newTypes, 0, i);
                 }
                 needMapping = true;
             }
-            if (needMapping) {
+            if (needMapping)
+            {
                 newTypes[i] = newType == null ? type : newType;
             }
         }
         return needMapping ? newTypes : types;
     }
 
-    public String mapMethodDesc(String desc) {
-        if ("()V".equals(desc)) {
+    public String mapMethodDesc(String desc)
+    {
+        if ("()V".equals(desc))
+        {
             return desc;
         }
 
         Type[] args = Type.getArgumentTypes(desc);
         StringBuilder sb = new StringBuilder("(");
-        for (int i = 0; i < args.length; i++) {
+        for (int i = 0; i < args.length; i++)
+        {
             sb.append(mapDesc(args[i].getDescriptor()));
         }
         Type returnType = Type.getReturnType(desc);
-        if (returnType == Type.VOID_TYPE) {
+        if (returnType == Type.VOID_TYPE)
+        {
             sb.append(")V");
             return sb.toString();
         }
@@ -131,49 +150,55 @@ public abstract class Remapper {
         return sb.toString();
     }
 
-    public Object mapValue(Object value) {
-        if (value instanceof Type) {
+    public Object mapValue(Object value)
+    {
+        if (value instanceof Type)
+        {
             return mapType((Type) value);
         }
-        if (value instanceof Handle) {
+        if (value instanceof Handle)
+        {
             Handle h = (Handle) value;
-            return new Handle(h.getTag(), mapType(h.getOwner()), mapMethodName(
-                    h.getOwner(), h.getName(), h.getDesc()),
-                    mapMethodDesc(h.getDesc()));
+            return new Handle(h.getTag(), mapType(h.getOwner()), mapMethodName(h.getOwner(), h.getName(), h.getDesc()), mapMethodDesc(h.getDesc()));
         }
         return value;
     }
 
     /**
-     * 
+     *
      * @param typeSignature
      *            true if signature is a FieldTypeSignature, such as the
      *            signature parameter of the ClassVisitor.visitField or
      *            MethodVisitor.visitLocalVariable methods
      */
-    public String mapSignature(String signature, boolean typeSignature) {
-        if (signature == null) {
+    public String mapSignature(String signature, boolean typeSignature)
+    {
+        if (signature == null)
+        {
             return null;
         }
         SignatureReader r = new SignatureReader(signature);
         SignatureWriter w = new SignatureWriter();
         SignatureVisitor a = createRemappingSignatureAdapter(w);
-        if (typeSignature) {
+        if (typeSignature)
+        {
             r.acceptType(a);
-        } else {
+        }
+        else
+        {
             r.accept(a);
         }
         return w.toString();
     }
 
-    protected SignatureVisitor createRemappingSignatureAdapter(
-            SignatureVisitor v) {
+    protected SignatureVisitor createRemappingSignatureAdapter(SignatureVisitor v)
+    {
         return new RemappingSignatureAdapter(v, this);
     }
 
     /**
      * Map method name to the new name. Subclasses can override.
-     * 
+     *
      * @param owner
      *            owner of the method.
      * @param name
@@ -182,26 +207,28 @@ public abstract class Remapper {
      *            descriptor of the method.
      * @return new name of the method
      */
-    public String mapMethodName(String owner, String name, String desc) {
+    public String mapMethodName(String owner, String name, String desc)
+    {
         return name;
     }
 
     /**
      * Map invokedynamic method name to the new name. Subclasses can override.
-     * 
+     *
      * @param name
      *            name of the invokedynamic.
      * @param desc
      *            descriptor of the invokedynamic.
      * @return new invokdynamic name.
      */
-    public String mapInvokeDynamicMethodName(String name, String desc) {
+    public String mapInvokeDynamicMethodName(String name, String desc)
+    {
         return name;
     }
 
     /**
      * Map field name to the new name. Subclasses can override.
-     * 
+     *
      * @param owner
      *            owner of the field.
      * @param name
@@ -210,14 +237,16 @@ public abstract class Remapper {
      *            descriptor of the field
      * @return new name of the field.
      */
-    public String mapFieldName(String owner, String name, String desc) {
+    public String mapFieldName(String owner, String name, String desc)
+    {
         return name;
     }
 
     /**
      * Map type name to the new name. Subclasses can override.
      */
-    public String map(String typeName) {
+    public String map(String typeName)
+    {
         return typeName;
     }
 }

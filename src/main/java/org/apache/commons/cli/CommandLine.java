@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,7 @@ public class CommandLine implements Serializable
         // nothing to do
     }
 
-    /** 
+    /**
      * Query to see if an option has been set.
      *
      * @param opt Short name of the option
@@ -62,7 +62,7 @@ public class CommandLine implements Serializable
         return options.contains(resolveOption(opt));
     }
 
-    /** 
+    /**
      * Query to see if an option has been set.
      *
      * @param opt character name of the option
@@ -107,12 +107,12 @@ public class CommandLine implements Serializable
     {
         String res = getOptionValue(opt);
         Option option = resolveOption(opt);
-        
+
         if (option == null || res == null)
         {
             return null;
         }
-        
+
         return TypeHandler.createValue(res, option.getType());
     }
 
@@ -127,7 +127,7 @@ public class CommandLine implements Serializable
         return getOptionObject(String.valueOf(opt));
     }
 
-    /** 
+    /**
      * Retrieve the first argument, if any, of this option.
      *
      * @param opt the name of the option
@@ -141,7 +141,7 @@ public class CommandLine implements Serializable
         return (values == null) ? null : values[0];
     }
 
-    /** 
+    /**
      * Retrieve the first argument, if any, of this option.
      *
      * @param opt the character name of the option
@@ -153,7 +153,7 @@ public class CommandLine implements Serializable
         return getOptionValue(String.valueOf(opt));
     }
 
-    /** 
+    /**
      * Retrieves the array of values, if any, of an option.
      *
      * @param opt string name of the option
@@ -177,7 +177,7 @@ public class CommandLine implements Serializable
 
     /**
      * Retrieves the option object given the long or short option as a String
-     * 
+     *
      * @param opt short or long name of the option
      * @return Canonicalized option
      */
@@ -200,7 +200,7 @@ public class CommandLine implements Serializable
         return null;
     }
 
-    /** 
+    /**
      * Retrieves the array of values, if any, of an option.
      *
      * @param opt character name of the option
@@ -212,7 +212,7 @@ public class CommandLine implements Serializable
         return getOptionValues(String.valueOf(opt));
     }
 
-    /** 
+    /**
      * Retrieve the first argument, if any, of an option.
      *
      * @param opt name of the option
@@ -228,7 +228,7 @@ public class CommandLine implements Serializable
         return (answer != null) ? answer : defaultValue;
     }
 
-    /** 
+    /**
      * Retrieve the argument, if any, of an option.
      *
      * @param opt character name of the option
@@ -280,7 +280,7 @@ public class CommandLine implements Serializable
         return props;
     }
 
-    /** 
+    /**
      * Retrieve any left-over non-recognized options and arguments
      *
      * @return remaining items passed in but not parsed as an array
@@ -294,7 +294,7 @@ public class CommandLine implements Serializable
         return answer;
     }
 
-    /** 
+    /**
      * Retrieve any left-over non-recognized options and arguments
      *
      * @return remaining items passed in but not parsed as a <code>List</code>.
@@ -304,7 +304,7 @@ public class CommandLine implements Serializable
         return args;
     }
 
-    /** 
+    /**
      * jkeyes
      * - commented out until it is implemented properly
      * <p>Dump state, suitable for debugging.</p>

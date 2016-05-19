@@ -7,17 +7,21 @@ import org.objectweb.asm.tree.IincInsnNode;
 /**
  * @author Tyler Sedlar
  */
-public class IincNode extends AbstractNode {
+public class IincNode extends AbstractNode
+{
 
-	public IincNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing) {
-		super(tree, insn, collapsed, producing);
-	}
+    public IincNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing)
+    {
+        super(tree, insn, collapsed, producing);
+    }
 
-	public int increment() {
-		return ((IincInsnNode) insn()).incr;
-	}
+    public int increment()
+    {
+        return ((IincInsnNode) insn()).incr;
+    }
 
-	public int var() {
-		return ((IincInsnNode) insn()).var;
-	}
+    public int var()
+    {
+        return ((IincInsnNode) insn()).var;
+    }
 }

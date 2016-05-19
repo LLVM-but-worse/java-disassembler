@@ -7,13 +7,16 @@ import org.objectweb.asm.tree.MethodInsnNode;
 /**
  * @author Tyler Sedlar
  */
-public class MethodMemberNode extends ReferenceNode {
+public class MethodMemberNode extends ReferenceNode
+{
 
-	public MethodMemberNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing) {
-		super(tree, insn, collapsed, producing);
-	}
+    public MethodMemberNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing)
+    {
+        super(tree, insn, collapsed, producing);
+    }
 
-    public MethodInsnNode min() {
+    public MethodInsnNode min()
+    {
         return (MethodInsnNode) insn();
     }
 }

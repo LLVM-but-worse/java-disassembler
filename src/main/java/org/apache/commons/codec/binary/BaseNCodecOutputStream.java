@@ -33,11 +33,12 @@ import static org.apache.commons.codec.binary.BaseNCodec.EOF;
  * "https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/output/CloseShieldOutputStream.html"
  * >CloseShieldOutputStream</a>.
  * </p>
- * 
- * @since 1.5
+ *
  * @version $Id$
+ * @since 1.5
  */
-public class BaseNCodecOutputStream extends FilterOutputStream {
+public class BaseNCodecOutputStream extends FilterOutputStream
+{
 
     private final boolean doEncode;
 
@@ -48,7 +49,8 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
     private final Context context = new Context();
 
     // TODO should this be protected?
-    public BaseNCodecOutputStream(final OutputStream out, final BaseNCodec basedCodec, final boolean doEncode) {
+    public BaseNCodecOutputStream(final OutputStream out, final BaseNCodec basedCodec, final boolean doEncode)
+    {
         super(out);
         this.baseNCodec = basedCodec;
         this.doEncode = doEncode;
@@ -57,13 +59,12 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
     /**
      * Writes the specified <code>byte</code> to this output stream.
      *
-     * @param i
-     *            source byte
-     * @throws IOException
-     *             if an I/O error occurs.
+     * @param i source byte
+     * @throws IOException if an I/O error occurs.
      */
     @Override
-    public void write(final int i) throws IOException {
+    public void write(final int i) throws IOException
+    {
         singleByte[0] = (byte) i;
         write(singleByte, 0, 1);
     }
@@ -72,32 +73,36 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
      * Writes <code>len</code> bytes from the specified <code>b</code> array starting at <code>offset</code> to this
      * output stream.
      *
-     * @param b
-     *            source byte array
-     * @param offset
-     *            where to start reading the bytes
-     * @param len
-     *            maximum number of bytes to write
-     *
-     * @throws IOException
-     *             if an I/O error occurs.
-     * @throws NullPointerException
-     *             if the byte array parameter is null
-     * @throws IndexOutOfBoundsException
-     *             if offset, len or buffer size are invalid
+     * @param b      source byte array
+     * @param offset where to start reading the bytes
+     * @param len    maximum number of bytes to write
+     * @throws IOException               if an I/O error occurs.
+     * @throws NullPointerException      if the byte array parameter is null
+     * @throws IndexOutOfBoundsException if offset, len or buffer size are invalid
      */
     @Override
-    public void write(final byte b[], final int offset, final int len) throws IOException {
-        if (b == null) {
+    public void write(final byte b[], final int offset, final int len) throws IOException
+    {
+        if (b == null)
+        {
             throw new NullPointerException();
-        } else if (offset < 0 || len < 0) {
+        }
+        else if (offset < 0 || len < 0)
+        {
             throw new IndexOutOfBoundsException();
-        } else if (offset > b.length || offset + len > b.length) {
+        }
+        else if (offset > b.length || offset + len > b.length)
+        {
             throw new IndexOutOfBoundsException();
-        } else if (len > 0) {
-            if (doEncode) {
+        }
+        else if (len > 0)
+        {
+            if (doEncode)
+            {
                 baseNCodec.encode(b, offset, len, context);
-            } else {
+            }
+            else
+            {
                 baseNCodec.decode(b, offset, len, context);
             }
             flush(false);
@@ -108,21 +113,23 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
      * Flushes this output stream and forces any buffered output bytes to be written out to the stream. If propagate is
      * true, the wrapped stream will also be flushed.
      *
-     * @param propagate
-     *            boolean flag to indicate whether the wrapped OutputStream should also be flushed.
-     * @throws IOException
-     *             if an I/O error occurs.
+     * @param propagate boolean flag to indicate whether the wrapped OutputStream should also be flushed.
+     * @throws IOException if an I/O error occurs.
      */
-    private void flush(final boolean propagate) throws IOException {
+    private void flush(final boolean propagate) throws IOException
+    {
         final int avail = baseNCodec.available(context);
-        if (avail > 0) {
+        if (avail > 0)
+        {
             final byte[] buf = new byte[avail];
             final int c = baseNCodec.readResults(buf, 0, avail, context);
-            if (c > 0) {
+            if (c > 0)
+            {
                 out.write(buf, 0, c);
             }
         }
-        if (propagate) {
+        if (propagate)
+        {
             out.flush();
         }
     }
@@ -130,11 +137,11 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
     /**
      * Flushes this output stream and forces any buffered output bytes to be written out to the stream.
      *
-     * @throws IOException
-     *             if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
-    public void flush() throws IOException {
+    public void flush() throws IOException
+    {
         flush(true);
     }
 
@@ -147,11 +154,11 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
      * >CloseShieldOutputStream</a>.
      * </p>
      *
-     * @throws IOException
-     *             if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         eof();
         flush();
         out.close();
@@ -159,16 +166,19 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
 
     /**
      * Writes EOF.
-     * 
-     * @throws IOException
-     *             if an I/O error occurs.
+     *
+     * @throws IOException if an I/O error occurs.
      * @since 1.11
      */
-    public void eof() throws IOException {
+    public void eof() throws IOException
+    {
         // Notify encoder of EOF (-1).
-        if (doEncode) {
+        if (doEncode)
+        {
             baseNCodec.encode(singleByte, 0, EOF, context);
-        } else {
+        }
+        else
+        {
             baseNCodec.decode(singleByte, 0, EOF, context);
         }
     }

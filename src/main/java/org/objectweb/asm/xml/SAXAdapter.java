@@ -2,19 +2,19 @@
  * ASM XML Adapter
  * Copyright (c) 2004-2011, Eugene Kuleshov
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,54 +35,74 @@ import org.xml.sax.SAXException;
 
 /**
  * SAXAdapter
- * 
+ *
  * @author Eugene Kuleshov
  */
-public class SAXAdapter {
+public class SAXAdapter
+{
 
     private final ContentHandler h;
 
-    protected SAXAdapter(final ContentHandler h) {
+    protected SAXAdapter(final ContentHandler h)
+    {
         this.h = h;
     }
 
-    protected ContentHandler getContentHandler() {
+    protected ContentHandler getContentHandler()
+    {
         return h;
     }
 
-    protected void addDocumentStart() {
-        try {
+    protected void addDocumentStart()
+    {
+        try
+        {
             h.startDocument();
-        } catch (SAXException ex) {
+        }
+        catch (SAXException ex)
+        {
             throw new RuntimeException(ex.getMessage(), ex.getException());
         }
     }
 
-    protected void addDocumentEnd() {
-        try {
+    protected void addDocumentEnd()
+    {
+        try
+        {
             h.endDocument();
-        } catch (SAXException ex) {
+        }
+        catch (SAXException ex)
+        {
             throw new RuntimeException(ex.getMessage(), ex.getException());
         }
     }
 
-    protected final void addStart(final String name, final Attributes attrs) {
-        try {
+    protected final void addStart(final String name, final Attributes attrs)
+    {
+        try
+        {
             h.startElement("", name, name, attrs);
-        } catch (SAXException ex) {
+        }
+        catch (SAXException ex)
+        {
             throw new RuntimeException(ex.getMessage(), ex.getException());
         }
     }
 
-    protected final void addEnd(final String name) {
-        try {
+    protected final void addEnd(final String name)
+    {
+        try
+        {
             h.endElement("", name, name);
-        } catch (SAXException ex) {
+        }
+        catch (SAXException ex)
+        {
             throw new RuntimeException(ex.getMessage(), ex.getException());
         }
     }
 
-    protected final void addElement(final String name, final Attributes attrs) {
+    protected final void addElement(final String name, final Attributes attrs)
+    {
         addStart(name, attrs);
         addEnd(name);
     }

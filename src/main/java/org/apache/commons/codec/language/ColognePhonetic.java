@@ -32,11 +32,11 @@ import java.util.Locale;
  * The <i>K&ouml;lner Phonetik</i> is a phonetic algorithm which is optimized for the German language. It is related to
  * the well-known soundex algorithm.
  * </p>
- *
+ * <p>
  * <h2>Algorithm</h2>
- *
+ * <p>
  * <ul>
- *
+ * <p>
  * <li>
  * <h3>Step 1:</h3>
  * After preprocessing (conversion to upper case, transcription of <a
@@ -57,7 +57,7 @@ import java.util.Locale;
  * <td align="center">0</td>
  * </tr>
  * <tr>
- *
+ * <p>
  * <td>H</td>
  * <td></td>
  * <td align="center">-</td>
@@ -70,7 +70,7 @@ import java.util.Locale;
  * <tr>
  * <td>P</td>
  * <td>not before H</td>
- *
+ * <p>
  * </tr>
  * <tr>
  * <td>D, T</td>
@@ -83,7 +83,7 @@ import java.util.Locale;
  * <td rowspan="2" align="center">3</td>
  * </tr>
  * <tr>
- *
+ * <p>
  * <td>P</td>
  * <td>before H</td>
  * </tr>
@@ -95,7 +95,7 @@ import java.util.Locale;
  * <tr>
  * <td rowspan="2">C</td>
  * <td>at onset before A, H, K, L, O, Q, R, U, X</td>
- *
+ * <p>
  * </tr>
  * <tr>
  * <td>before A, H, K, O, Q, U, X except after S, Z</td>
@@ -108,7 +108,7 @@ import java.util.Locale;
  * <tr>
  * <td>L</td>
  * <td></td>
- *
+ * <p>
  * <td align="center">5</td>
  * </tr>
  * <tr>
@@ -121,7 +121,7 @@ import java.util.Locale;
  * <td></td>
  * <td align="center">7</td>
  * </tr>
- *
+ * <p>
  * <tr>
  * <td>S, Z</td>
  * <td></td>
@@ -134,7 +134,7 @@ import java.util.Locale;
  * <tr>
  * <td>at onset except before A, H, K, L, O, Q, R, U, X</td>
  * </tr>
- *
+ * <p>
  * <tr>
  * <td>not before A, H, K, O, Q, U, X</td>
  * </tr>
@@ -148,30 +148,30 @@ import java.util.Locale;
  * </tr>
  * </tbody>
  * </table>
- *
+ * <p>
  * <h4>Example:</h4>
- *
+ * <p>
  * <code>"M</code>&uuml;<code>ller-L</code>&uuml;
  * <code>denscheidt" =&gt; "MULLERLUDENSCHEIDT" =&gt; "6005507500206880022"</code>
- *
+ * <p>
  * </li>
- *
+ * <p>
  * <li>
  * <h3>Step 2:</h3>
  * Collapse of all multiple consecutive code digits.
  * <h4>Example:</h4>
  * <code>"6005507500206880022" =&gt; "6050750206802"</code></li>
- *
+ * <p>
  * <li>
  * <h3>Step 3:</h3>
  * Removal of all codes "0" except at the beginning. This means that two or more identical consecutive digits can occur
  * if they occur after removing the "0" digits.
- *
+ * <p>
  * <h4>Example:</h4>
  * <code>"6050750206802" =&gt; "65752682"</code></li>
- *
+ * <p>
  * </ul>
- *
+ * <p>
  * <p>
  * This class is thread-safe.
  * </p>
@@ -179,7 +179,8 @@ import java.util.Locale;
  * @see <a href="http://de.wikipedia.org/wiki/K%C3%B6lner_Phonetik">Wikipedia (de): K&ouml;lner Phonetik (in German)</a>
  * @since 1.5
  */
-public class ColognePhonetic implements StringEncoder {
+public class ColognePhonetic implements StringEncoder
+{
 
     // Predefined char arrays for better performance and less GC load
     private static final char[] AEIJOUY = new char[] { 'A', 'E', 'I', 'J', 'O', 'U', 'Y' };
@@ -197,80 +198,96 @@ public class ColognePhonetic implements StringEncoder {
      * However, it is not shared between threads, as it is constructed on demand
      * by the method {@link ColognePhonetic#colognePhonetic(String)}
      */
-    private abstract class CologneBuffer {
+    private abstract class CologneBuffer
+    {
 
         protected final char[] data;
 
         protected int length = 0;
 
-        public CologneBuffer(final char[] data) {
+        public CologneBuffer(final char[] data)
+        {
             this.data = data;
             this.length = data.length;
         }
 
-        public CologneBuffer(final int buffSize) {
+        public CologneBuffer(final int buffSize)
+        {
             this.data = new char[buffSize];
             this.length = 0;
         }
 
         protected abstract char[] copyData(int start, final int length);
 
-        public int length() {
+        public int length()
+        {
             return length;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return new String(copyData(0, length));
         }
     }
 
-    private class CologneOutputBuffer extends CologneBuffer {
+    private class CologneOutputBuffer extends CologneBuffer
+    {
 
-        public CologneOutputBuffer(final int buffSize) {
+        public CologneOutputBuffer(final int buffSize)
+        {
             super(buffSize);
         }
 
-        public void addRight(final char chr) {
+        public void addRight(final char chr)
+        {
             data[length] = chr;
             length++;
         }
 
         @Override
-        protected char[] copyData(final int start, final int length) {
+        protected char[] copyData(final int start, final int length)
+        {
             final char[] newData = new char[length];
             System.arraycopy(data, start, newData, 0, length);
             return newData;
         }
     }
 
-    private class CologneInputBuffer extends CologneBuffer {
+    private class CologneInputBuffer extends CologneBuffer
+    {
 
-        public CologneInputBuffer(final char[] data) {
+        public CologneInputBuffer(final char[] data)
+        {
             super(data);
         }
 
-        public void addLeft(final char ch) {
+        public void addLeft(final char ch)
+        {
             length++;
             data[getNextPos()] = ch;
         }
 
         @Override
-        protected char[] copyData(final int start, final int length) {
+        protected char[] copyData(final int start, final int length)
+        {
             final char[] newData = new char[length];
             System.arraycopy(data, data.length - this.length + start, newData, 0, length);
             return newData;
         }
 
-        public char getNextChar() {
+        public char getNextChar()
+        {
             return data[getNextPos()];
         }
 
-        protected int getNextPos() {
+        protected int getNextPos()
+        {
             return data.length - length;
         }
 
-        public char removeNext() {
+        public char removeNext()
+        {
             final char ch = getNextChar();
             length--;
             return ch;
@@ -286,19 +303,21 @@ public class ColognePhonetic implements StringEncoder {
      * <li>small sharp s, German</li>
      * </ul>
      */
-    private static final char[][] PREPROCESS_MAP = new char[][]{
-        {'\u00C4', 'A'}, // capital a, umlaut mark
-        {'\u00DC', 'U'}, // capital u, umlaut mark
-        {'\u00D6', 'O'}, // capital o, umlaut mark
-        {'\u00DF', 'S'} // small sharp s, German
+    private static final char[][] PREPROCESS_MAP = new char[][] { { '\u00C4', 'A' }, // capital a, umlaut mark
+            { '\u00DC', 'U' }, // capital u, umlaut mark
+            { '\u00D6', 'O' }, // capital o, umlaut mark
+            { '\u00DF', 'S' } // small sharp s, German
     };
 
     /*
      * Returns whether the array contains the key, or not.
      */
-    private static boolean arrayContains(final char[] arr, final char key) {
-        for (final char element : arr) {
-            if (element == key) {
+    private static boolean arrayContains(final char[] arr, final char key)
+    {
+        for (final char element : arr)
+        {
+            if (element == key)
+            {
                 return true;
             }
         }
@@ -316,8 +335,10 @@ public class ColognePhonetic implements StringEncoder {
      * @param text The source text to encode
      * @return the corresponding encoding according to the <i>K&ouml;lner Phonetik</i> algorithm
      */
-    public String colognePhonetic(String text) {
-        if (text == null) {
+    public String colognePhonetic(String text)
+    {
+        if (text == null)
+        {
             return null;
         }
 
@@ -335,63 +356,105 @@ public class ColognePhonetic implements StringEncoder {
 
         int rightLength = input.length();
 
-        while (rightLength > 0) {
+        while (rightLength > 0)
+        {
             chr = input.removeNext();
 
-            if ((rightLength = input.length()) > 0) {
+            if ((rightLength = input.length()) > 0)
+            {
                 nextChar = input.getNextChar();
-            } else {
+            }
+            else
+            {
                 nextChar = '-';
             }
 
-            if (arrayContains(AEIJOUY, chr)) {
+            if (arrayContains(AEIJOUY, chr))
+            {
                 code = '0';
-            } else if (chr == 'H' || chr < 'A' || chr > 'Z') {
-                if (lastCode == '/') {
+            }
+            else if (chr == 'H' || chr < 'A' || chr > 'Z')
+            {
+                if (lastCode == '/')
+                {
                     continue;
                 }
                 code = '-';
-            } else if (chr == 'B' || (chr == 'P' && nextChar != 'H')) {
+            }
+            else if (chr == 'B' || (chr == 'P' && nextChar != 'H'))
+            {
                 code = '1';
-            } else if ((chr == 'D' || chr == 'T') && !arrayContains(SCZ, nextChar)) {
+            }
+            else if ((chr == 'D' || chr == 'T') && !arrayContains(SCZ, nextChar))
+            {
                 code = '2';
-            } else if (arrayContains(WFPV, chr)) {
+            }
+            else if (arrayContains(WFPV, chr))
+            {
                 code = '3';
-            } else if (arrayContains(GKQ, chr)) {
+            }
+            else if (arrayContains(GKQ, chr))
+            {
                 code = '4';
-            } else if (chr == 'X' && !arrayContains(CKQ, lastChar)) {
+            }
+            else if (chr == 'X' && !arrayContains(CKQ, lastChar))
+            {
                 code = '4';
                 input.addLeft('S');
                 rightLength++;
-            } else if (chr == 'S' || chr == 'Z') {
+            }
+            else if (chr == 'S' || chr == 'Z')
+            {
                 code = '8';
-            } else if (chr == 'C') {
-                if (lastCode == '/') {
-                    if (arrayContains(AHKLOQRUX, nextChar)) {
+            }
+            else if (chr == 'C')
+            {
+                if (lastCode == '/')
+                {
+                    if (arrayContains(AHKLOQRUX, nextChar))
+                    {
                         code = '4';
-                    } else {
+                    }
+                    else
+                    {
                         code = '8';
                     }
-                } else {
-                    if (arrayContains(SZ, lastChar) || !arrayContains(AHOUKQX, nextChar)) {
+                }
+                else
+                {
+                    if (arrayContains(SZ, lastChar) || !arrayContains(AHOUKQX, nextChar))
+                    {
                         code = '8';
-                    } else {
+                    }
+                    else
+                    {
                         code = '4';
                     }
                 }
-            } else if (arrayContains(TDX, chr)) {
+            }
+            else if (arrayContains(TDX, chr))
+            {
                 code = '8';
-            } else if (chr == 'R') {
+            }
+            else if (chr == 'R')
+            {
                 code = '7';
-            } else if (chr == 'L') {
+            }
+            else if (chr == 'L')
+            {
                 code = '5';
-            } else if (chr == 'M' || chr == 'N') {
+            }
+            else if (chr == 'M' || chr == 'N')
+            {
                 code = '6';
-            } else {
+            }
+            else
+            {
                 code = chr;
             }
 
-            if (code != '-' && (lastCode != code && (code != '0' || lastCode == '/') || code < '0' || code > '8')) {
+            if (code != '-' && (lastCode != code && (code != '0' || lastCode == '/') || code < '0' || code > '8'))
+            {
                 output.addRight(code);
             }
 
@@ -402,38 +465,47 @@ public class ColognePhonetic implements StringEncoder {
     }
 
     @Override
-    public Object encode(final Object object) throws EncoderException {
-        if (!(object instanceof String)) {
+    public Object encode(final Object object) throws EncoderException
+    {
+        if (!(object instanceof String))
+        {
             throw new EncoderException("This method's parameter was expected to be of the type " +
-                String.class.getName() +
-                ". But actually it was of the type " +
-                object.getClass().getName() +
-                ".");
+                    String.class.getName() +
+                    ". But actually it was of the type " +
+                    object.getClass().getName() +
+                    ".");
         }
         return encode((String) object);
     }
 
     @Override
-    public String encode(final String text) {
+    public String encode(final String text)
+    {
         return colognePhonetic(text);
     }
 
-    public boolean isEncodeEqual(final String text1, final String text2) {
+    public boolean isEncodeEqual(final String text1, final String text2)
+    {
         return colognePhonetic(text1).equals(colognePhonetic(text2));
     }
 
     /**
      * Converts the string to upper case and replaces germanic characters as defined in {@link #PREPROCESS_MAP}.
      */
-    private String preprocess(String text) {
+    private String preprocess(String text)
+    {
         text = text.toUpperCase(Locale.GERMAN);
 
         final char[] chrs = text.toCharArray();
 
-        for (int index = 0; index < chrs.length; index++) {
-            if (chrs[index] > 'Z') {
-                for (final char[] element : PREPROCESS_MAP) {
-                    if (chrs[index] == element[0]) {
+        for (int index = 0; index < chrs.length; index++)
+        {
+            if (chrs[index] > 'Z')
+            {
+                for (final char[] element : PREPROCESS_MAP)
+                {
+                    if (chrs[index] == element[0])
+                    {
                         chrs[index] = element[1];
                         break;
                     }

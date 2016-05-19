@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,14 +35,15 @@ import java.util.Map;
 
 /**
  * A node that represents a zero operand instruction.
- * 
+ *
  * @author Eric Bruneton
  */
-public class InsnNode extends AbstractInsnNode {
+public class InsnNode extends AbstractInsnNode
+{
 
     /**
      * Constructs a new {@link InsnNode}.
-     * 
+     *
      * @param opcode
      *            the opcode of the instruction to be constructed. This opcode
      *            must be NOP, ACONST_NULL, ICONST_M1, ICONST_0, ICONST_1,
@@ -60,29 +61,33 @@ public class InsnNode extends AbstractInsnNode {
      *            DRETURN, ARETURN, RETURN, ARRAYLENGTH, ATHROW, MONITORENTER,
      *            or MONITOREXIT.
      */
-    public InsnNode(final int opcode) {
+    public InsnNode(final int opcode)
+    {
         super(opcode);
     }
 
     @Override
-    public int type() {
+    public int type()
+    {
         return INSN;
     }
 
     /**
      * Makes the given visitor visit this instruction.
-     * 
+     *
      * @param mv
      *            a method visitor.
      */
     @Override
-    public void accept(final MethodVisitor mv) {
+    public void accept(final MethodVisitor mv)
+    {
         mv.visitInsn(opcode);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
+    {
         return new InsnNode(opcode).cloneAnnotations(this);
     }
 }

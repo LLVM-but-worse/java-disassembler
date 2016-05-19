@@ -48,25 +48,31 @@ import java.util.zip.ZipOutputStream;
  * @author DeathMarine
  */
 
-public class ProcyonDecompiler extends Decompiler {
+public class ProcyonDecompiler extends Decompiler
+{
 
-    public ProcyonDecompiler() {
-        for (Settings setting : Settings.values()) {
+    public ProcyonDecompiler()
+    {
+        for (Settings setting : Settings.values())
+        {
             settings.registerSetting(setting);
         }
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "Procyon";
     }
 
-    public DecompilerSettings getDecompilerSettings() {
+    public DecompilerSettings getDecompilerSettings()
+    {
         CommandLineOptions options = new CommandLineOptions();
         JCommander jCommander = new JCommander(options);
         String[] args = new String[Settings.values().length * 2];
         int index = 0;
-        for (the.bytecode.club.bytecodeviewer.DecompilerSettings.Setting setting : Settings.values()) {
+        for (the.bytecode.club.bytecodeviewer.DecompilerSettings.Setting setting : Settings.values())
+        {
             args[index++] = "--" + setting.getParam();
             args[index++] = String.valueOf(getSettings().isSelected(setting));
         }
@@ -87,39 +93,54 @@ public class ProcyonDecompiler extends Decompiler {
         settings.setSimplifyMemberReferences(options.getSimplifyMemberReferences());
         settings.setDisableForEachTransforms(options.getDisableForEachTransforms());
         settings.setTypeLoader(new InputTypeLoader());
-        if (options.isRawBytecode()) {
+        if (options.isRawBytecode())
+        {
             settings.setLanguage(Languages.bytecode());
-        } else if (options.isBytecodeAst()) {
-            settings.setLanguage(options.isUnoptimized() ? Languages.bytecodeAstUnoptimized() : Languages.bytecodeAst());
+        }
+        else if (options.isBytecodeAst())
+        {
+            settings.setLanguage(
+                    options.isUnoptimized() ? Languages.bytecodeAstUnoptimized() : Languages.bytecodeAst());
         }
         return settings;
     }
 
     @Override
-    public String decompileClassNode(final ClassNode cn, byte[] b) {
-        try {
-            if (cn.version < 49) {
+    public String decompileClassNode(final ClassNode cn, byte[] b)
+    {
+        try
+        {
+            if (cn.version < 49)
+            {
                 b = fixBytes(b);
             }
             final byte[] bytesToUse = b;
             final Map<String, byte[]> loadedClasses = BytecodeViewer.getLoadedBytes();
             DecompilerSettings settings = getDecompilerSettings();
-            MetadataSystem metadataSystem = new MetadataSystem(new ITypeLoader() {
+            MetadataSystem metadataSystem = new MetadataSystem(new ITypeLoader()
+            {
                 private InputTypeLoader backLoader = new InputTypeLoader();
 
                 @Override
-                public boolean tryLoadType(String s, Buffer buffer) {
-                    if (s.equals(cn.name)) {
+                public boolean tryLoadType(String s, Buffer buffer)
+                {
+                    if (s.equals(cn.name))
+                    {
                         buffer.putByteArray(bytesToUse, 0, bytesToUse.length);
                         buffer.position(0);
                         return true;
-                    } else {
+                    }
+                    else
+                    {
                         byte[] toUse = loadedClasses.get(s + ".class");
-                        if (toUse != null) {
+                        if (toUse != null)
+                        {
                             buffer.putByteArray(toUse, 0, toUse.length);
                             buffer.position(0);
                             return true;
-                        } else {
+                        }
+                        else
+                        {
                             return backLoader.tryLoadType(s, buffer);
                         }
                     }
@@ -130,28 +151,36 @@ public class ProcyonDecompiler extends Decompiler {
             decompilationOptions.setSettings(DecompilerSettings.javaDefaults());
             decompilationOptions.setFullDecompilation(true);
             TypeDefinition resolvedType = null;
-            if (type == null || ((resolvedType = type.resolve()) == null)) {
+            if (type == null || ((resolvedType = type.resolve()) == null))
+            {
                 throw new Exception("Unable to resolve type.");
             }
             StringWriter stringwriter = new StringWriter();
             settings.getLanguage().decompileType(resolvedType, new PlainTextOutput(stringwriter), decompilationOptions);
             String decompiledSource = stringwriter.toString();
             return decompiledSource;
-        } catch (Throwable e) {
+        }
+        catch (Throwable e)
+        {
             return parseException(e);
         }
     }
 
     @Override
-    public void decompileToZip(String zipName) {
+    public void decompileToZip(String zipName)
+    {
         File tempZip = new File(BytecodeViewer.tempDir, "temp.jar");
-        if (tempZip.exists()) tempZip.delete();
+        if (tempZip.exists())
+            tempZip.delete();
 
         JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), tempZip.getAbsolutePath());
 
-        try {
+        try
+        {
             doSaveJarDecompiled(tempZip, new File(zipName));
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             handleException(e);
         }
     }
@@ -159,11 +188,13 @@ public class ProcyonDecompiler extends Decompiler {
     /**
      * @author DeathMarine
      */
-    private void doSaveJarDecompiled(File inFile, File outFile) throws Exception {
+    private void doSaveJarDecompiled(File inFile, File outFile) throws Exception
+    {
         try (JarFile jfile = new JarFile(inFile);
              FileOutputStream dest = new FileOutputStream(outFile);
              BufferedOutputStream buffDest = new BufferedOutputStream(dest);
-             ZipOutputStream out = new ZipOutputStream(buffDest);) {
+             ZipOutputStream out = new ZipOutputStream(buffDest);)
+        {
             byte data[] = new byte[1024];
             DecompilerSettings settings = getDecompilerSettings();
             MetadataSystem metadataSystem = new MetadataSystem(new JarTypeLoader(jfile));
@@ -174,51 +205,73 @@ public class ProcyonDecompiler extends Decompiler {
 
             Enumeration<JarEntry> ent = jfile.entries();
             Set<JarEntry> history = new HashSet<JarEntry>();
-            while (ent.hasMoreElements()) {
+            while (ent.hasMoreElements())
+            {
                 JarEntry entry = ent.nextElement();
-                if (entry.getName().endsWith(".class")) {
+                if (entry.getName().endsWith(".class"))
+                {
                     JarEntry etn = new JarEntry(entry.getName().replace(".class", ".java"));
-                    if (history.add(etn)) {
+                    if (history.add(etn))
+                    {
                         out.putNextEntry(etn);
-                        try {
+                        try
+                        {
                             String internalName = StringUtilities.removeRight(entry.getName(), ".class");
                             TypeReference type = metadataSystem.lookupType(internalName);
                             TypeDefinition resolvedType = null;
-                            if ((type == null) || ((resolvedType = type.resolve()) == null)) {
+                            if ((type == null) || ((resolvedType = type.resolve()) == null))
+                            {
                                 throw new Exception("Unable to resolve type.");
                             }
                             Writer writer = new OutputStreamWriter(out);
                             settings.getLanguage().decompileType(resolvedType, new PlainTextOutput(writer), decompilationOptions);
                             writer.flush();
-                        } finally {
+                        }
+                        finally
+                        {
                             out.closeEntry();
                         }
                     }
-                } else {
-                    try {
+                }
+                else
+                {
+                    try
+                    {
                         JarEntry etn = new JarEntry(entry.getName());
-                        if (history.add(etn)) continue;
+                        if (history.add(etn))
+                            continue;
                         history.add(etn);
                         out.putNextEntry(etn);
-                        try {
+                        try
+                        {
                             InputStream in = jfile.getInputStream(entry);
-                            if (in != null) {
-                                try {
+                            if (in != null)
+                            {
+                                try
+                                {
                                     int count;
-                                    while ((count = in.read(data, 0, 1024)) != -1) {
+                                    while ((count = in.read(data, 0, 1024)) != -1)
+                                    {
                                         out.write(data, 0, count);
                                     }
-                                } finally {
+                                }
+                                finally
+                                {
                                     in.close();
                                 }
                             }
-                        } finally {
+                        }
+                        finally
+                        {
                             out.closeEntry();
                         }
-                    } catch (ZipException ze) {
+                    }
+                    catch (ZipException ze)
+                    {
                         // some jar-s contain duplicate pom.xml entries: ignore
                         // it
-                        if (!ze.getMessage().contains("duplicate")) {
+                        if (!ze.getMessage().contains("duplicate"))
+                        {
                             throw ze;
                         }
                     }
@@ -227,7 +280,8 @@ public class ProcyonDecompiler extends Decompiler {
         }
     }
 
-    public enum Settings implements the.bytecode.club.bytecodeviewer.DecompilerSettings.Setting {
+    public enum Settings implements the.bytecode.club.bytecodeviewer.DecompilerSettings.Setting
+    {
         SHOW_DEBUG_LINE_NUMBERS("debug-line-numbers", "Show Debug Line Numbers"),
         SIMPLIFY_MEMBER_REFERENCES("simplify-member-references", "Simplify Member References"),
         MERGE_VARIABLES("merge-variables", "Merge Variables"),
@@ -245,25 +299,30 @@ public class ProcyonDecompiler extends Decompiler {
         private String param;
         private boolean on;
 
-        Settings(String param, String name) {
+        Settings(String param, String name)
+        {
             this(param, name, false);
         }
 
-        Settings(String param, String name, boolean on) {
+        Settings(String param, String name, boolean on)
+        {
             this.name = name;
             this.param = param;
             this.on = on;
         }
 
-        public String getText() {
+        public String getText()
+        {
             return name;
         }
 
-        public boolean isDefaultOn() {
+        public boolean isDefaultOn()
+        {
             return on;
         }
 
-        public String getParam() {
+        public String getParam()
+        {
             return param;
         }
     }

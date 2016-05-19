@@ -12,41 +12,66 @@ import static org.objectweb.asm.tree.AbstractInsnNode.*;
  * @author Tyler Sedlar
  * @author Bibl
  */
-public class Assembly {
+public class Assembly
+{
 
-    public static final String[] OPCODES = {"NOP", "ACONST_NULL", "ICONST_M1", "ICONST_0", "ICONST_1", "ICONST_2", "ICONST_3", "ICONST_4", "ICONST_5", "LCONST_0", "LCONST_1", "FCONST_0", "FCONST_1", "FCONST_2", "DCONST_0", "DCONST_1", "BIPUSH", "SIPUSH", "LDC", "", "", "ILOAD", "LLOAD", "FLOAD", "DLOAD", "ALOAD", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "IALOAD", "LALOAD", "FALOAD", "DALOAD", "AALOAD", "BALOAD", "CALOAD", "SALOAD", "ISTORE", "LSTORE", "FSTORE", "DSTORE", "ASTORE", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "IASTORE", "LASTORE", "FASTORE", "DASTORE", "AASTORE", "BASTORE", "CASTORE", "SASTORE", "POP", "POP2", "DUP", "DUP_X1", "DUP_X2", "DUP2", "DUP2_X1", "DUP2_X2", "SWAP", "IADD", "LADD", "FADD", "DADD", "ISUB", "LSUB", "FSUB", "DSUB", "IMUL", "LMUL", "FMUL", "DMUL", "IDIV", "LDIV", "FDIV", "DDIV", "IREM", "LREM", "FREM", "DREM", "INEG", "LNEG", "FNEG", "DNEG", "ISHL", "LSHL", "ISHR", "LSHR", "IUSHR", "LUSHR", "IAND", "LAND", "IOR", "LOR", "IXOR", "LXOR", "IINC", "I2L", "I2F", "I2D", "L2I", "L2F", "L2D", "F2I", "F2L", "F2D", "D2I", "D2L", "D2F", "I2B", "I2C", "I2S", "LCMP", "FCMPL", "FCMPG", "DCMPL", "DCMPG", "IFEQ", "IFNE", "IFLT", "IFGE", "IFGT", "IFLE", "IF_ICMPEQ", "IF_ICMPNE", "IF_ICMPLT", "IF_ICMPGE", "IF_ICMPGT", "IF_ICMPLE", "IF_ACMPEQ", "IF_ACMPNE", "GOTO", "JSR", "RET", "TABLESWITCH", "LOOKUPSWITCH", "IRETURN", "LRETURN", "FRETURN", "DRETURN", "ARETURN", "RETURN", "GETSTATIC", "PUTSTATIC", "GETFIELD", "PUTFIELD", "INVOKEVIRTUAL", "INVOKESPECIAL", "INVOKESTATIC", "INVOKEINTERFACE", "INVOKEDYNAMIC", "NEW", "NEWARRAY", "ANEWARRAY", "ARRAYLENGTH", "ATHROW", "CHECKCAST", "INSTANCEOF", "MONITORENTER", "MONITOREXIT", "", "MULTIANEWARRAY", "IFNULL", "IFNONNULL"};
+    public static final String[] OPCODES = { "NOP", "ACONST_NULL", "ICONST_M1", "ICONST_0", "ICONST_1", "ICONST_2",
+            "ICONST_3", "ICONST_4", "ICONST_5", "LCONST_0", "LCONST_1", "FCONST_0", "FCONST_1", "FCONST_2", "DCONST_0",
+            "DCONST_1", "BIPUSH", "SIPUSH", "LDC", "", "", "ILOAD", "LLOAD", "FLOAD", "DLOAD", "ALOAD", "", "", "", "",
+            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "IALOAD", "LALOAD", "FALOAD", "DALOAD",
+            "AALOAD", "BALOAD", "CALOAD", "SALOAD", "ISTORE", "LSTORE", "FSTORE", "DSTORE", "ASTORE", "", "", "", "",
+            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "IASTORE", "LASTORE", "FASTORE", "DASTORE",
+            "AASTORE", "BASTORE", "CASTORE", "SASTORE", "POP", "POP2", "DUP", "DUP_X1", "DUP_X2", "DUP2", "DUP2_X1",
+            "DUP2_X2", "SWAP", "IADD", "LADD", "FADD", "DADD", "ISUB", "LSUB", "FSUB", "DSUB", "IMUL", "LMUL", "FMUL",
+            "DMUL", "IDIV", "LDIV", "FDIV", "DDIV", "IREM", "LREM", "FREM", "DREM", "INEG", "LNEG", "FNEG", "DNEG",
+            "ISHL", "LSHL", "ISHR", "LSHR", "IUSHR", "LUSHR", "IAND", "LAND", "IOR", "LOR", "IXOR", "LXOR", "IINC",
+            "I2L", "I2F", "I2D", "L2I", "L2F", "L2D", "F2I", "F2L", "F2D", "D2I", "D2L", "D2F", "I2B", "I2C", "I2S",
+            "LCMP", "FCMPL", "FCMPG", "DCMPL", "DCMPG", "IFEQ", "IFNE", "IFLT", "IFGE", "IFGT", "IFLE", "IF_ICMPEQ",
+            "IF_ICMPNE", "IF_ICMPLT", "IF_ICMPGE", "IF_ICMPGT", "IF_ICMPLE", "IF_ACMPEQ", "IF_ACMPNE", "GOTO", "JSR",
+            "RET", "TABLESWITCH", "LOOKUPSWITCH", "IRETURN", "LRETURN", "FRETURN", "DRETURN", "ARETURN", "RETURN",
+            "GETSTATIC", "PUTSTATIC", "GETFIELD", "PUTFIELD", "INVOKEVIRTUAL", "INVOKESPECIAL", "INVOKESTATIC",
+            "INVOKEINTERFACE", "INVOKEDYNAMIC", "NEW", "NEWARRAY", "ANEWARRAY", "ARRAYLENGTH", "ATHROW", "CHECKCAST",
+            "INSTANCEOF", "MONITORENTER", "MONITOREXIT", "", "MULTIANEWARRAY", "IFNULL", "IFNONNULL" };
     public static final int LONGEST_OPCODE_NAME = getLongest(OPCODES);
-    
-    public static int getLongest(String[] strings) {
-    	String longest = "";
-    	for(String s : strings) {
-    		if(s.length() > longest.length())
-    			longest = s;
-    	}
-    	return longest.length();
+
+    public static int getLongest(String[] strings)
+    {
+        String longest = "";
+        for (String s : strings)
+        {
+            if (s.length() > longest.length())
+                longest = s;
+        }
+        return longest.length();
     }
-    
-    public static String pad(String s, int size) {
-    	if(s.length() >= size)
-    		return s;
-    	StringBuilder sb = new StringBuilder(s);
-    	int diff = size - s.length();
-    	for(int i=0; i < diff; i++) {
-    		sb.append(" ");
-    	}
-    	return sb.toString();
+
+    public static String pad(String s, int size)
+    {
+        if (s.length() >= size)
+            return s;
+        StringBuilder sb = new StringBuilder(s);
+        int diff = size - s.length();
+        for (int i = 0; i < diff; i++)
+        {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
-    
-    public static boolean instructionsEqual(AbstractInsnNode insn1, AbstractInsnNode insn2) {
-        if (insn1 == insn2) {
+
+    public static boolean instructionsEqual(AbstractInsnNode insn1, AbstractInsnNode insn2)
+    {
+        if (insn1 == insn2)
+        {
             return true;
         }
         if (insn1 == null || insn2 == null || insn1.type() != insn2.type() ||
-                insn1.opcode() != insn2.opcode()) {
+                insn1.opcode() != insn2.opcode())
+        {
             return false;
         }
         int size;
-        switch (insn1.type()) {
+        switch (insn1.type())
+        {
             case INSN:
                 return true;
             case INT_INSN:
@@ -73,8 +98,8 @@ public class Assembly {
                 return instructionsEqual(jin1.label, jin2.label);
             case LABEL:
                 Label label1 = ((LabelNode) insn1).getLabel(), label2 = ((LabelNode) insn2).getLabel();
-                return label1 == null ? label2 == null : label1.info == null ? label2.info == null :
-                        label1.info.equals(label2.info);
+                return label1 == null ? label2 == null
+                        : label1.info == null ? label2.info == null : label1.info.equals(label2.info);
             case LDC_INSN:
                 LdcInsnNode lin1 = (LdcInsnNode) insn1, lin2 = (LdcInsnNode) insn2;
                 return lin1.cst.equals(lin2.cst);
@@ -84,11 +109,14 @@ public class Assembly {
             case TABLESWITCH_INSN:
                 TableSwitchInsnNode tsin1 = (TableSwitchInsnNode) insn1, tsin2 = (TableSwitchInsnNode) insn2;
                 size = tsin1.labels.size();
-                if (size != tsin2.labels.size()) {
+                if (size != tsin2.labels.size())
+                {
                     return false;
                 }
-                for (int i = 0; i < size; i++) {
-                    if (!instructionsEqual(tsin1.labels.get(i), tsin2.labels.get(i))) {
+                for (int i = 0; i < size; i++)
+                {
+                    if (!instructionsEqual(tsin1.labels.get(i), tsin2.labels.get(i)))
+                    {
                         return false;
                     }
                 }
@@ -96,11 +124,14 @@ public class Assembly {
             case LOOKUPSWITCH_INSN:
                 LookupSwitchInsnNode lsin1 = (LookupSwitchInsnNode) insn1, lsin2 = (LookupSwitchInsnNode) insn2;
                 size = lsin1.labels.size();
-                if (size != lsin2.labels.size()) {
+                if (size != lsin2.labels.size())
+                {
                     return false;
                 }
-                for (int i = 0; i < size; i++) {
-                    if (!instructionsEqual(lsin1.labels.get(i), lsin2.labels.get(i))) {
+                for (int i = 0; i < size; i++)
+                {
+                    if (!instructionsEqual(lsin1.labels.get(i), lsin2.labels.get(i)))
+                    {
                         return false;
                     }
                 }
@@ -118,32 +149,41 @@ public class Assembly {
         return false;
     }
 
-    public static boolean instructionsEqual(AbstractInsnNode[] insns, AbstractInsnNode[] insns2) {
-        if (insns == insns2) {
+    public static boolean instructionsEqual(AbstractInsnNode[] insns, AbstractInsnNode[] insns2)
+    {
+        if (insns == insns2)
+        {
             return true;
         }
-        if (insns == null || insns2 == null) {
+        if (insns == null || insns2 == null)
+        {
             return false;
         }
         int length = insns.length;
-        if (insns2.length != length) {
+        if (insns2.length != length)
+        {
             return false;
         }
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++)
+        {
             AbstractInsnNode insn1 = insns[i], insn2 = insns2[i];
-            if (!(insn1 == null ? insn2 == null : instructionsEqual(insn1, insn2))) {
+            if (!(insn1 == null ? insn2 == null : instructionsEqual(insn1, insn2)))
+            {
                 return false;
             }
         }
         return true;
     }
 
-    public static String toString(AbstractInsnNode insn) {
-        if (insn == null) {
+    public static String toString(AbstractInsnNode insn)
+    {
+        if (insn == null)
+        {
             return "null";
         }
         int op = insn.opcode();
-        if (op == -1) {
+        if (op == -1)
+        {
             return insn.toString();
         }
         StringBuilder sb = new StringBuilder();
@@ -151,8 +191,9 @@ public class Assembly {
          * TODO: maybe change the column length to the longest opcode name in the instruction set rather than
          * out of all the possible ones(statically, the longest opcode name is invokedynamic).*/
         sb.append(pad(OPCODES[op].toLowerCase(), LONGEST_OPCODE_NAME));
-        
-        switch (insn.type()) {
+
+        switch (insn.type())
+        {
             case INT_INSN:
                 sb.append(((IntInsnNode) insn).operand);
                 break;
@@ -192,11 +233,16 @@ public class Assembly {
         return sb.toString();
     }
 
-    public static void rename(Collection<ClassNode> classes, FieldNode fn, String newName) {
-        for (ClassNode node : classes) {
-            for (MethodNode mn : node.methods) {
-                for (AbstractInsnNode ain : mn.instructions.toArray()) {
-                    if (ain instanceof FieldInsnNode) {
+    public static void rename(Collection<ClassNode> classes, FieldNode fn, String newName)
+    {
+        for (ClassNode node : classes)
+        {
+            for (MethodNode mn : node.methods)
+            {
+                for (AbstractInsnNode ain : mn.instructions.toArray())
+                {
+                    if (ain instanceof FieldInsnNode)
+                    {
                         FieldInsnNode fin = (FieldInsnNode) ain;
                         if (fin.owner.equals(fn.owner.name) && fin.name.equals(fn.name))
                             fin.name = newName;
@@ -207,27 +253,36 @@ public class Assembly {
         fn.name = newName;
     }
 
-    public static void rename(Collection<ClassNode> classes, ClassNode cn, String newName) {
-        for (ClassNode node : classes) {
+    public static void rename(Collection<ClassNode> classes, ClassNode cn, String newName)
+    {
+        for (ClassNode node : classes)
+        {
             if (node.superName.equals(cn.name))
                 node.superName = newName;
-            if (node.interfaces.contains(cn.name)) {
+            if (node.interfaces.contains(cn.name))
+            {
                 node.interfaces.remove(cn.name);
                 node.interfaces.add(newName);
             }
-            for (FieldNode fn : node.fields) {
+            for (FieldNode fn : node.fields)
+            {
                 if (fn.desc.endsWith("L" + cn.name + ";"))
                     fn.desc = fn.desc.replace("L" + cn.name + ";", "L" + newName + ";");
             }
-            for (MethodNode mn : node.methods) {
+            for (MethodNode mn : node.methods)
+            {
                 if (mn.desc.contains("L" + cn.name + ";"))
                     mn.desc = mn.desc.replaceAll("L" + cn.name + ";", "L" + newName + ";");
-                for (AbstractInsnNode ain : mn.instructions.toArray()) {
-                    if (ain instanceof FieldInsnNode) {
+                for (AbstractInsnNode ain : mn.instructions.toArray())
+                {
+                    if (ain instanceof FieldInsnNode)
+                    {
                         FieldInsnNode fin = (FieldInsnNode) ain;
                         if (fin.owner.equals(cn.name))
                             fin.owner = newName;
-                    } else if (ain instanceof MethodInsnNode) {
+                    }
+                    else if (ain instanceof MethodInsnNode)
+                    {
                         MethodInsnNode min = (MethodInsnNode) ain;
                         if (min.owner.equals(cn.name))
                             min.owner = newName;

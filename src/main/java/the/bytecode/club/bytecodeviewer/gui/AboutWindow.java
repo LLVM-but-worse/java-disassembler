@@ -30,11 +30,13 @@ import java.awt.*;
  *
  * @author Konloch
  */
-public class AboutWindow extends JFrame {
+public class AboutWindow extends JFrame
+{
     private static final long serialVersionUID = -8230501978224923296L;
     private JTextArea textArea = new JTextArea();
 
-    public AboutWindow() {
+    public AboutWindow()
+    {
         this.setIconImages(Resources.iconList);
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         setType(Type.UTILITY);
@@ -51,7 +53,8 @@ public class AboutWindow extends JFrame {
     }
 
     @Override
-    public void setVisible(boolean b) {
+    public void setVisible(boolean b)
+    {
         super.setVisible(b);
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
         textArea.setText("Bytecode Viewer " + BytecodeViewer.version + " is an open source program developed and maintained by Konloch (konloch@gmail.com) and samczsun 100% free and open sourced licensed under GPL v3 CopyLeft" + BytecodeViewer.nl +
@@ -68,7 +71,7 @@ public class AboutWindow extends JFrame {
                 "	BCV Krakatau: v" + BytecodeViewer.krakatauVersion + BytecodeViewer.nl +
                 "	Krakatau Dir: " + BytecodeViewer.krakatauDirectory.getAbsolutePath() + BytecodeViewer.nl +
                 "	BCV Enjarify: v" + BytecodeViewer.enjarifyVersion + BytecodeViewer.nl +
-                "	Enjarify Dir: " + BytecodeViewer.enjarifyDirectory.getAbsolutePath()+ BytecodeViewer.nl + BytecodeViewer.nl +
+                "	Enjarify Dir: " + BytecodeViewer.enjarifyDirectory.getAbsolutePath() + BytecodeViewer.nl + BytecodeViewer.nl +
                 "Command Line Input:" + BytecodeViewer.nl +
                 "	-help                         Displays the help menu" + BytecodeViewer.nl +
                 "	-list                         Displays the available decompilers" + BytecodeViewer.nl +

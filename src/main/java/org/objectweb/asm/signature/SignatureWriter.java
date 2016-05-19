@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,11 +33,12 @@ import org.objectweb.asm.Opcodes;
 
 /**
  * A signature visitor that generates signatures in string format.
- * 
+ *
  * @author Thomas Hallgren
  * @author Eric Bruneton
  */
-public class SignatureWriter extends SignatureVisitor {
+public class SignatureWriter extends SignatureVisitor
+{
 
     /**
      * Buffer used to construct the signature.
@@ -65,7 +66,8 @@ public class SignatureWriter extends SignatureVisitor {
     /**
      * Constructs a new {@link SignatureWriter} object.
      */
-    public SignatureWriter() {
+    public SignatureWriter()
+    {
         super(Opcodes.ASM5);
     }
 
@@ -74,8 +76,10 @@ public class SignatureWriter extends SignatureVisitor {
     // ------------------------------------------------------------------------
 
     @Override
-    public void visitFormalTypeParameter(final String name) {
-        if (!hasFormals) {
+    public void visitFormalTypeParameter(final String name)
+    {
+        if (!hasFormals)
+        {
             hasFormals = true;
             buf.append('<');
         }
@@ -84,31 +88,37 @@ public class SignatureWriter extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitClassBound() {
+    public SignatureVisitor visitClassBound()
+    {
         return this;
     }
 
     @Override
-    public SignatureVisitor visitInterfaceBound() {
+    public SignatureVisitor visitInterfaceBound()
+    {
         buf.append(':');
         return this;
     }
 
     @Override
-    public SignatureVisitor visitSuperclass() {
+    public SignatureVisitor visitSuperclass()
+    {
         endFormals();
         return this;
     }
 
     @Override
-    public SignatureVisitor visitInterface() {
+    public SignatureVisitor visitInterface()
+    {
         return this;
     }
 
     @Override
-    public SignatureVisitor visitParameterType() {
+    public SignatureVisitor visitParameterType()
+    {
         endFormals();
-        if (!hasParameters) {
+        if (!hasParameters)
+        {
             hasParameters = true;
             buf.append('(');
         }
@@ -116,9 +126,11 @@ public class SignatureWriter extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitReturnType() {
+    public SignatureVisitor visitReturnType()
+    {
         endFormals();
-        if (!hasParameters) {
+        if (!hasParameters)
+        {
             buf.append('(');
         }
         buf.append(')');
@@ -126,38 +138,44 @@ public class SignatureWriter extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitExceptionType() {
+    public SignatureVisitor visitExceptionType()
+    {
         buf.append('^');
         return this;
     }
 
     @Override
-    public void visitBaseType(final char descriptor) {
+    public void visitBaseType(final char descriptor)
+    {
         buf.append(descriptor);
     }
 
     @Override
-    public void visitTypeVariable(final String name) {
+    public void visitTypeVariable(final String name)
+    {
         buf.append('T');
         buf.append(name);
         buf.append(';');
     }
 
     @Override
-    public SignatureVisitor visitArrayType() {
+    public SignatureVisitor visitArrayType()
+    {
         buf.append('[');
         return this;
     }
 
     @Override
-    public void visitClassType(final String name) {
+    public void visitClassType(final String name)
+    {
         buf.append('L');
         buf.append(name);
         argumentStack *= 2;
     }
 
     @Override
-    public void visitInnerClassType(final String name) {
+    public void visitInnerClassType(final String name)
+    {
         endArguments();
         buf.append('.');
         buf.append(name);
@@ -165,8 +183,10 @@ public class SignatureWriter extends SignatureVisitor {
     }
 
     @Override
-    public void visitTypeArgument() {
-        if (argumentStack % 2 == 0) {
+    public void visitTypeArgument()
+    {
+        if (argumentStack % 2 == 0)
+        {
             ++argumentStack;
             buf.append('<');
         }
@@ -174,30 +194,35 @@ public class SignatureWriter extends SignatureVisitor {
     }
 
     @Override
-    public SignatureVisitor visitTypeArgument(final char wildcard) {
-        if (argumentStack % 2 == 0) {
+    public SignatureVisitor visitTypeArgument(final char wildcard)
+    {
+        if (argumentStack % 2 == 0)
+        {
             ++argumentStack;
             buf.append('<');
         }
-        if (wildcard != '=') {
+        if (wildcard != '=')
+        {
             buf.append(wildcard);
         }
         return this;
     }
 
     @Override
-    public void visitEnd() {
+    public void visitEnd()
+    {
         endArguments();
         buf.append(';');
     }
 
     /**
      * Returns the signature that was built by this signature writer.
-     * 
+     *
      * @return the signature that was built by this signature writer.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return buf.toString();
     }
 
@@ -208,8 +233,10 @@ public class SignatureWriter extends SignatureVisitor {
     /**
      * Ends the formal type parameters section of the signature.
      */
-    private void endFormals() {
-        if (hasFormals) {
+    private void endFormals()
+    {
+        if (hasFormals)
+        {
             hasFormals = false;
             buf.append('>');
         }
@@ -218,8 +245,10 @@ public class SignatureWriter extends SignatureVisitor {
     /**
      * Ends the type arguments of a class or inner class type.
      */
-    private void endArguments() {
-        if (argumentStack % 2 != 0) {
+    private void endArguments()
+    {
+        if (argumentStack % 2 != 0)
+        {
             buf.append('>');
         }
         argumentStack /= 2;

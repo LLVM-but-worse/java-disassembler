@@ -44,36 +44,45 @@ import java.util.Map;
  * @author WaterWolf
  */
 
-public class ClassViewer extends Viewer {
+public class ClassViewer extends Viewer
+{
     private static final long serialVersionUID = -8650495368920680024L;
     private List<Thread> decompileThreads = new ArrayList<>();
 
-    public void setPanes() {
-        for (int i = 0; i < BytecodeViewer.viewer.allPanes.size(); i++) {
+    public void setPanes()
+    {
+        for (int i = 0; i < BytecodeViewer.viewer.allPanes.size(); i++)
+        {
             ButtonGroup group = BytecodeViewer.viewer.allPanes.get(i);
-            for (Map.Entry<JRadioButtonMenuItem, Decompiler> entry : BytecodeViewer.viewer.allDecompilers.get(group).entrySet()) {
-                if (group.isSelected(entry.getKey().getModel())) {
+            for (Map.Entry<JRadioButtonMenuItem, Decompiler> entry : BytecodeViewer.viewer.allDecompilers.get(group).entrySet())
+            {
+                if (group.isSelected(entry.getKey().getModel()))
+                {
                     decompilers.set(i, entry.getValue());
                 }
             }
         }
     }
 
-    public boolean isPaneEditable(int pane) {
+    public boolean isPaneEditable(int pane)
+    {
         setPanes();
         ButtonGroup buttonGroup = BytecodeViewer.viewer.allPanes.get(pane);
         Decompiler selected = decompilers.get(pane);
-        if (buttonGroup != null && BytecodeViewer.viewer.editButtons.get(buttonGroup) != null && BytecodeViewer.viewer.editButtons.get(buttonGroup).get(selected)!= null && BytecodeViewer.viewer.editButtons.get(buttonGroup).get(selected).isSelected()) {
+        if (buttonGroup != null && BytecodeViewer.viewer.editButtons.get(buttonGroup) != null && BytecodeViewer.viewer.editButtons.get(buttonGroup).get(selected) != null && BytecodeViewer.viewer.editButtons.get(buttonGroup).get(selected).isSelected())
+        {
             return true;
         }
         return false;
     }
 
-    public void requestFocus(int pane) {
+    public void requestFocus(int pane)
+    {
         this.fields.get(pane).requestFocus();
     }
 
-    public void updatePane(int pane, RSyntaxTextArea text, Decompiler decompiler) {
+    public void updatePane(int pane, RSyntaxTextArea text, Decompiler decompiler)
+    {
         javas.set(pane, text);
     }
 
@@ -84,26 +93,36 @@ public class ClassViewer extends Viewer {
      * @param proportion
      * @return
      */
-    public static JSplitPane setDividerLocation(final JSplitPane splitter,
-                                                final double proportion) {
-        if (splitter.isShowing()) {
-            if (splitter.getWidth() > 0 && splitter.getHeight() > 0) {
+    public static JSplitPane setDividerLocation(final JSplitPane splitter, final double proportion)
+    {
+        if (splitter.isShowing())
+        {
+            if (splitter.getWidth() > 0 && splitter.getHeight() > 0)
+            {
                 splitter.setDividerLocation(proportion);
-            } else {
-                splitter.addComponentListener(new ComponentAdapter() {
+            }
+            else
+            {
+                splitter.addComponentListener(new ComponentAdapter()
+                {
                     @Override
-                    public void componentResized(ComponentEvent ce) {
+                    public void componentResized(ComponentEvent ce)
+                    {
                         splitter.removeComponentListener(this);
                         setDividerLocation(splitter, proportion);
                     }
                 });
             }
-        } else {
-            splitter.addHierarchyListener(new HierarchyListener() {
+        }
+        else
+        {
+            splitter.addHierarchyListener(new HierarchyListener()
+            {
                 @Override
-                public void hierarchyChanged(HierarchyEvent e) {
-                    if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0
-                            && splitter.isShowing()) {
+                public void hierarchyChanged(HierarchyEvent e)
+                {
+                    if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && splitter.isShowing())
+                    {
                         splitter.removeHierarchyListener(this);
                         setDividerLocation(splitter, proportion);
                     }
@@ -127,21 +146,24 @@ public class ClassViewer extends Viewer {
      *
      * @author Konloch
      */
-    public void search(int pane, String search, boolean next) {
-        try {
+    public void search(int pane, String search, boolean next)
+    {
+        try
+        {
             Component[] com = panels.get(pane).getComponents();
-            for (Component c : com) {
-                if (c instanceof RTextScrollPane) {
-                    RSyntaxTextArea area = (RSyntaxTextArea) ((RTextScrollPane) c)
-                            .getViewport().getComponent(0);
+            for (Component c : com)
+            {
+                if (c instanceof RTextScrollPane)
+                {
+                    RSyntaxTextArea area = (RSyntaxTextArea) ((RTextScrollPane) c).getViewport().getComponent(0);
 
-                    if (search.isEmpty()) {
+                    if (search.isEmpty())
+                    {
                         highlight(pane, area, "");
                         return;
                     }
 
-                    int startLine = area.getDocument().getDefaultRootElement()
-                            .getElementIndex(area.getCaretPosition()) + 1;
+                    int startLine = area.getDocument().getDefaultRootElement().getElementIndex(area.getCaretPosition()) + 1;
                     int currentLine = 1;
                     boolean canSearch = false;
                     String[] test = null;
@@ -153,22 +175,25 @@ public class ClassViewer extends Viewer {
                     int firstPos = -1;
                     boolean found = false;
 
-                    if (next) {
-                        for (String s : test) {
-                            if (pane == 0 && !exacts.get(0).isSelected() || pane == 1
-                                    && !exacts.get(1).isSelected()) {
+                    if (next)
+                    {
+                        for (String s : test)
+                        {
+                            if (pane == 0 && !exacts.get(0).isSelected() || pane == 1 && !exacts.get(1).isSelected())
+                            {
                                 s = s.toLowerCase();
                                 search = search.toLowerCase();
                             }
 
-                            if (currentLine == startLine) {
+                            if (currentLine == startLine)
+                            {
                                 canSearch = true;
-                            } else if (s.contains(search)) {
-                                if (canSearch) {
-                                    area.setCaretPosition(area.getDocument()
-                                            .getDefaultRootElement()
-                                            .getElement(currentLine - 1)
-                                            .getStartOffset());
+                            }
+                            else if (s.contains(search))
+                            {
+                                if (canSearch)
+                                {
+                                    area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(currentLine - 1).getStartOffset());
                                     canSearch = false;
                                     found = true;
                                 }
@@ -180,27 +205,26 @@ public class ClassViewer extends Viewer {
                             currentLine++;
                         }
 
-                        if (!found && firstPos != -1) {
-                            area.setCaretPosition(area.getDocument()
-                                    .getDefaultRootElement()
-                                    .getElement(firstPos - 1).getStartOffset());
+                        if (!found && firstPos != -1)
+                        {
+                            area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(firstPos - 1).getStartOffset());
                         }
-                    } else {
+                    }
+                    else
+                    {
                         canSearch = true;
-                        for (String s : test) {
-                            if (pane == 0 && !exacts.get(0).isSelected() || pane == 1
-                                    && !exacts.get(1).isSelected() || pane == 2
-                                    && !exacts.get(2).isSelected()) {
+                        for (String s : test)
+                        {
+                            if (pane == 0 && !exacts.get(0).isSelected() || pane == 1 && !exacts.get(1).isSelected() || pane == 2 && !exacts.get(2).isSelected())
+                            {
                                 s = s.toLowerCase();
                                 search = search.toLowerCase();
                             }
 
-                            if (s.contains(search)) {
+                            if (s.contains(search))
+                            {
                                 if (lastGoodLine != -1 && canSearch)
-                                    area.setCaretPosition(area.getDocument()
-                                            .getDefaultRootElement()
-                                            .getElement(lastGoodLine - 1)
-                                            .getStartOffset());
+                                    area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(lastGoodLine - 1).getStartOffset());
 
                                 lastGoodLine = currentLine;
 
@@ -210,62 +234,64 @@ public class ClassViewer extends Viewer {
                             currentLine++;
                         }
 
-                        if (lastGoodLine != -1
-                                && area.getDocument()
-                                .getDefaultRootElement()
-                                .getElementIndex(
-                                        area.getCaretPosition()) + 1 == startLine) {
-                            area.setCaretPosition(area.getDocument()
-                                    .getDefaultRootElement()
-                                    .getElement(lastGoodLine - 1)
-                                    .getStartOffset());
+                        if (lastGoodLine != -1 && area.getDocument().getDefaultRootElement().getElementIndex(area.getCaretPosition()) + 1 == startLine)
+                        {
+                            area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(lastGoodLine - 1).getStartOffset());
                         }
                     }
                     highlight(pane, area, search);
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
         }
     }
 
-    private DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(
-            new Color(255, 62, 150));
+    private DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(new Color(255, 62, 150));
 
-    public void highlight(int pane, JTextComponent textComp, String pattern) {
-        if (pattern.isEmpty()) {
+    public void highlight(int pane, JTextComponent textComp, String pattern)
+    {
+        if (pattern.isEmpty())
+        {
             textComp.getHighlighter().removeAllHighlights();
             return;
         }
 
-        try {
+        try
+        {
             Highlighter hilite = textComp.getHighlighter();
             hilite.removeAllHighlights();
             javax.swing.text.Document doc = textComp.getDocument();
             String text = doc.getText(0, doc.getLength());
             int pos = 0;
 
-            if ((pane == 0 && !exacts.get(0).isSelected()) || pane == 1
-                    && !exacts.get(1).isSelected() || pane == 2
-                    && !exacts.get(2).isSelected()) {
+            if ((pane == 0 && !exacts.get(0).isSelected()) || pane == 1 && !exacts.get(1).isSelected() || pane == 2 && !exacts.get(2).isSelected())
+            {
                 pattern = pattern.toLowerCase();
                 text = text.toLowerCase();
             }
 
             // Search for pattern
-            while ((pos = text.indexOf(pattern, pos)) >= 0) {
+            while ((pos = text.indexOf(pattern, pos)) >= 0)
+            {
                 // Create highlighter using private painter and apply around
                 // pattern
                 hilite.addHighlight(pos, pos + pattern.length(), painter);
                 pos += pattern.length();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
         }
     }
 
-    public ClassViewer(final String name, final String container, final ClassNode cn) {
-        for (int i = 0; i < panels.size(); i++) {
+    public ClassViewer(final String name, final String container, final ClassNode cn)
+    {
+        for (int i = 0; i < panels.size(); i++)
+        {
             final JTextField textField = fields.get(i);
             JPanel searchPanel = searches.get(i);
             JCheckBox checkBox = exacts.get(i);
@@ -279,31 +305,39 @@ public class ClassViewer extends Viewer {
             searchPanel.add(byteButtonPane, BorderLayout.WEST);
             searchPanel.add(textField, BorderLayout.CENTER);
             searchPanel.add(checkBox, BorderLayout.EAST);
-            byteSearchNext.addActionListener(new ActionListener() {
+            byteSearchNext.addActionListener(new ActionListener()
+            {
                 @Override
-                public void actionPerformed(final ActionEvent arg0) {
+                public void actionPerformed(final ActionEvent arg0)
+                {
                     search(0, textField.getText(), true);
                 }
             });
-            byteSearchPrev.addActionListener(new ActionListener() {
+            byteSearchPrev.addActionListener(new ActionListener()
+            {
                 @Override
-                public void actionPerformed(final ActionEvent arg0) {
+                public void actionPerformed(final ActionEvent arg0)
+                {
                     search(0, textField.getText(), false);
                 }
             });
-            textField.addKeyListener(new KeyListener() {
+            textField.addKeyListener(new KeyListener()
+            {
                 @Override
-                public void keyReleased(KeyEvent arg0) {
+                public void keyReleased(KeyEvent arg0)
+                {
                     if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
                         search(0, textField.getText(), true);
                 }
 
                 @Override
-                public void keyPressed(KeyEvent arg0) {
+                public void keyPressed(KeyEvent arg0)
+                {
                 }
 
                 @Override
-                public void keyTyped(KeyEvent arg0) {
+                public void keyTyped(KeyEvent arg0)
+                {
                 }
             });
         }
@@ -324,58 +358,74 @@ public class ClassViewer extends Viewer {
 
         BytecodeViewer.viewer.setIcon(true);
         startPaneUpdater(null);
-        this.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
+        this.addComponentListener(new ComponentAdapter()
+        {
+            public void componentResized(ComponentEvent e)
+            {
                 resetDivider();
             }
         });
     }
 
-    public void resetDivider() {
+    public void resetDivider()
+    {
         sp.setResizeWeight(0.5);
         if (decompilers.get(1) != null && decompilers.get(0) != null)
             sp = setDividerLocation(sp, 0.5);
         else if (decompilers.get(0) != null)
             sp = setDividerLocation(sp, 1);
-        else if (decompilers.get(1) != null) {
+        else if (decompilers.get(1) != null)
+        {
             sp.setResizeWeight(1);
             sp = setDividerLocation(sp, 0);
-        } else
+        }
+        else
             sp = setDividerLocation(sp, 0);
-        if (decompilers.get(2) != null) {
+        if (decompilers.get(2) != null)
+        {
             sp2.setResizeWeight(0.7);
             sp2 = setDividerLocation(sp2, 0.7);
             if ((decompilers.get(1) == null && decompilers.get(0) != null) || (decompilers.get(0) == null && decompilers.get(1) != null))
                 sp2 = setDividerLocation(sp2, 0.5);
             else if (decompilers.get(0) == null && decompilers.get(1) == null)
                 sp2 = setDividerLocation(sp2, 0);
-        } else {
+        }
+        else
+        {
             sp.setResizeWeight(1);
             sp2.setResizeWeight(0);
             sp2 = setDividerLocation(sp2, 1);
         }
     }
 
-    public void startPaneUpdater(final JButton button) {
+    public void startPaneUpdater(final JButton button)
+    {
         this.cn = BytecodeViewer.getClassNode(container, cn.name); //update the classnode
         setPanes();
 
-        for (JPanel jpanel : panels) {
+        for (JPanel jpanel : panels)
+        {
             jpanel.removeAll();
         }
-        for (int i = 0; i < javas.size(); i++) {
+        for (int i = 0; i < javas.size(); i++)
+        {
             javas.set(i, null);
         }
-        if (this.cn == null) {
-            for (JPanel jpanel : panels) {
+        if (this.cn == null)
+        {
+            for (JPanel jpanel : panels)
+            {
                 jpanel.add(new JLabel("This file has been removed from the reload."));
             }
             return;
         }
 
-        for (int i = 0; i < decompilers.size(); i++) {
-            if (decompilers.get(i) != null) {
-                if (decompilers.get(i) != Decompiler.HEXCODE) {
+        for (int i = 0; i < decompilers.size(); i++)
+        {
+            if (decompilers.get(i) != null)
+            {
+                if (decompilers.get(i) != Decompiler.HEXCODE)
+                {
                     panels.get(i).add(searches.get(i), BorderLayout.NORTH);
                 }
                 PaneUpdaterThread t = new PaneUpdaterThread(this, decompilers.get(i), i, panels.get(i), button);
@@ -385,18 +435,23 @@ public class ClassViewer extends Viewer {
         }
     }
 
-    public Object[] getJava() {
-        for (int i = 0; i < javas.size(); i++) {
+    public Object[] getJava()
+    {
+        for (int i = 0; i < javas.size(); i++)
+        {
             RSyntaxTextArea text = javas.get(i);
-            if (text != null) {
-                return new Object[]{cn, text.getText()};
+            if (text != null)
+            {
+                return new Object[] { cn, text.getText() };
             }
         }
         return null;
     }
 
-    public void reset() {
-        for (Thread t : decompileThreads) {
+    public void reset()
+    {
+        for (Thread t : decompileThreads)
+        {
             t.stop();
         }
     }

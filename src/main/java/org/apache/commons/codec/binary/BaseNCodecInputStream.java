@@ -28,10 +28,11 @@ import static org.apache.commons.codec.binary.BaseNCodec.EOF;
 /**
  * Abstract superclass for Base-N input streams.
  *
- * @since 1.5
  * @version $Id$
+ * @since 1.5
  */
-public class BaseNCodecInputStream extends FilterInputStream {
+public class BaseNCodecInputStream extends FilterInputStream
+{
 
     private final BaseNCodec baseNCodec;
 
@@ -41,7 +42,8 @@ public class BaseNCodecInputStream extends FilterInputStream {
 
     private final Context context = new Context();
 
-    protected BaseNCodecInputStream(final InputStream in, final BaseNCodec baseNCodec, final boolean doEncode) {
+    protected BaseNCodecInputStream(final InputStream in, final BaseNCodec baseNCodec, final boolean doEncode)
+    {
         super(in);
         this.doEncode = doEncode;
         this.baseNCodec = baseNCodec;
@@ -55,7 +57,8 @@ public class BaseNCodecInputStream extends FilterInputStream {
      * @since 1.7
      */
     @Override
-    public int available() throws IOException {
+    public int available() throws IOException
+    {
         // Note: the logic is similar to the InflaterInputStream:
         //       as long as we have not reached EOF, indicate that there is more
         //       data available. As we do not know for sure how much data is left,
@@ -72,7 +75,8 @@ public class BaseNCodecInputStream extends FilterInputStream {
      * @since 1.7
      */
     @Override
-    public synchronized void mark(final int readLimit) {
+    public synchronized void mark(final int readLimit)
+    {
     }
 
     /**
@@ -81,7 +85,8 @@ public class BaseNCodecInputStream extends FilterInputStream {
      * @return always returns <code>false</code>
      */
     @Override
-    public boolean markSupported() {
+    public boolean markSupported()
+    {
         return false; // not an easy job to support marks
     }
 
@@ -89,16 +94,18 @@ public class BaseNCodecInputStream extends FilterInputStream {
      * Reads one <code>byte</code> from this input stream.
      *
      * @return the byte as an integer in the range 0 to 255. Returns -1 if EOF has been reached.
-     * @throws IOException
-     *             if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
-    public int read() throws IOException {
+    public int read() throws IOException
+    {
         int r = read(singleByte, 0, 1);
-        while (r == 0) {
+        while (r == 0)
+        {
             r = read(singleByte, 0, 1);
         }
-        if (r > 0) {
+        if (r > 0)
+        {
             final byte b = singleByte[0];
             return b < 0 ? 256 + b : b;
         }
@@ -109,32 +116,35 @@ public class BaseNCodecInputStream extends FilterInputStream {
      * Attempts to read <code>len</code> bytes into the specified <code>b</code> array starting at <code>offset</code>
      * from this InputStream.
      *
-     * @param b
-     *            destination byte array
-     * @param offset
-     *            where to start writing the bytes
-     * @param len
-     *            maximum number of bytes to read
-     *
+     * @param b      destination byte array
+     * @param offset where to start writing the bytes
+     * @param len    maximum number of bytes to read
      * @return number of bytes read
-     * @throws IOException
-     *             if an I/O error occurs.
-     * @throws NullPointerException
-     *             if the byte array parameter is null
-     * @throws IndexOutOfBoundsException
-     *             if offset, len or buffer size are invalid
+     * @throws IOException               if an I/O error occurs.
+     * @throws NullPointerException      if the byte array parameter is null
+     * @throws IndexOutOfBoundsException if offset, len or buffer size are invalid
      */
     @Override
-    public int read(final byte b[], final int offset, final int len) throws IOException {
-        if (b == null) {
+    public int read(final byte b[], final int offset, final int len) throws IOException
+    {
+        if (b == null)
+        {
             throw new NullPointerException();
-        } else if (offset < 0 || len < 0) {
+        }
+        else if (offset < 0 || len < 0)
+        {
             throw new IndexOutOfBoundsException();
-        } else if (offset > b.length || offset + len > b.length) {
+        }
+        else if (offset > b.length || offset + len > b.length)
+        {
             throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
+        }
+        else if (len == 0)
+        {
             return 0;
-        } else {
+        }
+        else
+        {
             int readLen = 0;
             /*
              Rationale for while-loop on (readLen == 0):
@@ -152,13 +162,18 @@ public class BaseNCodecInputStream extends FilterInputStream {
              -----
              This is a fix for CODEC-101
             */
-            while (readLen == 0) {
-                if (!baseNCodec.hasData(context)) {
+            while (readLen == 0)
+            {
+                if (!baseNCodec.hasData(context))
+                {
                     final byte[] buf = new byte[doEncode ? 4096 : 8192];
                     final int c = in.read(buf);
-                    if (doEncode) {
+                    if (doEncode)
+                    {
                         baseNCodec.encode(buf, 0, c, context);
-                    } else {
+                    }
+                    else
+                    {
                         baseNCodec.decode(buf, 0, c, context);
                     }
                 }
@@ -177,7 +192,8 @@ public class BaseNCodecInputStream extends FilterInputStream {
      * @since 1.7
      */
     @Override
-    public synchronized void reset() throws IOException {
+    public synchronized void reset() throws IOException
+    {
         throw new IOException("mark/reset not supported");
     }
 
@@ -188,8 +204,10 @@ public class BaseNCodecInputStream extends FilterInputStream {
      * @since 1.7
      */
     @Override
-    public long skip(final long n) throws IOException {
-        if (n < 0) {
+    public long skip(final long n) throws IOException
+    {
+        if (n < 0)
+        {
             throw new IllegalArgumentException("Negative skip length: " + n);
         }
 
@@ -197,10 +215,12 @@ public class BaseNCodecInputStream extends FilterInputStream {
         final byte[] b = new byte[512];
         long todo = n;
 
-        while (todo > 0) {
+        while (todo > 0)
+        {
             int len = (int) Math.min(b.length, todo);
             len = this.read(b, 0, len);
-            if (len == EOF) {
+            if (len == EOF)
+            {
                 break;
             }
             todo -= len;

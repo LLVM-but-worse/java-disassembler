@@ -24,7 +24,8 @@ package org.apache.commons.codec;
  *
  * @version $Id$
  */
-public class EncoderException extends Exception {
+public class EncoderException extends Exception
+{
 
     /**
      * Declares the Serial Version Uid.
@@ -39,7 +40,8 @@ public class EncoderException extends Exception {
      *
      * @since 1.4
      */
-    public EncoderException() {
+    public EncoderException()
+    {
         super();
     }
 
@@ -47,29 +49,28 @@ public class EncoderException extends Exception {
      * Constructs a new exception with the specified detail message. The cause is not initialized, and may subsequently
      * be initialized by a call to {@link #initCause}.
      *
-     * @param message
-     *            a useful message relating to the encoder specific error.
+     * @param message a useful message relating to the encoder specific error.
      */
-    public EncoderException(final String message) {
+    public EncoderException(final String message)
+    {
         super(message);
     }
 
     /**
      * Constructs a new exception with the specified detail message and cause.
-     *
+     * <p>
      * <p>
      * Note that the detail message associated with <code>cause</code> is not automatically incorporated into this
      * exception's detail message.
      * </p>
      *
-     * @param message
-     *            The detail message which is saved for later retrieval by the {@link #getMessage()} method.
-     * @param cause
-     *            The cause which is saved for later retrieval by the {@link #getCause()} method. A <code>null</code>
-     *            value is permitted, and indicates that the cause is nonexistent or unknown.
+     * @param message The detail message which is saved for later retrieval by the {@link #getMessage()} method.
+     * @param cause   The cause which is saved for later retrieval by the {@link #getCause()} method. A <code>null</code>
+     *                value is permitted, and indicates that the cause is nonexistent or unknown.
      * @since 1.4
      */
-    public EncoderException(final String message, final Throwable cause) {
+    public EncoderException(final String message, final Throwable cause)
+    {
         super(message, cause);
     }
 
@@ -78,12 +79,12 @@ public class EncoderException extends Exception {
      * null : cause.toString())</code> (which typically contains the class and detail message of <code>cause</code>).
      * This constructor is useful for exceptions that are little more than wrappers for other throwables.
      *
-     * @param cause
-     *            The cause which is saved for later retrieval by the {@link #getCause()} method. A <code>null</code>
-     *            value is permitted, and indicates that the cause is nonexistent or unknown.
+     * @param cause The cause which is saved for later retrieval by the {@link #getCause()} method. A <code>null</code>
+     *              value is permitted, and indicates that the cause is nonexistent or unknown.
      * @since 1.4
      */
-    public EncoderException(final Throwable cause) {
+    public EncoderException(final Throwable cause)
+    {
         super(cause);
     }
 }

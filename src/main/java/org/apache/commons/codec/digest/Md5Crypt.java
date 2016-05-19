@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * crypt-md5.c @ freebsd.org</a><br>
  * <p>
  * Source:
- *
+ * <p>
  * <pre>
  * $FreeBSD: src/lib/libcrypt/crypt-md5.c,v 1.1 1999/01/21 13:50:09 brandon Exp $
  * </pre>
@@ -45,48 +45,55 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 1.7
  */
-public class Md5Crypt {
+public class Md5Crypt
+{
 
-    /** The Identifier of the Apache variant. */
+    /**
+     * The Identifier of the Apache variant.
+     */
     static final String APR1_PREFIX = "$apr1$";
 
-    /** The number of bytes of the final hash. */
+    /**
+     * The number of bytes of the final hash.
+     */
     private static final int BLOCKSIZE = 16;
 
-    /** The Identifier of this crypt() variant. */
+    /**
+     * The Identifier of this crypt() variant.
+     */
     static final String MD5_PREFIX = "$1$";
 
-    /** The number of rounds of the big loop. */
+    /**
+     * The number of rounds of the big loop.
+     */
     private static final int ROUNDS = 1000;
 
     /**
      * See {@link #apr1Crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext string to hash.
+     * @param keyBytes plaintext string to hash.
      * @return the hash value
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught. *
+     * @throws RuntimeException when a {@link java.security.NoSuchAlgorithmException} is caught. *
      */
-    public static String apr1Crypt(final byte[] keyBytes) {
+    public static String apr1Crypt(final byte[] keyBytes)
+    {
         return apr1Crypt(keyBytes, APR1_PREFIX + B64.getRandomSalt(8));
     }
 
     /**
      * See {@link #apr1Crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext string to hash.
-     * @param salt An APR1 salt.
+     * @param keyBytes plaintext string to hash.
+     * @param salt     An APR1 salt.
      * @return the hash value
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
+     * @throws RuntimeException         when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String apr1Crypt(final byte[] keyBytes, String salt) {
+    public static String apr1Crypt(final byte[] keyBytes, String salt)
+    {
         // to make the md5Crypt regex happy
-        if (salt != null && !salt.startsWith(APR1_PREFIX)) {
+        if (salt != null && !salt.startsWith(APR1_PREFIX))
+        {
             salt = APR1_PREFIX + salt;
         }
         return Md5Crypt.md5Crypt(keyBytes, salt, APR1_PREFIX);
@@ -95,13 +102,12 @@ public class Md5Crypt {
     /**
      * See {@link #apr1Crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext string to hash.
+     * @param keyBytes plaintext string to hash.
      * @return the hash value
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws RuntimeException when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String apr1Crypt(final String keyBytes) {
+    public static String apr1Crypt(final String keyBytes)
+    {
         return apr1Crypt(keyBytes.getBytes(Charsets.UTF_8));
     }
 
@@ -111,18 +117,15 @@ public class Md5Crypt {
      * The algorithm is identical to the crypt(3) "$1$" one but produces different outputs due to the different salt
      * prefix.
      *
-     * @param keyBytes
-     *            plaintext string to hash.
-     * @param salt
-     *            salt string including the prefix and optionally garbage at the end. Will be generated randomly if
-     *            null.
+     * @param keyBytes plaintext string to hash.
+     * @param salt     salt string including the prefix and optionally garbage at the end. Will be generated randomly if
+     *                 null.
      * @return the hash value
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
+     * @throws RuntimeException         when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String apr1Crypt(final String keyBytes, final String salt) {
+    public static String apr1Crypt(final String keyBytes, final String salt)
+    {
         return apr1Crypt(keyBytes.getBytes(Charsets.UTF_8), salt);
     }
 
@@ -131,13 +134,12 @@ public class Md5Crypt {
      * <p>
      * See {@link Crypt#crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext string to hash.
+     * @param keyBytes plaintext string to hash.
      * @return the hash value
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws RuntimeException when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String md5Crypt(final byte[] keyBytes) {
+    public static String md5Crypt(final byte[] keyBytes)
+    {
         return md5Crypt(keyBytes, MD5_PREFIX + B64.getRandomSalt(8));
     }
 
@@ -146,18 +148,15 @@ public class Md5Crypt {
      * <p>
      * See {@link Crypt#crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext string to hash.
-     * @param salt
-     *            salt string including the prefix and optionally garbage at the end. Will be generated randomly if
-     *            null.
+     * @param keyBytes plaintext string to hash.
+     * @param salt     salt string including the prefix and optionally garbage at the end. Will be generated randomly if
+     *                 null.
      * @return the hash value
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
+     * @throws RuntimeException         when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String md5Crypt(final byte[] keyBytes, final String salt) {
+    public static String md5Crypt(final byte[] keyBytes, final String salt)
+    {
         return md5Crypt(keyBytes, salt, MD5_PREFIX);
     }
 
@@ -166,27 +165,29 @@ public class Md5Crypt {
      * <p>
      * See {@link Crypt#crypt(String, String)} or {@link #apr1Crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext string to hash.
-     * @param salt May be null.
-     * @param prefix salt prefix
+     * @param keyBytes plaintext string to hash.
+     * @param salt     May be null.
+     * @param prefix   salt prefix
      * @return the hash value
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
+     * @throws RuntimeException         when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String md5Crypt(final byte[] keyBytes, final String salt, final String prefix) {
+    public static String md5Crypt(final byte[] keyBytes, final String salt, final String prefix)
+    {
         final int keyLen = keyBytes.length;
 
         // Extract the real salt from the given string which can be a complete hash string.
         String saltString;
-        if (salt == null) {
+        if (salt == null)
+        {
             saltString = B64.getRandomSalt(8);
-        } else {
+        }
+        else
+        {
             final Pattern p = Pattern.compile("^" + prefix.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8}).*");
             final Matcher m = p.matcher(salt);
-            if (m == null || !m.find()) {
+            if (m == null || !m.find())
+            {
                 throw new IllegalArgumentException("Invalid salt value: " + salt);
             }
             saltString = m.group(1);
@@ -219,7 +220,8 @@ public class Md5Crypt {
         ctx1.update(keyBytes);
         byte[] finalb = ctx1.digest();
         int ii = keyLen;
-        while (ii > 0) {
+        while (ii > 0)
+        {
             ctx.update(finalb, 0, ii > 16 ? 16 : ii);
             ii -= 16;
         }
@@ -234,10 +236,14 @@ public class Md5Crypt {
          */
         ii = keyLen;
         final int j = 0;
-        while (ii > 0) {
-            if ((ii & 1) == 1) {
+        while (ii > 0)
+        {
+            if ((ii & 1) == 1)
+            {
                 ctx.update(finalb[j]);
-            } else {
+            }
+            else
+            {
                 ctx.update(keyBytes[j]);
             }
             ii >>= 1;
@@ -253,25 +259,34 @@ public class Md5Crypt {
          * and now, just to make sure things don't run too fast On a 60 Mhz Pentium this takes 34 msec, so you would
          * need 30 seconds to build a 1000 entry dictionary...
          */
-        for (int i = 0; i < ROUNDS; i++) {
+        for (int i = 0; i < ROUNDS; i++)
+        {
             ctx1 = DigestUtils.getMd5Digest();
-            if ((i & 1) != 0) {
+            if ((i & 1) != 0)
+            {
                 ctx1.update(keyBytes);
-            } else {
+            }
+            else
+            {
                 ctx1.update(finalb, 0, BLOCKSIZE);
             }
 
-            if (i % 3 != 0) {
+            if (i % 3 != 0)
+            {
                 ctx1.update(saltBytes);
             }
 
-            if (i % 7 != 0) {
+            if (i % 7 != 0)
+            {
                 ctx1.update(keyBytes);
             }
 
-            if ((i & 1) != 0) {
+            if ((i & 1) != 0)
+            {
                 ctx1.update(finalb, 0, BLOCKSIZE);
-            } else {
+            }
+            else
+            {
                 ctx1.update(keyBytes);
             }
             finalb = ctx1.digest();

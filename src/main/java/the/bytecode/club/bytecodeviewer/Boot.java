@@ -33,24 +33,33 @@ import java.nio.file.Path;
  * @author Bibl (don't ban me pls)
  * @created 19 Jul 2015 03:22:37
  */
-public class Boot {
+public class Boot
+{
     private static InitialBootScreen screen;
 
-    static {
-        try {
+    static
+    {
+        try
+        {
             screen = new InitialBootScreen();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             new ExceptionUI(e);
         }
     }
 
-    public static void boot() throws Exception {
+    public static void boot() throws Exception
+    {
         File enjarifyDirectory = new File(BytecodeViewer.getBCVDirectory() + BytecodeViewer.fs + "enjarify_" + BytecodeViewer.enjarifyVersion);
         File krakatauDirectory = new File(BytecodeViewer.getBCVDirectory() + BytecodeViewer.fs + "krakatau_" + BytecodeViewer.krakatauVersion);
-        if (!enjarifyDirectory.exists() || !krakatauDirectory.exists()) {
-            SwingUtilities.invokeLater(new Runnable() {
+        if (!enjarifyDirectory.exists() || !krakatauDirectory.exists())
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     screen.setVisible(true);
                 }
             });
@@ -62,37 +71,48 @@ public class Boot {
         checkKrakatau();
 
         setState(BootSequence.BOOTING);
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 screen.setVisible(false);
             }
         });
     }
 
-    public static void setState(BootSequence s) {
+    public static void setState(BootSequence s)
+    {
         screen.setTitle("Initialzing Bytecode Viewer - " + s.getMessage());
         screen.getProgressBar().setValue(s.ordinal());
         System.out.println(s.getMessage());
     }
 
-    public static void checkEnjarify() {
+    public static void checkEnjarify()
+    {
         setState(BootSequence.CHECKING_ENJARIFY);
 
-        for (File f : new File(BytecodeViewer.getBCVDirectory()).listFiles()) {
-            if (f.getName().toLowerCase().startsWith("enjarify_") && !f.getName().split("_")[1].split("\\.")[0].equals(BytecodeViewer.enjarifyVersion)) {
+        for (File f : new File(BytecodeViewer.getBCVDirectory()).listFiles())
+        {
+            if (f.getName().toLowerCase().startsWith("enjarify_") && !f.getName().split("_")[1].split("\\.")[0].equals(BytecodeViewer.enjarifyVersion))
+            {
                 setState(BootSequence.CLEANING_ENJARIFY);
-                try {
+                try
+                {
                     FileUtils.deleteDirectory(f);
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
         }
 
         File enjarifyDirectory = new File(BytecodeViewer.getBCVDirectory() + BytecodeViewer.fs + "enjarify_" + BytecodeViewer.enjarifyVersion);
-        if (!enjarifyDirectory.exists()) {
-            try {
+        if (!enjarifyDirectory.exists())
+        {
+            try
+            {
                 setState(BootSequence.MOVING_ENJARIFY);
                 Path temporaryEnjarifyZip = Files.createTempFile("enjarify", ".zip");
                 Files.delete(temporaryEnjarifyZip);
@@ -100,7 +120,9 @@ public class Boot {
                 Files.copy(inputStream, temporaryEnjarifyZip);
                 ZipUtil.unpack(temporaryEnjarifyZip.toFile(), enjarifyDirectory);
                 Files.delete(temporaryEnjarifyZip);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 BytecodeViewer.showMessage("ERROR: There was an issue unzipping enjarify (possibly corrupt). Restart BCV." + BytecodeViewer.nl +
                         "If the error persists contact @Konloch.");
                 new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
@@ -109,22 +131,30 @@ public class Boot {
 
     }
 
-    public static void checkKrakatau() {
+    public static void checkKrakatau()
+    {
         setState(BootSequence.CHECKING_KRAKATAU);
 
-        for (File f : new File(BytecodeViewer.getBCVDirectory()).listFiles()) {
-            if (f.getName().toLowerCase().startsWith("krakatau_") && !f.getName().split("_")[1].split("\\.")[0].equals(BytecodeViewer.krakatauVersion)) {
+        for (File f : new File(BytecodeViewer.getBCVDirectory()).listFiles())
+        {
+            if (f.getName().toLowerCase().startsWith("krakatau_") && !f.getName().split("_")[1].split("\\.")[0].equals(BytecodeViewer.krakatauVersion))
+            {
                 setState(BootSequence.CLEANING_KRAKATAU);
-                try {
+                try
+                {
                     FileUtils.deleteDirectory(f);
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
         }
         File krakatauDirectory = new File(BytecodeViewer.getBCVDirectory() + BytecodeViewer.fs + "krakatau_" + BytecodeViewer.krakatauVersion);
-        if (!krakatauDirectory.exists()) {
-            try {
+        if (!krakatauDirectory.exists())
+        {
+            try
+            {
                 setState(BootSequence.MOVING_KRAKATAU);
                 Path temporaryKrakatauZip = Files.createTempFile("krakatau", ".zip");
                 Files.delete(temporaryKrakatauZip);
@@ -132,7 +162,9 @@ public class Boot {
                 Files.copy(inputStream, temporaryKrakatauZip);
                 ZipUtil.unpack(temporaryKrakatauZip.toFile(), krakatauDirectory);
                 Files.delete(temporaryKrakatauZip);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 BytecodeViewer.showMessage("ERROR: There was an issue unzipping Krakatau decompiler (possibly corrupt). Restart BCV." + BytecodeViewer.nl +
                         "If the error persists contact @Konloch.");
                 new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
@@ -140,7 +172,8 @@ public class Boot {
         }
     }
 
-    enum BootSequence {
+    enum BootSequence
+    {
         CHECKING_LIBRARIES("Checking libraries"),
         CHECKING_ENJARIFY("Checking Enjarify"),
         CLEANING_ENJARIFY("Cleaning Enjarify"),
@@ -152,11 +185,13 @@ public class Boot {
 
         private String message;
 
-        BootSequence(String message) {
+        BootSequence(String message)
+        {
             this.message = message;
         }
 
-        public String getMessage() {
+        public String getMessage()
+        {
             return this.message;
         }
     }

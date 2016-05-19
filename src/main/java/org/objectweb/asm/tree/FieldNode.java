@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,13 +36,14 @@ import java.util.List;
 
 /**
  * A node that represents a field.
- * 
+ *
  * @author Eric Bruneton
  */
-public class FieldNode extends FieldVisitor {
+public class FieldNode extends FieldVisitor
+{
 
-	public ClassNode owner;
-	
+    public ClassNode owner;
+
     /**
      * The field's access flags (see {@link org.objectweb.asm.Opcodes}). This
      * field also indicates if the field is synthetic and/or deprecated.
@@ -74,7 +75,7 @@ public class FieldNode extends FieldVisitor {
     /**
      * The runtime visible annotations of this field. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
-     * 
+     *
      * @associates org.objectweb.asm.tree.AnnotationNode
      * @label visible
      */
@@ -83,7 +84,7 @@ public class FieldNode extends FieldVisitor {
     /**
      * The runtime invisible annotations of this field. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
-     * 
+     *
      * @associates org.objectweb.asm.tree.AnnotationNode
      * @label invisible
      */
@@ -92,7 +93,7 @@ public class FieldNode extends FieldVisitor {
     /**
      * The runtime visible type annotations of this field. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
-     * 
+     *
      * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label visible
      */
@@ -101,7 +102,7 @@ public class FieldNode extends FieldVisitor {
     /**
      * The runtime invisible type annotations of this field. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
-     * 
+     *
      * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label invisible
      */
@@ -110,7 +111,7 @@ public class FieldNode extends FieldVisitor {
     /**
      * The non standard attributes of this field. This list is a list of
      * {@link Attribute} objects. May be <tt>null</tt>.
-     * 
+     *
      * @associates org.objectweb.asm.Attribute
      */
     public List<Attribute> attrs;
@@ -119,7 +120,7 @@ public class FieldNode extends FieldVisitor {
      * Constructs a new {@link FieldNode}. <i>Subclasses must not use this
      * constructor</i>. Instead, they must use the
      * {@link #FieldNode(int, int, String, String, String, Object)} version.
-     * 
+     *
      * @param access
      *            the field's access flags (see
      *            {@link org.objectweb.asm.Opcodes}). This parameter also
@@ -139,10 +140,11 @@ public class FieldNode extends FieldVisitor {
      * @throws IllegalStateException
      *             If a subclass calls this constructor.
      */
-    public FieldNode(final ClassNode owner, final int access, final String name, final String desc,
-            final String signature, final Object value) {
+    public FieldNode(final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value)
+    {
         this(Opcodes.ASM5, owner, access, name, desc, signature, value);
-        if (getClass() != FieldNode.class) {
+        if (getClass() != FieldNode.class)
+        {
             throw new IllegalStateException();
         }
     }
@@ -150,7 +152,7 @@ public class FieldNode extends FieldVisitor {
     /**
      * Constructs a new {@link FieldNode}. <i>Subclasses must not use this
      * constructor</i>.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
@@ -171,8 +173,8 @@ public class FieldNode extends FieldVisitor {
      *            must be an {@link Integer}, a {@link Float}, a {@link Long}, a
      *            {@link Double} or a {@link String}.
      */
-    public FieldNode(final int api, final ClassNode owner, final int access, final String name,
-            final String desc, final String signature, final Object value) {
+    public FieldNode(final int api, final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value)
+    {
         super(api);
         this.owner = owner;
         this.access = access;
@@ -187,16 +189,21 @@ public class FieldNode extends FieldVisitor {
     // ------------------------------------------------------------------------
 
     @Override
-    public AnnotationVisitor visitAnnotation(final String desc,
-            final boolean visible) {
+    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible)
+    {
         AnnotationNode an = new AnnotationNode(desc);
-        if (visible) {
-            if (visibleAnnotations == null) {
+        if (visible)
+        {
+            if (visibleAnnotations == null)
+            {
                 visibleAnnotations = new ArrayList<AnnotationNode>(1);
             }
             visibleAnnotations.add(an);
-        } else {
-            if (invisibleAnnotations == null) {
+        }
+        else
+        {
+            if (invisibleAnnotations == null)
+            {
                 invisibleAnnotations = new ArrayList<AnnotationNode>(1);
             }
             invisibleAnnotations.add(an);
@@ -205,16 +212,21 @@ public class FieldNode extends FieldVisitor {
     }
 
     @Override
-    public AnnotationVisitor visitTypeAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
+    {
         TypeAnnotationNode an = new TypeAnnotationNode(typeRef, typePath, desc);
-        if (visible) {
-            if (visibleTypeAnnotations == null) {
+        if (visible)
+        {
+            if (visibleTypeAnnotations == null)
+            {
                 visibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
             }
             visibleTypeAnnotations.add(an);
-        } else {
-            if (invisibleTypeAnnotations == null) {
+        }
+        else
+        {
+            if (invisibleTypeAnnotations == null)
+            {
                 invisibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
             }
             invisibleTypeAnnotations.add(an);
@@ -223,15 +235,18 @@ public class FieldNode extends FieldVisitor {
     }
 
     @Override
-    public void visitAttribute(final Attribute attr) {
-        if (attrs == null) {
+    public void visitAttribute(final Attribute attr)
+    {
+        if (attrs == null)
+        {
             attrs = new ArrayList<Attribute>(1);
         }
         attrs.add(attr);
     }
 
     @Override
-    public void visitEnd() {
+    public void visitEnd()
+    {
     }
 
     // ------------------------------------------------------------------------
@@ -243,19 +258,21 @@ public class FieldNode extends FieldVisitor {
      * This methods checks that this node, and all its nodes recursively, do not
      * contain elements that were introduced in more recent versions of the ASM
      * API than the given version.
-     * 
+     *
      * @param api
      *            an ASM API version. Must be one of {@link Opcodes#ASM4} or
      *            {@link Opcodes#ASM5}.
      */
-    public void check(final int api) {
-        if (api == Opcodes.ASM4) {
-            if (visibleTypeAnnotations != null
-                    && visibleTypeAnnotations.size() > 0) {
+    public void check(final int api)
+    {
+        if (api == Opcodes.ASM4)
+        {
+            if (visibleTypeAnnotations != null && visibleTypeAnnotations.size() > 0)
+            {
                 throw new RuntimeException();
             }
-            if (invisibleTypeAnnotations != null
-                    && invisibleTypeAnnotations.size() > 0) {
+            if (invisibleTypeAnnotations != null && invisibleTypeAnnotations.size() > 0)
+            {
                 throw new RuntimeException();
             }
         }
@@ -263,56 +280,63 @@ public class FieldNode extends FieldVisitor {
 
     /**
      * Makes the given class visitor visit this field.
-     * 
+     *
      * @param cv
      *            a class visitor.
      */
-    public void accept(final ClassVisitor cv) {
+    public void accept(final ClassVisitor cv)
+    {
         FieldVisitor fv = cv.visitField(access, name, desc, signature, value);
-        if (fv == null) {
+        if (fv == null)
+        {
             return;
         }
         int i, n;
         n = visibleAnnotations == null ? 0 : visibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
+        for (i = 0; i < n; ++i)
+        {
             AnnotationNode an = visibleAnnotations.get(i);
             an.accept(fv.visitAnnotation(an.desc, true));
         }
         n = invisibleAnnotations == null ? 0 : invisibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
+        for (i = 0; i < n; ++i)
+        {
             AnnotationNode an = invisibleAnnotations.get(i);
             an.accept(fv.visitAnnotation(an.desc, false));
         }
         n = visibleTypeAnnotations == null ? 0 : visibleTypeAnnotations.size();
-        for (i = 0; i < n; ++i) {
+        for (i = 0; i < n; ++i)
+        {
             TypeAnnotationNode an = visibleTypeAnnotations.get(i);
-            an.accept(fv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc,
-                    true));
+            an.accept(fv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc, true));
         }
-        n = invisibleTypeAnnotations == null ? 0 : invisibleTypeAnnotations
-                .size();
-        for (i = 0; i < n; ++i) {
+        n = invisibleTypeAnnotations == null ? 0 : invisibleTypeAnnotations.size();
+        for (i = 0; i < n; ++i)
+        {
             TypeAnnotationNode an = invisibleTypeAnnotations.get(i);
-            an.accept(fv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc,
-                    false));
+            an.accept(fv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc, false));
         }
         n = attrs == null ? 0 : attrs.size();
-        for (i = 0; i < n; ++i) {
+        for (i = 0; i < n; ++i)
+        {
             fv.visitAttribute(attrs.get(i));
         }
         fv.visitEnd();
     }
-    
-    public String halfKey() {
-    	return name + " " + desc;
+
+    public String halfKey()
+    {
+        return name + " " + desc;
     }
-    
-    public String key(){
-    	return owner.name + "." + name + desc;
+
+    public String key()
+    {
+        return owner.name + "." + name + desc;
     }
-    
+
     @Override
-	public String toString(){
-    	return key();
+    public String toString()
+    {
+        return key();
     }
 }
