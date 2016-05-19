@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,10 +51,11 @@ package org.objectweb.asm;
  * <tt>visitLocalVariable</tt>, <tt>visitLocalVariableAnnotation</tt> and
  * <tt>visitLineNumber</tt> methods must be called <i>after</i> the labels
  * passed as arguments have been visited.
- * 
+ *
  * @author Eric Bruneton
  */
-public abstract class MethodVisitor {
+public abstract class MethodVisitor
+{
 
     /**
      * The ASM API version implemented by this visitor. The value of this field
@@ -70,18 +71,19 @@ public abstract class MethodVisitor {
 
     /**
      * Constructs a new {@link MethodVisitor}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    public MethodVisitor(final int api) {
+    public MethodVisitor(final int api)
+    {
         this(api, null);
     }
 
     /**
      * Constructs a new {@link MethodVisitor}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
@@ -89,8 +91,10 @@ public abstract class MethodVisitor {
      *            the method visitor to which this visitor must delegate method
      *            calls. May be null.
      */
-    public MethodVisitor(final int api, final MethodVisitor mv) {
-        if (api != Opcodes.ASM4 && api != Opcodes.ASM5) {
+    public MethodVisitor(final int api, final MethodVisitor mv)
+    {
+        if (api != Opcodes.ASM4 && api != Opcodes.ASM5)
+        {
             throw new IllegalArgumentException();
         }
         this.api = api;
@@ -103,7 +107,7 @@ public abstract class MethodVisitor {
 
     /**
      * Visits a parameter of this method.
-     * 
+     *
      * @param name
      *            parameter name or null if none is provided.
      * @param access
@@ -111,18 +115,21 @@ public abstract class MethodVisitor {
      *            <tt>ACC_SYNTHETIC</tt> or/and <tt>ACC_MANDATED</tt> are
      *            allowed (see {@link Opcodes}).
      */
-    public void visitParameter(String name, int access) {
-        if (api < Opcodes.ASM5) {
+    public void visitParameter(String name, int access)
+    {
+        if (api < Opcodes.ASM5)
+        {
             throw new RuntimeException();
         }
-        if (mv != null) {
+        if (mv != null)
+        {
             mv.visitParameter(name, access);
         }
     }
 
     /**
      * Visits the default value of this annotation interface method.
-     * 
+     *
      * @return a visitor to the visit the actual default value of this
      *         annotation interface method, or <tt>null</tt> if this visitor is
      *         not interested in visiting this default value. The 'name'
@@ -130,8 +137,10 @@ public abstract class MethodVisitor {
      *         ignored. Moreover, exacly one visit method must be called on this
      *         annotation visitor, followed by visitEnd.
      */
-    public AnnotationVisitor visitAnnotationDefault() {
-        if (mv != null) {
+    public AnnotationVisitor visitAnnotationDefault()
+    {
+        if (mv != null)
+        {
             return mv.visitAnnotationDefault();
         }
         return null;
@@ -139,7 +148,7 @@ public abstract class MethodVisitor {
 
     /**
      * Visits an annotation of this method.
-     * 
+     *
      * @param desc
      *            the class descriptor of the annotation class.
      * @param visible
@@ -147,8 +156,10 @@ public abstract class MethodVisitor {
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      *         this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        if (mv != null) {
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible)
+    {
+        if (mv != null)
+        {
             return mv.visitAnnotation(desc, visible);
         }
         return null;
@@ -156,7 +167,7 @@ public abstract class MethodVisitor {
 
     /**
      * Visits an annotation on a type in the method signature.
-     * 
+     *
      * @param typeRef
      *            a reference to the annotated type. The sort of this type
      *            reference must be {@link TypeReference#METHOD_TYPE_PARAMETER
@@ -179,12 +190,14 @@ public abstract class MethodVisitor {
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      *         this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitTypeAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
-        if (api < Opcodes.ASM5) {
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
+    {
+        if (api < Opcodes.ASM5)
+        {
             throw new RuntimeException();
         }
-        if (mv != null) {
+        if (mv != null)
+        {
             return mv.visitTypeAnnotation(typeRef, typePath, desc, visible);
         }
         return null;
@@ -192,7 +205,7 @@ public abstract class MethodVisitor {
 
     /**
      * Visits an annotation of a parameter this method.
-     * 
+     *
      * @param parameter
      *            the parameter index.
      * @param desc
@@ -202,9 +215,10 @@ public abstract class MethodVisitor {
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      *         this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitParameterAnnotation(int parameter,
-            String desc, boolean visible) {
-        if (mv != null) {
+    public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible)
+    {
+        if (mv != null)
+        {
             return mv.visitParameterAnnotation(parameter, desc, visible);
         }
         return null;
@@ -212,12 +226,14 @@ public abstract class MethodVisitor {
 
     /**
      * Visits a non standard attribute of this method.
-     * 
+     *
      * @param attr
      *            an attribute.
      */
-    public void visitAttribute(Attribute attr) {
-        if (mv != null) {
+    public void visitAttribute(Attribute attr)
+    {
+        if (mv != null)
+        {
             mv.visitAttribute(attr);
         }
     }
@@ -225,8 +241,10 @@ public abstract class MethodVisitor {
     /**
      * Starts the visit of the method's code, if any (i.e. non abstract method).
      */
-    public void visitCode() {
-        if (mv != null) {
+    public void visitCode()
+    {
+        if (mv != null)
+        {
             mv.visitCode();
         }
     }
@@ -273,7 +291,7 @@ public abstract class MethodVisitor {
      * and access flags, is implicit and must not be visited. Also, it is
      * illegal to visit two or more frames for the same code location (i.e., at
      * least one instruction must be visited between two calls to visitFrame).
-     * 
+     *
      * @param type
      *            the type of this stack map frame. Must be
      *            {@link Opcodes#F_NEW} for expanded frames, or
@@ -306,9 +324,10 @@ public abstract class MethodVisitor {
      *             instruction between the two (unless this frame is a
      *             Opcodes#F_SAME frame, in which case it is silently ignored).
      */
-    public void visitFrame(int type, int nLocal, Object[] local, int nStack,
-            Object[] stack) {
-        if (mv != null) {
+    public void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack)
+    {
+        if (mv != null)
+        {
             mv.visitFrame(type, nLocal, local, nStack, stack);
         }
     }
@@ -319,7 +338,7 @@ public abstract class MethodVisitor {
 
     /**
      * Visits a zero operand instruction.
-     * 
+     *
      * @param opcode
      *            the opcode of the instruction to be visited. This opcode is
      *            either NOP, ACONST_NULL, ICONST_M1, ICONST_0, ICONST_1,
@@ -337,15 +356,17 @@ public abstract class MethodVisitor {
      *            DRETURN, ARETURN, RETURN, ARRAYLENGTH, ATHROW, MONITORENTER,
      *            or MONITOREXIT.
      */
-    public void visitInsn(int opcode) {
-        if (mv != null) {
+    public void visitInsn(int opcode)
+    {
+        if (mv != null)
+        {
             mv.visitInsn(opcode);
         }
     }
 
     /**
      * Visits an instruction with a single int operand.
-     * 
+     *
      * @param opcode
      *            the opcode of the instruction to be visited. This opcode is
      *            either BIPUSH, SIPUSH or NEWARRAY.
@@ -361,8 +382,10 @@ public abstract class MethodVisitor {
      *            {@link Opcodes#T_BYTE}, {@link Opcodes#T_SHORT},
      *            {@link Opcodes#T_INT} or {@link Opcodes#T_LONG}.
      */
-    public void visitIntInsn(int opcode, int operand) {
-        if (mv != null) {
+    public void visitIntInsn(int opcode, int operand)
+    {
+        if (mv != null)
+        {
             mv.visitIntInsn(opcode, operand);
         }
     }
@@ -370,7 +393,7 @@ public abstract class MethodVisitor {
     /**
      * Visits a local variable instruction. A local variable instruction is an
      * instruction that loads or stores the value of a local variable.
-     * 
+     *
      * @param opcode
      *            the opcode of the local variable instruction to be visited.
      *            This opcode is either ILOAD, LLOAD, FLOAD, DLOAD, ALOAD,
@@ -379,8 +402,10 @@ public abstract class MethodVisitor {
      *            the operand of the instruction to be visited. This operand is
      *            the index of a local variable.
      */
-    public void visitVarInsn(int opcode, int var) {
-        if (mv != null) {
+    public void visitVarInsn(int opcode, int var)
+    {
+        if (mv != null)
+        {
             mv.visitVarInsn(opcode, var);
         }
     }
@@ -388,7 +413,7 @@ public abstract class MethodVisitor {
     /**
      * Visits a type instruction. A type instruction is an instruction that
      * takes the internal name of a class as parameter.
-     * 
+     *
      * @param opcode
      *            the opcode of the type instruction to be visited. This opcode
      *            is either NEW, ANEWARRAY, CHECKCAST or INSTANCEOF.
@@ -397,8 +422,10 @@ public abstract class MethodVisitor {
      *            must be the internal name of an object or array class (see
      *            {@link Type#getInternalName() getInternalName}).
      */
-    public void visitTypeInsn(int opcode, String type) {
-        if (mv != null) {
+    public void visitTypeInsn(int opcode, String type)
+    {
+        if (mv != null)
+        {
             mv.visitTypeInsn(opcode, type);
         }
     }
@@ -406,7 +433,7 @@ public abstract class MethodVisitor {
     /**
      * Visits a field instruction. A field instruction is an instruction that
      * loads or stores the value of a field of an object.
-     * 
+     *
      * @param opcode
      *            the opcode of the type instruction to be visited. This opcode
      *            is either GETSTATIC, PUTSTATIC, GETFIELD or PUTFIELD.
@@ -418,9 +445,10 @@ public abstract class MethodVisitor {
      * @param desc
      *            the field's descriptor (see {@link Type Type}).
      */
-    public void visitFieldInsn(int opcode, String owner, String name,
-            String desc) {
-        if (mv != null) {
+    public void visitFieldInsn(int opcode, String owner, String name, String desc)
+    {
+        if (mv != null)
+        {
             mv.visitFieldInsn(opcode, owner, name, desc);
         }
     }
@@ -428,7 +456,7 @@ public abstract class MethodVisitor {
     /**
      * Visits a method instruction. A method instruction is an instruction that
      * invokes a method.
-     * 
+     *
      * @param opcode
      *            the opcode of the type instruction to be visited. This opcode
      *            is either INVOKEVIRTUAL, INVOKESPECIAL, INVOKESTATIC or
@@ -442,14 +470,16 @@ public abstract class MethodVisitor {
      *            the method's descriptor (see {@link Type Type}).
      */
     @Deprecated
-    public void visitMethodInsn(int opcode, String owner, String name,
-            String desc) {
-        if (api >= Opcodes.ASM5) {
+    public void visitMethodInsn(int opcode, String owner, String name, String desc)
+    {
+        if (api >= Opcodes.ASM5)
+        {
             boolean itf = opcode == Opcodes.INVOKEINTERFACE;
             visitMethodInsn(opcode, owner, name, desc, itf);
             return;
         }
-        if (mv != null) {
+        if (mv != null)
+        {
             mv.visitMethodInsn(opcode, owner, name, desc);
         }
     }
@@ -457,7 +487,7 @@ public abstract class MethodVisitor {
     /**
      * Visits a method instruction. A method instruction is an instruction that
      * invokes a method.
-     * 
+     *
      * @param opcode
      *            the opcode of the type instruction to be visited. This opcode
      *            is either INVOKEVIRTUAL, INVOKESPECIAL, INVOKESTATIC or
@@ -472,24 +502,26 @@ public abstract class MethodVisitor {
      * @param itf
      *            if the method's owner class is an interface.
      */
-    public void visitMethodInsn(int opcode, String owner, String name,
-            String desc, boolean itf) {
-        if (api < Opcodes.ASM5) {
-            if (itf != (opcode == Opcodes.INVOKEINTERFACE)) {
-                throw new IllegalArgumentException(
-                        "INVOKESPECIAL/STATIC on interfaces require ASM 5");
+    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf)
+    {
+        if (api < Opcodes.ASM5)
+        {
+            if (itf != (opcode == Opcodes.INVOKEINTERFACE))
+            {
+                throw new IllegalArgumentException("INVOKESPECIAL/STATIC on interfaces require ASM 5");
             }
             visitMethodInsn(opcode, owner, name, desc);
             return;
         }
-        if (mv != null) {
+        if (mv != null)
+        {
             mv.visitMethodInsn(opcode, owner, name, desc, itf);
         }
     }
 
     /**
      * Visits an invokedynamic instruction.
-     * 
+     *
      * @param name
      *            the method's name.
      * @param desc
@@ -503,9 +535,10 @@ public abstract class MethodVisitor {
      *            value. This method is allowed to modify the content of the
      *            array so a caller should expect that this array may change.
      */
-    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm,
-            Object... bsmArgs) {
-        if (mv != null) {
+    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs)
+    {
+        if (mv != null)
+        {
             mv.visitInvokeDynamicInsn(name, desc, bsm, bsmArgs);
         }
     }
@@ -513,7 +546,7 @@ public abstract class MethodVisitor {
     /**
      * Visits a jump instruction. A jump instruction is an instruction that may
      * jump to another instruction.
-     * 
+     *
      * @param opcode
      *            the opcode of the type instruction to be visited. This opcode
      *            is either IFEQ, IFNE, IFLT, IFGE, IFGT, IFLE, IF_ICMPEQ,
@@ -524,8 +557,10 @@ public abstract class MethodVisitor {
      *            a label that designates the instruction to which the jump
      *            instruction may jump.
      */
-    public void visitJumpInsn(int opcode, Label label) {
-        if (mv != null) {
+    public void visitJumpInsn(int opcode, Label label)
+    {
+        if (mv != null)
+        {
             mv.visitJumpInsn(opcode, label);
         }
     }
@@ -533,12 +568,14 @@ public abstract class MethodVisitor {
     /**
      * Visits a label. A label designates the instruction that will be visited
      * just after it.
-     * 
+     *
      * @param label
      *            a {@link Label Label} object.
      */
-    public void visitLabel(Label label) {
-        if (mv != null) {
+    public void visitLabel(Label label)
+    {
+        if (mv != null)
+        {
             mv.visitLabel(label);
         }
     }
@@ -552,7 +589,7 @@ public abstract class MethodVisitor {
      * future versions of the Java Virtual Machine. To easily detect new
      * constant types, implementations of this method should check for
      * unexpected constant types, like this:
-     * 
+     *
      * <pre>
      * if (cst instanceof Integer) {
      *     // ...
@@ -581,7 +618,7 @@ public abstract class MethodVisitor {
      *     // throw an exception
      * }
      * </pre>
-     * 
+     *
      * @param cst
      *            the constant to be loaded on the stack. This parameter must be
      *            a non null {@link Integer}, a {@link Float}, a {@link Long}, a
@@ -591,29 +628,33 @@ public abstract class MethodVisitor {
      *            {@link Handle} for MethodType and MethodHandle constants, for
      *            classes whose version is 51.0.
      */
-    public void visitLdcInsn(Object cst) {
-        if (mv != null) {
+    public void visitLdcInsn(Object cst)
+    {
+        if (mv != null)
+        {
             mv.visitLdcInsn(cst);
         }
     }
 
     /**
      * Visits an IINC instruction.
-     * 
+     *
      * @param var
      *            index of the local variable to be incremented.
      * @param increment
      *            amount to increment the local variable by.
      */
-    public void visitIincInsn(int var, int increment) {
-        if (mv != null) {
+    public void visitIincInsn(int var, int increment)
+    {
+        if (mv != null)
+        {
             mv.visitIincInsn(var, increment);
         }
     }
 
     /**
      * Visits a TABLESWITCH instruction.
-     * 
+     *
      * @param min
      *            the minimum key value.
      * @param max
@@ -624,16 +665,17 @@ public abstract class MethodVisitor {
      *            beginnings of the handler blocks. <tt>labels[i]</tt> is the
      *            beginning of the handler block for the <tt>min + i</tt> key.
      */
-    public void visitTableSwitchInsn(int min, int max, Label dflt,
-            Label... labels) {
-        if (mv != null) {
+    public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels)
+    {
+        if (mv != null)
+        {
             mv.visitTableSwitchInsn(min, max, dflt, labels);
         }
     }
 
     /**
      * Visits a LOOKUPSWITCH instruction.
-     * 
+     *
      * @param dflt
      *            beginning of the default handler block.
      * @param keys
@@ -642,22 +684,26 @@ public abstract class MethodVisitor {
      *            beginnings of the handler blocks. <tt>labels[i]</tt> is the
      *            beginning of the handler block for the <tt>keys[i]</tt> key.
      */
-    public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
-        if (mv != null) {
+    public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels)
+    {
+        if (mv != null)
+        {
             mv.visitLookupSwitchInsn(dflt, keys, labels);
         }
     }
 
     /**
      * Visits a MULTIANEWARRAY instruction.
-     * 
+     *
      * @param desc
      *            an array type descriptor (see {@link Type Type}).
      * @param dims
      *            number of dimensions of the array to allocate.
      */
-    public void visitMultiANewArrayInsn(String desc, int dims) {
-        if (mv != null) {
+    public void visitMultiANewArrayInsn(String desc, int dims)
+    {
+        if (mv != null)
+        {
             mv.visitMultiANewArrayInsn(desc, dims);
         }
     }
@@ -666,7 +712,7 @@ public abstract class MethodVisitor {
      * Visits an annotation on an instruction. This method must be called just
      * <i>after</i> the annotated instruction. It can be called several times
      * for the same instruction.
-     * 
+     *
      * @param typeRef
      *            a reference to the annotated type. The sort of this type
      *            reference must be {@link TypeReference#INSTANCEOF INSTANCEOF},
@@ -693,12 +739,14 @@ public abstract class MethodVisitor {
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      *         this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitInsnAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
-        if (api < Opcodes.ASM5) {
+    public AnnotationVisitor visitInsnAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
+    {
+        if (api < Opcodes.ASM5)
+        {
             throw new RuntimeException();
         }
-        if (mv != null) {
+        if (mv != null)
+        {
             return mv.visitInsnAnnotation(typeRef, typePath, desc, visible);
         }
         return null;
@@ -710,7 +758,7 @@ public abstract class MethodVisitor {
 
     /**
      * Visits a try catch block.
-     * 
+     *
      * @param start
      *            beginning of the exception handler's scope (inclusive).
      * @param end
@@ -725,9 +773,10 @@ public abstract class MethodVisitor {
      *             if one of the labels has already been visited by this visitor
      *             (by the {@link #visitLabel visitLabel} method).
      */
-    public void visitTryCatchBlock(Label start, Label end, Label handler,
-            String type) {
-        if (mv != null) {
+    public void visitTryCatchBlock(Label start, Label end, Label handler, String type)
+    {
+        if (mv != null)
+        {
             mv.visitTryCatchBlock(start, end, handler, type);
         }
     }
@@ -737,7 +786,7 @@ public abstract class MethodVisitor {
      * called <i>after</i> the {@link #visitTryCatchBlock} for the annotated
      * exception handler. It can be called several times for the same exception
      * handler.
-     * 
+     *
      * @param typeRef
      *            a reference to the annotated type. The sort of this type
      *            reference must be {@link TypeReference#EXCEPTION_PARAMETER
@@ -753,12 +802,14 @@ public abstract class MethodVisitor {
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      *         this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitTryCatchAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
-        if (api < Opcodes.ASM5) {
+    public AnnotationVisitor visitTryCatchAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
+    {
+        if (api < Opcodes.ASM5)
+        {
             throw new RuntimeException();
         }
-        if (mv != null) {
+        if (mv != null)
+        {
             return mv.visitTryCatchAnnotation(typeRef, typePath, desc, visible);
         }
         return null;
@@ -766,7 +817,7 @@ public abstract class MethodVisitor {
 
     /**
      * Visits a local variable declaration.
-     * 
+     *
      * @param name
      *            the name of a local variable.
      * @param desc
@@ -787,16 +838,17 @@ public abstract class MethodVisitor {
      *             if one of the labels has not already been visited by this
      *             visitor (by the {@link #visitLabel visitLabel} method).
      */
-    public void visitLocalVariable(String name, String desc, String signature,
-            Label start, Label end, int index) {
-        if (mv != null) {
+    public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index)
+    {
+        if (mv != null)
+        {
             mv.visitLocalVariable(name, desc, signature, start, end, index);
         }
     }
 
     /**
      * Visits an annotation on a local variable type.
-     * 
+     *
      * @param typeRef
      *            a reference to the annotated type. The sort of this type
      *            reference must be {@link TypeReference#LOCAL_VARIABLE
@@ -823,22 +875,22 @@ public abstract class MethodVisitor {
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      *         this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitLocalVariableAnnotation(int typeRef,
-            TypePath typePath, Label[] start, Label[] end, int[] index,
-            String desc, boolean visible) {
-        if (api < Opcodes.ASM5) {
+    public AnnotationVisitor visitLocalVariableAnnotation(int typeRef, TypePath typePath, Label[] start, Label[] end, int[] index, String desc, boolean visible)
+    {
+        if (api < Opcodes.ASM5)
+        {
             throw new RuntimeException();
         }
-        if (mv != null) {
-            return mv.visitLocalVariableAnnotation(typeRef, typePath, start,
-                    end, index, desc, visible);
+        if (mv != null)
+        {
+            return mv.visitLocalVariableAnnotation(typeRef, typePath, start, end, index, desc, visible);
         }
         return null;
     }
 
     /**
      * Visits a line number declaration.
-     * 
+     *
      * @param line
      *            a line number. This number refers to the source file from
      *            which the class was compiled.
@@ -848,8 +900,10 @@ public abstract class MethodVisitor {
      *             if <tt>start</tt> has not already been visited by this
      *             visitor (by the {@link #visitLabel visitLabel} method).
      */
-    public void visitLineNumber(int line, Label start) {
-        if (mv != null) {
+    public void visitLineNumber(int line, Label start)
+    {
+        if (mv != null)
+        {
             mv.visitLineNumber(line, start);
         }
     }
@@ -857,14 +911,16 @@ public abstract class MethodVisitor {
     /**
      * Visits the maximum stack size and the maximum number of local variables
      * of the method.
-     * 
+     *
      * @param maxStack
      *            maximum stack size of the method.
      * @param maxLocals
      *            maximum number of local variables for the method.
      */
-    public void visitMaxs(int maxStack, int maxLocals) {
-        if (mv != null) {
+    public void visitMaxs(int maxStack, int maxLocals)
+    {
+        if (mv != null)
+        {
             mv.visitMaxs(maxStack, maxLocals);
         }
     }
@@ -874,8 +930,10 @@ public abstract class MethodVisitor {
      * called, is used to inform the visitor that all the annotations and
      * attributes of the method have been visited.
      */
-    public void visitEnd() {
-        if (mv != null) {
+    public void visitEnd()
+    {
+        if (mv != null)
+        {
             mv.visitEnd();
         }
     }

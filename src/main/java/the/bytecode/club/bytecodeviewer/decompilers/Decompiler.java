@@ -37,39 +37,45 @@ import java.util.Map;
  * Used to represent all of the decompilers/disassemblers BCV contains.
  *
  * @author Konloch
- *
  */
 
-public abstract class Decompiler {
+public abstract class Decompiler
+{
     private static final Map<String, Decompiler> BY_NAME = new HashMap<>();
 
     public final static Decompiler BYTECODE = new ClassNodeDecompiler();
     public final static Decompiler FERNFLOWER = new FernFlowerDecompiler();
     public final static Decompiler PROCYON = new ProcyonDecompiler();
     public final static Decompiler CFR = new CFRDecompiler();
-    public final static Decompiler HEXCODE = new Decompiler() {
+    public final static Decompiler HEXCODE = new Decompiler()
+    {
         @Override
-        public String decompileClassNode(ClassNode cn, byte[] b) {
+        public String decompileClassNode(ClassNode cn, byte[] b)
+        {
             throw new IllegalArgumentException();
         }
 
         @Override
-        public void decompileToZip(String zipName) {
+        public void decompileToZip(String zipName)
+        {
             throw new IllegalArgumentException();
         }
 
         @Override
-        public String getName() {
+        public String getName()
+        {
             return "Hexcode";
         }
 
         @Override
-        public DecompilerSettings getSettings() {
+        public DecompilerSettings getSettings()
+        {
             throw new IllegalArgumentException();
         }
     };
 
-    public Decompiler() {
+    public Decompiler()
+    {
         BY_NAME.put(getName().toLowerCase().replace(' ', '-'), this);
     }
 
@@ -81,11 +87,13 @@ public abstract class Decompiler {
 
     public abstract String getName();
 
-    public DecompilerSettings getSettings() {
+    public DecompilerSettings getSettings()
+    {
         return settings;
     }
 
-    protected String parseException(Throwable e) {
+    protected String parseException(Throwable e)
+    {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         e.printStackTrace();
@@ -97,11 +105,13 @@ public abstract class Decompiler {
                 exception;
     }
 
-    protected void handleException(Exception e) {
+    protected void handleException(Exception e)
+    {
         new ExceptionUI(e);
     }
 
-    protected byte[] fixBytes(byte[] in) {
+    protected byte[] fixBytes(byte[] in)
+    {
         ClassReader reader = new ClassReader(in);
         ClassNode node = new ClassNode();
         reader.accept(node, ClassReader.EXPAND_FRAMES);
@@ -110,15 +120,18 @@ public abstract class Decompiler {
         return writer.toByteArray();
     }
 
-    public static void ensureInitted() {
+    public static void ensureInitted()
+    {
         // Just to make sure the classes is loaded so all decompilers are loaded
     }
 
-    public static Decompiler getByName(String name) {
+    public static Decompiler getByName(String name)
+    {
         return BY_NAME.get(name.toLowerCase().replace(' ', '-'));
     }
 
-    public static Collection<Decompiler> getAllDecompilers() {
+    public static Collection<Decompiler> getAllDecompilers()
+    {
         return Collections.unmodifiableCollection(BY_NAME.values());
     }
 }

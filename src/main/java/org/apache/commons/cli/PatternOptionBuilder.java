@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import java.util.Date;
  * The pattern contains various single character flags and via
  * an optional punctuation character, their expected type.
  * </p>
- * 
+ *
  * <table border="1">
  *   <caption>Overview of PatternOptionBuilder patterns</caption>
  *   <tr><td>a</td><td>-a flag</td></tr>
@@ -38,7 +38,7 @@ import java.util.Date;
  *   <tr><td>f/</td><td>-f [url]</td></tr>
  *   <tr><td>g:</td><td>-g [string]</td></tr>
  * </table>
- * 
+ *
  * <p>
  * For example, the following allows command line flags of '-v -p string-value -f /dir/file'.
  * The exclamation mark precede a mandatory option.
@@ -129,16 +129,7 @@ public class PatternOptionBuilder
      */
     public static boolean isValueCode(char ch)
     {
-        return ch == '@'
-                || ch == ':'
-                || ch == '%'
-                || ch == '+'
-                || ch == '#'
-                || ch == '<'
-                || ch == '>'
-                || ch == '*'
-                || ch == '/'
-                || ch == '!';
+        return ch == '@' || ch == ':' || ch == '%' || ch == '+' || ch == '#' || ch == '<' || ch == '>' || ch == '*' || ch == '/' || ch == '!';
     }
 
     /**
@@ -165,12 +156,8 @@ public class PatternOptionBuilder
             {
                 if (opt != ' ')
                 {
-                    final Option option = Option.builder(String.valueOf(opt))
-                        .hasArg(type != null)
-                        .required(required)
-                        .type(type)
-                        .build();
-                    
+                    final Option option = Option.builder(String.valueOf(opt)).hasArg(type != null).required(required).type(type).build();
+
                     // we have a previous one to deal with
                     options.addOption(option);
                     required = false;
@@ -192,12 +179,8 @@ public class PatternOptionBuilder
 
         if (opt != ' ')
         {
-            final Option option = Option.builder(String.valueOf(opt))
-                .hasArg(type != null)
-                .required(required)
-                .type(type)
-                .build();
-            
+            final Option option = Option.builder(String.valueOf(opt)).hasArg(type != null).required(required).type(type).build();
+
             // we have a final one to deal with
             options.addOption(option);
         }

@@ -38,48 +38,65 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 1.7
  */
-public class Sha2Crypt {
+public class Sha2Crypt
+{
 
-    /** Default number of rounds if not explicitly specified. */
+    /**
+     * Default number of rounds if not explicitly specified.
+     */
     private static final int ROUNDS_DEFAULT = 5000;
 
-    /** Maximum number of rounds. */
+    /**
+     * Maximum number of rounds.
+     */
     private static final int ROUNDS_MAX = 999999999;
 
-    /** Minimum number of rounds. */
+    /**
+     * Minimum number of rounds.
+     */
     private static final int ROUNDS_MIN = 1000;
 
-    /** Prefix for optional rounds specification. */
+    /**
+     * Prefix for optional rounds specification.
+     */
     private static final String ROUNDS_PREFIX = "rounds=";
 
-    /** The number of bytes the final hash value will have (SHA-256 variant). */
+    /**
+     * The number of bytes the final hash value will have (SHA-256 variant).
+     */
     private static final int SHA256_BLOCKSIZE = 32;
 
-    /** The prefixes that can be used to identify this crypt() variant (SHA-256). */
+    /**
+     * The prefixes that can be used to identify this crypt() variant (SHA-256).
+     */
     static final String SHA256_PREFIX = "$5$";
 
-    /** The number of bytes the final hash value will have (SHA-512 variant). */
+    /**
+     * The number of bytes the final hash value will have (SHA-512 variant).
+     */
     private static final int SHA512_BLOCKSIZE = 64;
 
-    /** The prefixes that can be used to identify this crypt() variant (SHA-512). */
+    /**
+     * The prefixes that can be used to identify this crypt() variant (SHA-512).
+     */
     static final String SHA512_PREFIX = "$6$";
 
-    /** The pattern to match valid salt values. */
-    private static final Pattern SALT_PATTERN = Pattern
-            .compile("^\\$([56])\\$(rounds=(\\d+)\\$)?([\\.\\/a-zA-Z0-9]{1,16}).*");
+    /**
+     * The pattern to match valid salt values.
+     */
+    private static final Pattern SALT_PATTERN = Pattern.compile("^\\$([56])\\$(rounds=(\\d+)\\$)?([\\.\\/a-zA-Z0-9]{1,16}).*");
 
     /**
      * Generates a libc crypt() compatible "$5$" hash value with random salt.
      * <p>
      * See {@link Crypt#crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext to hash
+     * @param keyBytes plaintext to hash
      * @return complete hash value
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws RuntimeException when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String sha256Crypt(final byte[] keyBytes) {
+    public static String sha256Crypt(final byte[] keyBytes)
+    {
         return sha256Crypt(keyBytes, null);
     }
 
@@ -88,18 +105,16 @@ public class Sha2Crypt {
      * <p>
      * See {@link Crypt#crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext to hash
-     * @param salt
-     *            real salt value without prefix or "rounds="
+     * @param keyBytes plaintext to hash
+     * @param salt     real salt value without prefix or "rounds="
      * @return complete hash value including salt
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
+     * @throws RuntimeException         when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String sha256Crypt(final byte[] keyBytes, String salt) {
-        if (salt == null) {
+    public static String sha256Crypt(final byte[] keyBytes, String salt)
+    {
+        if (salt == null)
+        {
             salt = SHA256_PREFIX + B64.getRandomSalt(8);
         }
         return sha2Crypt(keyBytes, salt, SHA256_PREFIX, SHA256_BLOCKSIZE, MessageDigestAlgorithms.SHA_256);
@@ -113,40 +128,36 @@ public class Sha2Crypt {
      * <p>
      * See {@link Crypt#crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext to hash
-     * @param salt
-     *            real salt value without prefix or "rounds="
-     * @param saltPrefix
-     *            either $5$ or $6$
-     * @param blocksize
-     *            a value that differs between $5$ and $6$
-     * @param algorithm
-     *            {@link MessageDigest} algorithm identifier string
+     * @param keyBytes   plaintext to hash
+     * @param salt       real salt value without prefix or "rounds="
+     * @param saltPrefix either $5$ or $6$
+     * @param blocksize  a value that differs between $5$ and $6$
+     * @param algorithm  {@link MessageDigest} algorithm identifier string
      * @return complete hash value including prefix and salt
-     * @throws IllegalArgumentException
-     *             if the given salt is <code>null</code> or does not match the allowed pattern
-     * @throws IllegalArgumentException
-     *             when a {@link NoSuchAlgorithmException} is caught
+     * @throws IllegalArgumentException if the given salt is <code>null</code> or does not match the allowed pattern
+     * @throws IllegalArgumentException when a {@link NoSuchAlgorithmException} is caught
      * @see MessageDigestAlgorithms
      */
-    private static String sha2Crypt(final byte[] keyBytes, final String salt, final String saltPrefix,
-            final int blocksize, final String algorithm) {
+    private static String sha2Crypt(final byte[] keyBytes, final String salt, final String saltPrefix, final int blocksize, final String algorithm)
+    {
 
         final int keyLen = keyBytes.length;
 
         // Extracts effective salt and the number of rounds from the given salt.
         int rounds = ROUNDS_DEFAULT;
         boolean roundsCustom = false;
-        if (salt == null) {
+        if (salt == null)
+        {
             throw new IllegalArgumentException("Salt must not be null");
         }
 
         final Matcher m = SALT_PATTERN.matcher(salt);
-        if (m == null || !m.find()) {
+        if (m == null || !m.find())
+        {
             throw new IllegalArgumentException("Invalid salt value: " + salt);
         }
-        if (m.group(3) != null) {
+        if (m.group(3) != null)
+        {
             rounds = Integer.parseInt(m.group(3));
             rounds = Math.max(ROUNDS_MIN, Math.min(ROUNDS_MAX, rounds));
             roundsCustom = true;
@@ -220,7 +231,8 @@ public class Sha2Crypt {
          * (Remark: the C code comment seems wrong for key length > 32!)
          */
         int cnt = keyBytes.length;
-        while (cnt > blocksize) {
+        while (cnt > blocksize)
+        {
             ctx.update(altResult, 0, blocksize);
             cnt -= blocksize;
         }
@@ -244,10 +256,14 @@ public class Sha2Crypt {
          * the key.
          */
         cnt = keyBytes.length;
-        while (cnt > 0) {
-            if ((cnt & 1) != 0) {
+        while (cnt > 0)
+        {
+            if ((cnt & 1) != 0)
+            {
                 ctx.update(altResult, 0, blocksize);
-            } else {
+            }
+            else
+            {
                 ctx.update(keyBytes);
             }
             cnt >>= 1;
@@ -272,7 +288,8 @@ public class Sha2Crypt {
         /*
          * For every character in the password add the entire password.
          */
-        for (int i = 1; i <= keyLen; i++) {
+        for (int i = 1; i <= keyLen; i++)
+        {
             altCtx.update(keyBytes);
         }
 
@@ -294,7 +311,8 @@ public class Sha2Crypt {
          */
         final byte[] pBytes = new byte[keyLen];
         int cp = 0;
-        while (cp < keyLen - blocksize) {
+        while (cp < keyLen - blocksize)
+        {
             System.arraycopy(tempResult, 0, pBytes, cp, blocksize);
             cp += blocksize;
         }
@@ -313,7 +331,8 @@ public class Sha2Crypt {
         /*
          * For every character in the password add the entire password.
          */
-        for (int i = 1; i <= 16 + (altResult[0] & 0xff); i++) {
+        for (int i = 1; i <= 16 + (altResult[0] & 0xff); i++)
+        {
             altCtx.update(saltBytes);
         }
 
@@ -336,7 +355,8 @@ public class Sha2Crypt {
         // Remark: The salt is limited to 16 chars, how does this make sense?
         final byte[] sBytes = new byte[saltLen];
         cp = 0;
-        while (cp < saltLen - blocksize) {
+        while (cp < saltLen - blocksize)
+        {
             System.arraycopy(tempResult, 0, sBytes, cp, blocksize);
             cp += blocksize;
         }
@@ -353,7 +373,8 @@ public class Sha2Crypt {
         /*
          * Repeatedly run the collected hash value through sha512 to burn CPU cycles.
          */
-        for (int i = 0; i <= rounds - 1; i++) {
+        for (int i = 0; i <= rounds - 1; i++)
+        {
             // a) start digest C
             /*
              * New context.
@@ -365,9 +386,12 @@ public class Sha2Crypt {
             /*
              * Add key or last result.
              */
-            if ((i & 1) != 0) {
+            if ((i & 1) != 0)
+            {
                 ctx.update(pBytes, 0, keyLen);
-            } else {
+            }
+            else
+            {
                 ctx.update(altResult, 0, blocksize);
             }
 
@@ -375,7 +399,8 @@ public class Sha2Crypt {
             /*
              * Add salt for numbers not divisible by 3.
              */
-            if (i % 3 != 0) {
+            if (i % 3 != 0)
+            {
                 ctx.update(sBytes, 0, saltLen);
             }
 
@@ -383,7 +408,8 @@ public class Sha2Crypt {
             /*
              * Add key for numbers not divisible by 7.
              */
-            if (i % 7 != 0) {
+            if (i % 7 != 0)
+            {
                 ctx.update(pBytes, 0, keyLen);
             }
 
@@ -392,9 +418,12 @@ public class Sha2Crypt {
             /*
              * Add key or last result.
              */
-            if ((i & 1) != 0) {
+            if ((i & 1) != 0)
+            {
                 ctx.update(altResult, 0, blocksize);
-            } else {
+            }
+            else
+            {
                 ctx.update(pBytes, 0, keyLen);
             }
 
@@ -421,7 +450,8 @@ public class Sha2Crypt {
          * Now we can construct the result string. It consists of three parts.
          */
         final StringBuilder buffer = new StringBuilder(saltPrefix);
-        if (roundsCustom) {
+        if (roundsCustom)
+        {
             buffer.append(ROUNDS_PREFIX);
             buffer.append(rounds);
             buffer.append("$");
@@ -453,7 +483,8 @@ public class Sha2Crypt {
         // This was just a safeguard in the C implementation:
         // int buflen = salt_prefix.length() - 1 + ROUNDS_PREFIX.length() + 9 + 1 + salt_string.length() + 1 + 86 + 1;
 
-        if (blocksize == 32) {
+        if (blocksize == 32)
+        {
             B64.b64from24bit(altResult[0], altResult[10], altResult[20], 4, buffer);
             B64.b64from24bit(altResult[21], altResult[1], altResult[11], 4, buffer);
             B64.b64from24bit(altResult[12], altResult[22], altResult[2], 4, buffer);
@@ -465,7 +496,9 @@ public class Sha2Crypt {
             B64.b64from24bit(altResult[18], altResult[28], altResult[8], 4, buffer);
             B64.b64from24bit(altResult[9], altResult[19], altResult[29], 4, buffer);
             B64.b64from24bit((byte) 0, altResult[31], altResult[30], 3, buffer);
-        } else {
+        }
+        else
+        {
             B64.b64from24bit(altResult[0], altResult[21], altResult[42], 4, buffer);
             B64.b64from24bit(altResult[22], altResult[43], altResult[1], 4, buffer);
             B64.b64from24bit(altResult[44], altResult[2], altResult[23], 4, buffer);
@@ -511,13 +544,12 @@ public class Sha2Crypt {
      * <p>
      * See {@link Crypt#crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext to hash
+     * @param keyBytes plaintext to hash
      * @return complete hash value
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws RuntimeException when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String sha512Crypt(final byte[] keyBytes) {
+    public static String sha512Crypt(final byte[] keyBytes)
+    {
         return sha512Crypt(keyBytes, null);
     }
 
@@ -526,18 +558,16 @@ public class Sha2Crypt {
      * <p>
      * See {@link Crypt#crypt(String, String)} for details.
      *
-     * @param keyBytes
-     *            plaintext to hash
-     * @param salt
-     *            real salt value without prefix or "rounds="
+     * @param keyBytes plaintext to hash
+     * @param salt     real salt value without prefix or "rounds="
      * @return complete hash value including salt
-     * @throws IllegalArgumentException
-     *             if the salt does not match the allowed pattern
-     * @throws RuntimeException
-     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
+     * @throws IllegalArgumentException if the salt does not match the allowed pattern
+     * @throws RuntimeException         when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
-    public static String sha512Crypt(final byte[] keyBytes, String salt) {
-        if (salt == null) {
+    public static String sha512Crypt(final byte[] keyBytes, String salt)
+    {
+        if (salt == null)
+        {
             salt = SHA512_PREFIX + B64.getRandomSalt(8);
         }
         return sha2Crypt(keyBytes, salt, SHA512_PREFIX, SHA512_BLOCKSIZE, MessageDigestAlgorithms.SHA_512);

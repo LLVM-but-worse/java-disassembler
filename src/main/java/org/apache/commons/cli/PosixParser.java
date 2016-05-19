@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * The class PosixParser provides an implementation of the
- * {@link Parser#flatten(Options,String[],boolean) flatten} method.
+ * {@link Parser#flatten(Options, String[], boolean) flatten} method.
  *
  * @version $Id: PosixParser.java 1677451 2015-05-03 17:09:29Z ggregory $
  * @deprecated since 1.3, use the {@link DefaultParser} instead
@@ -57,7 +57,7 @@ public class PosixParser extends Parser
 
     /**
      * <p>An implementation of {@link Parser}'s abstract
-     * {@link Parser#flatten(Options,String[],boolean) flatten} method.</p>
+     * {@link Parser#flatten(Options, String[], boolean) flatten} method.</p>
      *
      * <p>The following are the rules used by this flatten method.</p>
      * <ol>
@@ -112,13 +112,13 @@ public class PosixParser extends Parser
             {
                 tokens.add(token);
             }
-            
+
             // handle long option --foo or --foo=bar
             else if (token.startsWith("--"))
             {
                 int pos = token.indexOf('=');
                 String opt = pos == -1 ? token : token.substring(0, pos); // --foo
-                
+
                 List<String> matchingOpts = options.getMatchingOptions(opt);
 
                 if (matchingOpts.isEmpty())
@@ -132,7 +132,7 @@ public class PosixParser extends Parser
                 else
                 {
                     currentOption = options.getOption(matchingOpts.get(0));
-                    
+
                     tokens.add("--" + currentOption.getLongOpt());
                     if (pos != -1)
                     {

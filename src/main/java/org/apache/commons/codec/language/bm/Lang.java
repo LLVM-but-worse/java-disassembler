@@ -56,10 +56,11 @@ import java.util.regex.Pattern;
  * <p>
  * Port of lang.php
  *
- * @since 1.6
  * @version $Id$
+ * @since 1.6
  */
-public class Lang {
+public class Lang
+{
     // Implementation note: This class is divided into two sections. The first part is a static factory interface that
     // exposes the LANGUAGE_RULES_RN resource as a Lang instance. The second part is the Lang instance methods that
     // encapsulate a particular language-guessing rule table and the language guessing itself.
@@ -68,18 +69,21 @@ public class Lang {
     // guessing rules, perhaps by marking it protected and allowing sub-classing. However, the vast majority of users
     // should be strongly encouraged to use the static factory <code>instance</code> method to get their Lang instances.
 
-    private static final class LangRule {
+    private static final class LangRule
+    {
         private final boolean acceptOnMatch;
         private final Set<String> languages;
         private final Pattern pattern;
 
-        private LangRule(final Pattern pattern, final Set<String> languages, final boolean acceptOnMatch) {
+        private LangRule(final Pattern pattern, final Set<String> languages, final boolean acceptOnMatch)
+        {
             this.pattern = pattern;
             this.languages = languages;
             this.acceptOnMatch = acceptOnMatch;
         }
 
-        public boolean matches(final String txt) {
+        public boolean matches(final String txt)
+        {
             return this.pattern.matcher(txt).find();
         }
     }
@@ -88,8 +92,10 @@ public class Lang {
 
     private static final String LANGUAGE_RULES_RN = "org/apache/commons/codec/language/bm/%s_lang.txt";
 
-    static {
-        for (final NameType s : NameType.values()) {
+    static
+    {
+        for (final NameType s : NameType.values())
+        {
             Langs.put(s, loadFromResource(String.format(LANGUAGE_RULES_RN, s.getName()), Languages.getInstance(s)));
         }
     }
@@ -97,11 +103,11 @@ public class Lang {
     /**
      * Gets a Lang instance for one of the supported NameTypes.
      *
-     * @param nameType
-     *            the NameType to look up
+     * @param nameType the NameType to look up
      * @return a Lang encapsulating the language guessing rules for that name type
      */
-    public static Lang instance(final NameType nameType) {
+    public static Lang instance(final NameType nameType)
+    {
         return Langs.get(nameType);
     }
 
@@ -111,52 +117,64 @@ public class Lang {
      * In normal use, you will obtain instances of Lang through the {@link #instance(NameType)} method.
      * You will only need to call this yourself if you are developing custom language mapping rules.
      *
-     * @param languageRulesResourceName
-     *            the fully-qualified resource name to load
-     * @param languages
-     *            the languages that these rules will support
+     * @param languageRulesResourceName the fully-qualified resource name to load
+     * @param languages                 the languages that these rules will support
      * @return a Lang encapsulating the loaded language-guessing rules.
      */
-    public static Lang loadFromResource(final String languageRulesResourceName, final Languages languages) {
+    public static Lang loadFromResource(final String languageRulesResourceName, final Languages languages)
+    {
         final List<LangRule> rules = new ArrayList<LangRule>();
         final InputStream lRulesIS = Lang.class.getClassLoader().getResourceAsStream(languageRulesResourceName);
 
-        if (lRulesIS == null) {
+        if (lRulesIS == null)
+        {
             throw new IllegalStateException("Unable to resolve required resource:" + LANGUAGE_RULES_RN);
         }
 
         final Scanner scanner = new Scanner(lRulesIS, ResourceConstants.ENCODING);
-        try {
+        try
+        {
             boolean inExtendedComment = false;
-            while (scanner.hasNextLine()) {
+            while (scanner.hasNextLine())
+            {
                 final String rawLine = scanner.nextLine();
                 String line = rawLine;
-                if (inExtendedComment) {
+                if (inExtendedComment)
+                {
                     // check for closing comment marker, otherwise discard doc comment line
-                    if (line.endsWith(ResourceConstants.EXT_CMT_END)) {
+                    if (line.endsWith(ResourceConstants.EXT_CMT_END))
+                    {
                         inExtendedComment = false;
                     }
-                } else {
-                    if (line.startsWith(ResourceConstants.EXT_CMT_START)) {
+                }
+                else
+                {
+                    if (line.startsWith(ResourceConstants.EXT_CMT_START))
+                    {
                         inExtendedComment = true;
-                    } else {
+                    }
+                    else
+                    {
                         // discard comments
                         final int cmtI = line.indexOf(ResourceConstants.CMT);
-                        if (cmtI >= 0) {
+                        if (cmtI >= 0)
+                        {
                             line = line.substring(0, cmtI);
                         }
 
                         // trim leading-trailing whitespace
                         line = line.trim();
 
-                        if (line.length() == 0) {
+                        if (line.length() == 0)
+                        {
                             continue; // empty lines can be safely skipped
                         }
 
                         // split it up
                         final String[] parts = line.split("\\s+");
 
-                        if (parts.length != 3) {
+                        if (parts.length != 3)
+                        {
                             throw new IllegalArgumentException("Malformed line '" + rawLine +
                                     "' in language resource '" + languageRulesResourceName + "'");
                         }
@@ -169,7 +187,9 @@ public class Lang {
                     }
                 }
             }
-        } finally {
+        }
+        finally
+        {
             scanner.close();
         }
         return new Lang(rules, languages);
@@ -178,7 +198,8 @@ public class Lang {
     private final Languages languages;
     private final List<LangRule> rules;
 
-    private Lang(final List<LangRule> rules, final Languages languages) {
+    private Lang(final List<LangRule> rules, final Languages languages)
+    {
         this.rules = Collections.unmodifiableList(rules);
         this.languages = languages;
     }
@@ -186,11 +207,11 @@ public class Lang {
     /**
      * Guesses the language of a word.
      *
-     * @param text
-     *            the word
+     * @param text the word
      * @return the language that the word originates from or {@link Languages#ANY} if there was no unique match
      */
-    public String guessLanguage(final String text) {
+    public String guessLanguage(final String text)
+    {
         final Languages.LanguageSet ls = guessLanguages(text);
         return ls.isSingleton() ? ls.getAny() : Languages.ANY;
     }
@@ -198,19 +219,24 @@ public class Lang {
     /**
      * Guesses the languages of a word.
      *
-     * @param input
-     *            the word
+     * @param input the word
      * @return a Set of Strings of language names that are potential matches for the input word
      */
-    public Languages.LanguageSet guessLanguages(final String input) {
+    public Languages.LanguageSet guessLanguages(final String input)
+    {
         final String text = input.toLowerCase(Locale.ENGLISH);
 
         final Set<String> langs = new HashSet<String>(this.languages.getLanguages());
-        for (final LangRule rule : this.rules) {
-            if (rule.matches(text)) {
-                if (rule.acceptOnMatch) {
+        for (final LangRule rule : this.rules)
+        {
+            if (rule.matches(text))
+            {
+                if (rule.acceptOnMatch)
+                {
                     langs.retainAll(rule.languages);
-                } else {
+                }
+                else
+                {
                     langs.removeAll(rule.languages);
                 }
             }

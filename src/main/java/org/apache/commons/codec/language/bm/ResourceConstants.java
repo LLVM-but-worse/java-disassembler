@@ -21,13 +21,14 @@ import org.apache.commons.codec.CharEncoding;
 
 /**
  * Constants used to process resource files.
- *
+ * <p>
  * <p>This class is immutable and thread-safe.</p>
  *
- * @since 1.6
  * @version $Id$
+ * @since 1.6
  */
-class ResourceConstants {
+class ResourceConstants
+{
 
     static final String CMT = "//";
     static final String ENCODING = CharEncoding.UTF_8;

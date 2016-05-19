@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,18 +46,18 @@ import java.util.Collection;
 /**
  * A {@link ClassVisitor} that adds a serial version unique identifier to a
  * class if missing. Here is typical usage of this class:
- * 
+ *
  * <pre>
  *   ClassWriter cw = new ClassWriter(...);
  *   ClassVisitor sv = new SerialVersionUIDAdder(cw);
  *   ClassVisitor ca = new MyClassAdapter(sv);
  *   new ClassReader(orginalClass).accept(ca, false);
  * </pre>
- * 
+ *
  * The SVUID algorithm can be found <a href=
  * "http://java.sun.com/j2se/1.4.2/docs/guide/serialization/spec/class.html"
  * >http://java.sun.com/j2se/1.4.2/docs/guide/serialization/spec/class.html</a>:
- * 
+ *
  * <pre>
  * The serialVersionUID is computed using the signature of a stream of bytes
  * that reflect the class definition. The National Institute of Standards and
@@ -66,9 +66,9 @@ import java.util.Collection;
  * 64-bit hash. A java.lang.DataOutputStream is used to convert primitive data
  * types to a sequence of bytes. The values input to the stream are defined by
  * the Java Virtual Machine (VM) specification for classes.
- * 
+ *
  * The sequence of items in the stream is as follows:
- * 
+ *
  * 1. The class name written using UTF encoding.
  * 2. The class modifiers written as a 32-bit integer.
  * 3. The name of each interface sorted by name written using UTF encoding.
@@ -92,12 +92,12 @@ import java.util.Collection;
  * 3. The descriptor of the method in UTF encoding.
  * 8. The SHA-1 algorithm is executed on the stream of bytes produced by
  * DataOutputStream and produces five 32-bit values sha[0..4].
- * 
+ *
  * 9. The hash value is assembled from the first and second 32-bit values of
  * the SHA-1 message digest. If the result of the message digest, the five
  * 32-bit words H0 H1 H2 H3 H4, is in an array of five int values named
  * sha, the hash value would be computed as follows:
- * 
+ *
  * long hash = ((sha[0] &gt;&gt;&gt; 24) &amp; 0xFF) |
  * ((sha[0] &gt;&gt;&gt; 16) &amp; 0xFF) &lt;&lt; 8 |
  * ((sha[0] &gt;&gt;&gt; 8) &amp; 0xFF) &lt;&lt; 16 |
@@ -107,10 +107,11 @@ import java.util.Collection;
  * ((sha[1] &gt;&gt;&gt; 8) &amp; 0xFF) &lt;&lt; 48 |
  * ((sha[1] &gt;&gt;&gt; 0) &amp; 0xFF) &lt;&lt; 56;
  * </pre>
- * 
+ *
  * @author Rajendra Inamdar, Vishal Vishnoi
  */
-public class SerialVersionUIDAdder extends ClassVisitor {
+public class SerialVersionUIDAdder extends ClassVisitor
+{
 
     /**
      * Flag that indicates if we need to compute SVUID.
@@ -162,23 +163,25 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * Creates a new {@link SerialVersionUIDAdder}. <i>Subclasses must not use
      * this constructor</i>. Instead, they must use the
      * {@link #SerialVersionUIDAdder(int, ClassVisitor)} version.
-     * 
+     *
      * @param cv
      *            a {@link ClassVisitor} to which this visitor will delegate
      *            calls.
      * @throws IllegalStateException
      *             If a subclass calls this constructor.
      */
-    public SerialVersionUIDAdder(final ClassVisitor cv) {
+    public SerialVersionUIDAdder(final ClassVisitor cv)
+    {
         this(Opcodes.ASM5, cv);
-        if (getClass() != SerialVersionUIDAdder.class) {
+        if (getClass() != SerialVersionUIDAdder.class)
+        {
             throw new IllegalStateException();
         }
     }
 
     /**
      * Creates a new {@link SerialVersionUIDAdder}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
@@ -186,7 +189,8 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      *            a {@link ClassVisitor} to which this visitor will delegate
      *            calls.
      */
-    protected SerialVersionUIDAdder(final int api, final ClassVisitor cv) {
+    protected SerialVersionUIDAdder(final int api, final ClassVisitor cv)
+    {
         super(api, cv);
         svuidFields = new ArrayList<Item>();
         svuidConstructors = new ArrayList<Item>();
@@ -202,17 +206,16 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * information (step 1,2, and 3) for SVUID computation.
      */
     @Override
-    public void visit(final int version, final int access, final String name,
-            final String signature, final String superName,
-            final String[] interfaces) {
+    public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces)
+    {
         computeSVUID = (access & Opcodes.ACC_INTERFACE) == 0;
 
-        if (computeSVUID) {
+        if (computeSVUID)
+        {
             this.name = name;
             this.access = access;
             this.interfaces = new String[interfaces.length];
-            System.arraycopy(interfaces, 0, this.interfaces, 0,
-                    interfaces.length);
+            System.arraycopy(interfaces, 0, this.interfaces, 0, interfaces.length);
         }
 
         super.visit(version, access, name, signature, superName, interfaces);
@@ -223,10 +226,12 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * 7). Also determine if there is a class initializer (step 6).
      */
     @Override
-    public MethodVisitor visitMethod(final int access, final String name,
-            final String desc, final String signature, final String[] exceptions) {
-        if (computeSVUID) {
-            if ("<clinit>".equals(name)) {
+    public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions)
+    {
+        if (computeSVUID)
+        {
+            if ("<clinit>".equals(name))
+            {
                 hasStaticInitializer = true;
             }
             /*
@@ -236,17 +241,17 @@ public class SerialVersionUIDAdder extends ClassVisitor {
              * ACC_SYNCHRONIZED, ACC_NATIVE, ACC_ABSTRACT and ACC_STRICT flags
              * are used.
              */
-            int mods = access
-                    & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE
-                            | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC
-                            | Opcodes.ACC_FINAL | Opcodes.ACC_SYNCHRONIZED
-                            | Opcodes.ACC_NATIVE | Opcodes.ACC_ABSTRACT | Opcodes.ACC_STRICT);
+            int mods = access & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL | Opcodes.ACC_SYNCHRONIZED | Opcodes.ACC_NATIVE | Opcodes.ACC_ABSTRACT | Opcodes.ACC_STRICT);
 
             // all non private methods
-            if ((access & Opcodes.ACC_PRIVATE) == 0) {
-                if ("<init>".equals(name)) {
+            if ((access & Opcodes.ACC_PRIVATE) == 0)
+            {
+                if ("<init>".equals(name))
+                {
                     svuidConstructors.add(new Item(name, mods, desc));
-                } else if (!"<clinit>".equals(name)) {
+                }
+                else if (!"<clinit>".equals(name))
+                {
                     svuidMethods.add(new Item(name, mods, desc));
                 }
             }
@@ -260,10 +265,12 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * if the class already has a SVUID.
      */
     @Override
-    public FieldVisitor visitField(final int access, final String name,
-            final String desc, final String signature, final Object value) {
-        if (computeSVUID) {
-            if ("serialVersionUID".equals(name)) {
+    public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value)
+    {
+        if (computeSVUID)
+        {
+            if ("serialVersionUID".equals(name))
+            {
                 // since the class already has SVUID, we won't be computing it.
                 computeSVUID = false;
                 hasSVUID = true;
@@ -274,12 +281,9 @@ public class SerialVersionUIDAdder extends ClassVisitor {
              * ACC_FINAL, ACC_VOLATILE, and ACC_TRANSIENT flags are used when
              * computing serialVersionUID values.
              */
-            if ((access & Opcodes.ACC_PRIVATE) == 0
-                    || (access & (Opcodes.ACC_STATIC | Opcodes.ACC_TRANSIENT)) == 0) {
-                int mods = access
-                        & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE
-                                | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC
-                                | Opcodes.ACC_FINAL | Opcodes.ACC_VOLATILE | Opcodes.ACC_TRANSIENT);
+            if ((access & Opcodes.ACC_PRIVATE) == 0 || (access & (Opcodes.ACC_STATIC | Opcodes.ACC_TRANSIENT)) == 0)
+            {
+                int mods = access & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL | Opcodes.ACC_VOLATILE | Opcodes.ACC_TRANSIENT);
                 svuidFields.add(new Item(name, mods, desc));
             }
         }
@@ -295,9 +299,10 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * the class file in favor of the access bits InnerClass attribute.
      */
     @Override
-    public void visitInnerClass(final String aname, final String outerName,
-            final String innerName, final int attr_access) {
-        if ((name != null) && name.equals(aname)) {
+    public void visitInnerClass(final String aname, final String outerName, final String innerName, final int attr_access)
+    {
+        if ((name != null) && name.equals(aname))
+        {
             this.access = attr_access;
         }
         super.visitInnerClass(aname, outerName, innerName, attr_access);
@@ -307,14 +312,18 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * Add the SVUID if class doesn't have one
      */
     @Override
-    public void visitEnd() {
+    public void visitEnd()
+    {
         // compute SVUID and add it to the class
-        if (computeSVUID && !hasSVUID) {
-            try {
+        if (computeSVUID && !hasSVUID)
+        {
+            try
+            {
                 addSVUID(computeSVUID());
-            } catch (Throwable e) {
-                throw new RuntimeException("Error while computing SVUID for "
-                        + name, e);
+            }
+            catch (Throwable e)
+            {
+                throw new RuntimeException("Error while computing SVUID for " + name, e);
             }
         }
 
@@ -328,34 +337,38 @@ public class SerialVersionUIDAdder extends ClassVisitor {
     /**
      * Returns true if the class already has a SVUID field. The result of this
      * method is only valid when visitEnd is or has been called.
-     * 
+     *
      * @return true if the class already has a SVUID field.
      */
-    public boolean hasSVUID() {
+    public boolean hasSVUID()
+    {
         return hasSVUID;
     }
 
-    protected void addSVUID(long svuid) {
-        FieldVisitor fv = super.visitField(Opcodes.ACC_FINAL
-                + Opcodes.ACC_STATIC, "serialVersionUID", "J", null, svuid);
-        if (fv != null) {
+    protected void addSVUID(long svuid)
+    {
+        FieldVisitor fv = super.visitField(Opcodes.ACC_FINAL + Opcodes.ACC_STATIC, "serialVersionUID", "J", null, svuid);
+        if (fv != null)
+        {
             fv.visitEnd();
         }
     }
 
     /**
      * Computes and returns the value of SVUID.
-     * 
+     *
      * @return Returns the serial version UID
      * @throws IOException
      *             if an I/O error occurs
      */
-    protected long computeSVUID() throws IOException {
+    protected long computeSVUID() throws IOException
+    {
         ByteArrayOutputStream bos;
         DataOutputStream dos = null;
         long svuid = 0;
 
-        try {
+        try
+        {
             bos = new ByteArrayOutputStream();
             dos = new DataOutputStream(bos);
 
@@ -367,16 +380,15 @@ public class SerialVersionUIDAdder extends ClassVisitor {
             /*
              * 2. The class modifiers written as a 32-bit integer.
              */
-            dos.writeInt(access
-                    & (Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL
-                            | Opcodes.ACC_INTERFACE | Opcodes.ACC_ABSTRACT));
+            dos.writeInt(access & (Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_INTERFACE | Opcodes.ACC_ABSTRACT));
 
             /*
              * 3. The name of each interface sorted by name written using UTF
              * encoding.
              */
             Arrays.sort(interfaces);
-            for (int i = 0; i < interfaces.length; i++) {
+            for (int i = 0; i < interfaces.length; i++)
+            {
                 dos.writeUTF(interfaces[i].replace('/', '.'));
             }
 
@@ -400,7 +412,8 @@ public class SerialVersionUIDAdder extends ClassVisitor {
              * 32-bit integer. 3. The descriptor of the method, ()V, in UTF
              * encoding.
              */
-            if (hasStaticInitializer) {
+            if (hasStaticInitializer)
+            {
                 dos.writeUTF("<clinit>");
                 dos.writeInt(Opcodes.ACC_STATIC);
                 dos.writeUTF("()V");
@@ -444,12 +457,16 @@ public class SerialVersionUIDAdder extends ClassVisitor {
              * 40 | ((sha[1] >>> 8) & 0xFF) << 48 | ((sha[1] >>> 0) & 0xFF) <<
              * 56;
              */
-            for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
+            for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--)
+            {
                 svuid = (svuid << 8) | (hashBytes[i] & 0xFF);
             }
-        } finally {
+        }
+        finally
+        {
             // close the stream (if open)
-            if (dos != null) {
+            if (dos != null)
+            {
                 dos.close();
             }
         }
@@ -459,22 +476,26 @@ public class SerialVersionUIDAdder extends ClassVisitor {
 
     /**
      * Returns the SHA-1 message digest of the given value.
-     * 
+     *
      * @param value
      *            the value whose SHA message digest must be computed.
      * @return the SHA-1 message digest of the given value.
      */
-    protected byte[] computeSHAdigest(final byte[] value) {
-        try {
+    protected byte[] computeSHAdigest(final byte[] value)
+    {
+        try
+        {
             return MessageDigest.getInstance("SHA").digest(value);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new UnsupportedOperationException(e.toString());
         }
     }
 
     /**
      * Sorts the items in the collection and writes it to the data output stream
-     * 
+     *
      * @param itemCollection
      *            collection of items
      * @param dos
@@ -484,16 +505,16 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * @exception IOException
      *                if an error occurs
      */
-    private static void writeItems(final Collection<Item> itemCollection,
-            final DataOutput dos, final boolean dotted) throws IOException {
+    private static void writeItems(final Collection<Item> itemCollection, final DataOutput dos, final boolean dotted) throws IOException
+    {
         int size = itemCollection.size();
         Item[] items = itemCollection.toArray(new Item[size]);
         Arrays.sort(items);
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++)
+        {
             dos.writeUTF(items[i].name);
             dos.writeInt(items[i].access);
-            dos.writeUTF(dotted ? items[i].desc.replace('/', '.')
-                    : items[i].desc);
+            dos.writeUTF(dotted ? items[i].desc.replace('/', '.') : items[i].desc);
         }
     }
 
@@ -501,7 +522,8 @@ public class SerialVersionUIDAdder extends ClassVisitor {
     // Inner classes
     // ------------------------------------------------------------------------
 
-    private static class Item implements Comparable<Item> {
+    private static class Item implements Comparable<Item>
+    {
 
         final String name;
 
@@ -509,30 +531,36 @@ public class SerialVersionUIDAdder extends ClassVisitor {
 
         final String desc;
 
-        Item(final String name, final int access, final String desc) {
+        Item(final String name, final int access, final String desc)
+        {
             this.name = name;
             this.access = access;
             this.desc = desc;
         }
 
-        public int compareTo(final Item other) {
+        public int compareTo(final Item other)
+        {
             int retVal = name.compareTo(other.name);
-            if (retVal == 0) {
+            if (retVal == 0)
+            {
                 retVal = desc.compareTo(other.desc);
             }
             return retVal;
         }
 
         @Override
-        public boolean equals(final Object o) {
-            if (o instanceof Item) {
+        public boolean equals(final Object o)
+        {
+            if (o instanceof Item)
+            {
                 return compareTo((Item) o) == 0;
             }
             return false;
         }
 
         @Override
-        public int hashCode() {
+        public int hashCode()
+        {
             return (name + desc).hashCode();
         }
     }

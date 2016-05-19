@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,11 +33,12 @@ package org.objectweb.asm;
  * A visitor to visit a Java annotation. The methods of this class must be
  * called in the following order: ( <tt>visit</tt> | <tt>visitEnum</tt> |
  * <tt>visitAnnotation</tt> | <tt>visitArray</tt> )* <tt>visitEnd</tt>.
- * 
+ *
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-public abstract class AnnotationVisitor {
+public abstract class AnnotationVisitor
+{
 
     /**
      * The ASM API version implemented by this visitor. The value of this field
@@ -53,18 +54,19 @@ public abstract class AnnotationVisitor {
 
     /**
      * Constructs a new {@link AnnotationVisitor}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    public AnnotationVisitor(final int api) {
+    public AnnotationVisitor(final int api)
+    {
         this(api, null);
     }
 
     /**
      * Constructs a new {@link AnnotationVisitor}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
@@ -72,8 +74,10 @@ public abstract class AnnotationVisitor {
      *            the annotation visitor to which this visitor must delegate
      *            method calls. May be null.
      */
-    public AnnotationVisitor(final int api, final AnnotationVisitor av) {
-        if (api != Opcodes.ASM4 && api != Opcodes.ASM5) {
+    public AnnotationVisitor(final int api, final AnnotationVisitor av)
+    {
+        if (api != Opcodes.ASM4 && api != Opcodes.ASM5)
+        {
             throw new IllegalArgumentException();
         }
         this.api = api;
@@ -82,7 +86,7 @@ public abstract class AnnotationVisitor {
 
     /**
      * Visits a primitive value of the annotation.
-     * 
+     *
      * @param name
      *            the value name.
      * @param value
@@ -95,15 +99,17 @@ public abstract class AnnotationVisitor {
      *            {@link #visitArray visitArray} and visiting each array element
      *            in turn, but is more convenient).
      */
-    public void visit(String name, Object value) {
-        if (av != null) {
+    public void visit(String name, Object value)
+    {
+        if (av != null)
+        {
             av.visit(name, value);
         }
     }
 
     /**
      * Visits an enumeration value of the annotation.
-     * 
+     *
      * @param name
      *            the value name.
      * @param desc
@@ -111,15 +117,17 @@ public abstract class AnnotationVisitor {
      * @param value
      *            the actual enumeration value.
      */
-    public void visitEnum(String name, String desc, String value) {
-        if (av != null) {
+    public void visitEnum(String name, String desc, String value)
+    {
+        if (av != null)
+        {
             av.visitEnum(name, desc, value);
         }
     }
 
     /**
      * Visits a nested annotation value of the annotation.
-     * 
+     *
      * @param name
      *            the value name.
      * @param desc
@@ -130,8 +138,10 @@ public abstract class AnnotationVisitor {
      *         visited before calling other methods on this annotation
      *         visitor</i>.
      */
-    public AnnotationVisitor visitAnnotation(String name, String desc) {
-        if (av != null) {
+    public AnnotationVisitor visitAnnotation(String name, String desc)
+    {
+        if (av != null)
+        {
             return av.visitAnnotation(name, desc);
         }
         return null;
@@ -142,7 +152,7 @@ public abstract class AnnotationVisitor {
      * types (such as byte, boolean, short, char, int, long, float or double)
      * can be passed as value to {@link #visit visit}. This is what
      * {@link ClassReader} does.
-     * 
+     *
      * @param name
      *            the value name.
      * @return a visitor to visit the actual array value elements, or
@@ -151,8 +161,10 @@ public abstract class AnnotationVisitor {
      *         visitor are ignored. <i>All the array values must be visited
      *         before calling other methods on this annotation visitor</i>.
      */
-    public AnnotationVisitor visitArray(String name) {
-        if (av != null) {
+    public AnnotationVisitor visitArray(String name)
+    {
+        if (av != null)
+        {
             return av.visitArray(name);
         }
         return null;
@@ -161,8 +173,10 @@ public abstract class AnnotationVisitor {
     /**
      * Visits the end of the annotation.
      */
-    public void visitEnd() {
-        if (av != null) {
+    public void visitEnd()
+    {
+        if (av != null)
+        {
             av.visitEnd();
         }
     }

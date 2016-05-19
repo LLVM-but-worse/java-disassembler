@@ -52,96 +52,128 @@ import java.util.List;
  *
  * @author Konloch
  */
-public class CFRDecompiler extends Decompiler {
+public class CFRDecompiler extends Decompiler
+{
 
-    public CFRDecompiler() {
-        for (Settings setting : Settings.values()) {
+    public CFRDecompiler()
+    {
+        for (Settings setting : Settings.values())
+        {
             settings.registerSetting(setting);
         }
     }
 
     @Override
-    public DecompilerSettings getSettings() {
+    public DecompilerSettings getSettings()
+    {
         return settings;
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "CFR";
     }
 
     @Override
-    public String decompileClassNode(ClassNode cn, byte[] b) {
-        try {
+    public String decompileClassNode(ClassNode cn, byte[] b)
+    {
+        try
+        {
             Options options = new GetOptParser().parse(generateMainMethod(), OptionsImpl.getFactory());
             ClassFileSourceImpl classFileSource = new ClassFileSourceImpl(options);
             DCCommonState dcCommonState = new DCCommonState(options, classFileSource);
             return doClass(dcCommonState, b);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             return parseException(e);
         }
     }
 
     @Override
-    public void decompileToZip(String zipName) {
-        try {
+    public void decompileToZip(String zipName)
+    {
+        try
+        {
             Path outputDir = Files.createTempDirectory("cfr_output");
             Path tempJar = Files.createTempFile("cfr_input", ".jar");
             File output = new File(zipName);
-            try {
+            try
+            {
                 JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), tempJar.toAbsolutePath().toString());
                 Options options = new GetOptParser().parse(generateMainMethod(), OptionsImpl.getFactory());
                 ClassFileSourceImpl classFileSource = new ClassFileSourceImpl(options);
                 DCCommonState dcCommonState = new DCCommonState(options, classFileSource);
                 doJar(dcCommonState, tempJar.toAbsolutePath(), outputDir.toAbsolutePath());
                 ZipUtil.pack(outputDir.toFile(), output);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 handleException(e);
-            } finally {
-                try {
+            }
+            finally
+            {
+                try
+                {
                     FileUtils.deleteDirectory(outputDir.toFile());
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     handleException(e);
                 }
-                try {
+                try
+                {
                     Files.delete(tempJar);
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     handleException(e);
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             handleException(e);
         }
     }
 
-    public String[] generateMainMethod() {
+    public String[] generateMainMethod()
+    {
         String[] result = new String[getSettings().size() * 2 + 1];
         result[0] = "bytecodeviewer";
         int index = 1;
-        for (Settings setting : Settings.values()) {
+        for (Settings setting : Settings.values())
+        {
             result[index++] = "--" + setting.getParam();
             result[index++] = String.valueOf(getSettings().isSelected(setting));
         }
         return result;
     }
 
-    public static String doClass(DCCommonState dcCommonState, byte[] content1) throws Exception {
+    public static String doClass(DCCommonState dcCommonState, byte[] content1) throws Exception
+    {
         Options options = dcCommonState.getOptions();
         Dumper d = new ToStringDumper();
         BaseByteData data = new BaseByteData(content1);
         ClassFile var24 = new ClassFile(data, "", dcCommonState);
         dcCommonState.configureWith(var24);
 
-        try {
+        try
+        {
             var24 = dcCommonState.getClassFile(var24.getClassType());
-        } catch (CannotLoadClassException var18) {
+        }
+        catch (CannotLoadClassException var18)
+        {
         }
 
-        if (options.getOption(OptionsImpl.DECOMPILE_INNER_CLASSES)) {
+        if (options.getOption(OptionsImpl.DECOMPILE_INNER_CLASSES))
+        {
             var24.loadInnerClasses(dcCommonState);
         }
 
-        if (options.getOption(OptionsImpl.RENAME_MEMBERS)) {
+        if (options.getOption(OptionsImpl.RENAME_MEMBERS))
+        {
             MemberNameResolver.resolveNames(dcCommonState, ListFactory.newList(dcCommonState.getClassCache().getLoadedTypes()));
         }
 
@@ -149,14 +181,21 @@ public class CFRDecompiler extends Decompiler {
         TypeUsageCollector var25 = new TypeUsageCollector(var24);
         var24.collectTypeUsages(var25);
         String var26 = options.getOption(OptionsImpl.METHODNAME);
-        if (var26 == null) {
+        if (var26 == null)
+        {
             var24.dump(d);
-        } else {
-            try {
-                for (Method method : var24.getMethodByName(var26)) {
+        }
+        else
+        {
+            try
+            {
+                for (Method method : var24.getMethodByName(var26))
+                {
                     method.dump(d, true);
                 }
-            } catch (NoSuchMethodException var19) {
+            }
+            catch (NoSuchMethodException var19)
+            {
                 throw new IllegalArgumentException("No such method \'" + var26 + "\'.");
             }
         }
@@ -164,7 +203,8 @@ public class CFRDecompiler extends Decompiler {
         return d.toString();
     }
 
-    public static void doJar(DCCommonState dcCommonState, Path input, Path output) throws Exception {
+    public static void doJar(DCCommonState dcCommonState, Path input, Path output) throws Exception
+    {
         SummaryDumper summaryDumper = new NopSummaryDumper();
         Dumper d = new ToStringDumper();
         Options options = dcCommonState.getOptions();
@@ -173,22 +213,31 @@ public class CFRDecompiler extends Decompiler {
         final Predicate e = org.benf.cfr.reader.util.MiscUtils.mkRegexFilter(options.getOption(OptionsImpl.JAR_FILTER), true);
 
         List<JavaTypeInstance> err1 = dcCommonState.explicitlyLoadJar(input.toAbsolutePath().toString());
-        err1 = Functional.filter(err1, new Predicate<JavaTypeInstance>() {
-            public boolean test(JavaTypeInstance in) {
+        err1 = Functional.filter(err1, new Predicate<JavaTypeInstance>()
+        {
+            public boolean test(JavaTypeInstance in)
+            {
                 return e.test(in.getRawName());
             }
         });
-        if (options.getOption(OptionsImpl.RENAME_MEMBERS)) {
+        if (options.getOption(OptionsImpl.RENAME_MEMBERS))
+        {
             MemberNameResolver.resolveNames(dcCommonState, err1);
         }
 
-        for (JavaTypeInstance type : err1) {
-            try {
+        for (JavaTypeInstance type : err1)
+        {
+            try
+            {
                 ClassFile e1 = dcCommonState.getClassFile(type);
-                if (e1.isInnerClass()) {
+                if (e1.isInnerClass())
+                {
                     d = null;
-                } else {
-                    if (options.getOption(OptionsImpl.DECOMPILE_INNER_CLASSES).booleanValue()) {
+                }
+                else
+                {
+                    if (options.getOption(OptionsImpl.DECOMPILE_INNER_CLASSES).booleanValue())
+                    {
                         e1.loadInnerClasses(dcCommonState);
                     }
 
@@ -200,19 +249,27 @@ public class CFRDecompiler extends Decompiler {
                     d.print("\n");
                     d.print("\n");
                 }
-            } catch (Dumper.CannotCreate var25) {
+            }
+            catch (Dumper.CannotCreate var25)
+            {
                 throw var25;
-            } catch (RuntimeException var26) {
+            }
+            catch (RuntimeException var26)
+            {
                 d.print(var26.toString()).print("\n").print("\n").print("\n");
-            } finally {
-                if (d != null) {
+            }
+            finally
+            {
+                if (d != null)
+                {
                     d.close();
                 }
             }
         }
     }
 
-    public enum Settings implements DecompilerSettings.Setting {
+    public enum Settings implements DecompilerSettings.Setting
+    {
         DECODE_ENUM_SWITCH("decodeenumswitch", "Decode Enum Switch", true),
         SUGAR_ENUMS("sugarenums", "SugarEnums", true),
         DECODE_STRING_SWITCH("decodestringswitch", "Decode String Switch", true),
@@ -261,25 +318,30 @@ public class CFRDecompiler extends Decompiler {
         private String param;
         private boolean on;
 
-        Settings(String param, String name) {
+        Settings(String param, String name)
+        {
             this(param, name, false);
         }
 
-        Settings(String param, String name, boolean on) {
+        Settings(String param, String name, boolean on)
+        {
             this.name = name;
             this.param = param;
             this.on = on;
         }
 
-        public String getText() {
+        public String getText()
+        {
             return name;
         }
 
-        public boolean isDefaultOn() {
+        public boolean isDefaultOn()
+        {
             return on;
         }
 
-        public String getParam() {
+        public String getParam()
+        {
             return param;
         }
     }

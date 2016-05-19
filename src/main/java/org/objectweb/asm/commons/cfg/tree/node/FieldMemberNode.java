@@ -7,21 +7,26 @@ import org.objectweb.asm.tree.FieldInsnNode;
 /**
  * @author Tyler Sedlar
  */
-public class FieldMemberNode extends ReferenceNode {
+public class FieldMemberNode extends ReferenceNode
+{
 
-	public FieldMemberNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing) {
-		super(tree, insn, collapsed, producing);
-	}
+    public FieldMemberNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing)
+    {
+        super(tree, insn, collapsed, producing);
+    }
 
-    public FieldInsnNode fin() {
+    public FieldInsnNode fin()
+    {
         return (FieldInsnNode) insn();
     }
 
-	public boolean getting() {
-		return opcode() == GETFIELD || opcode() == GETSTATIC;
-	}
+    public boolean getting()
+    {
+        return opcode() == GETFIELD || opcode() == GETSTATIC;
+    }
 
-	public boolean putting() {
-		return opcode() == PUTFIELD || opcode() == PUTSTATIC;
-	}
+    public boolean putting()
+    {
+        return opcode() == PUTFIELD || opcode() == PUTSTATIC;
+    }
 }

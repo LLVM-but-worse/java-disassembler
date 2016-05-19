@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,10 +35,11 @@ import org.objectweb.asm.Type;
  * A {@link Value} that is represented by its type in a seven types type system.
  * This type system distinguishes the UNINITIALZED, INT, FLOAT, LONG, DOUBLE,
  * REFERENCE and RETURNADDRESS types.
- * 
+ *
  * @author Eric Bruneton
  */
-public class BasicValue implements Value {
+public class BasicValue implements Value
+{
 
     public static final BasicValue UNINITIALIZED_VALUE = new BasicValue(null);
 
@@ -48,63 +49,81 @@ public class BasicValue implements Value {
 
     public static final BasicValue LONG_VALUE = new BasicValue(Type.LONG_TYPE);
 
-    public static final BasicValue DOUBLE_VALUE = new BasicValue(
-            Type.DOUBLE_TYPE);
+    public static final BasicValue DOUBLE_VALUE = new BasicValue(Type.DOUBLE_TYPE);
 
-    public static final BasicValue REFERENCE_VALUE = new BasicValue(
-            Type.getObjectType("java/lang/Object"));
+    public static final BasicValue REFERENCE_VALUE = new BasicValue(Type.getObjectType("java/lang/Object"));
 
-    public static final BasicValue RETURNADDRESS_VALUE = new BasicValue(
-            Type.VOID_TYPE);
+    public static final BasicValue RETURNADDRESS_VALUE = new BasicValue(Type.VOID_TYPE);
 
     private final Type type;
 
-    public BasicValue(final Type type) {
+    public BasicValue(final Type type)
+    {
         this.type = type;
     }
 
-    public Type getType() {
+    public Type getType()
+    {
         return type;
     }
 
-    public int getSize() {
+    public int getSize()
+    {
         return type == Type.LONG_TYPE || type == Type.DOUBLE_TYPE ? 2 : 1;
     }
 
-    public boolean isReference() {
-        return type != null
-                && (type.getSort() == Type.OBJECT || type.getSort() == Type.ARRAY);
+    public boolean isReference()
+    {
+        return type != null && (type.getSort() == Type.OBJECT || type.getSort() == Type.ARRAY);
     }
 
     @Override
-    public boolean equals(final Object value) {
-        if (value == this) {
+    public boolean equals(final Object value)
+    {
+        if (value == this)
+        {
             return true;
-        } else if (value instanceof BasicValue) {
-            if (type == null) {
+        }
+        else if (value instanceof BasicValue)
+        {
+            if (type == null)
+            {
                 return ((BasicValue) value).type == null;
-            } else {
+            }
+            else
+            {
                 return type.equals(((BasicValue) value).type);
             }
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return type == null ? 0 : type.hashCode();
     }
 
     @Override
-    public String toString() {
-        if (this == UNINITIALIZED_VALUE) {
+    public String toString()
+    {
+        if (this == UNINITIALIZED_VALUE)
+        {
             return ".";
-        } else if (this == RETURNADDRESS_VALUE) {
+        }
+        else if (this == RETURNADDRESS_VALUE)
+        {
             return "A";
-        } else if (this == REFERENCE_VALUE) {
+        }
+        else if (this == REFERENCE_VALUE)
+        {
             return "R";
-        } else {
+        }
+        else
+        {
             return type.getDescriptor();
         }
     }

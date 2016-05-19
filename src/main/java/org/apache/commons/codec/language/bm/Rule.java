@@ -66,26 +66,34 @@ import java.util.regex.Pattern;
  * <li><b>Blank lines:</b> All blank lines will be skipped.</li>
  * </ul>
  *
- * @since 1.6
  * @version $Id$
+ * @since 1.6
  */
-public class Rule {
+public class Rule
+{
 
-    public static final class Phoneme implements PhonemeExpr {
-        public static final Comparator<Phoneme> COMPARATOR = new Comparator<Phoneme>() {
+    public static final class Phoneme implements PhonemeExpr
+    {
+        public static final Comparator<Phoneme> COMPARATOR = new Comparator<Phoneme>()
+        {
             @Override
-            public int compare(final Phoneme o1, final Phoneme o2) {
-                for (int i = 0; i < o1.phonemeText.length(); i++) {
-                    if (i >= o2.phonemeText.length()) {
+            public int compare(final Phoneme o1, final Phoneme o2)
+            {
+                for (int i = 0; i < o1.phonemeText.length(); i++)
+                {
+                    if (i >= o2.phonemeText.length())
+                    {
                         return +1;
                     }
                     final int c = o1.phonemeText.charAt(i) - o2.phonemeText.charAt(i);
-                    if (c != 0) {
+                    if (c != 0)
+                    {
                         return c;
                     }
                 }
 
-                if (o1.phonemeText.length() < o2.phonemeText.length()) {
+                if (o1.phonemeText.length() < o2.phonemeText.length())
+                {
                     return -1;
                 }
 
@@ -96,36 +104,43 @@ public class Rule {
         private final StringBuilder phonemeText;
         private final Languages.LanguageSet languages;
 
-        public Phoneme(final CharSequence phonemeText, final Languages.LanguageSet languages) {
+        public Phoneme(final CharSequence phonemeText, final Languages.LanguageSet languages)
+        {
             this.phonemeText = new StringBuilder(phonemeText);
             this.languages = languages;
         }
 
-        public Phoneme(final Phoneme phonemeLeft, final Phoneme phonemeRight) {
+        public Phoneme(final Phoneme phonemeLeft, final Phoneme phonemeRight)
+        {
             this(phonemeLeft.phonemeText, phonemeLeft.languages);
             this.phonemeText.append(phonemeRight.phonemeText);
         }
 
-        public Phoneme(final Phoneme phonemeLeft, final Phoneme phonemeRight, final Languages.LanguageSet languages) {
+        public Phoneme(final Phoneme phonemeLeft, final Phoneme phonemeRight, final Languages.LanguageSet languages)
+        {
             this(phonemeLeft.phonemeText, languages);
             this.phonemeText.append(phonemeRight.phonemeText);
         }
 
-        public Phoneme append(final CharSequence str) {
+        public Phoneme append(final CharSequence str)
+        {
             this.phonemeText.append(str);
             return this;
         }
 
-        public Languages.LanguageSet getLanguages() {
+        public Languages.LanguageSet getLanguages()
+        {
             return this.languages;
         }
 
         @Override
-        public Iterable<Phoneme> getPhonemes() {
+        public Iterable<Phoneme> getPhonemes()
+        {
             return Collections.singleton(this);
         }
 
-        public CharSequence getPhonemeText() {
+        public CharSequence getPhonemeText()
+        {
             return this.phonemeText;
         }
 
@@ -137,9 +152,9 @@ public class Rule {
          * @deprecated since 1.9
          */
         @Deprecated
-        public Phoneme join(final Phoneme right) {
-            return new Phoneme(this.phonemeText.toString() + right.phonemeText.toString(),
-                               this.languages.restrictTo(right.languages));
+        public Phoneme join(final Phoneme right)
+        {
+            return new Phoneme(this.phonemeText.toString() + right.phonemeText.toString(), this.languages.restrictTo(right.languages));
         }
 
         /**
@@ -149,29 +164,35 @@ public class Rule {
          * @param lang the language set to merge
          * @return a new Phoneme
          */
-        public Phoneme mergeWithLanguage(final LanguageSet lang) {
-          return new Phoneme(this.phonemeText.toString(), this.languages.merge(lang));
+        public Phoneme mergeWithLanguage(final LanguageSet lang)
+        {
+            return new Phoneme(this.phonemeText.toString(), this.languages.merge(lang));
         }
 
         @Override
-        public String toString() {
-          return phonemeText.toString() + "[" + languages + "]";
+        public String toString()
+        {
+            return phonemeText.toString() + "[" + languages + "]";
         }
     }
 
-    public interface PhonemeExpr {
+    public interface PhonemeExpr
+    {
         Iterable<Phoneme> getPhonemes();
     }
 
-    public static final class PhonemeList implements PhonemeExpr {
+    public static final class PhonemeList implements PhonemeExpr
+    {
         private final List<Phoneme> phonemes;
 
-        public PhonemeList(final List<Phoneme> phonemes) {
+        public PhonemeList(final List<Phoneme> phonemes)
+        {
             this.phonemes = phonemes;
         }
 
         @Override
-        public List<Phoneme> getPhonemes() {
+        public List<Phoneme> getPhonemes()
+        {
             return this.phonemes;
         }
     }
@@ -179,13 +200,16 @@ public class Rule {
     /**
      * A minimal wrapper around the functionality of Pattern that we use, to allow for alternate implementations.
      */
-    public interface RPattern {
+    public interface RPattern
+    {
         boolean isMatch(CharSequence input);
     }
 
-    public static final RPattern ALL_STRINGS_RMATCHER = new RPattern() {
+    public static final RPattern ALL_STRINGS_RMATCHER = new RPattern()
+    {
         @Override
-        public boolean isMatch(final CharSequence input) {
+        public boolean isMatch(final CharSequence input)
+        {
             return true;
         }
     };
@@ -196,26 +220,32 @@ public class Rule {
 
     private static final String HASH_INCLUDE = "#include";
 
-    private static final Map<NameType, Map<RuleType, Map<String, Map<String, List<Rule>>>>> RULES =
-            new EnumMap<NameType, Map<RuleType, Map<String, Map<String, List<Rule>>>>>(NameType.class);
+    private static final Map<NameType, Map<RuleType, Map<String, Map<String, List<Rule>>>>> RULES = new EnumMap<NameType, Map<RuleType, Map<String, Map<String, List<Rule>>>>>(NameType.class);
 
-    static {
-        for (final NameType s : NameType.values()) {
-            final Map<RuleType, Map<String, Map<String, List<Rule>>>> rts =
-                    new EnumMap<RuleType, Map<String, Map<String, List<Rule>>>>(RuleType.class);
+    static
+    {
+        for (final NameType s : NameType.values())
+        {
+            final Map<RuleType, Map<String, Map<String, List<Rule>>>> rts = new EnumMap<RuleType, Map<String, Map<String, List<Rule>>>>(RuleType.class);
 
-            for (final RuleType rt : RuleType.values()) {
+            for (final RuleType rt : RuleType.values())
+            {
                 final Map<String, Map<String, List<Rule>>> rs = new HashMap<String, Map<String, List<Rule>>>();
 
                 final Languages ls = Languages.getInstance(s);
-                for (final String l : ls.getLanguages()) {
-                    try {
+                for (final String l : ls.getLanguages())
+                {
+                    try
+                    {
                         rs.put(l, parseRules(createScanner(s, rt, l), createResourceName(s, rt, l)));
-                    } catch (final IllegalStateException e) {
+                    }
+                    catch (final IllegalStateException e)
+                    {
                         throw new IllegalStateException("Problem processing " + createResourceName(s, rt, l), e);
                     }
                 }
-                if (!rt.equals(RuleType.RULES)) {
+                if (!rt.equals(RuleType.RULES))
+                {
                     rs.put("common", parseRules(createScanner(s, rt, "common"), createResourceName(s, rt, "common")));
                 }
 
@@ -226,48 +256,59 @@ public class Rule {
         }
     }
 
-    private static boolean contains(final CharSequence chars, final char input) {
-        for (int i = 0; i < chars.length(); i++) {
-            if (chars.charAt(i) == input) {
+    private static boolean contains(final CharSequence chars, final char input)
+    {
+        for (int i = 0; i < chars.length(); i++)
+        {
+            if (chars.charAt(i) == input)
+            {
                 return true;
             }
         }
         return false;
     }
 
-    private static String createResourceName(final NameType nameType, final RuleType rt, final String lang) {
-        return String.format("org/apache/commons/codec/language/bm/%s_%s_%s.txt",
-                             nameType.getName(), rt.getName(), lang);
+    private static String createResourceName(final NameType nameType, final RuleType rt, final String lang)
+    {
+        return String.format("org/apache/commons/codec/language/bm/%s_%s_%s.txt", nameType.getName(), rt.getName(), lang);
     }
 
-    private static Scanner createScanner(final NameType nameType, final RuleType rt, final String lang) {
+    private static Scanner createScanner(final NameType nameType, final RuleType rt, final String lang)
+    {
         final String resName = createResourceName(nameType, rt, lang);
         final InputStream rulesIS = Languages.class.getClassLoader().getResourceAsStream(resName);
 
-        if (rulesIS == null) {
+        if (rulesIS == null)
+        {
             throw new IllegalArgumentException("Unable to load resource: " + resName);
         }
 
         return new Scanner(rulesIS, ResourceConstants.ENCODING);
     }
 
-    private static Scanner createScanner(final String lang) {
+    private static Scanner createScanner(final String lang)
+    {
         final String resName = String.format("org/apache/commons/codec/language/bm/%s.txt", lang);
         final InputStream rulesIS = Languages.class.getClassLoader().getResourceAsStream(resName);
 
-        if (rulesIS == null) {
+        if (rulesIS == null)
+        {
             throw new IllegalArgumentException("Unable to load resource: " + resName);
         }
 
         return new Scanner(rulesIS, ResourceConstants.ENCODING);
     }
 
-    private static boolean endsWith(final CharSequence input, final CharSequence suffix) {
-        if (suffix.length() > input.length()) {
+    private static boolean endsWith(final CharSequence input, final CharSequence suffix)
+    {
+        if (suffix.length() > input.length())
+        {
             return false;
         }
-        for (int i = input.length() - 1, j = suffix.length() - 1; j >= 0; i--, j--) {
-            if (input.charAt(i) != suffix.charAt(j)) {
+        for (int i = input.length() - 1, j = suffix.length() - 1; j >= 0; i--, j--)
+        {
+            if (input.charAt(i) != suffix.charAt(j))
+            {
                 return false;
             }
         }
@@ -277,19 +318,17 @@ public class Rule {
     /**
      * Gets rules for a combination of name type, rule type and languages.
      *
-     * @param nameType
-     *            the NameType to consider
-     * @param rt
-     *            the RuleType to consider
-     * @param langs
-     *            the set of languages to consider
+     * @param nameType the NameType to consider
+     * @param rt       the RuleType to consider
+     * @param langs    the set of languages to consider
      * @return a list of Rules that apply
      */
-    public static List<Rule> getInstance(final NameType nameType, final RuleType rt,
-                                         final Languages.LanguageSet langs) {
+    public static List<Rule> getInstance(final NameType nameType, final RuleType rt, final Languages.LanguageSet langs)
+    {
         final Map<String, List<Rule>> ruleMap = getInstanceMap(nameType, rt, langs);
         final List<Rule> allRules = new ArrayList<Rule>();
-        for (final List<Rule> rules : ruleMap.values()) {
+        for (final List<Rule> rules : ruleMap.values())
+        {
             allRules.addAll(rules);
         }
         return allRules;
@@ -298,64 +337,59 @@ public class Rule {
     /**
      * Gets rules for a combination of name type, rule type and a single language.
      *
-     * @param nameType
-     *            the NameType to consider
-     * @param rt
-     *            the RuleType to consider
-     * @param lang
-     *            the language to consider
+     * @param nameType the NameType to consider
+     * @param rt       the RuleType to consider
+     * @param lang     the language to consider
      * @return a list of Rules that apply
      */
-    public static List<Rule> getInstance(final NameType nameType, final RuleType rt, final String lang) {
+    public static List<Rule> getInstance(final NameType nameType, final RuleType rt, final String lang)
+    {
         return getInstance(nameType, rt, LanguageSet.from(new HashSet<String>(Arrays.asList(lang))));
     }
 
     /**
      * Gets rules for a combination of name type, rule type and languages.
      *
-     * @param nameType
-     *            the NameType to consider
-     * @param rt
-     *            the RuleType to consider
-     * @param langs
-     *            the set of languages to consider
+     * @param nameType the NameType to consider
+     * @param rt       the RuleType to consider
+     * @param langs    the set of languages to consider
      * @return a map containing all Rules that apply, grouped by the first character of the rule pattern
      * @since 1.9
      */
-    public static Map<String, List<Rule>> getInstanceMap(final NameType nameType, final RuleType rt,
-                                                         final Languages.LanguageSet langs) {
-        return langs.isSingleton() ? getInstanceMap(nameType, rt, langs.getAny()) :
-                                     getInstanceMap(nameType, rt, Languages.ANY);
+    public static Map<String, List<Rule>> getInstanceMap(final NameType nameType, final RuleType rt, final Languages.LanguageSet langs)
+    {
+        return langs.isSingleton() ? getInstanceMap(nameType, rt, langs.getAny())
+                : getInstanceMap(nameType, rt, Languages.ANY);
     }
 
     /**
      * Gets rules for a combination of name type, rule type and a single language.
      *
-     * @param nameType
-     *            the NameType to consider
-     * @param rt
-     *            the RuleType to consider
-     * @param lang
-     *            the language to consider
+     * @param nameType the NameType to consider
+     * @param rt       the RuleType to consider
+     * @param lang     the language to consider
      * @return a map containing all Rules that apply, grouped by the first character of the rule pattern
      * @since 1.9
      */
-    public static Map<String, List<Rule>> getInstanceMap(final NameType nameType, final RuleType rt,
-                                                         final String lang) {
+    public static Map<String, List<Rule>> getInstanceMap(final NameType nameType, final RuleType rt, final String lang)
+    {
         final Map<String, List<Rule>> rules = RULES.get(nameType).get(rt).get(lang);
 
-        if (rules == null) {
-            throw new IllegalArgumentException(String.format("No rules found for %s, %s, %s.",
-                                               nameType.getName(), rt.getName(), lang));
+        if (rules == null)
+        {
+            throw new IllegalArgumentException(String.format("No rules found for %s, %s, %s.", nameType.getName(), rt.getName(), lang));
         }
 
         return rules;
     }
 
-    private static Phoneme parsePhoneme(final String ph) {
+    private static Phoneme parsePhoneme(final String ph)
+    {
         final int open = ph.indexOf("[");
-        if (open >= 0) {
-            if (!ph.endsWith("]")) {
+        if (open >= 0)
+        {
+            if (!ph.endsWith("]"))
+            {
                 throw new IllegalArgumentException("Phoneme expression contains a '[' but does not end in ']'");
             }
             final String before = ph.substring(0, open);
@@ -363,91 +397,123 @@ public class Rule {
             final Set<String> langs = new HashSet<String>(Arrays.asList(in.split("[+]")));
 
             return new Phoneme(before, Languages.LanguageSet.from(langs));
-        } else {
+        }
+        else
+        {
             return new Phoneme(ph, Languages.ANY_LANGUAGE);
         }
     }
 
-    private static PhonemeExpr parsePhonemeExpr(final String ph) {
-        if (ph.startsWith("(")) { // we have a bracketed list of options
-            if (!ph.endsWith(")")) {
+    private static PhonemeExpr parsePhonemeExpr(final String ph)
+    {
+        if (ph.startsWith("("))
+        { // we have a bracketed list of options
+            if (!ph.endsWith(")"))
+            {
                 throw new IllegalArgumentException("Phoneme starts with '(' so must end with ')'");
             }
 
             final List<Phoneme> phs = new ArrayList<Phoneme>();
             final String body = ph.substring(1, ph.length() - 1);
-            for (final String part : body.split("[|]")) {
+            for (final String part : body.split("[|]"))
+            {
                 phs.add(parsePhoneme(part));
             }
-            if (body.startsWith("|") || body.endsWith("|")) {
+            if (body.startsWith("|") || body.endsWith("|"))
+            {
                 phs.add(new Phoneme("", Languages.ANY_LANGUAGE));
             }
 
             return new PhonemeList(phs);
-        } else {
+        }
+        else
+        {
             return parsePhoneme(ph);
         }
     }
 
-    private static Map<String, List<Rule>> parseRules(final Scanner scanner, final String location) {
+    private static Map<String, List<Rule>> parseRules(final Scanner scanner, final String location)
+    {
         final Map<String, List<Rule>> lines = new HashMap<String, List<Rule>>();
         int currentLine = 0;
 
         boolean inMultilineComment = false;
-        while (scanner.hasNextLine()) {
+        while (scanner.hasNextLine())
+        {
             currentLine++;
             final String rawLine = scanner.nextLine();
             String line = rawLine;
 
-            if (inMultilineComment) {
-                if (line.endsWith(ResourceConstants.EXT_CMT_END)) {
+            if (inMultilineComment)
+            {
+                if (line.endsWith(ResourceConstants.EXT_CMT_END))
+                {
                     inMultilineComment = false;
                 }
-            } else {
-                if (line.startsWith(ResourceConstants.EXT_CMT_START)) {
+            }
+            else
+            {
+                if (line.startsWith(ResourceConstants.EXT_CMT_START))
+                {
                     inMultilineComment = true;
-                } else {
+                }
+                else
+                {
                     // discard comments
                     final int cmtI = line.indexOf(ResourceConstants.CMT);
-                    if (cmtI >= 0) {
+                    if (cmtI >= 0)
+                    {
                         line = line.substring(0, cmtI);
                     }
 
                     // trim leading-trailing whitespace
                     line = line.trim();
 
-                    if (line.length() == 0) {
+                    if (line.length() == 0)
+                    {
                         continue; // empty lines can be safely skipped
                     }
 
-                    if (line.startsWith(HASH_INCLUDE)) {
+                    if (line.startsWith(HASH_INCLUDE))
+                    {
                         // include statement
                         final String incl = line.substring(HASH_INCLUDE.length()).trim();
-                        if (incl.contains(" ")) {
+                        if (incl.contains(" "))
+                        {
                             throw new IllegalArgumentException("Malformed import statement '" + rawLine + "' in " +
-                                                               location);
-                        } else {
+                                    location);
+                        }
+                        else
+                        {
                             lines.putAll(parseRules(createScanner(incl), location + "->" + incl));
                         }
-                    } else {
+                    }
+                    else
+                    {
                         // rule
                         final String[] parts = line.split("\\s+");
-                        if (parts.length != 4) {
+                        if (parts.length != 4)
+                        {
                             throw new IllegalArgumentException("Malformed rule statement split into " + parts.length +
-                                                               " parts: " + rawLine + " in " + location);
-                        } else {
-                            try {
+                                    " parts: " + rawLine + " in " + location);
+                        }
+                        else
+                        {
+                            try
+                            {
                                 final String pat = stripQuotes(parts[0]);
                                 final String lCon = stripQuotes(parts[1]);
                                 final String rCon = stripQuotes(parts[2]);
                                 final PhonemeExpr ph = parsePhonemeExpr(stripQuotes(parts[3]));
                                 final int cLine = currentLine;
-                                final Rule r = new Rule(pat, lCon, rCon, ph) {
+                                final Rule r = new Rule(pat, lCon, rCon, ph)
+                                {
                                     private final int myLine = cLine;
                                     private final String loc = location;
 
                                     @Override
-                                    public String toString() {
+                                    public String toString()
+                                    {
                                         final StringBuilder sb = new StringBuilder();
                                         sb.append("Rule");
                                         sb.append("{line=").append(myLine);
@@ -459,16 +525,19 @@ public class Rule {
                                         return sb.toString();
                                     }
                                 };
-                                final String patternKey = r.pattern.substring(0,1);
+                                final String patternKey = r.pattern.substring(0, 1);
                                 List<Rule> rules = lines.get(patternKey);
-                                if (rules == null) {
+                                if (rules == null)
+                                {
                                     rules = new ArrayList<Rule>();
                                     lines.put(patternKey, rules);
                                 }
                                 rules.add(r);
-                            } catch (final IllegalArgumentException e) {
+                            }
+                            catch (final IllegalArgumentException e)
+                            {
                                 throw new IllegalStateException("Problem parsing line '" + currentLine + "' in " +
-                                                                location, e);
+                                        location, e);
                             }
                         }
                     }
@@ -482,93 +551,127 @@ public class Rule {
     /**
      * Attempts to compile the regex into direct string ops, falling back to Pattern and Matcher in the worst case.
      *
-     * @param regex
-     *            the regular expression to compile
+     * @param regex the regular expression to compile
      * @return an RPattern that will match this regex
      */
-    private static RPattern pattern(final String regex) {
+    private static RPattern pattern(final String regex)
+    {
         final boolean startsWith = regex.startsWith("^");
         final boolean endsWith = regex.endsWith("$");
         final String content = regex.substring(startsWith ? 1 : 0, endsWith ? regex.length() - 1 : regex.length());
         final boolean boxes = content.contains("[");
 
-        if (!boxes) {
-            if (startsWith && endsWith) {
+        if (!boxes)
+        {
+            if (startsWith && endsWith)
+            {
                 // exact match
-                if (content.length() == 0) {
+                if (content.length() == 0)
+                {
                     // empty
-                    return new RPattern() {
+                    return new RPattern()
+                    {
                         @Override
-                        public boolean isMatch(final CharSequence input) {
+                        public boolean isMatch(final CharSequence input)
+                        {
                             return input.length() == 0;
                         }
                     };
-                } else {
-                    return new RPattern() {
+                }
+                else
+                {
+                    return new RPattern()
+                    {
                         @Override
-                        public boolean isMatch(final CharSequence input) {
+                        public boolean isMatch(final CharSequence input)
+                        {
                             return input.equals(content);
                         }
                     };
                 }
-            } else if ((startsWith || endsWith) && content.length() == 0) {
+            }
+            else if ((startsWith || endsWith) && content.length() == 0)
+            {
                 // matches every string
                 return ALL_STRINGS_RMATCHER;
-            } else if (startsWith) {
+            }
+            else if (startsWith)
+            {
                 // matches from start
-                return new RPattern() {
+                return new RPattern()
+                {
                     @Override
-                    public boolean isMatch(final CharSequence input) {
+                    public boolean isMatch(final CharSequence input)
+                    {
                         return startsWith(input, content);
                     }
                 };
-            } else if (endsWith) {
+            }
+            else if (endsWith)
+            {
                 // matches from start
-                return new RPattern() {
+                return new RPattern()
+                {
                     @Override
-                    public boolean isMatch(final CharSequence input) {
+                    public boolean isMatch(final CharSequence input)
+                    {
                         return endsWith(input, content);
                     }
                 };
             }
-        } else {
+        }
+        else
+        {
             final boolean startsWithBox = content.startsWith("[");
             final boolean endsWithBox = content.endsWith("]");
 
-            if (startsWithBox && endsWithBox) {
+            if (startsWithBox && endsWithBox)
+            {
                 String boxContent = content.substring(1, content.length() - 1);
-                if (!boxContent.contains("[")) {
+                if (!boxContent.contains("["))
+                {
                     // box containing alternatives
                     final boolean negate = boxContent.startsWith("^");
-                    if (negate) {
+                    if (negate)
+                    {
                         boxContent = boxContent.substring(1);
                     }
                     final String bContent = boxContent;
                     final boolean shouldMatch = !negate;
 
-                    if (startsWith && endsWith) {
+                    if (startsWith && endsWith)
+                    {
                         // exact match
-                        return new RPattern() {
+                        return new RPattern()
+                        {
                             @Override
-                            public boolean isMatch(final CharSequence input) {
+                            public boolean isMatch(final CharSequence input)
+                            {
                                 return input.length() == 1 && contains(bContent, input.charAt(0)) == shouldMatch;
                             }
                         };
-                    } else if (startsWith) {
+                    }
+                    else if (startsWith)
+                    {
                         // first char
-                        return new RPattern() {
+                        return new RPattern()
+                        {
                             @Override
-                            public boolean isMatch(final CharSequence input) {
+                            public boolean isMatch(final CharSequence input)
+                            {
                                 return input.length() > 0 && contains(bContent, input.charAt(0)) == shouldMatch;
                             }
                         };
-                    } else if (endsWith) {
+                    }
+                    else if (endsWith)
+                    {
                         // last char
-                        return new RPattern() {
+                        return new RPattern()
+                        {
                             @Override
-                            public boolean isMatch(final CharSequence input) {
-                                return input.length() > 0 &&
-                                       contains(bContent, input.charAt(input.length() - 1)) == shouldMatch;
+                            public boolean isMatch(final CharSequence input)
+                            {
+                                return input.length() > 0 && contains(bContent, input.charAt(input.length() - 1)) == shouldMatch;
                             }
                         };
                     }
@@ -576,35 +679,44 @@ public class Rule {
             }
         }
 
-        return new RPattern() {
+        return new RPattern()
+        {
             Pattern pattern = Pattern.compile(regex);
 
             @Override
-            public boolean isMatch(final CharSequence input) {
+            public boolean isMatch(final CharSequence input)
+            {
                 final Matcher matcher = pattern.matcher(input);
                 return matcher.find();
             }
         };
     }
 
-    private static boolean startsWith(final CharSequence input, final CharSequence prefix) {
-        if (prefix.length() > input.length()) {
+    private static boolean startsWith(final CharSequence input, final CharSequence prefix)
+    {
+        if (prefix.length() > input.length())
+        {
             return false;
         }
-        for (int i = 0; i < prefix.length(); i++) {
-            if (input.charAt(i) != prefix.charAt(i)) {
+        for (int i = 0; i < prefix.length(); i++)
+        {
+            if (input.charAt(i) != prefix.charAt(i))
+            {
                 return false;
             }
         }
         return true;
     }
 
-    private static String stripQuotes(String str) {
-        if (str.startsWith(DOUBLE_QUOTE)) {
+    private static String stripQuotes(String str)
+    {
+        if (str.startsWith(DOUBLE_QUOTE))
+        {
             str = str.substring(1);
         }
 
-        if (str.endsWith(DOUBLE_QUOTE)) {
+        if (str.endsWith(DOUBLE_QUOTE))
+        {
             str = str.substring(0, str.length() - 1);
         }
 
@@ -622,16 +734,13 @@ public class Rule {
     /**
      * Creates a new rule.
      *
-     * @param pattern
-     *            the pattern
-     * @param lContext
-     *            the left context
-     * @param rContext
-     *            the right context
-     * @param phoneme
-     *            the resulting phoneme
+     * @param pattern  the pattern
+     * @param lContext the left context
+     * @param rContext the right context
+     * @param phoneme  the resulting phoneme
      */
-    public Rule(final String pattern, final String lContext, final String rContext, final PhonemeExpr phoneme) {
+    public Rule(final String pattern, final String lContext, final String rContext, final PhonemeExpr phoneme)
+    {
         this.pattern = pattern;
         this.lContext = pattern(lContext + "$");
         this.rContext = pattern("^" + rContext);
@@ -643,7 +752,8 @@ public class Rule {
      *
      * @return the left context Pattern
      */
-    public RPattern getLContext() {
+    public RPattern getLContext()
+    {
         return this.lContext;
     }
 
@@ -652,7 +762,8 @@ public class Rule {
      *
      * @return the pattern
      */
-    public String getPattern() {
+    public String getPattern()
+    {
         return this.pattern;
     }
 
@@ -661,7 +772,8 @@ public class Rule {
      *
      * @return the phoneme
      */
-    public PhonemeExpr getPhoneme() {
+    public PhonemeExpr getPhoneme()
+    {
         return this.phoneme;
     }
 
@@ -670,7 +782,8 @@ public class Rule {
      *
      * @return the right context Pattern
      */
-    public RPattern getRContext() {
+    public RPattern getRContext()
+    {
         return this.rContext;
     }
 
@@ -679,30 +792,34 @@ public class Rule {
      * <code>lContext</code> matches <code>input</code> up to <code>i</code>, <code>pattern</code> matches at i and
      * <code>rContext</code> matches from the end of the match of <code>pattern</code> to the end of <code>input</code>.
      *
-     * @param input
-     *            the input String
-     * @param i
-     *            the int position within the input
+     * @param input the input String
+     * @param i     the int position within the input
      * @return true if the pattern and left/right context match, false otherwise
      */
-    public boolean patternAndContextMatches(final CharSequence input, final int i) {
-        if (i < 0) {
+    public boolean patternAndContextMatches(final CharSequence input, final int i)
+    {
+        if (i < 0)
+        {
             throw new IndexOutOfBoundsException("Can not match pattern at negative indexes");
         }
 
         final int patternLength = this.pattern.length();
         final int ipl = i + patternLength;
 
-        if (ipl > input.length()) {
+        if (ipl > input.length())
+        {
             // not enough room for the pattern to match
             return false;
         }
 
         // evaluate the pattern, left context and right context
         // fail early if any of the evaluations is not successful
-        if (!input.subSequence(i, ipl).equals(this.pattern)) {
+        if (!input.subSequence(i, ipl).equals(this.pattern))
+        {
             return false;
-        } else if (!this.rContext.isMatch(input.subSequence(ipl, input.length()))) {
+        }
+        else if (!this.rContext.isMatch(input.subSequence(ipl, input.length())))
+        {
             return false;
         }
         return this.lContext.isMatch(input.subSequence(0, i));

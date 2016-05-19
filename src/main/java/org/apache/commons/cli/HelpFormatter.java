@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import java.util.*;
  * A formatter of help messages for command line options.
  *
  * <p>Example:</p>
- * 
+ *
  * <pre>
  * Options options = new Options();
  * options.addOption(OptionBuilder.withLongOpt("file")
@@ -37,27 +37,27 @@ import java.util.*;
  *                                .withDescription("Print the version of the application")
  *                                .create('v'));
  * options.addOption(OptionBuilder.withLongOpt("help").create('h'));
- * 
+ *
  * String header = "Do something useful with an input file\n\n";
  * String footer = "\nPlease report issues at http://example.com/issues";
- * 
+ *
  * HelpFormatter formatter = new HelpFormatter();
  * formatter.printHelp("myapp", header, options, footer, true);
  * </pre>
- * 
+ *
  * This produces the following output:
- * 
+ *
  * <pre>
  * usage: myapp -f &lt;FILE&gt; [-h] [-v]
  * Do something useful with an input file
- * 
+ *
  *  -f,--file &lt;FILE&gt;   The file to be processed
  *  -h,--help
  *  -v,--version       Print the version of the application
- * 
+ *
  * Please report issues at http://example.com/issues
  * </pre>
- * 
+ *
  * @version $Id: HelpFormatter.java 1677407 2015-05-03 14:31:12Z britter $
  */
 public class HelpFormatter
@@ -82,9 +82,9 @@ public class HelpFormatter
     /** default prefix for long Option */
     public static final String DEFAULT_LONG_OPT_PREFIX = "--";
 
-    /** 
+    /**
      * default separator displayed between a long Option and its value
-     * 
+     *
      * @since 1.3
      **/
     public static final String DEFAULT_LONG_OPT_SEPARATOR = " ";
@@ -100,8 +100,7 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setWidth methods instead.
      */
-    @Deprecated
-    public int defaultWidth = DEFAULT_WIDTH;
+    @Deprecated public int defaultWidth = DEFAULT_WIDTH;
 
     /**
      * amount of padding to the left of each line
@@ -109,8 +108,7 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setLeftPadding methods instead.
      */
-    @Deprecated
-    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    @Deprecated public int defaultLeftPad = DEFAULT_LEFT_PAD;
 
     /**
      * the number of characters of padding to be prefixed
@@ -119,8 +117,7 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setDescPadding methods instead.
      */
-    @Deprecated
-    public int defaultDescPad = DEFAULT_DESC_PAD;
+    @Deprecated public int defaultDescPad = DEFAULT_DESC_PAD;
 
     /**
      * the string to display at the beginning of the usage statement
@@ -128,8 +125,7 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setSyntaxPrefix methods instead.
      */
-    @Deprecated
-    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    @Deprecated public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
 
     /**
      * the new line string
@@ -137,8 +133,7 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setNewLine methods instead.
      */
-    @Deprecated
-    public String defaultNewLine = System.getProperty("line.separator");
+    @Deprecated public String defaultNewLine = System.getProperty("line.separator");
 
     /**
      * the shortOpt prefix
@@ -146,8 +141,7 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setOptPrefix methods instead.
      */
-    @Deprecated
-    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    @Deprecated public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
 
     /**
      * the long Opt prefix
@@ -155,8 +149,7 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setLongOptPrefix methods instead.
      */
-    @Deprecated
-    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    @Deprecated public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
 
     /**
      * the name of the argument
@@ -164,12 +157,11 @@ public class HelpFormatter
      * @deprecated Scope will be made private for next major version
      * - use get/setArgName methods instead.
      */
-    @Deprecated
-    public String defaultArgName = DEFAULT_ARG_NAME;
+    @Deprecated public String defaultArgName = DEFAULT_ARG_NAME;
 
     /**
      * Comparator used to sort the options when they output in help text
-     * 
+     *
      * Defaults to case-insensitive alphabetical sorting by option key
      */
     protected Comparator<Option> optionComparator = new OptionComparator();
@@ -321,7 +313,7 @@ public class HelpFormatter
      * Set the separator displayed between a long option and its value.
      * Ensure that the separator specified is supported by the parser used,
      * typically ' ' or '='.
-     * 
+     *
      * @param longOptSeparator the separator, typically ' ' or '='.
      * @since 1.3
      */
@@ -332,7 +324,7 @@ public class HelpFormatter
 
     /**
      * Returns the separator displayed between a long option and its value.
-     * 
+     *
      * @return the separator
      * @since 1.3
      */
@@ -474,8 +466,7 @@ public class HelpFormatter
      * @param autoUsage whether to print an automatically generated 
      * usage statement
      */
-    public void printHelp(int width, String cmdLineSyntax, String header,
-                          Options options, String footer, boolean autoUsage)
+    public void printHelp(int width, String cmdLineSyntax, String header, Options options, String footer, boolean autoUsage)
     {
         PrintWriter pw = new PrintWriter(System.out);
 
@@ -500,9 +491,7 @@ public class HelpFormatter
      *
      * @throws IllegalStateException if there is no room to print a line
      */
-    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, 
-                          String header, Options options, int leftPad, 
-                          int descPad, String footer)
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, String header, Options options, int leftPad, int descPad, String footer)
     {
         printHelp(pw, width, cmdLineSyntax, header, options, leftPad, descPad, footer, false);
     }
@@ -527,9 +516,7 @@ public class HelpFormatter
      *
      * @throws IllegalStateException if there is no room to print a line
      */
-    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax,
-                          String header, Options options, int leftPad,
-                          int descPad, String footer, boolean autoUsage)
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, String header, Options options, int leftPad, int descPad, String footer, boolean autoUsage)
     {
         if (cmdLineSyntax == null || cmdLineSyntax.length() == 0)
         {
@@ -580,7 +567,7 @@ public class HelpFormatter
             Collections.sort(optList, getOptionComparator());
         }
         // iterate over the options
-        for (Iterator<Option> it = optList.iterator(); it.hasNext();)
+        for (Iterator<Option> it = optList.iterator(); it.hasNext(); )
         {
             // get the next Option
             Option option = it.next();
@@ -629,7 +616,7 @@ public class HelpFormatter
      * The display of the options is handled by appendOption
      * @param buff the StringBuffer to append to
      * @param group the group to append
-     * @see #appendOption(StringBuffer,Option,boolean)
+     * @see #appendOption(StringBuffer, Option, boolean)
      */
     private void appendOptionGroup(StringBuffer buff, OptionGroup group)
     {
@@ -644,7 +631,7 @@ public class HelpFormatter
             Collections.sort(optList, getOptionComparator());
         }
         // for each option in the OptionGroup
-        for (Iterator<Option> it = optList.iterator(); it.hasNext();)
+        for (Iterator<Option> it = optList.iterator(); it.hasNext(); )
         {
             // whether the option is required or not is handled at group level
             appendOption(buff, it.next(), true);
@@ -683,14 +670,14 @@ public class HelpFormatter
         {
             buff.append("--").append(option.getLongOpt());
         }
-        
+
         // if the Option has a value and a non blank argname
         if (option.hasArg() && (option.getArgName() == null || option.getArgName().length() != 0))
         {
             buff.append(option.getOpt() == null ? longOptSeparator : " ");
             buff.append("<").append(option.getArgName() != null ? option.getArgName() : getArgName()).append(">");
         }
-        
+
         // if the Option is not a required option
         if (!required)
         {
@@ -725,8 +712,7 @@ public class HelpFormatter
      * @param descPad the number of characters of padding to be prefixed
      * to each description line
      */
-    public void printOptions(PrintWriter pw, int width, Options options, 
-                             int leftPad, int descPad)
+    public void printOptions(PrintWriter pw, int width, Options options, int leftPad, int descPad)
     {
         StringBuffer sb = new StringBuffer();
 
@@ -836,7 +822,7 @@ public class HelpFormatter
 
         int x = 0;
 
-        for (Iterator<Option> it = optList.iterator(); it.hasNext();)
+        for (Iterator<Option> it = optList.iterator(); it.hasNext(); )
         {
             Option option = it.next();
             StringBuilder optBuf = new StringBuilder(prefixList.get(x++).toString());
@@ -877,8 +863,7 @@ public class HelpFormatter
      *
      * @return the StringBuffer with the rendered Options contents.
      */
-    protected StringBuffer renderWrappedText(StringBuffer sb, int width, 
-                                             int nextLineTabStop, String text)
+    protected StringBuffer renderWrappedText(StringBuffer sb, int width, int nextLineTabStop, String text)
     {
         int pos = findWrapPos(text, width, 0);
 
@@ -1055,6 +1040,7 @@ public class HelpFormatter
     // ------------------------------------------------------ Package protected
     // ---------------------------------------------------------------- Private
     // ---------------------------------------------------------- Inner classes
+
     /**
      * This class implements the <code>Comparator</code> interface
      * for comparing Options.

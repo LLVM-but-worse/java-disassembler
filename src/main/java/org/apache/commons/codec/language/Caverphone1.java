@@ -19,7 +19,7 @@ package org.apache.commons.codec.language;
 
 /**
  * Encodes a string into a Caverphone 1.0 value.
- *
+ * <p>
  * This is an algorithm created by the Caversham Project at the University of Otago. It implements the Caverphone 1.0
  * algorithm:
  *
@@ -27,24 +27,26 @@ package org.apache.commons.codec.language;
  * @see <a href="http://en.wikipedia.org/wiki/Caverphone">Wikipedia - Caverphone</a>
  * @see <a href="http://caversham.otago.ac.nz/files/working/ctp060902.pdf">Caverphone 1.0 specification</a>
  * @since 1.5
- *
+ * <p>
  * <p>This class is immutable and thread-safe.</p>
  */
-public class Caverphone1 extends AbstractCaverphone {
+public class Caverphone1 extends AbstractCaverphone
+{
 
     private static final String SIX_1 = "111111";
 
     /**
      * Encodes the given String into a Caverphone value.
      *
-     * @param source
-     *            String the source string
+     * @param source String the source string
      * @return A caverphone code for the given String
      */
     @Override
-    public String encode(final String source) {
+    public String encode(final String source)
+    {
         String txt = source;
-        if (txt == null || txt.length() == 0) {
+        if (txt == null || txt.length() == 0)
+        {
             return SIX_1;
         }
 

@@ -41,10 +41,11 @@ import java.util.*;
  * <p>
  * This class is immutable and thread-safe.
  *
- * @since 1.6
  * @version $Id$
+ * @since 1.6
  */
-public class Languages {
+public class Languages
+{
     // Implementation note: This class is divided into two sections. The first part is a static factory interface that
     // exposes org/apache/commons/codec/language/bm/%s_languages.txt for %s in NameType.* as a list of supported
     // languages, and a second part that provides instance methods for accessing this set for supported languages.
@@ -52,9 +53,11 @@ public class Languages {
     /**
      * A set of languages.
      */
-    public static abstract class LanguageSet {
+    public static abstract class LanguageSet
+    {
 
-        public static LanguageSet from(final Set<String> langs) {
+        public static LanguageSet from(final Set<String> langs)
+        {
             return langs.isEmpty() ? NO_LANGUAGES : new SomeLanguages(langs);
         }
 
@@ -74,48 +77,63 @@ public class Languages {
     /**
      * Some languages, explicitly enumerated.
      */
-    public static final class SomeLanguages extends LanguageSet {
+    public static final class SomeLanguages extends LanguageSet
+    {
         private final Set<String> languages;
 
-        private SomeLanguages(final Set<String> languages) {
+        private SomeLanguages(final Set<String> languages)
+        {
             this.languages = Collections.unmodifiableSet(languages);
         }
 
         @Override
-        public boolean contains(final String language) {
+        public boolean contains(final String language)
+        {
             return this.languages.contains(language);
         }
 
         @Override
-        public String getAny() {
+        public String getAny()
+        {
             return this.languages.iterator().next();
         }
 
-        public Set<String> getLanguages() {
+        public Set<String> getLanguages()
+        {
             return this.languages;
         }
 
         @Override
-        public boolean isEmpty() {
+        public boolean isEmpty()
+        {
             return this.languages.isEmpty();
         }
 
         @Override
-        public boolean isSingleton() {
+        public boolean isSingleton()
+        {
             return this.languages.size() == 1;
         }
 
         @Override
-        public LanguageSet restrictTo(final LanguageSet other) {
-            if (other == NO_LANGUAGES) {
+        public LanguageSet restrictTo(final LanguageSet other)
+        {
+            if (other == NO_LANGUAGES)
+            {
                 return other;
-            } else if (other == ANY_LANGUAGE) {
+            }
+            else if (other == ANY_LANGUAGE)
+            {
                 return this;
-            } else {
+            }
+            else
+            {
                 final SomeLanguages sl = (SomeLanguages) other;
                 final Set<String> ls = new HashSet<String>(Math.min(languages.size(), sl.languages.size()));
-                for (String lang : languages) {
-                    if (sl.languages.contains(lang)) {
+                for (String lang : languages)
+                {
+                    if (sl.languages.contains(lang))
+                    {
                         ls.add(lang);
                     }
                 }
@@ -124,23 +142,31 @@ public class Languages {
         }
 
         @Override
-        public LanguageSet merge(final LanguageSet other) {
-            if (other == NO_LANGUAGES) {
+        public LanguageSet merge(final LanguageSet other)
+        {
+            if (other == NO_LANGUAGES)
+            {
                 return this;
-            } else if (other == ANY_LANGUAGE) {
+            }
+            else if (other == ANY_LANGUAGE)
+            {
                 return other;
-            } else {
+            }
+            else
+            {
                 final SomeLanguages sl = (SomeLanguages) other;
                 final Set<String> ls = new HashSet<String>(languages);
-                for (String lang : sl.languages) {
-                  ls.add(lang);
+                for (String lang : sl.languages)
+                {
+                    ls.add(lang);
                 }
                 return from(ls);
             }
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "Languages(" + languages.toString() + ")";
         }
 
@@ -150,50 +176,67 @@ public class Languages {
 
     private static final Map<NameType, Languages> LANGUAGES = new EnumMap<NameType, Languages>(NameType.class);
 
-    static {
-        for (final NameType s : NameType.values()) {
+    static
+    {
+        for (final NameType s : NameType.values())
+        {
             LANGUAGES.put(s, getInstance(langResourceName(s)));
         }
     }
 
-    public static Languages getInstance(final NameType nameType) {
+    public static Languages getInstance(final NameType nameType)
+    {
         return LANGUAGES.get(nameType);
     }
 
-    public static Languages getInstance(final String languagesResourceName) {
+    public static Languages getInstance(final String languagesResourceName)
+    {
         // read languages list
         final Set<String> ls = new HashSet<String>();
         final InputStream langIS = Languages.class.getClassLoader().getResourceAsStream(languagesResourceName);
 
-        if (langIS == null) {
+        if (langIS == null)
+        {
             throw new IllegalArgumentException("Unable to resolve required resource: " + languagesResourceName);
         }
 
         final Scanner lsScanner = new Scanner(langIS, ResourceConstants.ENCODING);
-        try {
+        try
+        {
             boolean inExtendedComment = false;
-            while (lsScanner.hasNextLine()) {
+            while (lsScanner.hasNextLine())
+            {
                 final String line = lsScanner.nextLine().trim();
-                if (inExtendedComment) {
-                    if (line.endsWith(ResourceConstants.EXT_CMT_END)) {
+                if (inExtendedComment)
+                {
+                    if (line.endsWith(ResourceConstants.EXT_CMT_END))
+                    {
                         inExtendedComment = false;
                     }
-                } else {
-                    if (line.startsWith(ResourceConstants.EXT_CMT_START)) {
+                }
+                else
+                {
+                    if (line.startsWith(ResourceConstants.EXT_CMT_START))
+                    {
                         inExtendedComment = true;
-                    } else if (line.length() > 0) {
+                    }
+                    else if (line.length() > 0)
+                    {
                         ls.add(line);
                     }
                 }
             }
-        } finally {
+        }
+        finally
+        {
             lsScanner.close();
         }
 
         return new Languages(Collections.unmodifiableSet(ls));
     }
 
-    private static String langResourceName(final NameType nameType) {
+    private static String langResourceName(final NameType nameType)
+    {
         return String.format("org/apache/commons/codec/language/bm/%s_languages.txt", nameType.getName());
     }
 
@@ -202,39 +245,47 @@ public class Languages {
     /**
      * No languages at all.
      */
-    public static final LanguageSet NO_LANGUAGES = new LanguageSet() {
+    public static final LanguageSet NO_LANGUAGES = new LanguageSet()
+    {
         @Override
-        public boolean contains(final String language) {
+        public boolean contains(final String language)
+        {
             return false;
         }
 
         @Override
-        public String getAny() {
+        public String getAny()
+        {
             throw new NoSuchElementException("Can't fetch any language from the empty language set.");
         }
 
         @Override
-        public boolean isEmpty() {
+        public boolean isEmpty()
+        {
             return true;
         }
 
         @Override
-        public boolean isSingleton() {
+        public boolean isSingleton()
+        {
             return false;
         }
 
         @Override
-        public LanguageSet restrictTo(final LanguageSet other) {
+        public LanguageSet restrictTo(final LanguageSet other)
+        {
             return this;
         }
 
         @Override
-        public LanguageSet merge(final LanguageSet other) {
+        public LanguageSet merge(final LanguageSet other)
+        {
             return other;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "NO_LANGUAGES";
         }
     };
@@ -242,48 +293,58 @@ public class Languages {
     /**
      * Any/all languages.
      */
-    public static final LanguageSet ANY_LANGUAGE = new LanguageSet() {
+    public static final LanguageSet ANY_LANGUAGE = new LanguageSet()
+    {
         @Override
-        public boolean contains(final String language) {
+        public boolean contains(final String language)
+        {
             return true;
         }
 
         @Override
-        public String getAny() {
+        public String getAny()
+        {
             throw new NoSuchElementException("Can't fetch any language from the any language set.");
         }
 
         @Override
-        public boolean isEmpty() {
+        public boolean isEmpty()
+        {
             return false;
         }
 
         @Override
-        public boolean isSingleton() {
+        public boolean isSingleton()
+        {
             return false;
         }
 
         @Override
-        public LanguageSet restrictTo(final LanguageSet other) {
+        public LanguageSet restrictTo(final LanguageSet other)
+        {
             return other;
         }
 
         @Override
-        public LanguageSet merge(final LanguageSet other) {
+        public LanguageSet merge(final LanguageSet other)
+        {
             return other;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "ANY_LANGUAGE";
         }
     };
 
-    private Languages(final Set<String> languages) {
+    private Languages(final Set<String> languages)
+    {
         this.languages = languages;
     }
 
-    public Set<String> getLanguages() {
+    public Set<String> getLanguages()
+    {
         return this.languages;
     }
 }

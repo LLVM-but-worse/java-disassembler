@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,151 +39,166 @@ import java.util.Set;
 
 /**
  * An {@link Interpreter} for {@link SourceValue} values.
- * 
+ *
  * @author Eric Bruneton
  */
-public class SourceInterpreter extends Interpreter<SourceValue> implements
-        Opcodes {
+public class SourceInterpreter extends Interpreter<SourceValue> implements Opcodes
+{
 
-    public SourceInterpreter() {
+    public SourceInterpreter()
+    {
         super(ASM5);
     }
 
-    protected SourceInterpreter(final int api) {
+    protected SourceInterpreter(final int api)
+    {
         super(api);
     }
 
     @Override
-    public SourceValue newValue(final Type type) {
-        if (type == Type.VOID_TYPE) {
+    public SourceValue newValue(final Type type)
+    {
+        if (type == Type.VOID_TYPE)
+        {
             return null;
         }
         return new SourceValue(type == null ? 1 : type.getSize());
     }
 
     @Override
-    public SourceValue newOperation(final AbstractInsnNode insn) {
+    public SourceValue newOperation(final AbstractInsnNode insn)
+    {
         int size;
-        switch (insn.opcode()) {
-        case LCONST_0:
-        case LCONST_1:
-        case DCONST_0:
-        case DCONST_1:
-            size = 2;
-            break;
-        case LDC:
-            Object cst = ((LdcInsnNode) insn).cst;
-            size = cst instanceof Long || cst instanceof Double ? 2 : 1;
-            break;
-        case GETSTATIC:
-            size = Type.getType(((FieldInsnNode) insn).desc).getSize();
-            break;
-        default:
-            size = 1;
+        switch (insn.opcode())
+        {
+            case LCONST_0:
+            case LCONST_1:
+            case DCONST_0:
+            case DCONST_1:
+                size = 2;
+                break;
+            case LDC:
+                Object cst = ((LdcInsnNode) insn).cst;
+                size = cst instanceof Long || cst instanceof Double ? 2 : 1;
+                break;
+            case GETSTATIC:
+                size = Type.getType(((FieldInsnNode) insn).desc).getSize();
+                break;
+            default:
+                size = 1;
         }
         return new SourceValue(size, insn);
     }
 
     @Override
-    public SourceValue copyOperation(final AbstractInsnNode insn,
-            final SourceValue value) {
+    public SourceValue copyOperation(final AbstractInsnNode insn, final SourceValue value)
+    {
         return new SourceValue(value.getSize(), insn);
     }
 
     @Override
-    public SourceValue unaryOperation(final AbstractInsnNode insn,
-            final SourceValue value) {
+    public SourceValue unaryOperation(final AbstractInsnNode insn, final SourceValue value)
+    {
         int size;
-        switch (insn.opcode()) {
-        case LNEG:
-        case DNEG:
-        case I2L:
-        case I2D:
-        case L2D:
-        case F2L:
-        case F2D:
-        case D2L:
-            size = 2;
-            break;
-        case GETFIELD:
-            size = Type.getType(((FieldInsnNode) insn).desc).getSize();
-            break;
-        default:
-            size = 1;
+        switch (insn.opcode())
+        {
+            case LNEG:
+            case DNEG:
+            case I2L:
+            case I2D:
+            case L2D:
+            case F2L:
+            case F2D:
+            case D2L:
+                size = 2;
+                break;
+            case GETFIELD:
+                size = Type.getType(((FieldInsnNode) insn).desc).getSize();
+                break;
+            default:
+                size = 1;
         }
         return new SourceValue(size, insn);
     }
 
     @Override
-    public SourceValue binaryOperation(final AbstractInsnNode insn,
-            final SourceValue value1, final SourceValue value2) {
+    public SourceValue binaryOperation(final AbstractInsnNode insn, final SourceValue value1, final SourceValue value2)
+    {
         int size;
-        switch (insn.opcode()) {
-        case LALOAD:
-        case DALOAD:
-        case LADD:
-        case DADD:
-        case LSUB:
-        case DSUB:
-        case LMUL:
-        case DMUL:
-        case LDIV:
-        case DDIV:
-        case LREM:
-        case DREM:
-        case LSHL:
-        case LSHR:
-        case LUSHR:
-        case LAND:
-        case LOR:
-        case LXOR:
-            size = 2;
-            break;
-        default:
-            size = 1;
+        switch (insn.opcode())
+        {
+            case LALOAD:
+            case DALOAD:
+            case LADD:
+            case DADD:
+            case LSUB:
+            case DSUB:
+            case LMUL:
+            case DMUL:
+            case LDIV:
+            case DDIV:
+            case LREM:
+            case DREM:
+            case LSHL:
+            case LSHR:
+            case LUSHR:
+            case LAND:
+            case LOR:
+            case LXOR:
+                size = 2;
+                break;
+            default:
+                size = 1;
         }
         return new SourceValue(size, insn);
     }
 
     @Override
-    public SourceValue ternaryOperation(final AbstractInsnNode insn,
-            final SourceValue value1, final SourceValue value2,
-            final SourceValue value3) {
+    public SourceValue ternaryOperation(final AbstractInsnNode insn, final SourceValue value1, final SourceValue value2, final SourceValue value3)
+    {
         return new SourceValue(1, insn);
     }
 
     @Override
-    public SourceValue naryOperation(final AbstractInsnNode insn,
-            final List<? extends SourceValue> values) {
+    public SourceValue naryOperation(final AbstractInsnNode insn, final List<? extends SourceValue> values)
+    {
         int size;
         int opcode = insn.opcode();
-        if (opcode == MULTIANEWARRAY) {
+        if (opcode == MULTIANEWARRAY)
+        {
             size = 1;
-        } else {
-            String desc = (opcode == INVOKEDYNAMIC) ? ((InvokeDynamicInsnNode) insn).desc
-                    : ((MethodInsnNode) insn).desc;
+        }
+        else
+        {
+            String desc =
+                    (opcode == INVOKEDYNAMIC) ? ((InvokeDynamicInsnNode) insn).desc : ((MethodInsnNode) insn).desc;
             size = Type.getReturnType(desc).getSize();
         }
         return new SourceValue(size, insn);
     }
 
     @Override
-    public void returnOperation(final AbstractInsnNode insn,
-            final SourceValue value, final SourceValue expected) {
+    public void returnOperation(final AbstractInsnNode insn, final SourceValue value, final SourceValue expected)
+    {
     }
 
     @Override
-    public SourceValue merge(final SourceValue d, final SourceValue w) {
-        if (d.insns instanceof SmallSet && w.insns instanceof SmallSet) {
-            Set<AbstractInsnNode> s = ((SmallSet<AbstractInsnNode>) d.insns)
-                    .union((SmallSet<AbstractInsnNode>) w.insns);
-            if (s == d.insns && d.size == w.size) {
+    public SourceValue merge(final SourceValue d, final SourceValue w)
+    {
+        if (d.insns instanceof SmallSet && w.insns instanceof SmallSet)
+        {
+            Set<AbstractInsnNode> s = ((SmallSet<AbstractInsnNode>) d.insns).union((SmallSet<AbstractInsnNode>) w.insns);
+            if (s == d.insns && d.size == w.size)
+            {
                 return d;
-            } else {
+            }
+            else
+            {
                 return new SourceValue(Math.min(d.size, w.size), s);
             }
         }
-        if (d.size != w.size || !d.insns.containsAll(w.insns)) {
+        if (d.size != w.size || !d.insns.containsAll(w.insns))
+        {
             HashSet<AbstractInsnNode> s = new HashSet<AbstractInsnNode>();
             s.addAll(d.insns);
             s.addAll(w.insns);

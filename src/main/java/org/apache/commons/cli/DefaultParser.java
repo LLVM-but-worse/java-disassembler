@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * Default parser.
- * 
+ *
  * @version $Id: DefaultParser.java 1677454 2015-05-03 17:13:54Z ggregory $
  * @since 1.3
  */
@@ -32,7 +32,7 @@ public class DefaultParser implements CommandLineParser
 {
     /** The command-line instance. */
     protected CommandLine cmd;
-    
+
     /** The current options. */
     protected Options options;
 
@@ -45,16 +45,16 @@ public class DefaultParser implements CommandLineParser
 
     /** The token currently processed. */
     protected String currentToken;
- 
+
     /** The last option parsed. */
     protected Option currentOption;
- 
+
     /** Flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line. */
     protected boolean skipParsing;
- 
+
     /** The required options and groups expected to be found when parsing the command line. */
     protected List expectedOpts;
- 
+
     public CommandLine parse(Options options, String[] arguments) throws ParseException
     {
         return parse(options, arguments, null);
@@ -96,8 +96,7 @@ public class DefaultParser implements CommandLineParser
      * @throws ParseException if there are any problems encountered
      * while parsing the command line tokens.
      */
-    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
-            throws ParseException
+    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption) throws ParseException
     {
         this.options = options;
         this.stopAtNonOption = stopAtNonOption;
@@ -144,7 +143,7 @@ public class DefaultParser implements CommandLineParser
             return;
         }
 
-        for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();)
+        for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements(); )
         {
             String option = e.nextElement().toString();
 
@@ -170,9 +169,7 @@ public class DefaultParser implements CommandLineParser
                         opt.addValueForProcessing(value);
                     }
                 }
-                else if (!("yes".equalsIgnoreCase(value)
-                        || "true".equalsIgnoreCase(value)
-                        || "1".equalsIgnoreCase(value)))
+                else if (!("yes".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)))
                 {
                     // if the value is not yes, true or 1 then don't add the option to the CommandLine
                     continue;
@@ -293,7 +290,7 @@ public class DefaultParser implements CommandLineParser
 
     /**
      * Tells if the token looks like a short option.
-     * 
+     *
      * @param token
      */
     private boolean isShortOption(String token)
@@ -383,7 +380,7 @@ public class DefaultParser implements CommandLineParser
      * -L
      * --l
      * -l
-     * 
+     *
      * @param token the command line token to handle
      */
     private void handleLongOptionWithoutEqual(String token) throws ParseException
@@ -578,7 +575,7 @@ public class DefaultParser implements CommandLineParser
                 break;
             }
         }
-        
+
         return opt;
     }
 

@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,20 +33,23 @@ import java.util.*;
 
 /**
  * A set of at most two elements.
- * 
+ *
  * @author Eric Bruneton
  */
-class SmallSet<E> extends AbstractSet<E> implements Iterator<E> {
+class SmallSet<E> extends AbstractSet<E> implements Iterator<E>
+{
 
     // if e1 is null, e2 must be null; otherwise e2 must be different from e1
 
     E e1, e2;
 
-    static final <T> Set<T> emptySet() {
+    static final <T> Set<T> emptySet()
+    {
         return new SmallSet<T>(null, null);
     }
 
-    SmallSet(final E e1, final E e2) {
+    SmallSet(final E e1, final E e2)
+    {
         this.e1 = e1;
         this.e2 = e2;
     }
@@ -56,12 +59,14 @@ class SmallSet<E> extends AbstractSet<E> implements Iterator<E> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Iterator<E> iterator() {
+    public Iterator<E> iterator()
+    {
         return new SmallSet<E>(e1, e2);
     }
 
     @Override
-    public int size() {
+    public int size()
+    {
         return e1 == null ? 0 : (e2 == null ? 1 : 2);
     }
 
@@ -69,12 +74,15 @@ class SmallSet<E> extends AbstractSet<E> implements Iterator<E> {
     // Implementation of the Iterator interface
     // -------------------------------------------------------------------------
 
-    public boolean hasNext() {
+    public boolean hasNext()
+    {
         return e1 != null;
     }
 
-    public E next() {
-        if (e1 == null) {
+    public E next()
+    {
+        if (e1 == null)
+        {
             throw new NoSuchElementException();
         }
         E e = e1;
@@ -83,46 +91,59 @@ class SmallSet<E> extends AbstractSet<E> implements Iterator<E> {
         return e;
     }
 
-    public void remove() {
+    public void remove()
+    {
     }
 
     // -------------------------------------------------------------------------
     // Utility methods
     // -------------------------------------------------------------------------
 
-    Set<E> union(final SmallSet<E> s) {
-        if ((s.e1 == e1 && s.e2 == e2) || (s.e1 == e2 && s.e2 == e1)) {
+    Set<E> union(final SmallSet<E> s)
+    {
+        if ((s.e1 == e1 && s.e2 == e2) || (s.e1 == e2 && s.e2 == e1))
+        {
             return this; // if the two sets are equal, return this
         }
-        if (s.e1 == null) {
+        if (s.e1 == null)
+        {
             return this; // if s is empty, return this
         }
-        if (e1 == null) {
+        if (e1 == null)
+        {
             return s; // if this is empty, return s
         }
-        if (s.e2 == null) { // s contains exactly one element
-            if (e2 == null) {
+        if (s.e2 == null)
+        { // s contains exactly one element
+            if (e2 == null)
+            {
                 return new SmallSet<E>(e1, s.e1); // necessarily e1 != s.e1
-            } else if (s.e1 == e1 || s.e1 == e2) { // s is included in this
+            }
+            else if (s.e1 == e1 || s.e1 == e2)
+            { // s is included in this
                 return this;
             }
         }
-        if (e2 == null) { // this contains exactly one element
+        if (e2 == null)
+        { // this contains exactly one element
             // if (s.e2 == null) { // cannot happen
             // return new SmallSet(e1, s.e1); // necessarily e1 != s.e1
             // } else
-            if (e1 == s.e1 || e1 == s.e2) { // this in included in s
+            if (e1 == s.e1 || e1 == s.e2)
+            { // this in included in s
                 return s;
             }
         }
         // here we know that there are at least 3 distinct elements
         HashSet<E> r = new HashSet<E>(4);
         r.add(e1);
-        if (e2 != null) {
+        if (e2 != null)
+        {
             r.add(e2);
         }
         r.add(s.e1);
-        if (s.e2 != null) {
+        if (s.e2 != null)
+        {
             r.add(s.e2);
         }
         return r;

@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,10 +35,11 @@ import org.objectweb.asm.TypeReference;
 
 /**
  * A node that represents a type annotationn.
- * 
+ *
  * @author Eric Bruneton
  */
-public class TypeAnnotationNode extends AnnotationNode {
+public class TypeAnnotationNode extends AnnotationNode
+{
 
     /**
      * A reference to the annotated type. See {@link TypeReference}.
@@ -56,7 +57,7 @@ public class TypeAnnotationNode extends AnnotationNode {
      * Constructs a new {@link AnnotationNode}. <i>Subclasses must not use this
      * constructor</i>. Instead, they must use the
      * {@link #TypeAnnotationNode(int, int, TypePath, String)} version.
-     * 
+     *
      * @param typeRef
      *            a reference to the annotated type. See {@link TypeReference}.
      * @param typePath
@@ -68,17 +69,18 @@ public class TypeAnnotationNode extends AnnotationNode {
      * @throws IllegalStateException
      *             If a subclass calls this constructor.
      */
-    public TypeAnnotationNode(final int typeRef, final TypePath typePath,
-            final String desc) {
+    public TypeAnnotationNode(final int typeRef, final TypePath typePath, final String desc)
+    {
         this(Opcodes.ASM5, typeRef, typePath, desc);
-        if (getClass() != TypeAnnotationNode.class) {
+        if (getClass() != TypeAnnotationNode.class)
+        {
             throw new IllegalStateException();
         }
     }
 
     /**
      * Constructs a new {@link AnnotationNode}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
@@ -91,8 +93,8 @@ public class TypeAnnotationNode extends AnnotationNode {
      * @param desc
      *            the class descriptor of the annotation class.
      */
-    public TypeAnnotationNode(final int api, final int typeRef,
-            final TypePath typePath, final String desc) {
+    public TypeAnnotationNode(final int api, final int typeRef, final TypePath typePath, final String desc)
+    {
         super(api, desc);
         this.typeRef = typeRef;
         this.typePath = typePath;

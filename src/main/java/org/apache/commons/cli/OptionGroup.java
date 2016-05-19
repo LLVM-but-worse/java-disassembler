@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ public class OptionGroup implements Serializable
 {
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
-    
+
     /** hold the options */
     private final Map<String, Option> optionMap = new HashMap<String, Option>();
 
@@ -91,7 +91,7 @@ public class OptionGroup implements Serializable
             selected = null;
             return;
         }
-        
+
         // if no option has already been selected or the 
         // same option is being reselected then set the
         // selected member variable
@@ -133,14 +133,14 @@ public class OptionGroup implements Serializable
 
     /**
      * Returns the stringified version of this OptionGroup.
-     * 
+     *
      * @return the stringified representation of this group
      */
     @Override
     public String toString()
     {
         StringBuilder buff = new StringBuilder();
-        
+
         Iterator<Option> iter = getOptions().iterator();
 
         buff.append("[");
@@ -159,13 +159,13 @@ public class OptionGroup implements Serializable
                 buff.append("--");
                 buff.append(option.getLongOpt());
             }
-            
+
             if (option.getDescription() != null)
             {
                 buff.append(" ");
                 buff.append(option.getDescription());
             }
-            
+
             if (iter.hasNext())
             {
                 buff.append(", ");

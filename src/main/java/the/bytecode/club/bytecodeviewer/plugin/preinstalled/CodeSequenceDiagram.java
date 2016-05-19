@@ -20,96 +20,105 @@ import java.util.ArrayList;
 /***************************************************************************
  * Bytecode Viewer (BCV) - Java & Android Reverse Engineering Suite        *
  * Copyright (C) 2014 Kalen 'Konloch' Kinloch - http://bytecodeviewer.com  *
- *                                                                         *
+ * *
  * This program is free software: you can redistribute it and/or modify    *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation, either version 3 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
 /**
  * A simple code sequence diagram.
- * 
+ *
  * @author Konloch
- * 
+ *
  */
 
-public class CodeSequenceDiagram extends Plugin {
+public class CodeSequenceDiagram extends Plugin
+{
 
-	@Override
-	public void execute(ArrayList<ClassNode> classNodeList) {
-		if(BytecodeViewer.viewer.workPane.getCurrentViewer() == null || !(BytecodeViewer.viewer.workPane.getCurrentViewer() instanceof ClassViewer)) {
-			BytecodeViewer.showMessage("First open a class file.");
-			return;
-		}
-		ClassNode c = BytecodeViewer.viewer.workPane.getCurrentViewer().cn;
-		if(c == null) {
-			BytecodeViewer.showMessage("ClassNode is null for CodeSequenceDiagram. Please report to @Konloch");
-			return;
-		}
-		JFrame frame = null;
-		if(c.name != null)
-			frame = new JFrame("Code Sequence Diagram - "+c.name);
-		else
-			frame = new JFrame("Code Sequence Diagram - Unknown Name");
-		
-		frame.setIconImages(Resources.iconList);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(400, 320);
-		mxGraph graph = new mxGraph();
-		graph.setVertexLabelsMovable(false);
-		graph.setGridEnabled(true);
-		graph.setEnabled(false);
-		graph.setCellsEditable(false);
-		graph.setCellsSelectable(false);
-		graph.setCellsMovable(false);
-		graph.setCellsLocked(true);
-		Object parent = graph.getDefaultParent();   
-		Font font = UIManager.getDefaults().getFont("TabbedPane.font");
-		AffineTransform affinetransform = new AffineTransform();     
-		FontRenderContext frc = new FontRenderContext(affinetransform,true,true); 
+    @Override
+    public void execute(ArrayList<ClassNode> classNodeList)
+    {
+        if (BytecodeViewer.viewer.workPane.getCurrentViewer() == null || !(BytecodeViewer.viewer.workPane.getCurrentViewer() instanceof ClassViewer))
+        {
+            BytecodeViewer.showMessage("First open a class file.");
+            return;
+        }
+        ClassNode c = BytecodeViewer.viewer.workPane.getCurrentViewer().cn;
+        if (c == null)
+        {
+            BytecodeViewer.showMessage("ClassNode is null for CodeSequenceDiagram. Please report to @Konloch");
+            return;
+        }
+        JFrame frame = null;
+        if (c.name != null)
+            frame = new JFrame("Code Sequence Diagram - " + c.name);
+        else
+            frame = new JFrame("Code Sequence Diagram - Unknown Name");
 
-		graph.getModel().beginUpdate();
-		try
-		{
+        frame.setIconImages(Resources.iconList);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(400, 320);
+        mxGraph graph = new mxGraph();
+        graph.setVertexLabelsMovable(false);
+        graph.setGridEnabled(true);
+        graph.setEnabled(false);
+        graph.setCellsEditable(false);
+        graph.setCellsSelectable(false);
+        graph.setCellsMovable(false);
+        graph.setCellsLocked(true);
+        Object parent = graph.getDefaultParent();
+        Font font = UIManager.getDefaults().getFont("TabbedPane.font");
+        AffineTransform affinetransform = new AffineTransform();
+        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
 
-			int testX = 10;
-			int testY = 0;
-			double magicNumber = 5.8;
+        graph.getModel().beginUpdate();
+        try
+        {
 
-			for(MethodNode m : (ArrayList<MethodNode>)c.methods) {
-				String mIdentifier = c.name+"."+m.name+m.desc;
-				Object node = graph.insertVertex(parent, null, mIdentifier, testX, testY, mIdentifier.length() * magicNumber, 30);
-				Object attach = node;
-				testX += (int) (font.getStringBounds(mIdentifier, frc).getWidth()) + 60;
-				for (AbstractInsnNode i : m.instructions.toArray()) {
-					if (i instanceof MethodInsnNode) {
-						MethodInsnNode mi = (MethodInsnNode) i;
-						String identifier = mi.owner+"."+mi.name+mi.desc;
-						Object node2 = graph.insertVertex(parent, null, identifier, testX, testY, identifier.length() * 5, 30);
-						testX += (int) (font.getStringBounds(identifier, frc).getWidth()) + 60;
-						graph.insertEdge(parent, null, null, attach, node2);
-						attach = node2;
-					}
-				}
-				testY += 60;
-				testX = 10;
-			}
-		} finally {
-			graph.getModel().endUpdate();
-		}
+            int testX = 10;
+            int testY = 0;
+            double magicNumber = 5.8;
 
-		mxGraphComponent graphComponent = new mxGraphComponent(graph);
-		frame.getContentPane().add(graphComponent);
-		frame.setVisible(true);
-	}
+            for (MethodNode m : (ArrayList<MethodNode>) c.methods)
+            {
+                String mIdentifier = c.name + "." + m.name + m.desc;
+                Object node = graph.insertVertex(parent, null, mIdentifier, testX, testY, mIdentifier.length() * magicNumber, 30);
+                Object attach = node;
+                testX += (int) (font.getStringBounds(mIdentifier, frc).getWidth()) + 60;
+                for (AbstractInsnNode i : m.instructions.toArray())
+                {
+                    if (i instanceof MethodInsnNode)
+                    {
+                        MethodInsnNode mi = (MethodInsnNode) i;
+                        String identifier = mi.owner + "." + mi.name + mi.desc;
+                        Object node2 = graph.insertVertex(parent, null, identifier, testX, testY, identifier.length() * 5, 30);
+                        testX += (int) (font.getStringBounds(identifier, frc).getWidth()) + 60;
+                        graph.insertEdge(parent, null, null, attach, node2);
+                        attach = node2;
+                    }
+                }
+                testY += 60;
+                testX = 10;
+            }
+        }
+        finally
+        {
+            graph.getModel().endUpdate();
+        }
+
+        mxGraphComponent graphComponent = new mxGraphComponent(graph);
+        frame.getContentPane().add(graphComponent);
+        frame.setVisible(true);
+    }
 
 }

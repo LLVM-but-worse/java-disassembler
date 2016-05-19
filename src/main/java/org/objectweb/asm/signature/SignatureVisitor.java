@@ -2,19 +2,19 @@
  * ASM: a very small and fast Java bytecode manipulation framework
  * Copyright (c) 2000-2011 INRIA, France Telecom
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -50,11 +50,12 @@ import org.objectweb.asm.Opcodes;
  * <tt>visitInnerClassType</tt> <tt>visitTypeArgument</tt>* )* <tt>visitEnd</tt>
  * ) )</li>
  * </ul>
- * 
+ *
  * @author Thomas Hallgren
  * @author Eric Bruneton
  */
-public abstract class SignatureVisitor {
+public abstract class SignatureVisitor
+{
 
     /**
      * Wildcard for an "extends" type argument.
@@ -79,13 +80,15 @@ public abstract class SignatureVisitor {
 
     /**
      * Constructs a new {@link SignatureVisitor}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    public SignatureVisitor(final int api) {
-        if (api != Opcodes.ASM4 && api != Opcodes.ASM5) {
+    public SignatureVisitor(final int api)
+    {
+        if (api != Opcodes.ASM4 && api != Opcodes.ASM5)
+        {
             throw new IllegalArgumentException();
         }
         this.api = api;
@@ -93,146 +96,162 @@ public abstract class SignatureVisitor {
 
     /**
      * Visits a formal type parameter.
-     * 
+     *
      * @param name
      *            the name of the formal parameter.
      */
-    public void visitFormalTypeParameter(String name) {
+    public void visitFormalTypeParameter(String name)
+    {
     }
 
     /**
      * Visits the class bound of the last visited formal type parameter.
-     * 
+     *
      * @return a non null visitor to visit the signature of the class bound.
      */
-    public SignatureVisitor visitClassBound() {
+    public SignatureVisitor visitClassBound()
+    {
         return this;
     }
 
     /**
      * Visits an interface bound of the last visited formal type parameter.
-     * 
+     *
      * @return a non null visitor to visit the signature of the interface bound.
      */
-    public SignatureVisitor visitInterfaceBound() {
+    public SignatureVisitor visitInterfaceBound()
+    {
         return this;
     }
 
     /**
      * Visits the type of the super class.
-     * 
+     *
      * @return a non null visitor to visit the signature of the super class
      *         type.
      */
-    public SignatureVisitor visitSuperclass() {
+    public SignatureVisitor visitSuperclass()
+    {
         return this;
     }
 
     /**
      * Visits the type of an interface implemented by the class.
-     * 
+     *
      * @return a non null visitor to visit the signature of the interface type.
      */
-    public SignatureVisitor visitInterface() {
+    public SignatureVisitor visitInterface()
+    {
         return this;
     }
 
     /**
      * Visits the type of a method parameter.
-     * 
+     *
      * @return a non null visitor to visit the signature of the parameter type.
      */
-    public SignatureVisitor visitParameterType() {
+    public SignatureVisitor visitParameterType()
+    {
         return this;
     }
 
     /**
      * Visits the return type of the method.
-     * 
+     *
      * @return a non null visitor to visit the signature of the return type.
      */
-    public SignatureVisitor visitReturnType() {
+    public SignatureVisitor visitReturnType()
+    {
         return this;
     }
 
     /**
      * Visits the type of a method exception.
-     * 
+     *
      * @return a non null visitor to visit the signature of the exception type.
      */
-    public SignatureVisitor visitExceptionType() {
+    public SignatureVisitor visitExceptionType()
+    {
         return this;
     }
 
     /**
      * Visits a signature corresponding to a primitive type.
-     * 
+     *
      * @param descriptor
      *            the descriptor of the primitive type, or 'V' for <tt>void</tt>
      *            .
      */
-    public void visitBaseType(char descriptor) {
+    public void visitBaseType(char descriptor)
+    {
     }
 
     /**
      * Visits a signature corresponding to a type variable.
-     * 
+     *
      * @param name
      *            the name of the type variable.
      */
-    public void visitTypeVariable(String name) {
+    public void visitTypeVariable(String name)
+    {
     }
 
     /**
      * Visits a signature corresponding to an array type.
-     * 
+     *
      * @return a non null visitor to visit the signature of the array element
      *         type.
      */
-    public SignatureVisitor visitArrayType() {
+    public SignatureVisitor visitArrayType()
+    {
         return this;
     }
 
     /**
      * Starts the visit of a signature corresponding to a class or interface
      * type.
-     * 
+     *
      * @param name
      *            the internal name of the class or interface.
      */
-    public void visitClassType(String name) {
+    public void visitClassType(String name)
+    {
     }
 
     /**
      * Visits an inner class.
-     * 
+     *
      * @param name
      *            the local name of the inner class in its enclosing class.
      */
-    public void visitInnerClassType(String name) {
+    public void visitInnerClassType(String name)
+    {
     }
 
     /**
      * Visits an unbounded type argument of the last visited class or inner
      * class type.
      */
-    public void visitTypeArgument() {
+    public void visitTypeArgument()
+    {
     }
 
     /**
      * Visits a type argument of the last visited class or inner class type.
-     * 
+     *
      * @param wildcard
      *            '+', '-' or '='.
      * @return a non null visitor to visit the signature of the type argument.
      */
-    public SignatureVisitor visitTypeArgument(char wildcard) {
+    public SignatureVisitor visitTypeArgument(char wildcard)
+    {
         return this;
     }
 
     /**
      * Ends the visit of a signature corresponding to a class or interface type.
      */
-    public void visitEnd() {
+    public void visitEnd()
+    {
     }
 }

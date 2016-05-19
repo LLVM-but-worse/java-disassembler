@@ -10,13 +10,14 @@ import java.awt.event.MouseListener;
 /**
  * Created by IntelliJ IDEA. User: laullon Date: 09-abr-2003 Time: 12:47:32
  */
-public class JHexEditorHEX extends JComponent implements MouseListener,
-        KeyListener {
+public class JHexEditorHEX extends JComponent implements MouseListener, KeyListener
+{
     private static final long serialVersionUID = 1481995655372014571L;
     private JHexEditor he;
     private int cursor = 0;
 
-    public JHexEditorHEX(JHexEditor he) {
+    public JHexEditorHEX(JHexEditor he)
+    {
         this.he = he;
         addMouseListener(this);
         addKeyListener(this);
@@ -24,11 +25,12 @@ public class JHexEditorHEX extends JComponent implements MouseListener,
     }
 
 	/*
-	 * public Dimension getPreferredSize() { debug("getPreferredSize()"); return
+     * public Dimension getPreferredSize() { debug("getPreferredSize()"); return
 	 * getMinimumSize(); }
 	 */
 
-    public Dimension getMaximumSize() {
+    public Dimension getMaximumSize()
+    {
         debug("getMaximumSize()");
         return getMinimumSize();
     }
@@ -42,7 +44,8 @@ public class JHexEditorHEX extends JComponent implements MouseListener,
 	 * )*+((16*3)-1))+(he.border*2)+1,h*nl+(he.border*2)+1); return d; }
 	 */
 
-    public void paint(Graphics g) {
+    public void paint(Graphics g)
+    {
         debug("paint(" + g + ")");
         debug("cursor=" + he.cursor + " buff.length=" + he.buff.length);
         Dimension d = getMinimumSize();
@@ -60,14 +63,19 @@ public class JHexEditorHEX extends JComponent implements MouseListener,
         // datos hex
         int x = 0;
         int y = 0;
-        for (int n = ini; n < fin; n++) {
-            if (n == he.cursor) {
-                if (hasFocus()) {
+        for (int n = ini; n < fin; n++)
+        {
+            if (n == he.cursor)
+            {
+                if (hasFocus())
+                {
                     g.setColor(Color.black);
                     he.fondo(g, (x * 3), y, 2);
                     g.setColor(Color.blue);
                     he.fondo(g, (x * 3) + cursor, y, 1);
-                } else {
+                }
+                else
+                {
                     g.setColor(Color.blue);
                     he.cuadro(g, (x * 3), y, 2);
                 }
@@ -76,27 +84,32 @@ public class JHexEditorHEX extends JComponent implements MouseListener,
                     g.setColor(Color.white);
                 else
                     g.setColor(Color.black);
-            } else {
+            }
+            else
+            {
                 g.setColor(Color.black);
             }
 
             String s = ("0" + Integer.toHexString(he.buff[n]));
             s = s.substring(s.length() - 2);
             he.printString(g, s, ((x++) * 3), y);
-            if (x == 16) {
+            if (x == 16)
+            {
                 x = 0;
                 y++;
             }
         }
     }
 
-    private void debug(String s) {
+    private void debug(String s)
+    {
         if (he.DEBUG)
             System.out.println("JHexEditorHEX ==> " + s);
     }
 
     // calcular la posicion del raton
-    public int calcularPosicionRaton(int x, int y) {
+    public int calcularPosicionRaton(int x, int y)
+    {
         FontMetrics fn = getFontMetrics(JHexEditor.font);
         x = x / ((fn.stringWidth(" ") + 1) * 3);
         y = y / fn.getHeight();
@@ -105,27 +118,33 @@ public class JHexEditorHEX extends JComponent implements MouseListener,
     }
 
     // mouselistener
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e)
+    {
         debug("mouseClicked(" + e + ")");
         he.cursor = calcularPosicionRaton(e.getX(), e.getY());
         this.requestFocus();
         he.repaint();
     }
 
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent e)
+    {
     }
 
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent e)
+    {
     }
 
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent e)
+    {
     }
 
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent e)
+    {
     }
 
     // KeyListener
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(KeyEvent e)
+    {
         debug("keyTyped(" + e + ")");
 
 		/*
@@ -142,16 +161,19 @@ public class JHexEditorHEX extends JComponent implements MouseListener,
 		 */
     }
 
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e)
+    {
         debug("keyPressed(" + e + ")");
         he.keyPressed(e);
     }
 
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e)
+    {
         debug("keyReleased(" + e + ")");
     }
 
-    public boolean isFocusTraversable() {
+    public boolean isFocusTraversable()
+    {
         return true;
     }
 }

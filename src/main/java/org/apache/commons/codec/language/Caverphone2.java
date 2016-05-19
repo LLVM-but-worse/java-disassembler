@@ -19,7 +19,7 @@ package org.apache.commons.codec.language;
 
 /**
  * Encodes a string into a Caverphone 2.0 value.
- *
+ * <p>
  * This is an algorithm created by the Caversham Project at the University of Otago. It implements the Caverphone 2.0
  * algorithm:
  *
@@ -27,24 +27,26 @@ package org.apache.commons.codec.language;
  * @see <a href="http://en.wikipedia.org/wiki/Caverphone">Wikipedia - Caverphone</a>
  * @see <a href="http://caversham.otago.ac.nz/files/working/ctp150804.pdf">Caverphone 2.0 specification</a>
  * @since 1.5
- *
+ * <p>
  * <p>This class is immutable and thread-safe.</p>
  */
-public class Caverphone2 extends AbstractCaverphone {
+public class Caverphone2 extends AbstractCaverphone
+{
 
     private static final String TEN_1 = "1111111111";
 
     /**
      * Encodes the given String into a Caverphone 2.0 value.
      *
-     * @param source
-     *            String the source string
+     * @param source String the source string
      * @return A caverphone code for the given String
      */
     @Override
-    public String encode(final String source) {
+    public String encode(final String source)
+    {
         String txt = source;
-        if (txt == null || txt.length() == 0) {
+        if (txt == null || txt.length() == 0)
+        {
             return TEN_1;
         }
 
@@ -63,7 +65,7 @@ public class Caverphone2 extends AbstractCaverphone {
         txt = txt.replaceAll("^tough", "tou2f");
         txt = txt.replaceAll("^enough", "enou2f"); // 2.0 only
         txt = txt.replaceAll("^trough", "trou2f"); // 2.0 only
-                                                   // note the spec says ^enough here again, c+p error I assume
+        // note the spec says ^enough here again, c+p error I assume
         txt = txt.replaceAll("^gn", "2n");
 
         // End

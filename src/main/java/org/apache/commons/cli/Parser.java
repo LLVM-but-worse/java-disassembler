@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -65,8 +65,7 @@ public abstract class Parser implements CommandLineParser
      * @throws ParseException if there are any problems encountered
      *                        while parsing the command line tokens.
      */
-    protected abstract String[] flatten(Options opts, String[] arguments, boolean stopAtNonOption)
-            throws ParseException;
+    protected abstract String[] flatten(Options opts, String[] arguments, boolean stopAtNonOption) throws ParseException;
 
     /**
      * Parses the specified <code>arguments</code> based
@@ -137,20 +136,19 @@ public abstract class Parser implements CommandLineParser
      *
      * @since 1.1
      */
-    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
-            throws ParseException
+    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption) throws ParseException
     {
         // clear out the data in options in case it's been used before (CLI-71)
         for (Option opt : options.helpOptions())
         {
             opt.clearValues();
         }
-        
+
         // clear the data from the groups
         for (OptionGroup group : options.getOptionGroups())
         {
             group.setSelected(null);
-        }        
+        }
 
         // initialise members
         setOptions(options);
@@ -253,20 +251,20 @@ public abstract class Parser implements CommandLineParser
             return;
         }
 
-        for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();)
+        for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements(); )
         {
             String option = e.nextElement().toString();
-            
+
             Option opt = options.getOption(option);
             if (opt == null)
             {
                 throw new UnrecognizedOptionException("Default option wasn't defined", option);
             }
-            
+
             // if the option is part of a group, check if another option of the group has been selected
             OptionGroup group = options.getOptionGroup(opt);
             boolean selected = group != null && group.getSelected() != null;
-            
+
             if (!cmd.hasOption(option) && !selected)
             {
                 // get the value from the properties instance
@@ -286,9 +284,7 @@ public abstract class Parser implements CommandLineParser
                         }
                     }
                 }
-                else if (!("yes".equalsIgnoreCase(value)
-                        || "true".equalsIgnoreCase(value)
-                        || "1".equalsIgnoreCase(value)))
+                else if (!("yes".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)))
                 {
                     // if the value is not yes, true or 1 then don't add the
                     // option to the CommandLine
@@ -333,7 +329,7 @@ public abstract class Parser implements CommandLineParser
         while (iter.hasNext())
         {
             String str = iter.next();
-            
+
             // found an Option, not an argument
             if (getOptions().hasOption(str) && str.startsWith("-"))
             {
@@ -380,23 +376,23 @@ public abstract class Parser implements CommandLineParser
 
         // get the option represented by arg
         Option opt = (Option) getOptions().getOption(arg).clone();
-        
+
         // update the required options and groups
         updateRequiredOptions(opt);
-        
+
         // if the option takes an argument value
         if (opt.hasArg())
         {
             processArgs(opt, iter);
         }
-        
+
         // set the option on the command line
         cmd.addOption(opt);
     }
 
     /**
      * Removes the option or its group from the list of expected elements.
-     * 
+     *
      * @param opt
      */
     private void updateRequiredOptions(Option opt) throws ParseException
