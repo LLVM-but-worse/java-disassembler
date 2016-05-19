@@ -393,7 +393,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
                     g.setColor(new Color(0, 0, 0, 100));
                     g.fillRect(0, 0, getWidth(), getHeight());
                     g.setColor(Color.white);
-                    String s = "Drag class/jar/zip/APK/DEX here";
+                    String s = "Drag class/jar/zip here";
                     g.drawString(s, ((int) ((getWidth() / 2) - (m.getWidth(s) / 2))), getHeight() / 2);
                 }
             }
@@ -581,10 +581,6 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
                 else if (name.endsWith(".c") || name.endsWith(".cpp") || name.endsWith(".h"))
                 {
                     setIcon(Resources.cplusplusIcon);
-                }
-                else if (name.endsWith(".apk") || name.endsWith(".dex"))
-                {
-                    setIcon(Resources.androidIcon);
                 }
                 else if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".bmp") || name.endsWith(".gif"))
                 {

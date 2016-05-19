@@ -150,7 +150,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     public FileNavigationPane cn = new FileNavigationPane(this);
     public boolean isMaximized = false;
-    public JSplitPane sp1;
     public JSplitPane sp2;
     static ArrayList<VisibleComponent> rfComps = new ArrayList<VisibleComponent>();
     public final JMenuItem mntmNewWorkspace = new JMenuItem("New Workspace");
@@ -281,7 +280,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                     @Override
                     public String getDescription()
                     {
-                        return "APKs, DEX, Class Files or Zip/Jar Archives";
+                        return "Class Files or Zip/Jar Archives";
                     }
                 });
                 fc.setFileHidingEnabled(false);
@@ -319,7 +318,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (BytecodeViewer.getLoadedBytes().isEmpty())
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                     return;
                 }
                 Thread t = new Thread()
@@ -433,7 +432,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (BytecodeViewer.getLoadedBytes().isEmpty())
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                     return;
                 }
                 Thread t = new Thread()
@@ -502,7 +501,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (BytecodeViewer.getLoadedBytes().isEmpty())
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                     return;
                 }
                 new RunOptions().setVisible(true);
@@ -523,7 +522,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (BytecodeViewer.files.isEmpty())
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                     return;
                 }
 
@@ -670,7 +669,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (workPane.getCurrentViewer() == null)
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                     return;
                 }
 
@@ -941,7 +940,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (BytecodeViewer.getLoadedClasses().isEmpty())
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                     return;
                 }
                 new ReplaceStringsOptions().setVisible(true);
@@ -984,7 +983,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             {
                 if (BytecodeViewer.getLoadedClasses().isEmpty())
                 {
-                    BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                    BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                     return;
                 }
                 new MaliciousCodeScannerOptions().setVisible(true);
@@ -1019,22 +1018,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         // scrollPane.setViewportView(tree);
         cn.setMinimumSize(new Dimension(200, 50));
         // panel.add(cn);
-        SearchingPane s = new SearchingPane(this);
-        s.setPreferredSize(new Dimension(200, 50));
-        s.setMinimumSize(new Dimension(200, 50));
-        s.setMaximumSize(new Dimension(200, 2147483647));
-        // panel.add(s);
-        sp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cn, s);
         // panel.add(sp1);
         cn.setPreferredSize(new Dimension(200, 50));
         cn.setMaximumSize(new Dimension(200, 2147483647));
-        sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sp1, workPane);
+        sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, cn, workPane);
         getContentPane().add(sp2);
         sp2.setResizeWeight(0.05);
-        sp1.setResizeWeight(0.5);
         rfComps.add(cn);
 
-        rfComps.add(s);
         rfComps.add(workPane);
 
         fontSpinner.setPreferredSize(new Dimension(42, 20));

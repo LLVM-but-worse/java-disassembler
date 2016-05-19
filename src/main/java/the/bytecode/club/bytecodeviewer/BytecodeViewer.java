@@ -24,77 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A lightweight Java Reverse Engineering suite, developed by Konloch - http://konloch.me
- * <p/>
- * Are you a Java Reverse Engineer? Or maybe you want to learn Java Reverse Engineering?
- * Join The Bytecode Club, we're noob friendly, and censorship free.
- * <p/>
- * http://the.bytecode.club
- * <p/>
- * All you have to do is add a jar or class file into the workspace, select the
- * file you want then it will start decompiling the class in the background,
- * when it's done it will show the Source code, Bytecode and Hexcode of the
- * class file you chose.
- * <p/>
- * There is also a plugin system that will allow you to interact with the loaded
- * classfiles, for example you can write a String deobfuscator, a malicious code
- * searcher, or something else you can think of. You can either use one of the
- * pre-written plugins, or write your own. It supports groovy
- * scripting. Once a plugin is activated, it will send a ClassNode ArrayList of
- * every single class loaded in the file system to the execute function, this
- * allows the user to handle it completely using ASM.
- * <p/>
- * TODO:
- * <p/>
- * 3.0.0: (RETIREMENT PARTY, WOHOOO)
- * Add obfuscation:
- * - Add integer boxing and other obfuscation methods contra implemented
- * - Insert unadded/debug opcodes to try to fuck up decompilers
- * - ClassAnylyzterAdapter
- * Add the jump/save mark system Ida Pro has.
- * Add class annotations to bytecode decompiler.
- * EVERYTHING BUG FREE, CHECK 100%
- * bytecode editor that works by editing per method instead of entire class, methods are in a pane like the file navigator
- * Make the tabs menu and middle mouse button click work on the tab itself not just the close button.
- * <p/>
- * before 3.0.0:
- * EVERYTHING ON THE FUCKING GITHUB ISSUES LOL
- * make it use that global last used inside of export as jar
- * Spiffy up the plugin console with hilighted lines
- * Take https://github.com/ptnkjke/Java-Bytecode-Editor visualize
- * make zipfile not include the decode shit
- * add stackmapframes to bytecode decompiler
- * add stackmapframes remover?
- * make ez-injection plugin console show all sys.out calls
- * add JEB decompiler optionally, requires them to add jeb library jar externally and disable update check ?
- * add decompile as zip for krakatau-bytecode, jd-gui and smali for CLI
- * fix hook inject for EZ-Injection
- * fix classfile searcher
- * make the decompilers launch in a separate process?
- * <p/>
- * -----2.9.9-----:
- * 08/01/2015 - Fixed a pingback concurrency exception issue.
- * 08/03/2015 - Fixed a typo for FernFlower decompiler.
- * 08/03/2015 - Fixed an issue with Krakatau Decompiler as zip.
- * 08/07/2015 - "Fixed" an issue with Enjarify and latest PyPy3 bin.
- * 08/07/2015 - FernFlower & CFR Decompiler now launch in their own process with the 'slimjar' version.
- * 08/07/2015 - Switched the ClassViewer up slightly so it utilizes the event dispatch thread.
- * 08/07/2015 - Fixed? CFIDE's Bytecode Decompiler on TableSwitchs
- * 01/04/2015 - Afffsdd fixed the same filename from 2 containers.
- * 01/04/2015 - Afffsdd fixed a typo.
- * 01/04/2015 - Afffsdd Added an option to show the containing file name.
- *
- * @author Konloch
- */
-
 public class BytecodeViewer
 {
 
     /*per version*/
     public static final String version = "3.0.0";
-    public static final String krakatauVersion = "8";
-    public static final String enjarifyVersion = "2";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
@@ -103,8 +37,6 @@ public class BytecodeViewer
     public static final File filesFile = new File(dataDir, "recentfiles.bcv");
     public static final File pluginsFile = new File(dataDir, "recentplugins.bcv");
     public static final File settingsFile = new File(dataDir, "settings.bcv");
-    public static final File krakatauDirectory = new File(dataDir + fs + "krakatau_" + krakatauVersion + fs + "Krakatau-master");
-    public static final File enjarifyDirectory = new File(dataDir + fs + "enjarify_" + enjarifyVersion + fs + "enjarify-master");
     @Deprecated public static final File tempDir = new File(dataDir, "bcv_temp");
     private static final long start = System.currentTimeMillis();
     /*the rest*/
@@ -480,16 +412,6 @@ public class BytecodeViewer
     }
 
     /**
-     * because Smali and Baksmali System.exit if it failed
-     *
-     * @param i
-     */
-    public static void exit(int i)
-    {
-
-    }
-
-    /**
      * Returns the currently opened ClassNode
      *
      * @return the currently opened ClassNode
@@ -804,7 +726,6 @@ public class BytecodeViewer
             files.clear();
             MainViewerGUI.getComponent(FileNavigationPane.class).resetWorkspace();
             MainViewerGUI.getComponent(WorkPane.class).resetWorkspace();
-            MainViewerGUI.getComponent(SearchingPane.class).resetWorkspace();
             the.bytecode.club.bytecodeviewer.api.BytecodeViewer.getClassNodeLoader().clear();
         }
         else
@@ -825,7 +746,6 @@ public class BytecodeViewer
                 files.clear();
                 MainViewerGUI.getComponent(FileNavigationPane.class).resetWorkspace();
                 MainViewerGUI.getComponent(WorkPane.class).resetWorkspace();
-                MainViewerGUI.getComponent(SearchingPane.class).resetWorkspace();
                 the.bytecode.club.bytecodeviewer.api.BytecodeViewer.getClassNodeLoader().clear();
             }
         }
@@ -1050,7 +970,7 @@ public class BytecodeViewer
 
                     String extension = MiscUtils.extension(f.getAbsolutePath());
                     if (extension != null)
-                        if (extension.equals("jar") || extension.equals("zip") || extension.equals("class") || extension.equals("apk") || extension.equals("dex"))
+                        if (extension.equals("jar") || extension.equals("zip") || extension.equals("class"))
                             return true;
 
                     return false;
@@ -1059,7 +979,7 @@ public class BytecodeViewer
                 @Override
                 public String getDescription()
                 {
-                    return "APKs, DEX, Class Files or Zip/Jar Archives";
+                    return "Class Files or Zip/Jar Archives";
                 }
             });
             fc.setFileHidingEnabled(false);
@@ -1091,7 +1011,7 @@ public class BytecodeViewer
             last = System.currentTimeMillis();
             if (BytecodeViewer.getLoadedClasses().isEmpty())
             {
-                BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                 return;
             }
             new RunOptions().setVisible(true);
@@ -1102,7 +1022,7 @@ public class BytecodeViewer
 
             if (BytecodeViewer.getLoadedClasses().isEmpty())
             {
-                BytecodeViewer.showMessage("First open a class, jar, zip, apk or dex file.");
+                BytecodeViewer.showMessage("First open a class, jar, or zip file.");
                 return;
             }
 

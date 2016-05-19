@@ -70,10 +70,6 @@ public class CommandLineInput
                 System.out.println("Procyon");
                 System.out.println("CFR");
                 System.out.println("FernFlower");
-                System.out.println("Krakatau");
-                System.out.println("Krakatau-Bytecode");
-                System.out.println("JD-GUI");
-                System.out.println("Smali");
                 return STOP;
             }
             else if (parsed.hasOption("help"))
@@ -122,18 +118,14 @@ public class CommandLineInput
                     output.delete();
                 }
 
-                //check if zip, jar, apk, dex, or class
-                //if its zip/jar/apk/dex attempt unzip as whole zip
+                //check if zip, jar, or class
+                //if its zip/jar attempt unzip as whole zip
                 //if its just class allow any
 
                 if (decompiler != null &&
                         !decompiler.equalsIgnoreCase("procyon") &&
                         !decompiler.equalsIgnoreCase("cfr") &&
-                        !decompiler.equalsIgnoreCase("fernflower") &&
-                        !decompiler.equalsIgnoreCase("krakatau") &&
-                        !decompiler.equalsIgnoreCase("krakatau-bytecode") &&
-                        !decompiler.equalsIgnoreCase("jd-gui") &&
-                        !decompiler.equalsIgnoreCase("smali"))
+                        !decompiler.equalsIgnoreCase("fernflower"))
                 {
                     System.out.println("Error, no decompiler called '" + decompiler + "' found. Type -decompiler-list for the list");
                 }
