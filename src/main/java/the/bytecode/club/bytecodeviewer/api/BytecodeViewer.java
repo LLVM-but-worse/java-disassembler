@@ -209,14 +209,6 @@ public class BytecodeViewer {
     }
 
     /**
-     * Returns the wrapped Krakatau Decompiler instance.
-     * @return The wrapped Krakatau Decompiler instance
-     */
-    public static Decompiler getKrakatauDecompiler() {
-        return Decompiler.KRAKATAU;
-    }
-
-    /**
      * Returns the wrapped Procyon Decompiler instance.
      * @return The wrapped Procyon Decompiler instance
      */
@@ -238,37 +230,5 @@ public class BytecodeViewer {
      */
     public static Decompiler getFernFlowerDecompiler() {
         return Decompiler.FERNFLOWER;
-    }
-
-    /**
-     * Returns the wrapped Krakatau Disassembler instance.
-     * @return The wrapped Krakatau Disassembler instance
-     */
-    public static Decompiler getKrakatauDisassembler() {
-        return Decompiler.KRAKATAU_DA;
-    }
-
-    /**
-     * Returns the wrapped Krakatau Assembler instance.
-     * @return The wrapped Krakatau Assembler instance
-     */
-    public static the.bytecode.club.bytecodeviewer.compilers.Compiler getKrakatauCompiler() {
-        return the.bytecode.club.bytecodeviewer.compilers.Compiler.krakatau;
-    }
-
-    /**
-     * Returns the wrapped Smali Assembler instance.
-     * @return The wrapped Smali Assembler instance
-     */
-    public static the.bytecode.club.bytecodeviewer.compilers.Compiler getSmaliCompiler() {
-        return the.bytecode.club.bytecodeviewer.compilers.Compiler.smali;
-    }
-
-    /**
-     * Returns the wrapped JD-GUI Decompiler instance.
-     * @return The wrapped JD-GUI Decompiler instance
-     */
-    public static the.bytecode.club.bytecodeviewer.decompilers.Decompiler getDJGUIDecompiler() {
-        return the.bytecode.club.bytecodeviewer.decompilers.Decompiler.JDGUI;
     }
 }

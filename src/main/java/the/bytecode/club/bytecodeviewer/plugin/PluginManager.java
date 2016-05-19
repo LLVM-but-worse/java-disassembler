@@ -47,8 +47,7 @@ public final class PluginManager {
 	
 	static {
 		launchStrategies.put("jar", new CompiledJavaPluginLaunchStrategy());
-		launchStrategies.put("java", new JavaPluginLaunchStrategy());
-		
+
 		GroovyPluginLaunchStrategy groovy = new GroovyPluginLaunchStrategy();
 		launchStrategies.put("gy", groovy);
 		launchStrategies.put("groovy", groovy);

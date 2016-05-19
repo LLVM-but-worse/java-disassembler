@@ -161,13 +161,6 @@ public class WorkPane extends VisibleComponent implements ActionListener {
 	public void actionPerformed(final ActionEvent arg0) {
 		Thread t = new Thread() {
 			public void run() {
-				if(BytecodeViewer.viewer.autoCompileOnRefresh.isSelected())
-					try {
-						if(!BytecodeViewer.compile(false))
-							return;
-					} catch(java.lang.NullPointerException e) {
-						
-					}
 				final JButton src = (JButton) arg0.getSource();
 				if (src == refreshClass) {
 					final Component tabComp = tabs.getSelectedComponent();

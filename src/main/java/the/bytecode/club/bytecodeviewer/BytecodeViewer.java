@@ -6,7 +6,6 @@ import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.bytecodeviewer.api.ClassNodeLoader;
 import the.bytecode.club.bytecodeviewer.api.ExceptionUI;
 import the.bytecode.club.bytecodeviewer.gui.*;
-import the.bytecode.club.bytecodeviewer.obfuscators.mapping.Refactorer;
 import the.bytecode.club.bytecodeviewer.plugin.PluginManager;
 
 import javax.swing.*;
@@ -137,7 +136,6 @@ public class BytecodeViewer {
     public static boolean runningObfuscation = false;
     public static String lastDirectory = "";
     public static ArrayList<Process> createdProcesses = new ArrayList<Process>();
-    public static Refactorer refactorer = new Refactorer();
     public static boolean pingback = false;
     public static boolean deleteForiegnLibraries = true;
 
@@ -516,105 +514,6 @@ public class BytecodeViewer {
         return data;
     }
 
-    /**
-     * Compile all of the compilable panes that're opened.
-     *
-     * @param message if it should send a message saying it's compiled sucessfully.
-     * @return true if no errors, false if it failed to compile.
-     */
-    public static boolean compile(boolean message) {
-        BytecodeViewer.viewer.setIcon(true);
-        boolean actuallyTried = false;
-
-        for (java.awt.Component c : BytecodeViewer.viewer.workPane.getLoadedViewers()) {
-            if (c instanceof ClassViewer) {
-                ClassViewer cv = (ClassViewer) c;
-                boolean valid = false;
-                for (int i = 0; i < cv.panels.size(); i++) {
-                    if (cv.smalis.get(i) != null && cv.smalis.get(i).isEditable()) {
-                        valid = true;
-                    }
-                }
-                if (valid) {
-                    actuallyTried = true;
-                    Object smali[] = cv.getSmali();
-                    if (smali != null) {
-                        ClassNode origNode = (ClassNode) smali[0];
-                        String smaliText = (String) smali[1];
-                        byte[] smaliCompiled = the.bytecode.club.bytecodeviewer.compilers.Compiler.smali.compile(smaliText, origNode.name);
-                        if (smaliCompiled != null) {
-                            ClassNode newNode = JarUtils.getNode(smaliCompiled);
-                            BytecodeViewer.updateNode(origNode, newNode);
-                        } else {
-                            BytecodeViewer.showMessage("There has been an error with assembling your Smali code, please check this. Class: " + origNode.name);
-                            BytecodeViewer.viewer.setIcon(false);
-                            return false;
-                        }
-                    }
-                }
-                valid = false;
-                for (int i = 0; i < cv.panels.size(); i++) {
-                    if (cv.krakataus.get(i) != null && cv.krakataus.get(i).isEditable()) {
-                        valid = true;
-                    }
-                }
-                if (valid) {
-                    actuallyTried = true;
-                    Object krakatau[] = cv.getKrakatau();
-                    if (krakatau != null) {
-                        ClassNode origNode = (ClassNode) krakatau[0];
-                        String krakatauText = (String) krakatau[1];
-                        byte[] krakatauCompiled = the.bytecode.club.bytecodeviewer.compilers.Compiler.krakatau.compile(krakatauText, origNode.name);
-                        if (krakatauCompiled != null) {
-                            ClassNode newNode = JarUtils.getNode(krakatauCompiled);
-                            BytecodeViewer.updateNode(origNode, newNode);
-                        } else {
-                            BytecodeViewer.showMessage("There has been an error with assembling your Krakatau Bytecode, please check this. Class: " + origNode.name);
-                            BytecodeViewer.viewer.setIcon(false);
-                            return false;
-                        }
-                    }
-                }
-                valid = false;
-                for (int i = 0; i < cv.panels.size(); i++) {
-                    if (cv.javas.get(i) != null && cv.javas.get(i).isEditable()) {
-                        valid = true;
-                    }
-                }
-                if (valid) {
-                    actuallyTried = true;
-                    Object java[] = cv.getJava();
-                    if (java != null) {
-                        ClassNode origNode = (ClassNode) java[0];
-                        String javaText = (String) java[1];
-
-                        SystemErrConsole errConsole = new SystemErrConsole("Java Compile Issues");
-                        errConsole.setText("Error compiling class: " + origNode.name + nl + "Keep in mind most decompilers cannot produce compilable classes" + nl + nl);
-
-                        byte[] javaCompiled = the.bytecode.club.bytecodeviewer.compilers.Compiler.java.compile(javaText, origNode.name);
-                        if (javaCompiled != null) {
-                            ClassNode newNode = JarUtils.getNode(javaCompiled);
-                            BytecodeViewer.updateNode(origNode, newNode);
-                            errConsole.finished();
-                        } else {
-                            errConsole.pretty();
-                            errConsole.setVisible(true);
-                            errConsole.finished();
-                            BytecodeViewer.viewer.setIcon(false);
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (message) if (actuallyTried) BytecodeViewer.showMessage("Compiled Successfully.");
-        else BytecodeViewer.showMessage("You have no editable panes opened, make one editable and try again.");
-
-        BytecodeViewer.viewer.setIcon(false);
-        return true;
-    }
-
     private static boolean update = true;
 
     /**
@@ -700,60 +599,6 @@ public class BytecodeViewer {
                                         new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
                                         update = false;
                                     }
-                                } else if (fn.endsWith(".apk")) {
-                                    try {
-                                        BytecodeViewer.viewer.setIcon(true);
-                                        FileContainer container = new FileContainer(f);
-
-                                        if (viewer.decodeAPKResources.isSelected()) {
-                                            File decodedResources = new File(tempDir, MiscUtils.randomString(32) + ".apk");
-                                            APKTool.decodeResources(f, decodedResources);
-                                            container.files = JarUtils.loadResources(decodedResources);
-                                        }
-
-                                        container.files.putAll(JarUtils.loadResources(f));
-
-                                        String name = getRandomizedName() + ".jar";
-                                        File output = new File(tempDir, name);
-
-                                        if (BytecodeViewer.viewer.apkConversionGroup.isSelected(BytecodeViewer.viewer.apkConversionDex.getModel()))
-                                            Dex2Jar.dex2Jar(f, output);
-                                        else if (BytecodeViewer.viewer.apkConversionGroup.isSelected(BytecodeViewer.viewer.apkConversionEnjarify.getModel()))
-                                            Enjarify.apk2Jar(f, output);
-
-                                        for (ClassNode classNode : JarUtils.loadClasses(output)) {
-                                            container.add(classNode);
-                                        }
-
-                                        BytecodeViewer.viewer.setIcon(false);
-                                        BytecodeViewer.files.add(container);
-                                    } catch (final Exception e) {
-                                        new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-                                    }
-                                    return;
-                                } else if (fn.endsWith(".dex")) {
-                                    try {
-                                        BytecodeViewer.viewer.setIcon(true);
-                                        FileContainer container = new FileContainer(f);
-
-                                        String name = getRandomizedName() + ".jar";
-                                        File output = new File(tempDir, name);
-
-                                        if (BytecodeViewer.viewer.apkConversionGroup.isSelected(BytecodeViewer.viewer.apkConversionDex.getModel()))
-                                            Dex2Jar.dex2Jar(f, output);
-                                        else if (BytecodeViewer.viewer.apkConversionGroup.isSelected(BytecodeViewer.viewer.apkConversionEnjarify.getModel()))
-                                            Enjarify.apk2Jar(f, output);
-
-                                        for (ClassNode classNode : JarUtils.loadClasses(output)) {
-                                            container.add(classNode);
-                                        }
-
-                                        BytecodeViewer.viewer.setIcon(false);
-                                        BytecodeViewer.files.add(container);
-                                    } catch (final Exception e) {
-                                        new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-                                    }
-                                    return;
                                 } else {
                                     HashMap<String, byte[]> files = new HashMap<String, byte[]>();
                                     byte[] bytes = JarUtils.getBytes(new FileInputStream(f));
@@ -1045,14 +890,6 @@ public class BytecodeViewer {
         } else if ((e.getKeyCode() == KeyEvent.VK_N) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
             last = System.currentTimeMillis();
             BytecodeViewer.resetWorkSpace(true);
-        } else if ((e.getKeyCode() == KeyEvent.VK_T) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-            last = System.currentTimeMillis();
-            Thread t = new Thread() {
-                public void run() {
-                    BytecodeViewer.compile(true);
-                }
-            };
-            t.start();
         } else if ((e.getKeyCode() == KeyEvent.VK_R) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
             last = System.currentTimeMillis();
             if (BytecodeViewer.getLoadedClasses().isEmpty()) {
@@ -1070,7 +907,6 @@ public class BytecodeViewer {
 
             Thread t = new Thread() {
                 public void run() {
-                    if (viewer.autoCompileSmali.isSelected() && !BytecodeViewer.compile(false)) return;
                     JFileChooser fc = new JFileChooser();
                     fc.setFileFilter(new FileFilter() {
                         @Override
