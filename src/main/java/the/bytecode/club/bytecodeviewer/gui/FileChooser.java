@@ -1,7 +1,7 @@
 package the.bytecode.club.bytecodeviewer.gui;
 
 import the.bytecode.club.bytecodeviewer.BytecodeViewer;
-import the.bytecode.club.bytecodeviewer.Settings;
+import the.bytecode.club.bytecodeviewer.Setting;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -9,10 +9,10 @@ import java.io.File;
 
 public class FileChooser
 {
-    private Settings<String> target;
+    private Setting target;
     private String message;
 
-    public FileChooser(Settings<String> target, String message)
+    public FileChooser(Setting target, String message)
     {
         this.target = target;
         this.message = message;

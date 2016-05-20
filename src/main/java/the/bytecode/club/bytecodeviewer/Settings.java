@@ -14,36 +14,14 @@ import java.util.Map;
  *
  * @author Konloch
  */
-public class Settings<T>
+public class Settings
 {
-    private static final Map<String, Settings> ALL_SETTINGS = new HashMap<>();
+    static final Map<String, Setting> ALL_SETTINGS = new HashMap<>();
 
-    public static final Settings<String> JAVA_LOCATION = new Settings<>("javalocation");
-    public static final Settings<String> PATH = new Settings<>("path");
-
-    private String key;
-    private T value;
-
-    public Settings(String key)
-    {
-        this.key = key;
-        ALL_SETTINGS.put(this.key, this);
-    }
-
-    public T get()
-    {
-        return this.value;
-    }
-
-    public void set(T value)
-    {
-        this.value = value;
-    }
-
-    public boolean isEmpty()
-    {
-        return this.value == null || (this.value instanceof String && ((String) this.value).isEmpty());
-    }
+    public static final Setting JAVA_LOCATION = new Setting("javalocation", "");
+    public static final Setting PATH = new Setting("path", "");
+    public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", "false");
+    public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", "true");
 
     public static void saveGUI()
     {
@@ -59,11 +37,11 @@ public class Settings<T>
                 settings.add("settings", new JsonObject());
             }
             JsonObject rootSettings = settings.get("settings").asObject();
-            for (Map.Entry<String, Settings> setting : Settings.ALL_SETTINGS.entrySet())
+            for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet())
             {
                 if (setting.getValue().get() != null)
                 {
-                    rootSettings.add(setting.getKey(), setting.getValue().get().toString());
+                    rootSettings.add(setting.getKey(), setting.getValue().get());
                 }
             }
             FileOutputStream out = new FileOutputStream(BytecodeViewer.settingsFile);
@@ -95,7 +73,7 @@ public class Settings<T>
             if (settings.get("settings") != null)
             {
                 JsonObject rootSettings = settings.get("settings").asObject();
-                for (Map.Entry<String, Settings> setting : Settings.ALL_SETTINGS.entrySet())
+                for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet())
                 {
                     if (rootSettings.get(setting.getKey()) != null)
                     {

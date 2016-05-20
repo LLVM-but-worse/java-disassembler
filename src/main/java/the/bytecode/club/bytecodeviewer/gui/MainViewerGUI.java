@@ -263,7 +263,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         settingsMenu.add(new JSeparator());
 
-        mntmUpdateCheck.setSelected(true);
+        mntmUpdateCheck.setSelected(Settings.DO_UPDATE_CHECK.getBool());
+        mntmUpdateCheck.addActionListener(e -> Settings.DO_UPDATE_CHECK.set(mntmUpdateCheck.isSelected()));
         settingsMenu.add(mntmUpdateCheck);
 
         settingsMenu.add(new JSeparator());
@@ -389,7 +390,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         viewMenu.add(mnFontSize);
         mnFontSize.add(fontSpinner);
 
-        viewMenu.add(mnShowContainer);
+        mnShowContainer.setSelected(Settings.SHOW_CONTAINER_NAME.getBool());
         mnShowContainer.addItemListener(e -> {
             JTabbedPane tabs = workPane.tabs;
             Component[] components = tabs.getComponents();
@@ -404,7 +405,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                     workPane.tabs.setTitleAt(idx, c.getName());
                 }
             }
+            Settings.SHOW_CONTAINER_NAME.set(mnShowContainer.isSelected());
         });
+        viewMenu.add(mnShowContainer);
+
         panelGroup1.setSelected(allDecompilersRev.get(panelGroup1).get(Decompiler.FERNFLOWER).getModel(), true);
         panelGroup2.setSelected(allDecompilersRev.get(panelGroup2).get(Decompiler.BYTECODE).getModel(), true);
         panelGroup3.setSelected(allDecompilersRev.get(panelGroup3).get(null).getModel(), true);
