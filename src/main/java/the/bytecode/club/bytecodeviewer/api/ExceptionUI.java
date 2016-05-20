@@ -26,7 +26,7 @@ public class ExceptionUI extends JFrame
      */
     public ExceptionUI(Throwable e)
     {
-        setup(e, "@Konloch - konloch@gmail.com");
+        setup(e, "https://github.com/ecx86/jda/issues");
     }
 
     /**
@@ -35,7 +35,7 @@ public class ExceptionUI extends JFrame
      */
     public ExceptionUI(String e)
     {
-        setup(e, "@Konloch - konloch@gmail.com");
+        setup(e, "https://github.com/ecx86/jda/issues");
     }
 
     /**

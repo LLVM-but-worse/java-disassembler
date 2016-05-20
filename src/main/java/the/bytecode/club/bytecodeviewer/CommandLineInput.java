@@ -188,7 +188,7 @@ public class CommandLineInput
                 }
             }
             System.out.println("Finished.");
-            System.out.println("Java DisAssembler CLI v" + BytecodeViewer.version + " by @Konloch - http://bytecodeviewer.com");
+            System.out.println("Java DisAssembler CLI v" + BytecodeViewer.version);
             System.exit(0);
         }
         catch (Exception e)
