@@ -105,13 +105,11 @@ public class CheckSignatureAdapter extends SignatureVisitor
      * not use this constructor</i>. Instead, they must use the
      * {@link #CheckSignatureAdapter(int, int, SignatureVisitor)} version.
      *
-     * @param type
-     *            the type of signature to be checked. See
-     *            {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
-     *            {@link #TYPE_SIGNATURE}.
-     * @param sv
-     *            the visitor to which this adapter must delegate calls. May be
-     *            <tt>null</tt>.
+     * @param type the type of signature to be checked. See
+     *             {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
+     *             {@link #TYPE_SIGNATURE}.
+     * @param sv   the visitor to which this adapter must delegate calls. May be
+     *             <tt>null</tt>.
      */
     public CheckSignatureAdapter(final int type, final SignatureVisitor sv)
     {
@@ -121,16 +119,13 @@ public class CheckSignatureAdapter extends SignatureVisitor
     /**
      * Creates a new {@link CheckSignatureAdapter} object.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param type
-     *            the type of signature to be checked. See
-     *            {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
-     *            {@link #TYPE_SIGNATURE}.
-     * @param sv
-     *            the visitor to which this adapter must delegate calls. May be
-     *            <tt>null</tt>.
+     * @param api  the ASM API version implemented by this visitor. Must be one
+     *             of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * @param type the type of signature to be checked. See
+     *             {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
+     *             {@link #TYPE_SIGNATURE}.
+     * @param sv   the visitor to which this adapter must delegate calls. May be
+     *             <tt>null</tt>.
      */
     protected CheckSignatureAdapter(final int api, final int type, final SignatureVisitor sv)
     {

@@ -91,17 +91,12 @@ final class AnnotationWriter extends AnnotationVisitor
     /**
      * Constructs a new {@link AnnotationWriter}.
      *
-     * @param cw
-     *            the class writer to which this annotation must be added.
-     * @param named
-     *            <tt>true<tt> if values are named, <tt>false</tt> otherwise.
-     * @param bv
-     *            where the annotation values must be stored.
-     * @param parent
-     *            where the number of annotation values must be stored.
-     * @param offset
-     *            where in <tt>parent</tt> the number of annotation values must
-     *            be stored.
+     * @param cw     the class writer to which this annotation must be added.
+     * @param named  <tt>true<tt> if values are named, <tt>false</tt> otherwise.
+     * @param bv     where the annotation values must be stored.
+     * @param parent where the number of annotation values must be stored.
+     * @param offset where in <tt>parent</tt> the number of annotation values must
+     *               be stored.
      */
     AnnotationWriter(final ClassWriter cw, final boolean named, final ByteVector bv, final ByteVector parent, final int offset)
     {
@@ -302,8 +297,7 @@ final class AnnotationWriter extends AnnotationVisitor
      * Puts the annotations of this annotation writer list into the given byte
      * vector.
      *
-     * @param out
-     *            where the annotations must be put.
+     * @param out where the annotations must be put.
      */
     void put(final ByteVector out)
     {
@@ -333,12 +327,9 @@ final class AnnotationWriter extends AnnotationVisitor
     /**
      * Puts the given annotation lists into the given byte vector.
      *
-     * @param panns
-     *            an array of annotation writer lists.
-     * @param off
-     *            index of the first annotation to be written.
-     * @param out
-     *            where the annotations must be put.
+     * @param panns an array of annotation writer lists.
+     * @param off   index of the first annotation to be written.
+     * @param out   where the annotations must be put.
      */
     static void put(final AnnotationWriter[] panns, final int off, final ByteVector out)
     {
@@ -375,14 +366,11 @@ final class AnnotationWriter extends AnnotationVisitor
      * Puts the given type reference and type path into the given bytevector.
      * LOCAL_VARIABLE and RESOURCE_VARIABLE target types are not supported.
      *
-     * @param typeRef
-     *            a reference to the annotated type. See {@link TypeReference}.
-     * @param typePath
-     *            the path to the annotated type argument, wildcard bound, array
-     *            element type, or static inner type within 'typeRef'. May be
-     *            <tt>null</tt> if the annotation targets 'typeRef' as a whole.
-     * @param out
-     *            where the type reference and type path must be put.
+     * @param typeRef  a reference to the annotated type. See {@link TypeReference}.
+     * @param typePath the path to the annotated type argument, wildcard bound, array
+     *                 element type, or static inner type within 'typeRef'. May be
+     *                 <tt>null</tt> if the annotation targets 'typeRef' as a whole.
+     * @param out      where the type reference and type path must be put.
      */
     static void putTarget(int typeRef, TypePath typePath, ByteVector out)
     {

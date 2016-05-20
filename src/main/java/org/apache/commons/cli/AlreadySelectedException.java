@@ -30,10 +30,14 @@ public class AlreadySelectedException extends ParseException
      */
     private static final long serialVersionUID = 3674381532418544760L;
 
-    /** The option group selected. */
+    /**
+     * The option group selected.
+     */
     private OptionGroup group;
 
-    /** The option that triggered the exception. */
+    /**
+     * The option that triggered the exception.
+     */
     private Option option;
 
     /**

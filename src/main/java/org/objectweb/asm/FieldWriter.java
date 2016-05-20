@@ -104,18 +104,12 @@ final class FieldWriter extends FieldVisitor
     /**
      * Constructs a new {@link FieldWriter}.
      *
-     * @param cw
-     *            the class writer to which this field must be added.
-     * @param access
-     *            the field's access flags (see {@link Opcodes}).
-     * @param name
-     *            the field's name.
-     * @param desc
-     *            the field's descriptor (see {@link Type}).
-     * @param signature
-     *            the field's signature. May be <tt>null</tt>.
-     * @param value
-     *            the field's constant value. May be <tt>null</tt>.
+     * @param cw        the class writer to which this field must be added.
+     * @param access    the field's access flags (see {@link Opcodes}).
+     * @param name      the field's name.
+     * @param desc      the field's descriptor (see {@link Type}).
+     * @param signature the field's signature. May be <tt>null</tt>.
+     * @param value     the field's constant value. May be <tt>null</tt>.
      */
     FieldWriter(final ClassWriter cw, final int access, final String name, final String desc, final String signature, final Object value)
     {
@@ -274,8 +268,7 @@ final class FieldWriter extends FieldVisitor
     /**
      * Puts the content of this field into the given byte vector.
      *
-     * @param out
-     *            where the content of this field must be put.
+     * @param out where the content of this field must be put.
      */
     void put(final ByteVector out)
     {

@@ -29,7 +29,7 @@ import java.util.Arrays;
 /**
  * Enables human readable JSON output by inserting whitespace between values.after commas and
  * colons. Example:
- *
+ * <p>
  * <pre>
  * jsonValue.writeTo(writer, PrettyPrint.singleLine());
  * </pre>
@@ -57,8 +57,7 @@ public class PrettyPrint extends WriterConfig
     /**
      * Print every value on a separate line. Use the given number of spaces for indentation.
      *
-     * @param number
-     *          the number of spaces to use
+     * @param number the number of spaces to use
      * @return A PrettyPrint instance for wrapped mode with spaces indentation
      */
     public static PrettyPrint indentWithSpaces(int number)

@@ -12,7 +12,6 @@ import java.util.Map;
  * Represents a file container
  *
  * @author Konloch
- *
  */
 
 public class FileContainer
@@ -26,8 +25,8 @@ public class FileContainer
     public File file;
     public String name;
 
-    public HashMap<String, byte[]> files = new HashMap<String, byte[]>();
-    private Map<String, ClassNode> classes = new HashMap<String, ClassNode>();
+    public HashMap<String, byte[]> files = new HashMap<>();
+    private Map<String, ClassNode> classes = new HashMap<>();
 
     public ClassNode getClassNode(String name)
     {
@@ -55,13 +54,11 @@ public class FileContainer
         return classes.remove(classNode.name) != null;
     }
 
-    @Deprecated
     public void add(ClassNode classNode)
     {
         classes.put(classNode.name, classNode);
     }
 
-    @Deprecated
     public Collection<ClassNode> values()
     {
         return classes.values();

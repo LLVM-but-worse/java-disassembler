@@ -29,7 +29,6 @@ final class Util
      * return the new String.
      *
      * @param str The string from which the hyphens should be removed.
-     *
      * @return the new String.
      */
     static String stripLeadingHyphens(String str)
@@ -55,8 +54,7 @@ final class Util
      * E.g. if str is '"one two"', then 'one two' is returned.
      *
      * @param str The string from which the leading and trailing quotes
-     * should be removed.
-     *
+     *            should be removed.
      * @return The string without the leading and trailing quotes.
      */
     static String stripLeadingAndTrailingQuotes(String str)

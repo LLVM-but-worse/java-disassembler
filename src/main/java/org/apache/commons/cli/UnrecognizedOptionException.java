@@ -30,7 +30,9 @@ public class UnrecognizedOptionException extends ParseException
      */
     private static final long serialVersionUID = -252504690284625623L;
 
-    /** The  unrecognized option */
+    /**
+     * The  unrecognized option
+     */
     private String option;
 
     /**

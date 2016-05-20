@@ -37,7 +37,7 @@ public class Digraph<V, E> implements Iterable<V>
     {
         if (graph.containsKey(vertex))
             return false;
-        graph.put(vertex, new HashSet<E>());
+        graph.put(vertex, new HashSet<>());
         return true;
     }
 

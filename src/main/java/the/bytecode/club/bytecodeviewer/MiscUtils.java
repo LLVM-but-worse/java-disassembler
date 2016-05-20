@@ -10,7 +10,6 @@ import java.util.Random;
  * A collection of Misc Utils.
  *
  * @author Konloch
- *
  */
 
 public class MiscUtils
@@ -21,6 +20,7 @@ public class MiscUtils
 
     /**
      * Returns a random string without numbers
+     *
      * @param len the length of the String
      * @return the randomized string
      */
@@ -57,6 +57,7 @@ public class MiscUtils
 
     /**
      * Returns a random string with numbers
+     *
      * @param len the length of the String
      * @return the randomized string
      */
@@ -70,8 +71,9 @@ public class MiscUtils
 
     /**
      * Checks the file system to ensure it's a unique name
+     *
      * @param start directory it'll be in
-     * @param ext the file extension it'll use
+     * @param ext   the file extension it'll use
      * @return the unique name
      */
     public static String getUniqueName(String start, String ext)
@@ -95,8 +97,9 @@ public class MiscUtils
 
     /**
      * Checks the file system to ensure it's a unique number
+     *
      * @param start directory it'll be in
-     * @param ext the file extension it'll use
+     * @param ext   the file extension it'll use
      * @return the unique number
      */
     public static int getClassNumber(String start, String ext)

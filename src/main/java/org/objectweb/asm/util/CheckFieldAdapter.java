@@ -44,10 +44,8 @@ public class CheckFieldAdapter extends FieldVisitor
      * this constructor</i>. Instead, they must use the
      * {@link #CheckFieldAdapter(int, FieldVisitor)} version.
      *
-     * @param fv
-     *            the field visitor to which this adapter must delegate calls.
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @param fv the field visitor to which this adapter must delegate calls.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public CheckFieldAdapter(final FieldVisitor fv)
     {
@@ -61,11 +59,9 @@ public class CheckFieldAdapter extends FieldVisitor
     /**
      * Constructs a new {@link CheckFieldAdapter}.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
+     * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param fv
-     *            the field visitor to which this adapter must delegate calls.
+     * @param fv  the field visitor to which this adapter must delegate calls.
      */
     protected CheckFieldAdapter(final int api, final FieldVisitor fv)
     {

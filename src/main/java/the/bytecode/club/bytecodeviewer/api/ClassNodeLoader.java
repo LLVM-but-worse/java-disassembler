@@ -13,9 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
- *
  * @author Demmonic
- *
  */
 
 public final class ClassNodeLoader extends ClassLoader
@@ -26,15 +24,10 @@ public final class ClassNodeLoader extends ClassLoader
         super(ClassLoader.getSystemClassLoader());
     }
 
-    private HashMap<String, ClassNode> classes = new HashMap<String, ClassNode>();
+    private HashMap<String, ClassNode> classes = new HashMap<>();
 
     /**
      * Adds the provided class node to the class loader
-     *
-     * @param name
-     *            The class name
-     * @param contents
-     *            The contents of the class (or data)
      */
     public void addClass(ClassNode cn)
     {
@@ -42,8 +35,7 @@ public final class ClassNodeLoader extends ClassLoader
     }
 
     /**
-     * @param name
-     *            The name of the class
+     * @param name The name of the class
      * @return If this class loader contains the provided class node
      */
     public boolean contains(String name)
@@ -72,7 +64,7 @@ public final class ClassNodeLoader extends ClassLoader
      */
     public Collection<Class<?>> getAllClasses()
     {
-        ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+        ArrayList<Class<?>> classes = new ArrayList<>();
         for (String s : this.classes.keySet())
         {
             try
@@ -89,8 +81,7 @@ public final class ClassNodeLoader extends ClassLoader
     }
 
     /**
-     * @param name
-     *            The name of the class
+     * @param name The name of the class
      * @return The class node with the provided name
      */
     public ClassNode get(String name)
@@ -120,8 +111,7 @@ public final class ClassNodeLoader extends ClassLoader
     /**
      * Converts a class node to a class
      *
-     * @param node
-     *            The node to convert
+     * @param node The node to convert
      * @return The converted class
      */
     public Class<?> nodeToClass(ClassNode node)

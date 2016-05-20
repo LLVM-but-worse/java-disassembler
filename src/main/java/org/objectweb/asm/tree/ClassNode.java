@@ -183,8 +183,7 @@ public class ClassNode extends ClassVisitor
      * constructor</i>. Instead, they must use the {@link #ClassNode(int)}
      * version.
      *
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public ClassNode()
     {
@@ -198,18 +197,17 @@ public class ClassNode extends ClassVisitor
     /**
      * Constructs a new {@link ClassNode}.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
+     * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
     public ClassNode(final int api)
     {
         super(api);
-        this.interfaces = new ArrayList<String>();
-        this.innerClasses = new ArrayList<InnerClassNode>();
-        this.fields = new ArrayList<FieldNode>();
-        this.methods = new ArrayList<MethodNode>();
-        references = new HashSet<String>();
+        this.interfaces = new ArrayList<>();
+        this.innerClasses = new ArrayList<>();
+        this.fields = new ArrayList<>();
+        this.methods = new ArrayList<>();
+        references = new HashSet<>();
     }
 
     // ------------------------------------------------------------------------
@@ -253,7 +251,7 @@ public class ClassNode extends ClassVisitor
         {
             if (visibleAnnotations == null)
             {
-                visibleAnnotations = new ArrayList<AnnotationNode>(1);
+                visibleAnnotations = new ArrayList<>(1);
             }
             visibleAnnotations.add(an);
         }
@@ -261,7 +259,7 @@ public class ClassNode extends ClassVisitor
         {
             if (invisibleAnnotations == null)
             {
-                invisibleAnnotations = new ArrayList<AnnotationNode>(1);
+                invisibleAnnotations = new ArrayList<>(1);
             }
             invisibleAnnotations.add(an);
         }
@@ -276,7 +274,7 @@ public class ClassNode extends ClassVisitor
         {
             if (visibleTypeAnnotations == null)
             {
-                visibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                visibleTypeAnnotations = new ArrayList<>(1);
             }
             visibleTypeAnnotations.add(an);
         }
@@ -284,7 +282,7 @@ public class ClassNode extends ClassVisitor
         {
             if (invisibleTypeAnnotations == null)
             {
-                invisibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                invisibleTypeAnnotations = new ArrayList<>(1);
             }
             invisibleTypeAnnotations.add(an);
         }
@@ -296,7 +294,7 @@ public class ClassNode extends ClassVisitor
     {
         if (attrs == null)
         {
-            attrs = new ArrayList<Attribute>(1);
+            attrs = new ArrayList<>(1);
         }
         attrs.add(attr);
     }
@@ -339,8 +337,7 @@ public class ClassNode extends ClassVisitor
      * contain elements that were introduced in more recent versions of the ASM
      * API than the given version.
      *
-     * @param api
-     *            an ASM API version. Must be one of {@link Opcodes#ASM4} or
+     * @param api an ASM API version. Must be one of {@link Opcodes#ASM4} or
      *            {@link Opcodes#ASM5}.
      */
     public void check(final int api)
@@ -369,8 +366,7 @@ public class ClassNode extends ClassVisitor
     /**
      * Makes the given class visitor visit this class.
      *
-     * @param cv
-     *            a class visitor.
+     * @param cv a class visitor.
      */
     public void accept(final ClassVisitor cv)
     {

@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
-import org.jetbrains.java.decompiler.main.extern.IBytecodeProvider;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.bytecodeviewer.BytecodeViewer;
@@ -12,7 +11,6 @@ import the.bytecode.club.bytecodeviewer.DecompilerSettings;
 import the.bytecode.club.bytecodeviewer.JarUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -57,18 +55,13 @@ public class FernFlowerDecompiler extends Decompiler
 
             Map<String, Object> options = main(generateMainMethod());
 
-            final AtomicReference<String> result = new AtomicReference<String>();
+            final AtomicReference<String> result = new AtomicReference<>();
             result.set(null);
 
-            BaseDecompiler baseDecompiler = new BaseDecompiler(new IBytecodeProvider()
-            {
-                @Override
-                public byte[] getBytecode(String s, String s1) throws IOException
-                {
-                    byte[] clone = new byte[bytesToUse.length];
-                    System.arraycopy(bytesToUse, 0, clone, 0, bytesToUse.length);
-                    return clone;
-                }
+            BaseDecompiler baseDecompiler = new BaseDecompiler((s, s1) -> {
+                byte[] clone = new byte[bytesToUse.length];
+                System.arraycopy(bytesToUse, 0, clone, 0, bytesToUse.length);
+                return clone;
             }, new IResultSaver()
             {
                 @Override

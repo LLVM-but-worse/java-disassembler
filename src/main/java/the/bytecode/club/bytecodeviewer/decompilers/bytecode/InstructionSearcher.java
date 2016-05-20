@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Bibl
- *
  */
 
 public class InstructionSearcher implements Opcodes
@@ -37,7 +35,7 @@ public class InstructionSearcher implements Opcodes
     {
         this.insns = insns;
         this.pattern = pattern;
-        matches = new ArrayList<AbstractInsnNode[]>();
+        matches = new ArrayList<>();
     }
 
     public boolean search()

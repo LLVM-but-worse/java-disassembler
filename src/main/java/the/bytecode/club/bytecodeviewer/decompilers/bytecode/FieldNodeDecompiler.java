@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Konloch
  * @author Bibl
- *
  */
 
 public class FieldNodeDecompiler
@@ -49,7 +47,7 @@ public class FieldNodeDecompiler
 
     private static String getAccessString(int access)
     {
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         if ((access & Opcodes.ACC_PUBLIC) != 0)
             tokens.add("public");
         if ((access & Opcodes.ACC_PRIVATE) != 0)

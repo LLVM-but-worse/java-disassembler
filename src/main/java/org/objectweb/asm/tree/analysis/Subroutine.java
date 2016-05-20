@@ -57,7 +57,7 @@ class Subroutine
     {
         this.start = start;
         this.access = new boolean[maxLocals];
-        this.callers = new ArrayList<JumpInsnNode>();
+        this.callers = new ArrayList<>();
         callers.add(caller);
     }
 
@@ -67,7 +67,7 @@ class Subroutine
         result.start = start;
         result.access = new boolean[access.length];
         System.arraycopy(access, 0, result.access, 0, access.length);
-        result.callers = new ArrayList<JumpInsnNode>(callers);
+        result.callers = new ArrayList<>(callers);
         return result;
     }
 

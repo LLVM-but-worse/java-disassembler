@@ -16,18 +16,17 @@ import java.util.Set;
 
 /**
  * Supports loading of groovy, python or ruby scripts.
- *
+ * <p>
  * Only allows one plugin to be running at once.
  *
  * @author Konloch
  * @author Bibl
- *
  * @since 01/16/16, 14:36, Adaptable PluginLaunchStrategy system.
  */
 public final class PluginManager
 {
 
-    private static final Map<String, PluginLaunchStrategy> launchStrategies = new HashMap<String, PluginLaunchStrategy>();
+    private static final Map<String, PluginLaunchStrategy> launchStrategies = new HashMap<>();
     private static final PluginFileFilter filter = new PluginFileFilter();
     private static Plugin pluginInstance;
 
@@ -50,6 +49,7 @@ public final class PluginManager
 
     /**
      * Runs a new plugin instance
+     *
      * @param newPluginInstance the new plugin instance
      */
     public static void runPlugin(Plugin newPluginInstance)
@@ -67,6 +67,7 @@ public final class PluginManager
 
     /**
      * Starts and runs a plugin from file
+     *
      * @param f the file of the plugin
      * @throws Exception
      */

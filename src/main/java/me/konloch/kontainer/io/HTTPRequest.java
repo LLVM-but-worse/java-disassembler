@@ -155,7 +155,7 @@ public class HTTPRequest
         {
             setup();
 
-            st = new ArrayList<String>();
+            st = new ArrayList<>();
             String s;
             while ((s = reader.readLine()) != null)
                 st.add(s);
@@ -190,7 +190,7 @@ public class HTTPRequest
         {
             setup();
 
-            st = new ArrayList<String>();
+            st = new ArrayList<>();
             for (int i = 0; i < linesToRead; i++)
             {
                 String s = reader.readLine();

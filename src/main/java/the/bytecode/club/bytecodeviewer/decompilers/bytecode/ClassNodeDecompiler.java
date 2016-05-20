@@ -49,12 +49,12 @@ public class ClassNodeDecompiler extends Decompiler
         }
         System.out.println(containerName);
 
-        return decompile(new PrefixedStringBuilder(), new ArrayList<String>(), containerName, cn).toString();
+        return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
     }
 
     protected static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, String containerName, ClassNode cn)
     {
-        ArrayList<String> unableToDecompile = new ArrayList<String>();
+        ArrayList<String> unableToDecompile = new ArrayList<>();
         decompiledClasses.add(cn.name);
         sb.append(getAccessString(cn.access));
         sb.append(" ");
@@ -82,7 +82,7 @@ public class ClassNodeDecompiler extends Decompiler
         }
         sb.append(" {");
         sb.append(BytecodeViewer.nl);
-        for (FieldNode fn : (List<FieldNode>) cn.fields)
+        for (FieldNode fn : cn.fields)
         {
             sb.append(BytecodeViewer.nl);
             sb.append("     ");
@@ -92,7 +92,7 @@ public class ClassNodeDecompiler extends Decompiler
         {
             sb.append(BytecodeViewer.nl);
         }
-        for (MethodNode mn : (List<MethodNode>) cn.methods)
+        for (MethodNode mn : cn.methods)
         {
             sb.append(BytecodeViewer.nl);
             MethodNodeDecompiler.decompile(sb, mn, cn);
@@ -140,7 +140,7 @@ public class ClassNodeDecompiler extends Decompiler
 
     public static String getAccessString(int access)
     {
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         if ((access & Opcodes.ACC_PUBLIC) != 0)
             tokens.add("public");
         if ((access & Opcodes.ACC_PRIVATE) != 0)

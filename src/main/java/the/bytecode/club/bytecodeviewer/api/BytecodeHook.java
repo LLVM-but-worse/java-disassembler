@@ -5,7 +5,6 @@ package the.bytecode.club.bytecodeviewer.api;
  * function callHook(String);
  *
  * @author Konloch
- *
  */
 
 public abstract class BytecodeHook
@@ -15,8 +14,7 @@ public abstract class BytecodeHook
      * Called whenever a function is called (And EZ-Injection has been
      * injected).
      *
-     * @param information
-     *            the full name of the class, method and method description.
+     * @param information the full name of the class, method and method description.
      */
     public abstract void callHook(String information);
 

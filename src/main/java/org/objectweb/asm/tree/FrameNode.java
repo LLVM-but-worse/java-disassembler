@@ -86,26 +86,21 @@ public class FrameNode extends AbstractInsnNode
     /**
      * Constructs a new {@link FrameNode}.
      *
-     * @param type
-     *            the type of this frame. Must be {@link Opcodes#F_NEW} for
-     *            expanded frames, or {@link Opcodes#F_FULL},
-     *            {@link Opcodes#F_APPEND}, {@link Opcodes#F_CHOP},
-     *            {@link Opcodes#F_SAME} or {@link Opcodes#F_APPEND},
-     *            {@link Opcodes#F_SAME1} for compressed frames.
-     * @param nLocal
-     *            number of local variables of this stack map frame.
-     * @param local
-     *            the types of the local variables of this stack map frame.
-     *            Elements of this list can be Integer, String or LabelNode
-     *            objects (for primitive, reference and uninitialized types
-     *            respectively - see {@link MethodVisitor}).
-     * @param nStack
-     *            number of operand stack elements of this stack map frame.
-     * @param stack
-     *            the types of the operand stack elements of this stack map
-     *            frame. Elements of this list can be Integer, String or
-     *            LabelNode objects (for primitive, reference and uninitialized
-     *            types respectively - see {@link MethodVisitor}).
+     * @param type   the type of this frame. Must be {@link Opcodes#F_NEW} for
+     *               expanded frames, or {@link Opcodes#F_FULL},
+     *               {@link Opcodes#F_APPEND}, {@link Opcodes#F_CHOP},
+     *               {@link Opcodes#F_SAME} or {@link Opcodes#F_APPEND},
+     *               {@link Opcodes#F_SAME1} for compressed frames.
+     * @param nLocal number of local variables of this stack map frame.
+     * @param local  the types of the local variables of this stack map frame.
+     *               Elements of this list can be Integer, String or LabelNode
+     *               objects (for primitive, reference and uninitialized types
+     *               respectively - see {@link MethodVisitor}).
+     * @param nStack number of operand stack elements of this stack map frame.
+     * @param stack  the types of the operand stack elements of this stack map
+     *               frame. Elements of this list can be Integer, String or
+     *               LabelNode objects (for primitive, reference and uninitialized
+     *               types respectively - see {@link MethodVisitor}).
      */
     public FrameNode(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack)
     {
@@ -141,8 +136,7 @@ public class FrameNode extends AbstractInsnNode
     /**
      * Makes the given visitor visit this stack map frame.
      *
-     * @param mv
-     *            a method visitor.
+     * @param mv a method visitor.
      */
     @Override
     public void accept(final MethodVisitor mv)
@@ -175,7 +169,7 @@ public class FrameNode extends AbstractInsnNode
         clone.type = type;
         if (local != null)
         {
-            clone.local = new ArrayList<Object>();
+            clone.local = new ArrayList<>();
             for (int i = 0; i < local.size(); ++i)
             {
                 Object l = local.get(i);
@@ -188,7 +182,7 @@ public class FrameNode extends AbstractInsnNode
         }
         if (stack != null)
         {
-            clone.stack = new ArrayList<Object>();
+            clone.stack = new ArrayList<>();
             for (int i = 0; i < stack.size(); ++i)
             {
                 Object s = stack.get(i);

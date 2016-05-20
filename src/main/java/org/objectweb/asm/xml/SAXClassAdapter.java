@@ -39,10 +39,9 @@ import org.xml.sax.helpers.AttributesImpl;
  * {@link org.xml.sax.ContentHandler ContentHandler}, e.g. XML serializer, XSLT
  * or XQuery engines.
  *
+ * @author Eugene Kuleshov
  * @see org.objectweb.asm.xml.Processor
  * @see org.objectweb.asm.xml.ASMContentHandler
- *
- * @author Eugene Kuleshov
  */
 public final class SAXClassAdapter extends ClassVisitor
 {
@@ -69,12 +68,10 @@ public final class SAXClassAdapter extends ClassVisitor
     /**
      * Constructs a new {@link SAXClassAdapter SAXClassAdapter} object.
      *
-     * @param h
-     *            content handler that will be used to send SAX 2.0 events.
-     * @param singleDocument
-     *            if <tt>true</tt> adapter will not produce
-     *            {@link ContentHandler#startDocument() startDocument()} and
-     *            {@link ContentHandler#endDocument() endDocument()} events.
+     * @param h              content handler that will be used to send SAX 2.0 events.
+     * @param singleDocument if <tt>true</tt> adapter will not produce
+     *                       {@link ContentHandler#startDocument() startDocument()} and
+     *                       {@link ContentHandler#endDocument() endDocument()} events.
      */
     public SAXClassAdapter(final ContentHandler h, boolean singleDocument)
     {

@@ -42,7 +42,7 @@ import java.io.PrintWriter;
  * The trace printed when visiting the <tt>Hello</tt> class is the following:
  * <p>
  * <blockquote>
- *
+ * <p>
  * <pre>
  * // class version 49.0 (49) // access flags 0x21 public class Hello {
  *
@@ -56,11 +56,11 @@ import java.io.PrintWriter;
  * INVOKEVIRTUAL java/io/PrintStream println (Ljava/lang/String;)V RETURN
  * MAXSTACK = 2 MAXLOCALS = 1 }
  * </pre>
- *
+ * <p>
  * </blockquote> where <tt>Hello</tt> is defined by:
  * <p>
  * <blockquote>
- *
+ * <p>
  * <pre>
  * public class Hello {
  *
@@ -69,7 +69,7 @@ import java.io.PrintWriter;
  *     }
  * }
  * </pre>
- *
+ * <p>
  * </blockquote>
  *
  * @author Eric Bruneton
@@ -91,8 +91,7 @@ public final class TraceClassVisitor extends ClassVisitor
     /**
      * Constructs a new {@link TraceClassVisitor}.
      *
-     * @param pw
-     *            the print writer to be used to print the class.
+     * @param pw the print writer to be used to print the class.
      */
     public TraceClassVisitor(final PrintWriter pw)
     {
@@ -102,11 +101,9 @@ public final class TraceClassVisitor extends ClassVisitor
     /**
      * Constructs a new {@link TraceClassVisitor}.
      *
-     * @param cv
-     *            the {@link ClassVisitor} to which this visitor delegates
-     *            calls. May be <tt>null</tt>.
-     * @param pw
-     *            the print writer to be used to print the class.
+     * @param cv the {@link ClassVisitor} to which this visitor delegates
+     *           calls. May be <tt>null</tt>.
+     * @param pw the print writer to be used to print the class.
      */
     public TraceClassVisitor(final ClassVisitor cv, final PrintWriter pw)
     {
@@ -116,15 +113,12 @@ public final class TraceClassVisitor extends ClassVisitor
     /**
      * Constructs a new {@link TraceClassVisitor}.
      *
-     * @param cv
-     *            the {@link ClassVisitor} to which this visitor delegates
-     *            calls. May be <tt>null</tt>.
-     * @param p
-     *            the object that actually converts visit events into text.
-     * @param pw
-     *            the print writer to be used to print the class. May be null if
-     *            you simply want to use the result via
-     *            {@link Printer#getText()}, instead of printing it.
+     * @param cv the {@link ClassVisitor} to which this visitor delegates
+     *           calls. May be <tt>null</tt>.
+     * @param p  the object that actually converts visit events into text.
+     * @param pw the print writer to be used to print the class. May be null if
+     *           you simply want to use the result via
+     *           {@link Printer#getText()}, instead of printing it.
      */
     public TraceClassVisitor(final ClassVisitor cv, final Printer p, final PrintWriter pw)
     {

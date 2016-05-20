@@ -32,31 +32,49 @@ package org.apache.commons.cli;
 @Deprecated
 public final class OptionBuilder
 {
-    /** long option */
+    /**
+     * long option
+     */
     private static String longopt;
 
-    /** option description */
+    /**
+     * option description
+     */
     private static String description;
 
-    /** argument name */
+    /**
+     * argument name
+     */
     private static String argName;
 
-    /** is required? */
+    /**
+     * is required?
+     */
     private static boolean required;
 
-    /** the number of arguments */
+    /**
+     * the number of arguments
+     */
     private static int numberOfArgs = Option.UNINITIALIZED;
 
-    /** option type */
+    /**
+     * option type
+     */
     private static Class<?> type;
 
-    /** option can have an optional argument value */
+    /**
+     * option can have an optional argument value
+     */
     private static boolean optionalArg;
 
-    /** value separator for argument value */
+    /**
+     * value separator for argument value
+     */
     private static char valuesep;
 
-    /** option builder instance */
+    /**
+     * option builder instance
+     */
     private static final OptionBuilder INSTANCE = new OptionBuilder();
 
     static
@@ -168,7 +186,6 @@ public final class OptionBuilder
      * </pre>
      *
      * @param sep The value separator to be used for the argument values.
-     *
      * @return the OptionBuilder instance
      */
     public static OptionBuilder withValueSeparator(char sep)
@@ -181,7 +198,7 @@ public final class OptionBuilder
     /**
      * The next Option created uses '<code>=</code>' as a means to
      * separate argument values.
-     *
+     * <p>
      * <b>Example:</b>
      * <pre>
      * Option opt = OptionBuilder.withValueSeparator()
@@ -270,7 +287,7 @@ public final class OptionBuilder
      * The next Option can have the specified number of optional arguments.
      *
      * @param numArgs - the maximum number of optional arguments
-     * the next Option created can have.
+     *                the next Option created can have.
      * @return the OptionBuilder instance
      */
     public static OptionBuilder hasOptionalArgs(int numArgs)
@@ -286,7 +303,7 @@ public final class OptionBuilder
      * of <code>type</code>.
      * <p>
      * <b>Note:</b> this method is kept for binary compatibility and the
-     * input type is supposed to be a {@link Class} object. 
+     * input type is supposed to be a {@link Class} object.
      *
      * @param newType the type of the Options argument value
      * @return the OptionBuilder instance
@@ -333,7 +350,7 @@ public final class OptionBuilder
      * @param opt the character representation of the Option
      * @return the Option instance
      * @throws IllegalArgumentException if <code>opt</code> is not
-     * a valid character.  See Option.
+     *                                  a valid character.  See Option.
      */
     public static Option create(char opt) throws IllegalArgumentException
     {
@@ -362,10 +379,10 @@ public final class OptionBuilder
      * the specified Option <code>char</code>.
      *
      * @param opt the <code>java.lang.String</code> representation
-     * of the Option
+     *            of the Option
      * @return the Option instance
      * @throws IllegalArgumentException if <code>opt</code> is not
-     * a valid character.  See Option.
+     *                                  a valid character.  See Option.
      */
     public static Option create(String opt) throws IllegalArgumentException
     {

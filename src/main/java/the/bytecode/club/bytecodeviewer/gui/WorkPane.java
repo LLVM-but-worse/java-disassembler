@@ -5,8 +5,6 @@ import the.bytecode.club.bytecodeviewer.BytecodeViewer;
 import the.bytecode.club.bytecodeviewer.FileChangeNotifier;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +17,6 @@ import java.util.HashMap;
  *
  * @author Konloch
  * @author WaterWolf
- *
  */
 
 public class WorkPane extends VisibleComponent implements ActionListener
@@ -33,7 +30,7 @@ public class WorkPane extends VisibleComponent implements ActionListener
     JPanel buttonPanel;
     JButton refreshClass;
 
-    HashMap<String, Integer> workingOn = new HashMap<String, Integer>();
+    HashMap<String, Integer> workingOn = new HashMap<>();
 
     public static int SyntaxFontHeight = 12;
 
@@ -84,14 +81,7 @@ public class WorkPane extends VisibleComponent implements ActionListener
             }
 
         });
-        tabs.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(final ChangeEvent arg0)
-            {
-                buttonPanel.setVisible(tabs.getSelectedIndex() != -1);
-            }
-        });
+        tabs.addChangeListener(arg0 -> buttonPanel.setVisible(tabs.getSelectedIndex() != -1));
 
         this.setVisible(true);
 

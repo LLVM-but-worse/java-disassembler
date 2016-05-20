@@ -40,10 +40,9 @@ import java.util.Map;
  * A {@link MethodVisitor} that generates SAX 2.0 events from the visited
  * method.
  *
+ * @author Eugene Kuleshov
  * @see org.objectweb.asm.xml.SAXClassAdapter
  * @see org.objectweb.asm.xml.Processor
- *
- * @author Eugene Kuleshov
  */
 public final class SAXCodeAdapter extends MethodVisitor
 {
@@ -59,15 +58,14 @@ public final class SAXCodeAdapter extends MethodVisitor
     /**
      * Constructs a new {@link SAXCodeAdapter SAXCodeAdapter} object.
      *
-     * @param sa
-     *            content handler that will be used to send SAX 2.0 events.
+     * @param sa content handler that will be used to send SAX 2.0 events.
      */
     public SAXCodeAdapter(final SAXAdapter sa, final int access)
     {
         super(Opcodes.ASM5);
         this.sa = sa;
         this.access = access;
-        this.labelNames = new HashMap<Label, String>();
+        this.labelNames = new HashMap<>();
     }
 
     @Override

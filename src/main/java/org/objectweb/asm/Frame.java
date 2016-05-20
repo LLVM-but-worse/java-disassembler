@@ -489,10 +489,10 @@ final class Frame
     /**
      * Relative size of the output stack. The exact semantics of this field
      * depends on the algorithm that is used.
-     *
+     * <p>
      * When only the maximum stack size is computed, this field is the size of
      * the output stack relatively to the top of the input stack.
-     *
+     * <p>
      * When the stack map frames are completely computed, this field is the
      * actual number of types in {@link #outputStack}.
      */
@@ -523,8 +523,7 @@ final class Frame
     /**
      * Returns the output frame local variable type at the given index.
      *
-     * @param local
-     *            the index of the local that must be returned.
+     * @param local the index of the local that must be returned.
      * @return the output frame local variable type at the given index.
      */
     private int get(final int local)
@@ -551,10 +550,8 @@ final class Frame
     /**
      * Sets the output frame local variable type at the given index.
      *
-     * @param local
-     *            the index of the local that must be set.
-     * @param type
-     *            the value of the local that must be set.
+     * @param local the index of the local that must be set.
+     * @param type  the value of the local that must be set.
      */
     private void set(final int local, final int type)
     {
@@ -577,8 +574,7 @@ final class Frame
     /**
      * Pushes a new type onto the output frame stack.
      *
-     * @param type
-     *            the type that must be pushed.
+     * @param type the type that must be pushed.
      */
     private void push(final int type)
     {
@@ -607,12 +603,10 @@ final class Frame
     /**
      * Pushes a new type onto the output frame stack.
      *
-     * @param cw
-     *            the ClassWriter to which this label belongs.
-     * @param desc
-     *            the descriptor of the type to be pushed. Can also be a method
-     *            descriptor (in this case this method pushes its return type
-     *            onto the output frame stack).
+     * @param cw   the ClassWriter to which this label belongs.
+     * @param desc the descriptor of the type to be pushed. Can also be a method
+     *             descriptor (in this case this method pushes its return type
+     *             onto the output frame stack).
      */
     private void push(final ClassWriter cw, final String desc)
     {
@@ -630,10 +624,8 @@ final class Frame
     /**
      * Returns the int encoding of the given type.
      *
-     * @param cw
-     *            the ClassWriter to which this label belongs.
-     * @param desc
-     *            a type descriptor.
+     * @param cw   the ClassWriter to which this label belongs.
+     * @param desc a type descriptor.
      * @return the int encoding of the given type.
      */
     private static int type(final ClassWriter cw, final String desc)
@@ -726,8 +718,7 @@ final class Frame
     /**
      * Pops the given number of types from the output frame stack.
      *
-     * @param elements
-     *            the number of types that must be popped.
+     * @param elements the number of types that must be popped.
      */
     private void pop(final int elements)
     {
@@ -748,10 +739,9 @@ final class Frame
     /**
      * Pops a type from the output frame stack.
      *
-     * @param desc
-     *            the descriptor of the type to be popped. Can also be a method
-     *            descriptor (in this case this method pops the types
-     *            corresponding to the method arguments).
+     * @param desc the descriptor of the type to be popped. Can also be a method
+     *             descriptor (in this case this method pops the types
+     *             corresponding to the method arguments).
      */
     private void pop(final String desc)
     {
@@ -774,8 +764,7 @@ final class Frame
      * Adds a new type to the list of types on which a constructor is invoked in
      * the basic block.
      *
-     * @param var
-     *            a type on a which a constructor is invoked.
+     * @param var a type on a which a constructor is invoked.
      */
     private void init(final int var)
     {
@@ -799,12 +788,10 @@ final class Frame
      * Replaces the given type with the appropriate type if it is one of the
      * types on which a constructor is invoked in the basic block.
      *
-     * @param cw
-     *            the ClassWriter to which this label belongs.
-     * @param t
-     *            a type
+     * @param cw the ClassWriter to which this label belongs.
+     * @param t  a type
      * @return t or, if t is one of the types on which a constructor is invoked
-     *         in the basic block, the type corresponding to this constructor.
+     * in the basic block, the type corresponding to this constructor.
      */
     private int init(final ClassWriter cw, final int t)
     {
@@ -847,14 +834,10 @@ final class Frame
      * Initializes the input frame of the first basic block from the method
      * descriptor.
      *
-     * @param cw
-     *            the ClassWriter to which this label belongs.
-     * @param access
-     *            the access flags of the method to which this label belongs.
-     * @param args
-     *            the formal parameter types of this method.
-     * @param maxLocals
-     *            the maximum number of local variables of this method.
+     * @param cw        the ClassWriter to which this label belongs.
+     * @param access    the access flags of the method to which this label belongs.
+     * @param args      the formal parameter types of this method.
+     * @param maxLocals the maximum number of local variables of this method.
      */
     void initInputFrame(final ClassWriter cw, final int access, final Type[] args, final int maxLocals)
     {
@@ -890,14 +873,10 @@ final class Frame
     /**
      * Simulates the action of the given instruction on the output stack frame.
      *
-     * @param opcode
-     *            the opcode of the instruction.
-     * @param arg
-     *            the operand of the instruction, if any.
-     * @param cw
-     *            the class writer to which this label belongs.
-     * @param item
-     *            the operand of the instructions, if any.
+     * @param opcode the opcode of the instruction.
+     * @param arg    the operand of the instruction, if any.
+     * @param cw     the class writer to which this label belongs.
+     * @param item   the operand of the instructions, if any.
      */
     void execute(final int opcode, final int arg, final ClassWriter cw, final Item item)
     {
@@ -1344,15 +1323,12 @@ final class Frame
      * frames of this basic block. Returns <tt>true</tt> if the input frame of
      * the given label has been changed by this operation.
      *
-     * @param cw
-     *            the ClassWriter to which this label belongs.
-     * @param frame
-     *            the basic block whose input frame must be updated.
-     * @param edge
-     *            the kind of the {@link Edge} between this label and 'label'.
-     *            See {@link Edge#info}.
+     * @param cw    the ClassWriter to which this label belongs.
+     * @param frame the basic block whose input frame must be updated.
+     * @param edge  the kind of the {@link Edge} between this label and 'label'.
+     *              See {@link Edge#info}.
      * @return <tt>true</tt> if the input frame of the given label has been
-     *         changed by this operation.
+     * changed by this operation.
      */
     boolean merge(final ClassWriter cw, final Frame frame, final int edge)
     {
@@ -1482,16 +1458,12 @@ final class Frame
      * type. Returns <tt>true</tt> if the type array has been modified by this
      * operation.
      *
-     * @param cw
-     *            the ClassWriter to which this label belongs.
-     * @param t
-     *            the type with which the type array element must be merged.
-     * @param types
-     *            an array of types.
-     * @param index
-     *            the index of the type that must be merged in 'types'.
+     * @param cw    the ClassWriter to which this label belongs.
+     * @param t     the type with which the type array element must be merged.
+     * @param types an array of types.
+     * @param index the index of the type that must be merged in 'types'.
      * @return <tt>true</tt> if the type array has been modified by this
-     *         operation.
+     * operation.
      */
     private static boolean merge(final ClassWriter cw, int t, final int[] types, final int index)
     {

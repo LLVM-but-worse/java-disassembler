@@ -34,50 +34,75 @@ import java.util.List;
  * <b>Note:</b> once an {@link Option} has been added to an instance
  * of {@link Options}, it's required flag may not be changed anymore.
  *
+ * @version $Id: Option.java 1677406 2015-05-03 14:27:31Z britter $
  * @see org.apache.commons.cli.Options
  * @see org.apache.commons.cli.CommandLine
- *
- * @version $Id: Option.java 1677406 2015-05-03 14:27:31Z britter $
  */
 public class Option implements Cloneable, Serializable
 {
-    /** constant that specifies the number of argument values has not been specified */
+    /**
+     * constant that specifies the number of argument values has not been specified
+     */
     public static final int UNINITIALIZED = -1;
 
-    /** constant that specifies the number of argument values is infinite */
+    /**
+     * constant that specifies the number of argument values is infinite
+     */
     public static final int UNLIMITED_VALUES = -2;
 
-    /** The serial version UID. */
+    /**
+     * The serial version UID.
+     */
     private static final long serialVersionUID = 1L;
 
-    /** the name of the option */
+    /**
+     * the name of the option
+     */
     private final String opt;
 
-    /** the long representation of the option */
+    /**
+     * the long representation of the option
+     */
     private String longOpt;
 
-    /** the name of the argument for this option */
+    /**
+     * the name of the argument for this option
+     */
     private String argName;
 
-    /** description of the option */
+    /**
+     * description of the option
+     */
     private String description;
 
-    /** specifies whether this option is required to be present */
+    /**
+     * specifies whether this option is required to be present
+     */
     private boolean required;
 
-    /** specifies whether the argument value of this Option is optional */
+    /**
+     * specifies whether the argument value of this Option is optional
+     */
     private boolean optionalArg;
 
-    /** the number of argument values this option can have */
+    /**
+     * the number of argument values this option can have
+     */
     private int numberOfArgs = UNINITIALIZED;
 
-    /** the type of this Option */
+    /**
+     * the type of this Option
+     */
     private Class<?> type = String.class;
 
-    /** the list of argument values **/
-    private List<String> values = new ArrayList<String>();
+    /**
+     * the list of argument values
+     **/
+    private List<String> values = new ArrayList<>();
 
-    /** the character that is the value separator */
+    /**
+     * the character that is the value separator
+     */
     private char valuesep;
 
     /**
@@ -102,11 +127,10 @@ public class Option implements Cloneable, Serializable
      * Creates an Option using the specified parameters.
      * The option does not take an argument.
      *
-     * @param opt short representation of the option
+     * @param opt         short representation of the option
      * @param description describes the function of the option
-     *
      * @throws IllegalArgumentException if there are any non valid
-     * Option characters in <code>opt</code>.
+     *                                  Option characters in <code>opt</code>.
      */
     public Option(String opt, String description) throws IllegalArgumentException
     {
@@ -116,12 +140,11 @@ public class Option implements Cloneable, Serializable
     /**
      * Creates an Option using the specified parameters.
      *
-     * @param opt short representation of the option
-     * @param hasArg specifies whether the Option takes an argument or not
+     * @param opt         short representation of the option
+     * @param hasArg      specifies whether the Option takes an argument or not
      * @param description describes the function of the option
-     *
      * @throws IllegalArgumentException if there are any non valid
-     * Option characters in <code>opt</code>.
+     *                                  Option characters in <code>opt</code>.
      */
     public Option(String opt, boolean hasArg, String description) throws IllegalArgumentException
     {
@@ -131,13 +154,12 @@ public class Option implements Cloneable, Serializable
     /**
      * Creates an Option using the specified parameters.
      *
-     * @param opt short representation of the option
-     * @param longOpt the long representation of the option
-     * @param hasArg specifies whether the Option takes an argument or not
+     * @param opt         short representation of the option
+     * @param longOpt     the long representation of the option
+     * @param hasArg      specifies whether the Option takes an argument or not
      * @param description describes the function of the option
-     *
      * @throws IllegalArgumentException if there are any non valid
-     * Option characters in <code>opt</code>.
+     *                                  Option characters in <code>opt</code>.
      */
     public Option(String opt, String longOpt, boolean hasArg, String description) throws IllegalArgumentException
     {
@@ -181,7 +203,7 @@ public class Option implements Cloneable, Serializable
 
     /**
      * Retrieve the name of this Option.
-     *
+     * <p>
      * It is this String which can be used with
      * {@link CommandLine#hasOption(String opt)} and
      * {@link CommandLine#getOptionValue(String opt)} to check
@@ -208,7 +230,7 @@ public class Option implements Cloneable, Serializable
      * Sets the type of this Option.
      * <p>
      * <b>Note:</b> this method is kept for binary compatibility and the
-     * input type is supposed to be a {@link Class} object. 
+     * input type is supposed to be a {@link Class} object.
      *
      * @param type the type of this Option
      * @deprecated since 1.3, use {@link #setType(Class)} instead
@@ -254,7 +276,7 @@ public class Option implements Cloneable, Serializable
      * Sets whether this Option can have an optional argument.
      *
      * @param optionalArg specifies whether the Option can have
-     * an optional argument.
+     *                    an optional argument.
      */
     public void setOptionalArg(boolean optionalArg)
     {
@@ -444,7 +466,6 @@ public class Option implements Cloneable, Serializable
      * added as a single token.
      *
      * @param value The String to be processed.
-     *
      * @since 1.0.1
      */
     private void processValue(String value)
@@ -488,7 +509,6 @@ public class Option implements Cloneable, Serializable
      * add the value.  Otherwise, throw a runtime exception.
      *
      * @param value The value to be added to this Option
-     *
      * @since 1.0.1
      */
     private void add(String value)
@@ -503,10 +523,10 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * Returns the specified value of this Option or 
+     * Returns the specified value of this Option or
      * <code>null</code> if there is no value.
      *
-     * @return the value/first value of this Option or 
+     * @return the value/first value of this Option or
      * <code>null</code> if there is no value.
      */
     public String getValue()
@@ -515,16 +535,14 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * Returns the specified value of this Option or 
+     * Returns the specified value of this Option or
      * <code>null</code> if there is no value.
      *
      * @param index The index of the value to be returned.
-     *
-     * @return the specified value of this Option or 
+     * @return the specified value of this Option or
      * <code>null</code> if there is no value.
-     *
      * @throws IndexOutOfBoundsException if index is less than 1
-     * or greater than the number of the values for this Option.
+     *                                   or greater than the number of the values for this Option.
      */
     public String getValue(int index) throws IndexOutOfBoundsException
     {
@@ -532,13 +550,12 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * Returns the value/first value of this Option or the 
+     * Returns the value/first value of this Option or the
      * <code>defaultValue</code> if there is no value.
      *
      * @param defaultValue The value to be returned if there
-     * is no value.
-     *
-     * @return the value/first value of this Option or the 
+     *                     is no value.
+     * @return the value/first value of this Option or the
      * <code>defaultValue</code> if there are no values.
      */
     public String getValue(String defaultValue)
@@ -549,10 +566,10 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * Return the values of this Option as a String array 
+     * Return the values of this Option as a String array
      * or null if there are no values
      *
-     * @return the values of this Option as a String array 
+     * @return the values of this Option as a String array
      * or null if there are no values
      */
     public String[] getValues()
@@ -656,16 +673,16 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * A rather odd clone method - due to incorrect code in 1.0 it is public 
-     * and in 1.1 rather than throwing a CloneNotSupportedException it throws 
-     * a RuntimeException so as to maintain backwards compat at the API level. 
-     *
-     * After calling this method, it is very likely you will want to call 
-     * clearValues(). 
+     * A rather odd clone method - due to incorrect code in 1.0 it is public
+     * and in 1.1 rather than throwing a CloneNotSupportedException it throws
+     * a RuntimeException so as to maintain backwards compat at the API level.
+     * <p>
+     * After calling this method, it is very likely you will want to call
+     * clearValues().
      *
      * @return a clone of this Option instance
      * @throws RuntimeException if a {@link CloneNotSupportedException} has been thrown
-     * by {@code super.clone()}
+     *                          by {@code super.clone()}
      */
     @Override
     public Object clone()
@@ -673,7 +690,7 @@ public class Option implements Cloneable, Serializable
         try
         {
             Option option = (Option) super.clone();
-            option.values = new ArrayList<String>(values);
+            option.values = new ArrayList<>(values);
             return option;
         }
         catch (CloneNotSupportedException cnse)
@@ -685,7 +702,7 @@ public class Option implements Cloneable, Serializable
     /**
      * Clear the Option values. After a parse is complete, these are left with
      * data in them and they need clearing if another parse is done.
-     *
+     * <p>
      * See: <a href="https://issues.apache.org/jira/browse/CLI-71">CLI-71</a>
      */
     void clearValues()
@@ -694,7 +711,7 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * This method is not intended to be used. It was a piece of internal 
+     * This method is not intended to be used. It was a piece of internal
      * API that was made public in 1.0. It currently throws an UnsupportedOperationException.
      *
      * @param value the value to add
@@ -740,7 +757,7 @@ public class Option implements Cloneable, Serializable
 
     /**
      * Returns a {@link Builder} to create an {@link Option} using descriptive
-     * methods.  
+     * methods.
      *
      * @return a new {@link Builder} instance
      * @since 1.3
@@ -752,7 +769,7 @@ public class Option implements Cloneable, Serializable
 
     /**
      * Returns a {@link Builder} to create an {@link Option} using descriptive
-     * methods.  
+     * methods.
      *
      * @param opt short representation of the option
      * @return a new {@link Builder} instance
@@ -780,31 +797,49 @@ public class Option implements Cloneable, Serializable
      */
     public static final class Builder
     {
-        /** the name of the option */
+        /**
+         * the name of the option
+         */
         private final String opt;
 
-        /** description of the option */
+        /**
+         * description of the option
+         */
         private String description;
 
-        /** the long representation of the option */
+        /**
+         * the long representation of the option
+         */
         private String longOpt;
 
-        /** the name of the argument for this option */
+        /**
+         * the name of the argument for this option
+         */
         private String argName;
 
-        /** specifies whether this option is required to be present */
+        /**
+         * specifies whether this option is required to be present
+         */
         private boolean required;
 
-        /** specifies whether the argument value of this Option is optional */
+        /**
+         * specifies whether the argument value of this Option is optional
+         */
         private boolean optionalArg;
 
-        /** the number of argument values this option can have */
+        /**
+         * the number of argument values this option can have
+         */
         private int numberOfArgs = UNINITIALIZED;
 
-        /** the type of this Option */
+        /**
+         * the type of this Option
+         */
         private Class<?> type = String.class;
 
-        /** the character that is the value separator */
+        /**
+         * the character that is the value separator
+         */
         private char valuesep;
 
         /**
@@ -872,7 +907,7 @@ public class Option implements Cloneable, Serializable
          * Sets whether the Option can have an optional argument.
          *
          * @param isOptional specifies whether the Option can have
-         * an optional argument.
+         *                   an optional argument.
          * @return this builder, to allow method chaining
          */
         public Builder optionalArg(final boolean isOptional)

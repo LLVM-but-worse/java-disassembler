@@ -227,7 +227,7 @@ public class AsyncScalr
      * tasks.
      *
      * @return the current {@link ExecutorService} used by this class to process
-     *         scale operations.
+     * scale operations.
      */
     public static ExecutorService getService()
     {
@@ -428,7 +428,7 @@ public class AsyncScalr
 
     /**
      * @see Scalr#resize(BufferedImage, Method, Mode, int, int,
-     *      BufferedImageOp...)
+     * BufferedImageOp...)
      */
     public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final Mode resizeMode, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
     {
@@ -490,7 +490,7 @@ public class AsyncScalr
         if (service == null || service.isShutdown() || service.isTerminated())
         {
             /*
-			 * If service was shutdown or terminated, assigning a new value will
+             * If service was shutdown or terminated, assigning a new value will
 			 * free the reference to the instance, allowing it to be GC'ed when
 			 * it is done shutting down (assuming it hadn't already).
 			 */
@@ -524,7 +524,7 @@ public class AsyncScalr
             SecurityManager manager = System.getSecurityManager();
 
 			/*
-			 * Determine the group that threads created by this factory will be
+             * Determine the group that threads created by this factory will be
 			 * in.
 			 */
             group = (manager == null ? Thread.currentThread().getThreadGroup() : manager.getThreadGroup());

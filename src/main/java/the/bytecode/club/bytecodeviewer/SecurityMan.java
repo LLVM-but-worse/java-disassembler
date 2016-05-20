@@ -8,7 +8,6 @@ import java.security.Permission;
  * An awesome security manager.
  *
  * @author Konloch
- *
  */
 
 public class SecurityMan extends SecurityManager

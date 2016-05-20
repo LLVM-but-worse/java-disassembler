@@ -11,7 +11,6 @@ import java.util.ArrayList;
  * Simply shows all classes that have a public static void main(String[])
  *
  * @author Konloch
- *
  */
 
 public class ShowMainMethods extends Plugin

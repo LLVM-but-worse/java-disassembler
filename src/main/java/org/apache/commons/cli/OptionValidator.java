@@ -29,12 +29,12 @@ final class OptionValidator
      * Validates whether <code>opt</code> is a permissible Option
      * shortOpt.  The rules that specify if the <code>opt</code>
      * is valid are:
-     *
+     * <p>
      * <ul>
-     *  <li>a single character <code>opt</code> that is either
-     *  ' '(special case), '?', '@' or a letter</li>
-     *  <li>a multi character <code>opt</code> that only contains
-     *  letters.</li>
+     * <li>a single character <code>opt</code> that is either
+     * ' '(special case), '?', '@' or a letter</li>
+     * <li>a multi character <code>opt</code> that only contains
+     * letters.</li>
      * </ul>
      * <p>
      * In case {@code opt} is {@code null} no further validation is performed.

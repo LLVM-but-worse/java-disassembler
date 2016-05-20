@@ -81,12 +81,9 @@ public class SimpleVerifier extends BasicVerifier
      * Constructs a new {@link SimpleVerifier} to verify a specific class. This
      * class will not be loaded into the JVM since it may be incorrect.
      *
-     * @param currentClass
-     *            the class that is verified.
-     * @param currentSuperClass
-     *            the super class of the class that is verified.
-     * @param isInterface
-     *            if the class that is verified is an interface.
+     * @param currentClass      the class that is verified.
+     * @param currentSuperClass the super class of the class that is verified.
+     * @param isInterface       if the class that is verified is an interface.
      */
     public SimpleVerifier(final Type currentClass, final Type currentSuperClass, final boolean isInterface)
     {
@@ -97,14 +94,10 @@ public class SimpleVerifier extends BasicVerifier
      * Constructs a new {@link SimpleVerifier} to verify a specific class. This
      * class will not be loaded into the JVM since it may be incorrect.
      *
-     * @param currentClass
-     *            the class that is verified.
-     * @param currentSuperClass
-     *            the super class of the class that is verified.
-     * @param currentClassInterfaces
-     *            the interfaces implemented by the class that is verified.
-     * @param isInterface
-     *            if the class that is verified is an interface.
+     * @param currentClass           the class that is verified.
+     * @param currentSuperClass      the super class of the class that is verified.
+     * @param currentClassInterfaces the interfaces implemented by the class that is verified.
+     * @param isInterface            if the class that is verified is an interface.
      */
     public SimpleVerifier(final Type currentClass, final Type currentSuperClass, final List<Type> currentClassInterfaces, final boolean isInterface)
     {
@@ -125,8 +118,7 @@ public class SimpleVerifier extends BasicVerifier
      * classes. This is useful if you are verifying multiple interdependent
      * classes.
      *
-     * @param loader
-     *            a <code>ClassLoader</code> to use
+     * @param loader a <code>ClassLoader</code> to use
      */
     public void setClassLoader(final ClassLoader loader)
     {

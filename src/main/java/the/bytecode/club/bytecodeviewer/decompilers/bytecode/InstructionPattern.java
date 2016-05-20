@@ -12,23 +12,27 @@ import java.util.Arrays;
  * Pattern filter holder and stepper.
  *
  * @author Bibl
- *
  */
 public class InstructionPattern implements Opcodes
 {
 
-    /** Last instruction-match position pointer **/
+    /**
+     * Last instruction-match position pointer
+     **/
     protected int pointer;
-    /** Filters/patterns/search criteria. **/
+    /**
+     * Filters/patterns/search criteria.
+     **/
     protected InstructionFilter[] filters;
-    /** Last match found cache. **/
+    /**
+     * Last match found cache.
+     **/
     protected AbstractInsnNode[] lastMatch;
 
     /**
      * Construct a new pattern from the specified instructions.
      *
-     * @param insns
-     *            {@link AbstractInsnNode} pattern array.
+     * @param insns {@link AbstractInsnNode} pattern array.
      */
     public InstructionPattern(AbstractInsnNode[] insns)
     {
@@ -39,8 +43,7 @@ public class InstructionPattern implements Opcodes
     /**
      * Construct a new pattern from the specified opcode.
      *
-     * @param opcodes
-     *            Opcodes to convert to {@link OpcodeFilter}s.
+     * @param opcodes Opcodes to convert to {@link OpcodeFilter}s.
      */
     public InstructionPattern(int[] opcodes)
     {
@@ -55,8 +58,7 @@ public class InstructionPattern implements Opcodes
     /**
      * Construct an absolute pattern from user-defined filters.
      *
-     * @param filters
-     *            User-defined {@link InstructionFilter}s.
+     * @param filters User-defined {@link InstructionFilter}s.
      */
     public InstructionPattern(InstructionFilter[] filters)
     {
@@ -68,8 +70,7 @@ public class InstructionPattern implements Opcodes
      * Steps through the instruction list checking if the current instruction
      * ended a successful pattern-match sequence.
      *
-     * @param ain
-     *            {@link AbstractInsnNode} to check.
+     * @param ain {@link AbstractInsnNode} to check.
      * @return True if this instruction successfully completed the pattern.
      */
     public boolean accept(AbstractInsnNode ain)
@@ -96,7 +97,7 @@ public class InstructionPattern implements Opcodes
 
     /**
      * @return Last pattern sequence match equivilent from the inputted
-     *         {@link AbstractInsnNode}s.
+     * {@link AbstractInsnNode}s.
      */
     public AbstractInsnNode[] getLastMatch()
     {
@@ -125,8 +126,7 @@ public class InstructionPattern implements Opcodes
      * Converts an array of {@link AbstractInsnNode}s to their
      * {@link InstructionFilter} counterparts.
      *
-     * @param ains
-     *            {@link AbstractInsnNode}s to convert.
+     * @param ains {@link AbstractInsnNode}s to convert.
      * @return Array of {@link InstructionFilter}s.
      */
     public static InstructionFilter[] translate(AbstractInsnNode[] ains)
@@ -143,8 +143,7 @@ public class InstructionPattern implements Opcodes
      * Translate a single {@link AbstractInsnNode} to an
      * {@link InstructionFilter}.
      *
-     * @param ain
-     *            Instruction to convert.
+     * @param ain Instruction to convert.
      * @return A filter an an equivilent to the inputted instruction.
      */
     public static InstructionFilter translate(AbstractInsnNode ain)

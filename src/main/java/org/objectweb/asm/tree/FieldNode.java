@@ -121,24 +121,18 @@ public class FieldNode extends FieldVisitor
      * constructor</i>. Instead, they must use the
      * {@link #FieldNode(int, int, String, String, String, Object)} version.
      *
-     * @param access
-     *            the field's access flags (see
-     *            {@link org.objectweb.asm.Opcodes}). This parameter also
-     *            indicates if the field is synthetic and/or deprecated.
-     * @param name
-     *            the field's name.
-     * @param desc
-     *            the field's descriptor (see {@link org.objectweb.asm.Type
-     *            Type}).
-     * @param signature
-     *            the field's signature.
-     * @param value
-     *            the field's initial value. This parameter, which may be
-     *            <tt>null</tt> if the field does not have an initial value,
-     *            must be an {@link Integer}, a {@link Float}, a {@link Long}, a
-     *            {@link Double} or a {@link String}.
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @param access    the field's access flags (see
+     *                  {@link org.objectweb.asm.Opcodes}). This parameter also
+     *                  indicates if the field is synthetic and/or deprecated.
+     * @param name      the field's name.
+     * @param desc      the field's descriptor (see {@link org.objectweb.asm.Type
+     *                  Type}).
+     * @param signature the field's signature.
+     * @param value     the field's initial value. This parameter, which may be
+     *                  <tt>null</tt> if the field does not have an initial value,
+     *                  must be an {@link Integer}, a {@link Float}, a {@link Long}, a
+     *                  {@link Double} or a {@link String}.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public FieldNode(final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value)
     {
@@ -153,25 +147,19 @@ public class FieldNode extends FieldVisitor
      * Constructs a new {@link FieldNode}. <i>Subclasses must not use this
      * constructor</i>.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param access
-     *            the field's access flags (see
-     *            {@link org.objectweb.asm.Opcodes}). This parameter also
-     *            indicates if the field is synthetic and/or deprecated.
-     * @param name
-     *            the field's name.
-     * @param desc
-     *            the field's descriptor (see {@link org.objectweb.asm.Type
-     *            Type}).
-     * @param signature
-     *            the field's signature.
-     * @param value
-     *            the field's initial value. This parameter, which may be
-     *            <tt>null</tt> if the field does not have an initial value,
-     *            must be an {@link Integer}, a {@link Float}, a {@link Long}, a
-     *            {@link Double} or a {@link String}.
+     * @param api       the ASM API version implemented by this visitor. Must be one
+     *                  of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * @param access    the field's access flags (see
+     *                  {@link org.objectweb.asm.Opcodes}). This parameter also
+     *                  indicates if the field is synthetic and/or deprecated.
+     * @param name      the field's name.
+     * @param desc      the field's descriptor (see {@link org.objectweb.asm.Type
+     *                  Type}).
+     * @param signature the field's signature.
+     * @param value     the field's initial value. This parameter, which may be
+     *                  <tt>null</tt> if the field does not have an initial value,
+     *                  must be an {@link Integer}, a {@link Float}, a {@link Long}, a
+     *                  {@link Double} or a {@link String}.
      */
     public FieldNode(final int api, final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value)
     {
@@ -196,7 +184,7 @@ public class FieldNode extends FieldVisitor
         {
             if (visibleAnnotations == null)
             {
-                visibleAnnotations = new ArrayList<AnnotationNode>(1);
+                visibleAnnotations = new ArrayList<>(1);
             }
             visibleAnnotations.add(an);
         }
@@ -204,7 +192,7 @@ public class FieldNode extends FieldVisitor
         {
             if (invisibleAnnotations == null)
             {
-                invisibleAnnotations = new ArrayList<AnnotationNode>(1);
+                invisibleAnnotations = new ArrayList<>(1);
             }
             invisibleAnnotations.add(an);
         }
@@ -219,7 +207,7 @@ public class FieldNode extends FieldVisitor
         {
             if (visibleTypeAnnotations == null)
             {
-                visibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                visibleTypeAnnotations = new ArrayList<>(1);
             }
             visibleTypeAnnotations.add(an);
         }
@@ -227,7 +215,7 @@ public class FieldNode extends FieldVisitor
         {
             if (invisibleTypeAnnotations == null)
             {
-                invisibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                invisibleTypeAnnotations = new ArrayList<>(1);
             }
             invisibleTypeAnnotations.add(an);
         }
@@ -239,7 +227,7 @@ public class FieldNode extends FieldVisitor
     {
         if (attrs == null)
         {
-            attrs = new ArrayList<Attribute>(1);
+            attrs = new ArrayList<>(1);
         }
         attrs.add(attr);
     }
@@ -259,8 +247,7 @@ public class FieldNode extends FieldVisitor
      * contain elements that were introduced in more recent versions of the ASM
      * API than the given version.
      *
-     * @param api
-     *            an ASM API version. Must be one of {@link Opcodes#ASM4} or
+     * @param api an ASM API version. Must be one of {@link Opcodes#ASM4} or
      *            {@link Opcodes#ASM5}.
      */
     public void check(final int api)
@@ -281,8 +268,7 @@ public class FieldNode extends FieldVisitor
     /**
      * Makes the given class visitor visit this field.
      *
-     * @param cv
-     *            a class visitor.
+     * @param cv a class visitor.
      */
     public void accept(final ClassVisitor cv)
     {

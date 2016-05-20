@@ -46,18 +46,18 @@ import java.util.Collection;
 /**
  * A {@link ClassVisitor} that adds a serial version unique identifier to a
  * class if missing. Here is typical usage of this class:
- *
+ * <p>
  * <pre>
  *   ClassWriter cw = new ClassWriter(...);
  *   ClassVisitor sv = new SerialVersionUIDAdder(cw);
  *   ClassVisitor ca = new MyClassAdapter(sv);
  *   new ClassReader(orginalClass).accept(ca, false);
  * </pre>
- *
+ * <p>
  * The SVUID algorithm can be found <a href=
  * "http://java.sun.com/j2se/1.4.2/docs/guide/serialization/spec/class.html"
  * >http://java.sun.com/j2se/1.4.2/docs/guide/serialization/spec/class.html</a>:
- *
+ * <p>
  * <pre>
  * The serialVersionUID is computed using the signature of a stream of bytes
  * that reflect the class definition. The National Institute of Standards and
@@ -164,11 +164,9 @@ public class SerialVersionUIDAdder extends ClassVisitor
      * this constructor</i>. Instead, they must use the
      * {@link #SerialVersionUIDAdder(int, ClassVisitor)} version.
      *
-     * @param cv
-     *            a {@link ClassVisitor} to which this visitor will delegate
-     *            calls.
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @param cv a {@link ClassVisitor} to which this visitor will delegate
+     *           calls.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public SerialVersionUIDAdder(final ClassVisitor cv)
     {
@@ -182,19 +180,17 @@ public class SerialVersionUIDAdder extends ClassVisitor
     /**
      * Creates a new {@link SerialVersionUIDAdder}.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
+     * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param cv
-     *            a {@link ClassVisitor} to which this visitor will delegate
+     * @param cv  a {@link ClassVisitor} to which this visitor will delegate
      *            calls.
      */
     protected SerialVersionUIDAdder(final int api, final ClassVisitor cv)
     {
         super(api, cv);
-        svuidFields = new ArrayList<Item>();
-        svuidConstructors = new ArrayList<Item>();
-        svuidMethods = new ArrayList<Item>();
+        svuidFields = new ArrayList<>();
+        svuidConstructors = new ArrayList<>();
+        svuidMethods = new ArrayList<>();
     }
 
     // ------------------------------------------------------------------------
@@ -358,8 +354,7 @@ public class SerialVersionUIDAdder extends ClassVisitor
      * Computes and returns the value of SVUID.
      *
      * @return Returns the serial version UID
-     * @throws IOException
-     *             if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     protected long computeSVUID() throws IOException
     {
@@ -477,8 +472,7 @@ public class SerialVersionUIDAdder extends ClassVisitor
     /**
      * Returns the SHA-1 message digest of the given value.
      *
-     * @param value
-     *            the value whose SHA message digest must be computed.
+     * @param value the value whose SHA message digest must be computed.
      * @return the SHA-1 message digest of the given value.
      */
     protected byte[] computeSHAdigest(final byte[] value)
@@ -496,14 +490,10 @@ public class SerialVersionUIDAdder extends ClassVisitor
     /**
      * Sorts the items in the collection and writes it to the data output stream
      *
-     * @param itemCollection
-     *            collection of items
-     * @param dos
-     *            a <code>DataOutputStream</code> value
-     * @param dotted
-     *            a <code>boolean</code> value
-     * @exception IOException
-     *                if an error occurs
+     * @param itemCollection collection of items
+     * @param dos            a <code>DataOutputStream</code> value
+     * @param dotted         a <code>boolean</code> value
+     * @throws IOException if an error occurs
      */
     private static void writeItems(final Collection<Item> itemCollection, final DataOutput dos, final boolean dotted) throws IOException
     {

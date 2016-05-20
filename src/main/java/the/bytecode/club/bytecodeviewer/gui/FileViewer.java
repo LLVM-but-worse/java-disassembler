@@ -13,7 +13,8 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,7 +25,6 @@ import java.nio.charset.CharsetEncoder;
  * Represents any open non-class file.
  *
  * @author Konloch
- *
  */
 
 public class FileViewer extends Viewer
@@ -83,25 +83,20 @@ public class FileViewer extends Viewer
                     image = ImageIO.read(new ByteArrayInputStream(contents)); //gifs fail cause of this
                     JLabel label = new JLabel("", new ImageIcon(image), JLabel.CENTER);
                     panel2.add(label, BorderLayout.CENTER);
-                    panel2.addMouseWheelListener(new MouseWheelListener()
-                    {
-                        @Override
-                        public void mouseWheelMoved(MouseWheelEvent e)
+                    panel2.addMouseWheelListener(e -> {
+                        int notches = e.getWheelRotation();
+                        if (notches < 0)
                         {
-                            int notches = e.getWheelRotation();
-                            if (notches < 0)
-                            {
-                                image = Scalr.resize(image, Scalr.Method.SPEED, image.getWidth() + 10, image.getHeight() + 10);
-                            }
-                            else
-                            {
-                                image = Scalr.resize(image, Scalr.Method.SPEED, image.getWidth() - 10, image.getHeight() - 10);
-                            }
-                            panel2.removeAll();
-                            JLabel label = new JLabel("", new ImageIcon(image), JLabel.CENTER);
-                            panel2.add(label, BorderLayout.CENTER);
-                            panel2.updateUI();
+                            image = Scalr.resize(image, Scalr.Method.SPEED, image.getWidth() + 10, image.getHeight() + 10);
                         }
+                        else
+                        {
+                            image = Scalr.resize(image, Scalr.Method.SPEED, image.getWidth() - 10, image.getHeight() - 10);
+                        }
+                        panel2.removeAll();
+                        JLabel label1 = new JLabel("", new ImageIcon(image), JLabel.CENTER);
+                        panel2.add(label1, BorderLayout.CENTER);
+                        panel2.updateUI();
                     });
                     return;
                 }
@@ -255,22 +250,8 @@ public class FileViewer extends Viewer
         panel.add(buttonPane, BorderLayout.WEST);
         panel.add(field, BorderLayout.CENTER);
         panel.add(check, BorderLayout.EAST);
-        searchNext.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(final ActionEvent arg0)
-            {
-                search(field.getText(), true);
-            }
-        });
-        searchPrev.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(final ActionEvent arg0)
-            {
-                search(field.getText(), false);
-            }
-        });
+        searchNext.addActionListener(arg0 -> search(field.getText(), true));
+        searchPrev.addActionListener(arg0 -> search(field.getText(), false));
         field.addKeyListener(new KeyListener()
         {
             @Override
@@ -298,7 +279,6 @@ public class FileViewer extends Viewer
      * This was really interesting to write.
      *
      * @author Konloch
-     *
      */
     public void search(String search, boolean next)
     {

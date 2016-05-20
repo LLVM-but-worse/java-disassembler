@@ -127,7 +127,7 @@ public abstract class Printer
     {
         this.api = api;
         this.buf = new StringBuffer();
-        this.text = new ArrayList<Object>();
+        this.text = new ArrayList<>();
     }
 
     /**
@@ -487,8 +487,7 @@ public abstract class Printer
     /**
      * Prints the text constructed by this visitor.
      *
-     * @param pw
-     *            the print writer to be used.
+     * @param pw the print writer to be used.
      */
     public void print(final PrintWriter pw)
     {
@@ -498,10 +497,8 @@ public abstract class Printer
     /**
      * Appends a quoted string to a given buffer.
      *
-     * @param buf
-     *            the buffer where the string must be added.
-     * @param s
-     *            the string to be added.
+     * @param buf the buffer where the string must be added.
+     * @param s   the string to be added.
      */
     public static void appendString(final StringBuffer buf, final String s)
     {
@@ -553,11 +550,9 @@ public abstract class Printer
     /**
      * Prints the given string tree.
      *
-     * @param pw
-     *            the writer to be used to print the tree.
-     * @param l
-     *            a string tree, i.e., a string list that can contain other
-     *            string lists, and so on recursively.
+     * @param pw the writer to be used to print the tree.
+     * @param l  a string tree, i.e., a string list that can contain other
+     *           string lists, and so on recursively.
      */
     static void printList(final PrintWriter pw, final List<?> l)
     {

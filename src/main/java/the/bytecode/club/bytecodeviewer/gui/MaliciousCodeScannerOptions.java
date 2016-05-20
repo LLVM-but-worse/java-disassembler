@@ -6,15 +6,12 @@ import the.bytecode.club.bytecodeviewer.plugin.preinstalled.MaliciousCodeScanner
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * A simple GUI to select the Malicious Code Scanner options.
  *
  * @author Konloch
  * @author Adrianherrera
- *
  */
 
 public class MaliciousCodeScannerOptions extends JFrame
@@ -77,13 +74,9 @@ public class MaliciousCodeScannerOptions extends JFrame
         getContentPane().add(chckbxJavaawtrobot);
 
         JButton btnNewButton = new JButton("Start Scanning");
-        btnNewButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent arg0)
-            {
-                PluginManager.runPlugin(new MaliciousCodeScanner(chckbxJavalangreflection.isSelected(), chckbxJavalangruntime.isSelected(), chckbxJavanet.isSelected(), chckbxJavaio.isSelected(), chckbxLdcContainswww.isSelected(), chckbxLdcContainshttp.isSelected(), chckbxLdcContainshttps.isSelected(), chckbxLdcMatchesIp.isSelected(), chckbxNullSecMan.isSelected(), chckbxJavaawtrobot.isSelected()));
-                dispose();
-            }
+        btnNewButton.addActionListener(arg0 -> {
+            PluginManager.runPlugin(new MaliciousCodeScanner(chckbxJavalangreflection.isSelected(), chckbxJavalangruntime.isSelected(), chckbxJavanet.isSelected(), chckbxJavaio.isSelected(), chckbxLdcContainswww.isSelected(), chckbxLdcContainshttp.isSelected(), chckbxLdcContainshttps.isSelected(), chckbxLdcMatchesIp.isSelected(), chckbxNullSecMan.isSelected(), chckbxJavaawtrobot.isSelected()));
+            dispose();
         });
 
         btnNewButton.setBounds(6, 264, 232, 23);

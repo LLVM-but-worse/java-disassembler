@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * Replaces all string and string[] instances with whatever.
  *
  * @author Konloch
- *
  */
 
 public class ReplaceStrings extends Plugin

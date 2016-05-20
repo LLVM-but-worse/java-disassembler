@@ -7,7 +7,6 @@ import org.objectweb.asm.Type;
  * around
  *
  * @author Waterwolf
- *
  */
 public class TypeAndName
 {
