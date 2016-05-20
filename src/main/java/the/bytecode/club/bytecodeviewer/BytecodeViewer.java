@@ -89,8 +89,8 @@ public class BytecodeViewer
                 return;
             if (CLI == CommandLineInput.OPEN_FILE)
             {
-                viewer = new MainViewerGUI();
                 Settings.loadGUI();
+                viewer = new MainViewerGUI();
                 Boot.boot();
                 BytecodeViewer.BOOT(args, false);
             }
