@@ -150,7 +150,7 @@ public class BytecodeViewer
         viewer.calledAfterLoad();
         resetRecentFilesMenu();
 
-        if (viewer.chckbxmntmNewCheckItem_12.isSelected())
+        if (viewer.mntmUpdateCheck.isSelected())
             versionChecker.start();
 
         if (!cli)
