@@ -1,8 +1,8 @@
-/lib
-/libs
 /out/
+/target/
 /bin/
 .classpath
 .project
 *.iml
 .idea/
+dependency-reduced-pom.xml
