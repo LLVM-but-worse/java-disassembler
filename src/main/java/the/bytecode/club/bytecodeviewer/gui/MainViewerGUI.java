@@ -1099,4 +1099,15 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         }
         return null;
     }
+
+    public void refreshView()
+    {
+        workPane.refreshClass.doClick();
+    }
+
+    public void reloadResources()
+    {
+        mntmReloadResources.doClick();
+        refreshView();
+    }
 }

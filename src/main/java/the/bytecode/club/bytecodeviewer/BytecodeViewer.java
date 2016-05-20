@@ -768,12 +768,7 @@ public class BytecodeViewer
         else if ((e.getKeyCode() == KeyEvent.VK_R) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
             last = System.currentTimeMillis();
-            if (BytecodeViewer.getLoadedClasses().isEmpty())
-            {
-                BytecodeViewer.showMessage("First open a class, jar, or zip file.");
-                return;
-            }
-            new RunOptions().setVisible(true);
+            viewer.reloadResources();
         }
         else if ((e.getKeyCode() == KeyEvent.VK_S) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
