@@ -80,7 +80,7 @@ public abstract class Decompiler
         e.printStackTrace(new PrintWriter(sw));
         e.printStackTrace();
         String exception = "Java DisAssembler Version: " + BytecodeViewer.version + BytecodeViewer.nl + BytecodeViewer.nl + sw.toString();
-        return getName() + " encountered a problem! Send the stacktrace to Konloch at http://the.bytecode.club or konloch@gmail.com" + BytecodeViewer.nl +
+        return getName() + " encountered a problem! Send the stacktrace to https://github.com/ecx86/jda/issues" + BytecodeViewer.nl +
                 BytecodeViewer.nl +
                 "Suggested Fix: Click refresh class, if it fails again try another decompiler." + BytecodeViewer.nl +
                 BytecodeViewer.nl +

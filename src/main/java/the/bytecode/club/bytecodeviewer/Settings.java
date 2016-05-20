@@ -18,11 +18,7 @@ public class Settings<T>
 {
     private static final Map<String, Settings> ALL_SETTINGS = new HashMap<>();
 
-    public static final Settings<String> PYTHON2_LOCATION = new Settings<>("python2location");
-    public static final Settings<String> PYTHON3_LOCATION = new Settings<>("python3location");
-    public static final Settings<String> JAVAC_LOCATION = new Settings<>("javaclocation");
     public static final Settings<String> JAVA_LOCATION = new Settings<>("javalocation");
-    public static final Settings<String> RT_LOCATION = new Settings<>("rtlocation");
     public static final Settings<String> PATH = new Settings<>("path");
 
     private String key;

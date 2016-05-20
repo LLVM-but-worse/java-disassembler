@@ -27,30 +27,9 @@ import java.util.List;
  */
 public class MainViewerGUI extends JFrame implements FileChangeNotifier
 {
-
-    public void pythonC()
-    {
-        new FileChooser(Settings.PYTHON2_LOCATION, "Python (Or PyPy for speed) 2.7 Executable").run();
-    }
-
-    public void javac()
-    {
-        new FileChooser(Settings.JAVAC_LOCATION, "javac executable (Requires JDK 'C:/Program Files/Java/jdk_xx/bin/javac.exe')").run();
-    }
-
     public void java()
     {
         new FileChooser(Settings.JAVA_LOCATION, "Java Executable (Requires JRE/JDK 'C:/Program Files/Java/jre_xx/bin/java.exe')").run();
-    }
-
-    public void pythonC3()
-    {
-        new FileChooser(Settings.PYTHON3_LOCATION, "Python (Or PyPy for speed) 3.x Executable").run();
-    }
-
-    public void rtC()
-    {
-        new FileChooser(Settings.RT_LOCATION, "Java rt.jar").run();
     }
 
     public void library()
@@ -1009,9 +988,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         setSize(new Dimension(800, 400));
         if (BytecodeViewer.previewCopy)
-            setTitle("Java DisAssembler " + BytecodeViewer.version + " Preview - https://bytecodeviewer.com | https://the.bytecode.club - @Konloch");
+            setTitle("Java DisAssembler " + BytecodeViewer.version + " Preview - https://the.bytecode.club");
         else
-            setTitle("Java DisAssembler " + BytecodeViewer.version + " - https://bytecodeviewer.com | https://the.bytecode.club - @Konloch");
+            setTitle("Java DisAssembler " + BytecodeViewer.version + " - https://the.bytecode.club");
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 

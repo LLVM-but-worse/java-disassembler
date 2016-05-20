@@ -50,7 +50,6 @@ public class BytecodeViewer
     public static boolean runningObfuscation = false;
     public static String lastDirectory = "";
     public static ArrayList<Process> createdProcesses = new ArrayList<Process>();
-    public static boolean pingback = false;
     public static boolean deleteForiegnLibraries = true;
 
     /**
@@ -75,7 +74,7 @@ public class BytecodeViewer
             CommandLineInput input = new CommandLineInput(args);
             if (previewCopy && !input.containsCommand())
                 showMessage("WARNING: This is a preview/dev copy, you WON'T be alerted when " + version + " is actually out if you use this." + nl +
-                        "Make sure to watch the repo: https://github.com/Konloch/bytecode-viewer for " + version + "'s release");
+                        "Make sure to watch the repo: https://github.com/ecx86/jda for " + version + "'s release");
             getJDADirectory();
             if (!filesFile.exists() && !filesFile.createNewFile())
             {
@@ -118,217 +117,6 @@ public class BytecodeViewer
         @Override
         public void run()
         {
-            try
-            {
-                HTTPRequest r = new HTTPRequest(new URL("https://raw.githubusercontent.com/Konloch/bytecode-viewer/master/VERSION"));
-                final String version = r.readSingle();
-                try
-                {
-                    int simplemaths = Integer.parseInt(version.replace(".", ""));
-                    int simplemaths2 = Integer.parseInt(BytecodeViewer.version.replace(".", ""));
-                    if (simplemaths2 > simplemaths)
-                        return; //developer version
-                }
-                catch (Exception e)
-                {
-
-                }
-
-                if (!BytecodeViewer.version.equals(version) && false)
-                {
-                    r = new HTTPRequest(new URL("https://raw.githubusercontent.com/Konloch/bytecode-viewer/master/README.txt"));
-                    String[] readme = r.read();
-
-                    String changelog = "Unable to load change log, please try again later." + nl;
-                    boolean trigger = false;
-                    boolean finalTrigger = false;
-                    for (String st : readme)
-                    {
-                        if (st.equals("--- " + BytecodeViewer.version + " ---:"))
-                        {
-                            changelog = "";
-                            trigger = true;
-                        }
-                        else if (trigger)
-                        {
-                            if (st.startsWith("--- "))
-                                finalTrigger = true;
-
-                            if (finalTrigger)
-                                changelog += st + nl;
-                        }
-                    }
-
-                    JOptionPane pane = new JOptionPane("Your version: " + BytecodeViewer.version + ", latest version: " + version + nl + nl + "Changes since your version:" + nl + changelog + nl + "What would you like to do?");
-                    Object[] options = new String[] { "Open The Download Page", "Download The Updated Jar",
-                            "Do Nothing" };
-                    pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Outdated Version");
-                    dialog.setVisible(true);
-                    Object obj = pane.getValue();
-                    int result = -1;
-                    for (int k = 0; k < options.length; k++)
-                        if (options[k].equals(obj))
-                            result = k;
-
-                    if (result == 0)
-                    {
-                        if (Desktop.isDesktopSupported())
-                        {
-                            Desktop.getDesktop().browse(new URI("https://github.com/Konloch/bytecode-viewer/releases"));
-                        }
-                        else
-                        {
-                            showMessage("Cannot open the page, please manually type it." + nl + "https://github.com/Konloch/bytecode-viewer/releases");
-                        }
-                    }
-                    if (result == 1)
-                    {
-                        JFileChooser fc = new JFileChooser();
-                        try
-                        {
-                            fc.setCurrentDirectory(new File(".").getAbsoluteFile()); //set the current working directory
-                        }
-                        catch (Exception e)
-                        {
-                            new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-                        }
-                        fc.setFileFilter(new FileFilter()
-                        {
-                            @Override
-                            public boolean accept(File f)
-                            {
-                                return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("zip");
-                            }
-
-                            @Override
-                            public String getDescription()
-                            {
-                                return "Zip Archives";
-                            }
-                        });
-                        fc.setFileHidingEnabled(false);
-                        fc.setAcceptAllFileFilterUsed(false);
-                        int returnVal = fc.showSaveDialog(viewer);
-                        if (returnVal == JFileChooser.APPROVE_OPTION)
-                        {
-                            File file = fc.getSelectedFile();
-                            if (!file.getAbsolutePath().endsWith(".zip"))
-                                file = new File(file.getAbsolutePath() + ".zip");
-
-                            if (file.exists())
-                            {
-                                pane = new JOptionPane("The file " + file + " exists, would you like to overwrite it?");
-                                options = new String[] { "Yes", "No" };
-                                pane.setOptions(options);
-                                dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
-                                dialog.setVisible(true);
-                                obj = pane.getValue();
-                                result = -1;
-                                for (int k = 0; k < options.length; k++)
-                                    if (options[k].equals(obj))
-                                        result = k;
-
-                                if (result != 0)
-                                    return;
-
-                                file.delete();
-                            }
-
-                            final File finalFile = file;
-                            Thread downloadThread = new Thread()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    try
-                                    {
-                                        InputStream is = new URL("https://github.com/Konloch/bytecode-viewer/releases/download/v" + version + "/BytecodeViewer." + version + ".zip").openConnection().getInputStream();
-                                        FileOutputStream fos = new FileOutputStream(finalFile);
-                                        try
-                                        {
-                                            System.out.println("Downloading from https://github.com/Konloch/bytecode-viewer/releases/download/v" + version + "/BytecodeViewer." + version + ".zip");
-                                            byte[] buffer = new byte[8192];
-                                            int len;
-                                            int downloaded = 0;
-                                            boolean flag = false;
-                                            showMessage("Downloading the jar in the background, when it's finished you will be alerted with another message box." + nl + nl + "Expect this to take several minutes.");
-                                            while ((len = is.read(buffer)) > 0)
-                                            {
-                                                fos.write(buffer, 0, len);
-                                                fos.flush();
-                                                downloaded += 8192;
-                                                int mbs = downloaded / 1048576;
-                                                if (mbs % 5 == 0 && mbs != 0)
-                                                {
-                                                    if (!flag)
-                                                        System.out.println("Downloaded " + mbs + "MBs so far");
-                                                    flag = true;
-                                                }
-                                                else
-                                                    flag = false;
-                                            }
-                                        }
-                                        finally
-                                        {
-                                            try
-                                            {
-                                                if (is != null)
-                                                {
-                                                    is.close();
-                                                }
-                                            }
-                                            finally
-                                            {
-                                                if (fos != null)
-                                                {
-                                                    fos.flush();
-                                                    fos.close();
-                                                }
-                                            }
-                                        }
-                                        System.out.println("Download finished!");
-                                        showMessage("Download successful! You can find the updated program at " + finalFile.getAbsolutePath());
-                                    }
-                                    catch (FileNotFoundException e)
-                                    {
-                                        showMessage("Unable to download, the zip file has not been uploaded yet, please try again in about 10 minutes.");
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-                                    }
-
-                                }
-                            };
-                            downloadThread.start();
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    /**
-     * Pings back to bytecodeviewer.com to be added into the total running statistics
-     */
-    private static final Thread PingBack = new Thread()
-    {
-        @Override
-        public void run()
-        {
-            try
-            {
-                new HTTPRequest(new URL("https://bytecodeviewer.com/add.php")).read();
-            }
-            catch (Exception e)
-            {
-                pingback = false;
-            }
         }
     };
 
@@ -363,12 +151,6 @@ public class BytecodeViewer
 
         viewer.calledAfterLoad();
         resetRecentFilesMenu();
-
-        if (!pingback)
-        {
-            PingBack.start();
-            pingback = true;
-        }
 
         if (viewer.chckbxmntmNewCheckItem_12.isSelected())
             versionChecker.start();
