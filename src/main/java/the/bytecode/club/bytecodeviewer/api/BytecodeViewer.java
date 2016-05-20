@@ -3,7 +3,6 @@ package the.bytecode.club.bytecodeviewer.api;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.bytecodeviewer.JarUtils;
 import the.bytecode.club.bytecodeviewer.decompilers.Decompiler;
-import the.bytecode.club.bytecodeviewer.plugin.preinstalled.EZInjection;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,16 +156,6 @@ public class BytecodeViewer
     public static ArrayList<ClassNode> getLoadedClasses()
     {
         return the.bytecode.club.bytecodeviewer.BytecodeViewer.getLoadedClasses();
-    }
-
-    /**
-     * Used to insert a Bytecode Hook using EZ-Injection.
-     *
-     * @param hook
-     */
-    public static void insertHook(BytecodeHook hook)
-    {
-        EZInjection.hookArray.add(hook);
     }
 
     /**
