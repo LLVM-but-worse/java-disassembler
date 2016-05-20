@@ -752,7 +752,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                             ClassNode cn = BytecodeViewer.getClassNode(containerName, s);
                                             byte[] bytes = BytecodeViewer.getClassBytes(containerName, s);
                                             String contents = Decompiler.PROCYON.decompileClassNode(cn, bytes);
-                                            FileUtils.write(new File(path), contents, "UTF-8", false);
+                                            FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                             BytecodeViewer.viewer.setIcon(false);
                                         }
                                         catch (Exception e)
@@ -775,7 +775,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                             ClassNode cn = BytecodeViewer.getClassNode(containerName, s);
                                             byte[] bytes = BytecodeViewer.getClassBytes(containerName, s);
                                             String contents = Decompiler.CFR.decompileClassNode(cn, bytes);
-                                            FileUtils.write(new File(path), contents, "UTF-8", false);
+                                            FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                             BytecodeViewer.viewer.setIcon(false);
                                         }
                                         catch (Exception e)
@@ -798,7 +798,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                             ClassNode cn = BytecodeViewer.getClassNode(containerName, s);
                                             byte[] bytes = BytecodeViewer.getClassBytes(containerName, s);
                                             String contents = Decompiler.FERNFLOWER.decompileClassNode(cn, bytes);
-                                            FileUtils.write(new File(path), contents, "UTF-8", false);
+                                            FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                             BytecodeViewer.viewer.setIcon(false);
                                         }
                                         catch (Exception e)

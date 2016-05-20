@@ -180,7 +180,7 @@ public class CommandLineInput
                     ClassNode cn = BytecodeViewer.getClassNode(containerName, target);
                     byte[] bytes = BytecodeViewer.getClassBytes(containerName, target);
                     String contents = use.decompileClassNode(cn, bytes);
-                    FileUtils.write(output, contents, "UTF-8", false);
+                    FileUtils.writeStringToFile(output, contents, "UTF-8");
                 }
                 catch (Exception e)
                 {
