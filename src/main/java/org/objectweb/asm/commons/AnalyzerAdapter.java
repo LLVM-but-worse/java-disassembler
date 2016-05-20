@@ -122,19 +122,13 @@ public class AnalyzerAdapter extends MethodVisitor
      * {@link #AnalyzerAdapter(int, String, int, String, String, MethodVisitor)}
      * version.
      *
-     * @param owner
-     *            the owner's class name.
-     * @param access
-     *            the method's access flags (see {@link Opcodes}).
-     * @param name
-     *            the method's name.
-     * @param desc
-     *            the method's descriptor (see {@link Type Type}).
-     * @param mv
-     *            the method visitor to which this adapter delegates calls. May
-     *            be <tt>null</tt>.
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @param owner  the owner's class name.
+     * @param access the method's access flags (see {@link Opcodes}).
+     * @param name   the method's name.
+     * @param desc   the method's descriptor (see {@link Type Type}).
+     * @param mv     the method visitor to which this adapter delegates calls. May
+     *               be <tt>null</tt>.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public AnalyzerAdapter(final String owner, final int access, final String name, final String desc, final MethodVisitor mv)
     {
@@ -148,28 +142,22 @@ public class AnalyzerAdapter extends MethodVisitor
     /**
      * Creates a new {@link AnalyzerAdapter}.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param owner
-     *            the owner's class name.
-     * @param access
-     *            the method's access flags (see {@link Opcodes}).
-     * @param name
-     *            the method's name.
-     * @param desc
-     *            the method's descriptor (see {@link Type Type}).
-     * @param mv
-     *            the method visitor to which this adapter delegates calls. May
-     *            be <tt>null</tt>.
+     * @param api    the ASM API version implemented by this visitor. Must be one
+     *               of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * @param owner  the owner's class name.
+     * @param access the method's access flags (see {@link Opcodes}).
+     * @param name   the method's name.
+     * @param desc   the method's descriptor (see {@link Type Type}).
+     * @param mv     the method visitor to which this adapter delegates calls. May
+     *               be <tt>null</tt>.
      */
     protected AnalyzerAdapter(final int api, final String owner, final int access, final String name, final String desc, final MethodVisitor mv)
     {
         super(api, mv);
         this.owner = owner;
-        locals = new ArrayList<Object>();
-        stack = new ArrayList<Object>();
-        uninitializedTypes = new HashMap<Object, Object>();
+        locals = new ArrayList<>();
+        stack = new ArrayList<>();
+        uninitializedTypes = new HashMap<>();
 
         if ((access & Opcodes.ACC_STATIC) == 0)
         {
@@ -237,8 +225,8 @@ public class AnalyzerAdapter extends MethodVisitor
         }
         else
         {
-            this.locals = new ArrayList<Object>();
-            this.stack = new ArrayList<Object>();
+            this.locals = new ArrayList<>();
+            this.stack = new ArrayList<>();
         }
         visitFrameTypes(nLocal, local, this.locals);
         visitFrameTypes(nStack, stack, this.stack);
@@ -301,7 +289,7 @@ public class AnalyzerAdapter extends MethodVisitor
             if (labels == null)
             {
                 Label l = new Label();
-                labels = new ArrayList<Label>(3);
+                labels = new ArrayList<>(3);
                 labels.add(l);
                 if (mv != null)
                 {
@@ -440,7 +428,7 @@ public class AnalyzerAdapter extends MethodVisitor
         }
         if (labels == null)
         {
-            labels = new ArrayList<Label>(3);
+            labels = new ArrayList<>(3);
         }
         labels.add(label);
     }

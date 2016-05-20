@@ -76,13 +76,7 @@ public class PaneUpdaterThread extends Thread
                 scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
                 panelArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    public void run()
-                    {
-                        target.add(scrollPane);
-                    }
-                });
+                SwingUtilities.invokeLater(() -> target.add(scrollPane));
                 viewer.updatePane(paneId, panelArea, decompiler);
             }
             else

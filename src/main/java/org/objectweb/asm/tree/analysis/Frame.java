@@ -42,9 +42,7 @@ import java.util.List;
  * represented by <i>two</i> slots in local variables, and by <i>one</i> slot in
  * the operand stack.
  *
- * @param <V>
- *            type of the Value used for the analysis.
- *
+ * @param <V> type of the Value used for the analysis.
  * @author Eric Bruneton
  */
 public class Frame<V extends Value>
@@ -74,10 +72,8 @@ public class Frame<V extends Value>
     /**
      * Constructs a new frame with the given size.
      *
-     * @param nLocals
-     *            the maximum number of local variables of the frame.
-     * @param nStack
-     *            the maximum stack size of the frame.
+     * @param nLocals the maximum number of local variables of the frame.
+     * @param nStack  the maximum stack size of the frame.
      */
     @SuppressWarnings("unchecked")
     public Frame(final int nLocals, final int nStack)
@@ -89,8 +85,7 @@ public class Frame<V extends Value>
     /**
      * Constructs a new frame that is identical to the given frame.
      *
-     * @param src
-     *            a frame.
+     * @param src a frame.
      */
     public Frame(final Frame<? extends V> src)
     {
@@ -101,8 +96,7 @@ public class Frame<V extends Value>
     /**
      * Copies the state of the given frame into this frame.
      *
-     * @param src
-     *            a frame.
+     * @param src a frame.
      * @return this frame.
      */
     public Frame<V> init(final Frame<? extends V> src)
@@ -116,9 +110,8 @@ public class Frame<V extends Value>
     /**
      * Sets the expected return type of the analyzed method.
      *
-     * @param v
-     *            the expected return type of the analyzed method, or
-     *            <tt>null</tt> if the method returns void.
+     * @param v the expected return type of the analyzed method, or
+     *          <tt>null</tt> if the method returns void.
      */
     public void setReturn(final V v)
     {
@@ -148,11 +141,9 @@ public class Frame<V extends Value>
     /**
      * Returns the value of the given local variable.
      *
-     * @param i
-     *            a local variable index.
+     * @param i a local variable index.
      * @return the value of the given local variable.
-     * @throws IndexOutOfBoundsException
-     *             if the variable does not exist.
+     * @throws IndexOutOfBoundsException if the variable does not exist.
      */
     public V getLocal(final int i) throws IndexOutOfBoundsException
     {
@@ -166,12 +157,9 @@ public class Frame<V extends Value>
     /**
      * Sets the value of the given local variable.
      *
-     * @param i
-     *            a local variable index.
-     * @param value
-     *            the new value of this local variable.
-     * @throws IndexOutOfBoundsException
-     *             if the variable does not exist.
+     * @param i     a local variable index.
+     * @param value the new value of this local variable.
+     * @throws IndexOutOfBoundsException if the variable does not exist.
      */
     public void setLocal(final int i, final V value) throws IndexOutOfBoundsException
     {
@@ -196,11 +184,9 @@ public class Frame<V extends Value>
     /**
      * Returns the value of the given operand stack slot.
      *
-     * @param i
-     *            the index of an operand stack slot.
+     * @param i the index of an operand stack slot.
      * @return the value of the given operand stack slot.
-     * @throws IndexOutOfBoundsException
-     *             if the operand stack slot does not exist.
+     * @throws IndexOutOfBoundsException if the operand stack slot does not exist.
      */
     public V getStack(final int i) throws IndexOutOfBoundsException
     {
@@ -219,8 +205,7 @@ public class Frame<V extends Value>
      * Pops a value from the operand stack of this frame.
      *
      * @return the value that has been popped from the stack.
-     * @throws IndexOutOfBoundsException
-     *             if the operand stack is empty.
+     * @throws IndexOutOfBoundsException if the operand stack is empty.
      */
     public V pop() throws IndexOutOfBoundsException
     {
@@ -234,10 +219,8 @@ public class Frame<V extends Value>
     /**
      * Pushes a value into the operand stack of this frame.
      *
-     * @param value
-     *            the value that must be pushed into the stack.
-     * @throws IndexOutOfBoundsException
-     *             if the operand stack is full.
+     * @param value the value that must be pushed into the stack.
+     * @throws IndexOutOfBoundsException if the operand stack is full.
      */
     public void push(final V value) throws IndexOutOfBoundsException
     {
@@ -652,7 +635,7 @@ public class Frame<V extends Value>
             case Opcodes.INVOKESTATIC:
             case Opcodes.INVOKEINTERFACE:
             {
-                values = new ArrayList<V>();
+                values = new ArrayList<>();
                 String desc = ((MethodInsnNode) insn).desc;
                 for (int i = Type.getArgumentTypes(desc).length; i > 0; --i)
                 {
@@ -674,7 +657,7 @@ public class Frame<V extends Value>
             }
             case Opcodes.INVOKEDYNAMIC:
             {
-                values = new ArrayList<V>();
+                values = new ArrayList<>();
                 String desc = ((InvokeDynamicInsnNode) insn).desc;
                 for (int i = Type.getArgumentTypes(desc).length; i > 0; --i)
                 {
@@ -710,7 +693,7 @@ public class Frame<V extends Value>
                 interpreter.unaryOperation(insn, pop());
                 break;
             case Opcodes.MULTIANEWARRAY:
-                values = new ArrayList<V>();
+                values = new ArrayList<>();
                 for (int i = ((MultiANewArrayInsnNode) insn).dims; i > 0; --i)
                 {
                     values.add(0, pop());
@@ -729,14 +712,11 @@ public class Frame<V extends Value>
     /**
      * Merges this frame with the given frame.
      *
-     * @param frame
-     *            a frame.
-     * @param interpreter
-     *            the interpreter used to merge values.
+     * @param frame       a frame.
+     * @param interpreter the interpreter used to merge values.
      * @return <tt>true</tt> if this frame has been changed as a result of the
-     *         merge operation, or <tt>false</tt> otherwise.
-     * @throws AnalyzerException
-     *             if the frames have incompatible sizes.
+     * merge operation, or <tt>false</tt> otherwise.
+     * @throws AnalyzerException if the frames have incompatible sizes.
      */
     public boolean merge(final Frame<? extends V> frame, final Interpreter<V> interpreter) throws AnalyzerException
     {
@@ -760,13 +740,11 @@ public class Frame<V extends Value>
     /**
      * Merges this frame with the given frame (case of a RET instruction).
      *
-     * @param frame
-     *            a frame
-     * @param access
-     *            the local variables that have been accessed by the subroutine
-     *            to which the RET instruction corresponds.
+     * @param frame  a frame
+     * @param access the local variables that have been accessed by the subroutine
+     *               to which the RET instruction corresponds.
      * @return <tt>true</tt> if this frame has been changed as a result of the
-     *         merge operation, or <tt>false</tt> otherwise.
+     * merge operation, or <tt>false</tt> otherwise.
      */
     public boolean merge(final Frame<? extends V> frame, final boolean[] access)
     {

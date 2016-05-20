@@ -11,7 +11,6 @@ import java.awt.event.*;
  *
  * @author Konloch
  * @author WaterWolf
- *
  */
 public class TabbedPane extends JPanel
 {
@@ -67,38 +66,28 @@ public class TabbedPane extends JPanel
         JPopupMenu pop_up = new JPopupMenu();
         JMenuItem closealltab = new JMenuItem("Close All But This: " + name);
         JMenuItem closetab = new JMenuItem("Close Tab: " + name);
-        closetab.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                String name = e.getActionCommand().split(": ")[1];
-                final int i = pane.indexOfTab(name);
-                if (i != -1)
-                    pane.remove(i);
-            }
+        closetab.addActionListener(e -> {
+            String name1 = e.getActionCommand().split(": ")[1];
+            final int i = pane.indexOfTab(name1);
+            if (i != -1)
+                pane.remove(i);
         });
-        closealltab.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
+        closealltab.addActionListener(e -> {
+            String name1 = e.getActionCommand().split(": ")[1];
+            System.out.println(name1);
+            boolean removedAll = false;
+            while (!removedAll)
             {
-                String name = e.getActionCommand().split(": ")[1];
-                System.out.println(name);
-                boolean removedAll = false;
-                while (!removedAll)
+                int thisID = pane.indexOfTab(name1);
+                if (pane.getTabCount() <= 1)
                 {
-                    int thisID = pane.indexOfTab(name);
-                    if (pane.getTabCount() <= 1)
-                    {
-                        removedAll = true;
-                        return;
-                    }
-                    if (thisID != 0)
-                        pane.remove(0);
-                    else
-                        pane.remove(1);
+                    removedAll = true;
+                    return;
                 }
+                if (thisID != 0)
+                    pane.remove(0);
+                else
+                    pane.remove(1);
             }
         });
 

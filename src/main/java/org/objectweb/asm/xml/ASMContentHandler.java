@@ -44,10 +44,9 @@ import java.util.Map;
  * document into Java class file. This class can be feeded by any kind of SAX
  * 2.0 event producers, e.g. XML parser, XSLT or XPath engines, or custom code.
  *
+ * @author Eugene Kuleshov
  * @see org.objectweb.asm.xml.SAXClassAdapter
  * @see org.objectweb.asm.xml.Processor
- *
- * @author Eugene Kuleshov
  */
 public class ASMContentHandler extends DefaultHandler implements Opcodes
 {
@@ -55,7 +54,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
     /**
      * Stack of the intermediate processing contexts.
      */
-    private final ArrayList<Object> stack = new ArrayList<Object>();
+    private final ArrayList<Object> stack = new ArrayList<>();
 
     /**
      * Complete name of the current element.
@@ -142,7 +141,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
     /**
      * Map of the opcode names to opcode and opcode group
      */
-    static final HashMap<String, Opcode> OPCODES = new HashMap<String, Opcode>();
+    static final HashMap<String, Opcode> OPCODES = new HashMap<>();
 
     static
     {
@@ -307,7 +306,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
         OPCODES.put(operStr, new Opcode(oper, group));
     }
 
-    static final HashMap<String, Integer> TYPES = new HashMap<String, Integer>();
+    static final HashMap<String, Integer> TYPES = new HashMap<>();
 
     static
     {
@@ -321,9 +320,8 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
     /**
      * Constructs a new {@link ASMContentHandler ASMContentHandler} object.
      *
-     * @param cv
-     *            class visitor that will be called to reconstruct the classfile
-     *            using the XML stream.
+     * @param cv class visitor that will be called to reconstruct the classfile
+     *           using the XML stream.
      */
     public ASMContentHandler(final ClassVisitor cv)
     {
@@ -333,21 +331,16 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
     /**
      * Process notification of the start of an XML element being reached.
      *
-     * @param ns
-     *            - The Namespace URI, or the empty string if the element has no
-     *            Namespace URI or if Namespace processing is not being
-     *            performed.
-     * @param lName
-     *            - The local name (without prefix), or the empty string if
-     *            Namespace processing is not being performed.
-     * @param qName
-     *            - The qualified name (with prefix), or the empty string if
-     *            qualified names are not available.
-     * @param list
-     *            - The attributes attached to the element. If there are no
-     *            attributes, it shall be an empty Attributes object.
-     * @exception SAXException
-     *                if a parsing error is to be reported
+     * @param ns    - The Namespace URI, or the empty string if the element has no
+     *              Namespace URI or if Namespace processing is not being
+     *              performed.
+     * @param lName - The local name (without prefix), or the empty string if
+     *              Namespace processing is not being performed.
+     * @param qName - The qualified name (with prefix), or the empty string if
+     *              qualified names are not available.
+     * @param list  - The attributes attached to the element. If there are no
+     *              attributes, it shall be an empty Attributes object.
+     * @throws SAXException if a parsing error is to be reported
      */
     @Override
     public final void startElement(final String ns, final String lName, final String qName, final Attributes list) throws SAXException
@@ -376,19 +369,14 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
     /**
      * Process notification of the end of an XML element being reached.
      *
-     * @param ns
-     *            - The Namespace URI, or the empty string if the element has no
-     *            Namespace URI or if Namespace processing is not being
-     *            performed.
-     * @param lName
-     *            - The local name (without prefix), or the empty string if
-     *            Namespace processing is not being performed.
-     * @param qName
-     *            - The qualified XML 1.0 name (with prefix), or the empty
-     *            string if qualified names are not available.
-     *
-     * @exception SAXException
-     *                if a parsing error is to be reported
+     * @param ns    - The Namespace URI, or the empty string if the element has no
+     *              Namespace URI or if Namespace processing is not being
+     *              performed.
+     * @param lName - The local name (without prefix), or the empty string if
+     *              Namespace processing is not being performed.
+     * @param qName - The qualified XML 1.0 name (with prefix), or the empty
+     *              string if qualified names are not available.
+     * @throws SAXException if a parsing error is to be reported
      */
     @Override
     public final void endElement(final String ns, final String lName, final String qName) throws SAXException
@@ -443,8 +431,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
     /**
      * Push a new object onto the top of the object stack.
      *
-     * @param object
-     *            The new object
+     * @param object The new object
      */
     final void push(final Object object)
     {
@@ -454,11 +441,11 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
     static final class RuleSet
     {
 
-        private final HashMap<String, Object> rules = new HashMap<String, Object>();
+        private final HashMap<String, Object> rules = new HashMap<>();
 
-        private final ArrayList<String> lpatterns = new ArrayList<String>();
+        private final ArrayList<String> lpatterns = new ArrayList<>();
 
-        private final ArrayList<String> rpatterns = new ArrayList<String>();
+        private final ArrayList<String> rpatterns = new ArrayList<>();
 
         public void add(final String path, final Object rule)
         {
@@ -760,7 +747,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
         {
             int major = Integer.parseInt(attrs.getValue("major"));
             int minor = Integer.parseInt(attrs.getValue("minor"));
-            HashMap<String, Object> vals = new HashMap<String, Object>();
+            HashMap<String, Object> vals = new HashMap<>();
             vals.put("version", minor << 16 | major);
             vals.put("access", attrs.getValue("access"));
             vals.put("name", attrs.getValue("name"));
@@ -887,8 +874,8 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
         @Override
         public final void begin(final String name, final Attributes attrs)
         {
-            labels = new HashMap<Object, Label>();
-            HashMap<String, Object> vals = new HashMap<String, Object>();
+            labels = new HashMap<>();
+            HashMap<String, Object> vals = new HashMap<>();
             vals.put("access", attrs.getValue("access"));
             vals.put("name", attrs.getValue("name"));
             vals.put("desc", attrs.getValue("desc"));
@@ -964,7 +951,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
         @Override
         public final void begin(final String name, final Attributes attrs)
         {
-            HashMap<String, Object> vals = new HashMap<String, Object>();
+            HashMap<String, Object> vals = new HashMap<>();
             vals.put("min", attrs.getValue("min"));
             vals.put("max", attrs.getValue("max"));
             vals.put("dflt", attrs.getValue("dflt"));
@@ -1008,7 +995,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
         @Override
         public final void begin(final String name, final Attributes attrs)
         {
-            HashMap<String, Object> vals = new HashMap<String, Object>();
+            HashMap<String, Object> vals = new HashMap<>();
             vals.put("dflt", attrs.getValue("dflt"));
             vals.put("labels", new ArrayList<Label>());
             vals.put("keys", new ArrayList<String>());
@@ -1057,9 +1044,9 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
         @Override
         public void begin(final String name, final Attributes attrs)
         {
-            HashMap<String, Object> typeLists = new HashMap<String, Object>();
-            typeLists.put("local", new ArrayList<Object>());
-            typeLists.put("stack", new ArrayList<Object>());
+            HashMap<String, Object> typeLists = new HashMap<>();
+            typeLists.put("local", new ArrayList<>());
+            typeLists.put("stack", new ArrayList<>());
             push(attrs.getValue("type"));
             push(attrs.getValue("count") == null ? "0" : attrs.getValue("count"));
             push(typeLists);
@@ -1207,7 +1194,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes
             push(attrs.getValue("name"));
             push(attrs.getValue("desc"));
             push(decodeHandle(attrs.getValue("bsm")));
-            push(new ArrayList<Object>());
+            push(new ArrayList<>());
         }
 
         @Override

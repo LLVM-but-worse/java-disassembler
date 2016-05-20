@@ -13,7 +13,6 @@ import java.util.ArrayList;
  * Any resources loaded by disc or by memory.
  *
  * @author Konloch
- *
  */
 
 public class Resources

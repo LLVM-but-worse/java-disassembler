@@ -42,15 +42,15 @@ import java.util.Map;
  * <p>
  * The behavior for constructors is like this:
  * <ol>
- *
+ * <p>
  * <li>as long as the INVOKESPECIAL for the object initialization has not been
  * reached, every bytecode instruction is dispatched in the ctor code visitor</li>
- *
+ * <p>
  * <li>when this one is reached, it is only added in the ctor code visitor and a
  * JP invoke is added</li>
- *
+ * <p>
  * <li>after that, only the other code visitor receives the instructions</li>
- *
+ * <p>
  * </ol>
  *
  * @author Eugene Kuleshov
@@ -78,17 +78,12 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes
     /**
      * Creates a new {@link AdviceAdapter}.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param mv
-     *            the method visitor to which this adapter delegates calls.
-     * @param access
-     *            the method's access flags (see {@link Opcodes}).
-     * @param name
-     *            the method's name.
-     * @param desc
-     *            the method's descriptor (see {@link Type Type}).
+     * @param api    the ASM API version implemented by this visitor. Must be one
+     *               of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * @param mv     the method visitor to which this adapter delegates calls.
+     * @param access the method's access flags (see {@link Opcodes}).
+     * @param name   the method's name.
+     * @param desc   the method's descriptor (see {@link Type Type}).
      */
     protected AdviceAdapter(final int api, final MethodVisitor mv, final int access, final String name, final String desc)
     {
@@ -104,8 +99,8 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes
         mv.visitCode();
         if (constructor)
         {
-            stackFrame = new ArrayList<Object>();
-            branches = new HashMap<Label, List<Object>>();
+            stackFrame = new ArrayList<>();
+            branches = new HashMap<>();
         }
         else
         {
@@ -605,7 +600,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes
         super.visitTryCatchBlock(start, end, handler, type);
         if (constructor && !branches.containsKey(handler))
         {
-            List<Object> stackFrame = new ArrayList<Object>();
+            List<Object> stackFrame = new ArrayList<>();
             stackFrame.add(OTHER);
             branches.put(handler, stackFrame);
         }
@@ -626,7 +621,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes
         {
             return;
         }
-        branches.put(label, new ArrayList<Object>(stackFrame));
+        branches.put(label, new ArrayList<>(stackFrame));
     }
 
     private Object popValue()
@@ -648,7 +643,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes
      * Called at the beginning of the method or after super class call in
      * the constructor. <br>
      * <br>
-     *
+     * <p>
      * <i>Custom code can use or change all the local variables, but should not
      * change state of the stack.</i>
      */
@@ -660,7 +655,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes
      * Called before explicit exit from the method using either return or throw.
      * Top element on the stack contains the return value or exception instance.
      * For example:
-     *
+     * <p>
      * <pre>
      *   public void onMethodExit(int opcode) {
      *     if(opcode==RETURN) {
@@ -683,17 +678,15 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes
      *   public static void onExit(Object param, int opcode) {
      *     ...
      * </pre>
-     *
+     * <p>
      * <br>
      * <br>
-     *
+     * <p>
      * <i>Custom code can use or change all the local variables, but should not
      * change state of the stack.</i>
      *
-     * @param opcode
-     *            one of the RETURN, IRETURN, FRETURN, ARETURN, LRETURN, DRETURN
-     *            or ATHROW
-     *
+     * @param opcode one of the RETURN, IRETURN, FRETURN, ARETURN, LRETURN, DRETURN
+     *               or ATHROW
      */
     protected void onMethodExit(int opcode)
     {

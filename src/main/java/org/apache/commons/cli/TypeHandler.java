@@ -51,7 +51,7 @@ public class TypeHandler
      * Returns the <code>Object</code> of type <code>clazz</code>
      * with the value of <code>str</code>.
      *
-     * @param str the command line value
+     * @param str   the command line value
      * @param clazz the type of argument
      * @return The instance of <code>clazz</code> initialised with
      * the value of <code>str</code>.

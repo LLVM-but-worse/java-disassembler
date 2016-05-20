@@ -5,14 +5,11 @@ import the.bytecode.club.bytecodeviewer.JarUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * The export as Jar UI.
  *
  * @author Konloch
- *
  */
 
 public class ExportJar extends JFrame
@@ -40,23 +37,19 @@ public class ExportJar extends JFrame
         scrollPane.setViewportView(mani);
         getContentPane().add(btnNewButton);
 
-        btnNewButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent arg0)
+        btnNewButton.addActionListener(arg0 -> {
+            BytecodeViewer.viewer.setIcon(true);
+            Thread t = new Thread()
             {
-                BytecodeViewer.viewer.setIcon(true);
-                Thread t = new Thread()
+                @Override
+                public void run()
                 {
-                    @Override
-                    public void run()
-                    {
-                        JarUtils.saveAsJar(BytecodeViewer.getLoadedClasses(), jarPath, mani.getText());
-                        BytecodeViewer.viewer.setIcon(false);
-                    }
-                };
-                t.start();
-                dispose();
-            }
+                    JarUtils.saveAsJar(BytecodeViewer.getLoadedClasses(), jarPath, mani.getText());
+                    BytecodeViewer.viewer.setIcon(false);
+                }
+            };
+            t.start();
+            dispose();
         });
 
         this.setLocationRelativeTo(null);

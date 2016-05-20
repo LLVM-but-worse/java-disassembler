@@ -30,29 +30,41 @@ import java.util.Properties;
  */
 public class DefaultParser implements CommandLineParser
 {
-    /** The command-line instance. */
+    /**
+     * The command-line instance.
+     */
     protected CommandLine cmd;
 
-    /** The current options. */
+    /**
+     * The current options.
+     */
     protected Options options;
 
     /**
      * Flag indicating how unrecognized tokens are handled. <tt>true</tt> to stop
      * the parsing and add the remaining tokens to the args list.
-     * <tt>false</tt> to throw an exception. 
+     * <tt>false</tt> to throw an exception.
      */
     protected boolean stopAtNonOption;
 
-    /** The token currently processed. */
+    /**
+     * The token currently processed.
+     */
     protected String currentToken;
 
-    /** The last option parsed. */
+    /**
+     * The last option parsed.
+     */
     protected Option currentOption;
 
-    /** Flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line. */
+    /**
+     * Flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line.
+     */
     protected boolean skipParsing;
 
-    /** The required options and groups expected to be found when parsing the command line. */
+    /**
+     * The required options and groups expected to be found when parsing the command line.
+     */
     protected List expectedOpts;
 
     public CommandLine parse(Options options, String[] arguments) throws ParseException
@@ -67,9 +79,8 @@ public class DefaultParser implements CommandLineParser
      * @param arguments  the command line arguments
      * @param properties command line option name-value pairs
      * @return the list of atomic option and value tokens
-     *
      * @throws ParseException if there are any problems encountered
-     * while parsing the command line tokens.
+     *                        while parsing the command line tokens.
      */
     public CommandLine parse(Options options, String[] arguments, Properties properties) throws ParseException
     {
@@ -88,13 +99,12 @@ public class DefaultParser implements CommandLineParser
      * @param arguments       the command line arguments
      * @param properties      command line option name-value pairs
      * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
-     *     the parsing and the remaining arguments are added to the 
-     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
-     *     argument triggers a ParseException.
-     *
+     *                        the parsing and the remaining arguments are added to the
+     *                        {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *                        argument triggers a ParseException.
      * @return the list of atomic option and value tokens
      * @throws ParseException if there are any problems encountered
-     * while parsing the command line tokens.
+     *                        while parsing the command line tokens.
      */
     public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption) throws ParseException
     {
@@ -186,7 +196,7 @@ public class DefaultParser implements CommandLineParser
      * are not present.
      *
      * @throws MissingOptionException if any of the required Options
-     * are not present.
+     *                                are not present.
      */
     private void checkRequiredOptions() throws MissingOptionException
     {
@@ -329,10 +339,10 @@ public class DefaultParser implements CommandLineParser
     }
 
     /**
-     * Handles an unknown token. If the token starts with a dash an 
-     * UnrecognizedOptionException is thrown. Otherwise the token is added 
-     * to the arguments of the command line. If the stopAtNonOption flag 
-     * is set, this stops the parsing and the remaining tokens are added 
+     * Handles an unknown token. If the token starts with a dash an
+     * UnrecognizedOptionException is thrown. Otherwise the token is added
+     * to the arguments of the command line. If the stopAtNonOption flag
+     * is set, this stops the parsing and the remaining tokens are added
      * as-is in the arguments of the command line.
      *
      * @param token the command line token to handle
@@ -353,7 +363,7 @@ public class DefaultParser implements CommandLineParser
 
     /**
      * Handles the following tokens:
-     *
+     * <p>
      * --L
      * --L=V
      * --L V
@@ -375,7 +385,7 @@ public class DefaultParser implements CommandLineParser
 
     /**
      * Handles the following tokens:
-     *
+     * <p>
      * --L
      * -L
      * --l
@@ -402,7 +412,7 @@ public class DefaultParser implements CommandLineParser
 
     /**
      * Handles the following tokens:
-     *
+     * <p>
      * --L=V
      * -L=V
      * --l=V
@@ -446,7 +456,7 @@ public class DefaultParser implements CommandLineParser
 
     /**
      * Handles the following tokens:
-     *
+     * <p>
      * -S
      * -SV
      * -S V
@@ -454,7 +464,7 @@ public class DefaultParser implements CommandLineParser
      * -S1S2
      * -S1S2 V
      * -SV1=V2
-     *
+     * <p>
      * -L
      * -LV
      * -L V
@@ -640,27 +650,27 @@ public class DefaultParser implements CommandLineParser
     /**
      * Breaks <code>token</code> into its constituent parts
      * using the following algorithm.
-     *
+     * <p>
      * <ul>
-     *  <li>ignore the first character ("<b>-</b>")</li>
-     *  <li>foreach remaining character check if an {@link Option}
-     *  exists with that id.</li>
-     *  <li>if an {@link Option} does exist then add that character
-     *  prepended with "<b>-</b>" to the list of processed tokens.</li>
-     *  <li>if the {@link Option} can have an argument value and there
-     *  are remaining characters in the token then add the remaining
-     *  characters as a token to the list of processed tokens.</li>
-     *  <li>if an {@link Option} does <b>NOT</b> exist <b>AND</b>
-     *  <code>stopAtNonOption</code> <b>IS</b> set then add the special token
-     *  "<b>--</b>" followed by the remaining characters and also
-     *  the remaining tokens directly to the processed tokens list.</li>
-     *  <li>if an {@link Option} does <b>NOT</b> exist <b>AND</b>
-     *  <code>stopAtNonOption</code> <b>IS NOT</b> set then add that
-     *  character prepended with "<b>-</b>".</li>
+     * <li>ignore the first character ("<b>-</b>")</li>
+     * <li>foreach remaining character check if an {@link Option}
+     * exists with that id.</li>
+     * <li>if an {@link Option} does exist then add that character
+     * prepended with "<b>-</b>" to the list of processed tokens.</li>
+     * <li>if the {@link Option} can have an argument value and there
+     * are remaining characters in the token then add the remaining
+     * characters as a token to the list of processed tokens.</li>
+     * <li>if an {@link Option} does <b>NOT</b> exist <b>AND</b>
+     * <code>stopAtNonOption</code> <b>IS</b> set then add the special token
+     * "<b>--</b>" followed by the remaining characters and also
+     * the remaining tokens directly to the processed tokens list.</li>
+     * <li>if an {@link Option} does <b>NOT</b> exist <b>AND</b>
+     * <code>stopAtNonOption</code> <b>IS NOT</b> set then add that
+     * character prepended with "<b>-</b>".</li>
      * </ul>
      *
      * @param token The current token to be <b>burst</b>
-     * at the first non-Option encountered.
+     *              at the first non-Option encountered.
      * @throws ParseException if there are any problems encountered
      *                        while parsing the command line token.
      */

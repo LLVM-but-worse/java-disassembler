@@ -286,22 +286,8 @@ public class ClassViewer extends Viewer
             searchPanel.add(byteButtonPane, BorderLayout.WEST);
             searchPanel.add(textField, BorderLayout.CENTER);
             searchPanel.add(checkBox, BorderLayout.EAST);
-            byteSearchNext.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(final ActionEvent arg0)
-                {
-                    search(0, textField.getText(), true);
-                }
-            });
-            byteSearchPrev.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(final ActionEvent arg0)
-                {
-                    search(0, textField.getText(), false);
-                }
-            });
+            byteSearchNext.addActionListener(arg0 -> search(0, textField.getText(), true));
+            byteSearchPrev.addActionListener(arg0 -> search(0, textField.getText(), false));
             textField.addKeyListener(new KeyListener()
             {
                 @Override

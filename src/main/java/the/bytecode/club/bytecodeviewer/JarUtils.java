@@ -18,7 +18,6 @@ import java.util.zip.ZipInputStream;
  *
  * @author Konloch
  * @author WaterWolf
- *
  */
 
 public class JarUtils
@@ -26,14 +25,15 @@ public class JarUtils
 
     /**
      * Loads the classes and resources from the input jar file
-     * @param jarFile the input jar file
+     *
+     * @param jarFile   the input jar file
      * @param clazzList the existing map of loaded classes
      * @throws IOException
      */
     public static void put(final File jarFile) throws IOException
     {
         FileContainer container = new FileContainer(jarFile);
-        HashMap<String, byte[]> files = new HashMap<String, byte[]>();
+        HashMap<String, byte[]> files = new HashMap<>();
 
         ZipInputStream jis = new ZipInputStream(new FileInputStream(jarFile));
         ZipEntry entry;
@@ -74,7 +74,7 @@ public class JarUtils
 
     public static ArrayList<ClassNode> loadClasses(final File jarFile) throws IOException
     {
-        ArrayList<ClassNode> classes = new ArrayList<ClassNode>();
+        ArrayList<ClassNode> classes = new ArrayList<>();
         ZipInputStream jis = new ZipInputStream(new FileInputStream(jarFile));
         ZipEntry entry;
         while ((entry = jis.getNextEntry()) != null)
@@ -120,6 +120,7 @@ public class JarUtils
 
     /**
      * Loads resources only, just for .APK
+     *
      * @param zipFile the input zip file
      * @throws IOException
      */
@@ -128,7 +129,7 @@ public class JarUtils
         if (!zipFile.exists())
             return null; //just ignore
 
-        HashMap<String, byte[]> files = new HashMap<String, byte[]>();
+        HashMap<String, byte[]> files = new HashMap<>();
 
         ZipInputStream jis = new ZipInputStream(new FileInputStream(zipFile));
         ZipEntry entry;
@@ -163,6 +164,7 @@ public class JarUtils
 
     /**
      * Reads an InputStream and returns the read byte[]
+     *
      * @param the InputStream
      * @return the read byte[]
      * @throws IOException
@@ -183,6 +185,7 @@ public class JarUtils
 
     /**
      * Creates a new ClassNode instances from the provided byte[]
+     *
      * @param bytez the class file's byte[]
      * @return the ClassNode instance
      */
@@ -211,8 +214,9 @@ public class JarUtils
 
     /**
      * Saves as jar with manifest
+     *
      * @param nodeList the loaded ClassNodes
-     * @param path the exact path of the output jar file
+     * @param path     the exact path of the output jar file
      * @param manifest the manifest contents
      */
     public static void saveAsJar(ArrayList<ClassNode> nodeList, String path, String manifest)
@@ -256,15 +260,16 @@ public class JarUtils
 
     /**
      * Saves a jar without the manifest
+     *
      * @param nodeList The loaded ClassNodes
-     * @param path the exact jar output path
+     * @param path     the exact jar output path
      */
     public static void saveAsJarClassesOnly(ArrayList<ClassNode> nodeList, String path)
     {
         try
         {
             JarOutputStream out = new JarOutputStream(new FileOutputStream(path));
-            ArrayList<String> noDupe = new ArrayList<String>();
+            ArrayList<String> noDupe = new ArrayList<>();
             for (ClassNode cn : nodeList)
             {
                 ClassWriter cw = new ClassWriter(0);
@@ -295,7 +300,7 @@ public class JarUtils
         try
         {
             JarOutputStream out = new JarOutputStream(new FileOutputStream(path));
-            ArrayList<String> noDupe = new ArrayList<String>();
+            ArrayList<String> noDupe = new ArrayList<>();
             for (Entry<String, byte[]> cn : nodeList.entrySet())
             {
                 String name = cn.getKey();
@@ -322,7 +327,7 @@ public class JarUtils
         try
         {
             JarOutputStream out = new JarOutputStream(new FileOutputStream(path));
-            ArrayList<String> noDupe = new ArrayList<String>();
+            ArrayList<String> noDupe = new ArrayList<>();
             for (Entry<String, byte[]> entry : nodeList.entrySet())
             {
                 String name = entry.getKey();

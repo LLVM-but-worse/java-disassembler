@@ -29,12 +29,11 @@ public interface CommandLineParser
     /**
      * Parse the arguments according to the specified options.
      *
-     * @param options the specified Options
+     * @param options   the specified Options
      * @param arguments the command line arguments
      * @return the list of atomic option and value tokens
-     *
      * @throws ParseException if there are any problems encountered
-     * while parsing the command line tokens.
+     *                        while parsing the command line tokens.
      */
     CommandLine parse(Options options, String[] arguments) throws ParseException;
 
@@ -60,16 +59,15 @@ public interface CommandLineParser
     /**
      * Parse the arguments according to the specified options.
      *
-     * @param options the specified Options
-     * @param arguments the command line arguments
+     * @param options         the specified Options
+     * @param arguments       the command line arguments
      * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
-     *     the parsing and the remaining arguments are added to the 
-     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
-     *     argument triggers a ParseException.
-     *
+     *                        the parsing and the remaining arguments are added to the
+     *                        {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *                        argument triggers a ParseException.
      * @return the list of atomic option and value tokens
      * @throws ParseException if there are any problems encountered
-     * while parsing the command line tokens.
+     *                        while parsing the command line tokens.
      */
     CommandLine parse(Options options, String[] arguments, boolean stopAtNonOption) throws ParseException;
 

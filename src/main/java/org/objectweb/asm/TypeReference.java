@@ -182,10 +182,9 @@ public class TypeReference
     /**
      * Creates a new TypeReference.
      *
-     * @param typeRef
-     *            the int encoded value of the type reference, as received in a
-     *            visit method related to type annotations, like
-     *            visitTypeAnnotation.
+     * @param typeRef the int encoded value of the type reference, as received in a
+     *                visit method related to type annotations, like
+     *                visitTypeAnnotation.
      */
     public TypeReference(int typeRef)
     {
@@ -195,14 +194,13 @@ public class TypeReference
     /**
      * Returns a type reference of the given sort.
      *
-     * @param sort
-     *            {@link #FIELD FIELD}, {@link #METHOD_RETURN METHOD_RETURN},
-     *            {@link #METHOD_RECEIVER METHOD_RECEIVER},
-     *            {@link #LOCAL_VARIABLE LOCAL_VARIABLE},
-     *            {@link #RESOURCE_VARIABLE RESOURCE_VARIABLE},
-     *            {@link #INSTANCEOF INSTANCEOF}, {@link #NEW NEW},
-     *            {@link #CONSTRUCTOR_REFERENCE CONSTRUCTOR_REFERENCE}, or
-     *            {@link #METHOD_REFERENCE METHOD_REFERENCE}.
+     * @param sort {@link #FIELD FIELD}, {@link #METHOD_RETURN METHOD_RETURN},
+     *             {@link #METHOD_RECEIVER METHOD_RECEIVER},
+     *             {@link #LOCAL_VARIABLE LOCAL_VARIABLE},
+     *             {@link #RESOURCE_VARIABLE RESOURCE_VARIABLE},
+     *             {@link #INSTANCEOF INSTANCEOF}, {@link #NEW NEW},
+     *             {@link #CONSTRUCTOR_REFERENCE CONSTRUCTOR_REFERENCE}, or
+     *             {@link #METHOD_REFERENCE METHOD_REFERENCE}.
      * @return a type reference of the given sort.
      */
     public static TypeReference newTypeReference(int sort)
@@ -213,11 +211,9 @@ public class TypeReference
     /**
      * Returns a reference to a type parameter of a generic class or method.
      *
-     * @param sort
-     *            {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER} or
-     *            {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER}.
-     * @param paramIndex
-     *            the type parameter index.
+     * @param sort       {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER} or
+     *                   {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER}.
+     * @param paramIndex the type parameter index.
      * @return a reference to the given generic class or method type parameter.
      */
     public static TypeReference newTypeParameterReference(int sort, int paramIndex)
@@ -229,15 +225,12 @@ public class TypeReference
      * Returns a reference to a type parameter bound of a generic class or
      * method.
      *
-     * @param sort
-     *            {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER} or
-     *            {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER}.
-     * @param paramIndex
-     *            the type parameter index.
-     * @param boundIndex
-     *            the type bound index within the above type parameters.
+     * @param sort       {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER} or
+     *                   {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER}.
+     * @param paramIndex the type parameter index.
+     * @param boundIndex the type bound index within the above type parameters.
      * @return a reference to the given generic class or method type parameter
-     *         bound.
+     * bound.
      */
     public static TypeReference newTypeParameterBoundReference(int sort, int paramIndex, int boundIndex)
     {
@@ -248,9 +241,8 @@ public class TypeReference
      * Returns a reference to the super class or to an interface of the
      * 'implements' clause of a class.
      *
-     * @param itfIndex
-     *            the index of an interface in the 'implements' clause of a
-     *            class, or -1 to reference the super class of the class.
+     * @param itfIndex the index of an interface in the 'implements' clause of a
+     *                 class, or -1 to reference the super class of the class.
      * @return a reference to the given super type of a class.
      */
     public static TypeReference newSuperTypeReference(int itfIndex)
@@ -262,9 +254,7 @@ public class TypeReference
     /**
      * Returns a reference to the type of a formal parameter of a method.
      *
-     * @param paramIndex
-     *            the formal parameter index.
-     *
+     * @param paramIndex the formal parameter index.
      * @return a reference to the type of the given method formal parameter.
      */
     public static TypeReference newFormalParameterReference(int paramIndex)
@@ -276,9 +266,7 @@ public class TypeReference
      * Returns a reference to the type of an exception, in a 'throws' clause of
      * a method.
      *
-     * @param exceptionIndex
-     *            the index of an exception in a 'throws' clause of a method.
-     *
+     * @param exceptionIndex the index of an exception in a 'throws' clause of a method.
      * @return a reference to the type of the given exception.
      */
     public static TypeReference newExceptionReference(int exceptionIndex)
@@ -290,10 +278,8 @@ public class TypeReference
      * Returns a reference to the type of the exception declared in a 'catch'
      * clause of a method.
      *
-     * @param tryCatchBlockIndex
-     *            the index of a try catch block (using the order in which they
-     *            are visited with visitTryCatchBlock).
-     *
+     * @param tryCatchBlockIndex the index of a try catch block (using the order in which they
+     *                           are visited with visitTryCatchBlock).
      * @return a reference to the type of the given exception.
      */
     public static TypeReference newTryCatchReference(int tryCatchBlockIndex)
@@ -305,19 +291,16 @@ public class TypeReference
      * Returns a reference to the type of a type argument in a constructor or
      * method call or reference.
      *
-     * @param sort
-     *            {@link #CAST CAST},
-     *            {@link #CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT
-     *            CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT},
-     *            {@link #METHOD_INVOCATION_TYPE_ARGUMENT
-     *            METHOD_INVOCATION_TYPE_ARGUMENT},
-     *            {@link #CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT
-     *            CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT}, or
-     *            {@link #METHOD_REFERENCE_TYPE_ARGUMENT
-     *            METHOD_REFERENCE_TYPE_ARGUMENT}.
-     * @param argIndex
-     *            the type argument index.
-     *
+     * @param sort     {@link #CAST CAST},
+     *                 {@link #CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT
+     *                 CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT},
+     *                 {@link #METHOD_INVOCATION_TYPE_ARGUMENT
+     *                 METHOD_INVOCATION_TYPE_ARGUMENT},
+     *                 {@link #CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT
+     *                 CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT}, or
+     *                 {@link #METHOD_REFERENCE_TYPE_ARGUMENT
+     *                 METHOD_REFERENCE_TYPE_ARGUMENT}.
+     * @param argIndex the type argument index.
      * @return a reference to the type of the given type argument.
      */
     public static TypeReference newTypeArgumentReference(int sort, int argIndex)
@@ -329,27 +312,27 @@ public class TypeReference
      * Returns the sort of this type reference.
      *
      * @return {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER},
-     *         {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER},
-     *         {@link #CLASS_EXTENDS CLASS_EXTENDS},
-     *         {@link #CLASS_TYPE_PARAMETER_BOUND CLASS_TYPE_PARAMETER_BOUND},
-     *         {@link #METHOD_TYPE_PARAMETER_BOUND METHOD_TYPE_PARAMETER_BOUND},
-     *         {@link #FIELD FIELD}, {@link #METHOD_RETURN METHOD_RETURN},
-     *         {@link #METHOD_RECEIVER METHOD_RECEIVER},
-     *         {@link #METHOD_FORMAL_PARAMETER METHOD_FORMAL_PARAMETER},
-     *         {@link #THROWS THROWS}, {@link #LOCAL_VARIABLE LOCAL_VARIABLE},
-     *         {@link #RESOURCE_VARIABLE RESOURCE_VARIABLE},
-     *         {@link #EXCEPTION_PARAMETER EXCEPTION_PARAMETER},
-     *         {@link #INSTANCEOF INSTANCEOF}, {@link #NEW NEW},
-     *         {@link #CONSTRUCTOR_REFERENCE CONSTRUCTOR_REFERENCE},
-     *         {@link #METHOD_REFERENCE METHOD_REFERENCE}, {@link #CAST CAST},
-     *         {@link #CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT
-     *         CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT},
-     *         {@link #METHOD_INVOCATION_TYPE_ARGUMENT
-     *         METHOD_INVOCATION_TYPE_ARGUMENT},
-     *         {@link #CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT
-     *         CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT}, or
-     *         {@link #METHOD_REFERENCE_TYPE_ARGUMENT
-     *         METHOD_REFERENCE_TYPE_ARGUMENT}.
+     * {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER},
+     * {@link #CLASS_EXTENDS CLASS_EXTENDS},
+     * {@link #CLASS_TYPE_PARAMETER_BOUND CLASS_TYPE_PARAMETER_BOUND},
+     * {@link #METHOD_TYPE_PARAMETER_BOUND METHOD_TYPE_PARAMETER_BOUND},
+     * {@link #FIELD FIELD}, {@link #METHOD_RETURN METHOD_RETURN},
+     * {@link #METHOD_RECEIVER METHOD_RECEIVER},
+     * {@link #METHOD_FORMAL_PARAMETER METHOD_FORMAL_PARAMETER},
+     * {@link #THROWS THROWS}, {@link #LOCAL_VARIABLE LOCAL_VARIABLE},
+     * {@link #RESOURCE_VARIABLE RESOURCE_VARIABLE},
+     * {@link #EXCEPTION_PARAMETER EXCEPTION_PARAMETER},
+     * {@link #INSTANCEOF INSTANCEOF}, {@link #NEW NEW},
+     * {@link #CONSTRUCTOR_REFERENCE CONSTRUCTOR_REFERENCE},
+     * {@link #METHOD_REFERENCE METHOD_REFERENCE}, {@link #CAST CAST},
+     * {@link #CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT
+     * CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT},
+     * {@link #METHOD_INVOCATION_TYPE_ARGUMENT
+     * METHOD_INVOCATION_TYPE_ARGUMENT},
+     * {@link #CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT
+     * CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT}, or
+     * {@link #METHOD_REFERENCE_TYPE_ARGUMENT
+     * METHOD_REFERENCE_TYPE_ARGUMENT}.
      */
     public int getSort()
     {
@@ -391,8 +374,8 @@ public class TypeReference
      * whose sort is {@link #CLASS_EXTENDS CLASS_EXTENDS}.
      *
      * @return the index of an interface in the 'implements' clause of a class,
-     *         or -1 if this type reference references the type of the super
-     *         class.
+     * or -1 if this type reference references the type of the super
+     * class.
      */
     public int getSuperTypeIndex()
     {

@@ -3,13 +3,10 @@ package the.bytecode.club.bytecodeviewer.api;
 import org.objectweb.asm.tree.*;
 import the.bytecode.club.bytecodeviewer.BytecodeViewer;
 
-import java.util.List;
-
 /**
  * Used to rename/replace methods/classes/fields
  *
  * @author Konloch
- *
  */
 public final class ASMUtil_OLD
 {
@@ -133,7 +130,7 @@ public final class ASMUtil_OLD
 
                 if (m.localVariables != null)
                 {
-                    for (LocalVariableNode node : (List<LocalVariableNode>) m.localVariables)
+                    for (LocalVariableNode node : m.localVariables)
                     {
                         node.desc = node.desc.replace(oldName, newName);
                     }

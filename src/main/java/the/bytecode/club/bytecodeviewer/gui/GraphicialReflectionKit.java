@@ -9,7 +9,6 @@ import java.awt.*;
  * A graphical way to execute reflection.
  *
  * @author Konloch
- *
  */
 
 public class GraphicialReflectionKit extends JFrame

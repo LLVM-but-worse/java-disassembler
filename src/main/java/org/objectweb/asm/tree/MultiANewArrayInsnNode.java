@@ -55,10 +55,8 @@ public class MultiANewArrayInsnNode extends AbstractInsnNode
     /**
      * Constructs a new {@link MultiANewArrayInsnNode}.
      *
-     * @param desc
-     *            an array type descriptor (see {@link org.objectweb.asm.Type}).
-     * @param dims
-     *            number of dimensions of the array to allocate.
+     * @param desc an array type descriptor (see {@link org.objectweb.asm.Type}).
+     * @param dims number of dimensions of the array to allocate.
      */
     public MultiANewArrayInsnNode(final String desc, final int dims)
     {

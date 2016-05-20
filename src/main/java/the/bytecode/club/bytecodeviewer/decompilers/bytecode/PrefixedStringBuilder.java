@@ -1,9 +1,7 @@
 package the.bytecode.club.bytecodeviewer.decompilers.bytecode;
 
 /**
- *
  * @author Bibl
- *
  */
 
 public class PrefixedStringBuilder

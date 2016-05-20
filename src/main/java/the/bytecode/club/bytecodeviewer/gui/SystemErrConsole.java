@@ -8,8 +8,6 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -20,7 +18,6 @@ import java.io.PrintStream;
  * A simple console GUI.
  *
  * @author Konloch
- *
  */
 
 public class SystemErrConsole extends JFrame
@@ -75,23 +72,9 @@ public class SystemErrConsole extends JFrame
         panel.add(buttonPane, BorderLayout.WEST);
         panel.add(field, BorderLayout.CENTER);
         panel.add(check, BorderLayout.EAST);
-        searchNext.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(final ActionEvent arg0)
-            {
-                search(field.getText(), true);
-            }
-        });
+        searchNext.addActionListener(arg0 -> search(field.getText(), true));
 
-        searchPrev.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(final ActionEvent arg0)
-            {
-                search(field.getText(), false);
-            }
-        });
+        searchPrev.addActionListener(arg0 -> search(field.getText(), false));
         field.addKeyListener(new KeyListener()
         {
             @Override
@@ -154,7 +137,6 @@ public class SystemErrConsole extends JFrame
      * This was really interesting to write.
      *
      * @author Konloch
-     *
      */
     public void search(String search, boolean next)
     {
@@ -293,8 +275,7 @@ public class SystemErrConsole extends JFrame
     /**
      * Appends \r\n to the end of your string, then it puts it on the top.
      *
-     * @param t
-     *            the string you want to append
+     * @param t the string you want to append
      */
     public void appendText(String t)
     {
@@ -305,8 +286,7 @@ public class SystemErrConsole extends JFrame
     /**
      * Sets the text
      *
-     * @param t
-     *            the text you want set
+     * @param t the text you want set
      */
     public void setText(String t)
     {

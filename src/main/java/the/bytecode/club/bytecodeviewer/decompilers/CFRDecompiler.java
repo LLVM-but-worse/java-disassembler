@@ -195,13 +195,7 @@ public class CFRDecompiler extends Decompiler
         final Predicate e = org.benf.cfr.reader.util.MiscUtils.mkRegexFilter(options.getOption(OptionsImpl.JAR_FILTER), true);
 
         List<JavaTypeInstance> err1 = dcCommonState.explicitlyLoadJar(input.toAbsolutePath().toString());
-        err1 = Functional.filter(err1, new Predicate<JavaTypeInstance>()
-        {
-            public boolean test(JavaTypeInstance in)
-            {
-                return e.test(in.getRawName());
-            }
-        });
+        err1 = Functional.filter(err1, in -> e.test(in.getRawName()));
         if (options.getOption(OptionsImpl.RENAME_MEMBERS))
         {
             MemberNameResolver.resolveNames(dcCommonState, err1);
@@ -218,7 +212,7 @@ public class CFRDecompiler extends Decompiler
                 }
                 else
                 {
-                    if (options.getOption(OptionsImpl.DECOMPILE_INNER_CLASSES).booleanValue())
+                    if (options.getOption(OptionsImpl.DECOMPILE_INNER_CLASSES))
                     {
                         e1.loadInnerClasses(dcCommonState);
                     }

@@ -77,8 +77,7 @@ public final class Json
     /**
      * Returns a JsonValue instance that represents the given <code>int</code> value.
      *
-     * @param value
-     *          the value to get a JSON representation for
+     * @param value the value to get a JSON representation for
      * @return a JSON value that represents the given value
      */
     public static JsonValue value(int value)
@@ -89,8 +88,7 @@ public final class Json
     /**
      * Returns a JsonValue instance that represents the given <code>long</code> value.
      *
-     * @param value
-     *          the value to get a JSON representation for
+     * @param value the value to get a JSON representation for
      * @return a JSON value that represents the given value
      */
     public static JsonValue value(long value)
@@ -101,8 +99,7 @@ public final class Json
     /**
      * Returns a JsonValue instance that represents the given <code>float</code> value.
      *
-     * @param value
-     *          the value to get a JSON representation for
+     * @param value the value to get a JSON representation for
      * @return a JSON value that represents the given value
      */
     public static JsonValue value(float value)
@@ -117,8 +114,7 @@ public final class Json
     /**
      * Returns a JsonValue instance that represents the given <code>double</code> value.
      *
-     * @param value
-     *          the value to get a JSON representation for
+     * @param value the value to get a JSON representation for
      * @return a JSON value that represents the given value
      */
     public static JsonValue value(double value)
@@ -133,8 +129,7 @@ public final class Json
     /**
      * Returns a JsonValue instance that represents the given string.
      *
-     * @param string
-     *          the string to get a JSON representation for
+     * @param string the string to get a JSON representation for
      * @return a JSON value that represents the given string
      */
     public static JsonValue value(String string)
@@ -145,8 +140,7 @@ public final class Json
     /**
      * Returns a JsonValue instance that represents the given <code>boolean</code> value.
      *
-     * @param value
-     *          the value to get a JSON representation for
+     * @param value the value to get a JSON representation for
      * @return a JSON value that represents the given value
      */
     public static JsonValue value(boolean value)
@@ -169,8 +163,7 @@ public final class Json
      * Creates a new JsonArray that contains the JSON representations of the given <code>int</code>
      * values.
      *
-     * @param values
-     *          the values to be included in the new JSON array
+     * @param values the values to be included in the new JSON array
      * @return a new JSON array that contains the given values
      */
     public static JsonArray array(int... values)
@@ -191,8 +184,7 @@ public final class Json
      * Creates a new JsonArray that contains the JSON representations of the given <code>long</code>
      * values.
      *
-     * @param values
-     *          the values to be included in the new JSON array
+     * @param values the values to be included in the new JSON array
      * @return a new JSON array that contains the given values
      */
     public static JsonArray array(long... values)
@@ -213,8 +205,7 @@ public final class Json
      * Creates a new JsonArray that contains the JSON representations of the given <code>float</code>
      * values.
      *
-     * @param values
-     *          the values to be included in the new JSON array
+     * @param values the values to be included in the new JSON array
      * @return a new JSON array that contains the given values
      */
     public static JsonArray array(float... values)
@@ -235,8 +226,7 @@ public final class Json
      * Creates a new JsonArray that contains the JSON representations of the given <code>double</code>
      * values.
      *
-     * @param values
-     *          the values to be included in the new JSON array
+     * @param values the values to be included in the new JSON array
      * @return a new JSON array that contains the given values
      */
     public static JsonArray array(double... values)
@@ -257,8 +247,7 @@ public final class Json
      * Creates a new JsonArray that contains the JSON representations of the given
      * <code>boolean</code> values.
      *
-     * @param values
-     *          the values to be included in the new JSON array
+     * @param values the values to be included in the new JSON array
      * @return a new JSON array that contains the given values
      */
     public static JsonArray array(boolean... values)
@@ -278,8 +267,7 @@ public final class Json
     /**
      * Creates a new JsonArray that contains the JSON representations of the given strings.
      *
-     * @param strings
-     *          the strings to be included in the new JSON array
+     * @param strings the strings to be included in the new JSON array
      * @return a new JSON array that contains the given strings
      */
     public static JsonArray array(String... strings)
@@ -311,11 +299,9 @@ public final class Json
      * Parses the given input string as JSON. The input must contain a valid JSON value, optionally
      * padded with whitespace.
      *
-     * @param string
-     *          the input string, must be valid JSON
+     * @param string the input string, must be valid JSON
      * @return a value that represents the parsed JSON
-     * @throws ParseException
-     *           if the input is not valid JSON
+     * @throws ParseException if the input is not valid JSON
      */
     public static JsonValue parse(String string)
     {
@@ -343,13 +329,10 @@ public final class Json
      * performance.
      * </p>
      *
-     * @param reader
-     *          the reader to read the JSON value from
+     * @param reader the reader to read the JSON value from
      * @return a value that represents the parsed JSON
-     * @throws IOException
-     *           if an I/O error occurs in the reader
-     * @throws ParseException
-     *           if the input is not valid JSON
+     * @throws IOException    if an I/O error occurs in the reader
+     * @throws ParseException if the input is not valid JSON
      */
     public static JsonValue parse(Reader reader) throws IOException
     {

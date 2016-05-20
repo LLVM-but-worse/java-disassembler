@@ -27,10 +27,14 @@ import java.util.List;
  */
 public class MissingOptionException extends ParseException
 {
-    /** This exception {@code serialVersionUID}. */
+    /**
+     * This exception {@code serialVersionUID}.
+     */
     private static final long serialVersionUID = 8161889051578563249L;
 
-    /** The list of missing options and groups */
+    /**
+     * The list of missing options and groups
+     */
     private List missingOptions;
 
     /**
@@ -61,7 +65,7 @@ public class MissingOptionException extends ParseException
      * Returns the list of options or option groups missing in the command line parsed.
      *
      * @return the missing options, consisting of String instances for simple
-     *         options, and OptionGroup instances for required option groups.
+     * options, and OptionGroup instances for required option groups.
      * @since 1.2
      */
     public List getMissingOptions()

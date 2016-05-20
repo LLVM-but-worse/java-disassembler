@@ -30,16 +30,24 @@ import java.util.Map;
  */
 public class OptionGroup implements Serializable
 {
-    /** The serial version UID. */
+    /**
+     * The serial version UID.
+     */
     private static final long serialVersionUID = 1L;
 
-    /** hold the options */
-    private final Map<String, Option> optionMap = new HashMap<String, Option>();
+    /**
+     * hold the options
+     */
+    private final Map<String, Option> optionMap = new HashMap<>();
 
-    /** the name of the selected option */
+    /**
+     * the name of the selected option
+     */
     private String selected;
 
-    /** specified whether this group is required */
+    /**
+     * specified whether this group is required
+     */
     private boolean required;
 
     /**
@@ -58,7 +66,7 @@ public class OptionGroup implements Serializable
     }
 
     /**
-     * @return the names of the options in this group as a 
+     * @return the names of the options in this group as a
      * <code>Collection</code>
      */
     public Collection<String> getNames()
@@ -80,8 +88,8 @@ public class OptionGroup implements Serializable
      * Set the selected option of this group to <code>name</code>.
      *
      * @param option the option that is selected
-     * @throws AlreadySelectedException if an option from this group has 
-     * already been selected.
+     * @throws AlreadySelectedException if an option from this group has
+     *                                  already been selected.
      */
     public void setSelected(Option option) throws AlreadySelectedException
     {

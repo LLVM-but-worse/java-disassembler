@@ -30,7 +30,9 @@ public class MissingArgumentException extends ParseException
      */
     private static final long serialVersionUID = -7098538588704965017L;
 
-    /** The option requiring additional arguments */
+    /**
+     * The option requiring additional arguments
+     */
     private Option option;
 
     /**

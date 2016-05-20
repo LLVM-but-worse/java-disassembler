@@ -10,7 +10,10 @@ import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Map.Entry;
 
 /**
@@ -78,9 +81,9 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
                         for (int c = 0; c < curNode.getChildCount(); c++)
                         {
                             final MyTreeNode child = (MyTreeNode) curNode.getChildAt(c);
-                            System.out.println(pathName + ":" + ((String) child.getUserObject()));
+                            System.out.println(pathName + ":" + child.getUserObject());
 
-                            if (((String) child.getUserObject()).equals(pathName))
+                            if (child.getUserObject().equals(pathName))
                             {
                                 curNode = child;
                                 if (isLast)
@@ -115,7 +118,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
                                 {
                                     TreeNode pathArray[] = node.getPath();
                                     int k = 0;
-                                    StringBuffer fullPath = new StringBuffer();
+                                    StringBuilder fullPath = new StringBuilder();
                                     while (pathArray != null && k < pathArray.length)
                                     {
                                         MyTreeNode n = (MyTreeNode) pathArray[k];
@@ -158,25 +161,15 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         quickSearch.setForeground(Color.gray);
         setTitle("Files");
 
-        this.open.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                final TreeNode root = (TreeNode) tree.getModel().getRoot();
-                expandAll(tree, new TreePath(root), true);
-            }
+        this.open.addActionListener(e -> {
+            final TreeNode root = (TreeNode) tree.getModel().getRoot();
+            expandAll(tree, new TreePath(root), true);
         });
 
-        this.close.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                final TreeNode root = (TreeNode) tree.getModel().getRoot();
-                expandAll(tree, new TreePath(root), false);
-                tree.expandPath(new TreePath(root));
-            }
+        this.close.addActionListener(e -> {
+            final TreeNode root = (TreeNode) tree.getModel().getRoot();
+            expandAll(tree, new TreePath(root), false);
+            tree.expandPath(new TreePath(root));
         });
 
         this.tree.addMouseListener(new MouseAdapter()
@@ -429,10 +422,8 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         private void recursiveSort(final MyTreeNode node)
         {
             Collections.sort(node.children, nodeComparator);
-            final Iterator<MyTreeNode> it = node.children.iterator();
-            while (it.hasNext())
+            for (MyTreeNode nextNode : (Iterable<MyTreeNode>) node.children)
             {
-                final MyTreeNode nextNode = it.next();
                 if (nextNode.getChildCount() > 0)
                 {
                     recursiveSort(nextNode);
@@ -515,7 +506,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
     {
         if (path == null)
             return;
-        final StringBuffer nameBuffer = new StringBuffer();
+        final StringBuilder nameBuffer = new StringBuilder();
         for (int i = 2; i < path.getPathCount(); i++)
         {
             nameBuffer.append(path.getPathComponent(i));
@@ -612,8 +603,8 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
                 }
                 else
                 { //folder
-                    ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
-                    ArrayList<TreeNode> totalNodes = new ArrayList<TreeNode>();
+                    ArrayList<TreeNode> nodes = new ArrayList<>();
+                    ArrayList<TreeNode> totalNodes = new ArrayList<>();
 
                     nodes.add(node);
                     totalNodes.add(node);

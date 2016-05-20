@@ -12,7 +12,6 @@ import java.io.StringWriter;
  * A simple class designed to show exceptions in the UI.
  *
  * @author Konloch
- *
  */
 
 public class ExceptionUI extends JFrame
@@ -21,8 +20,7 @@ public class ExceptionUI extends JFrame
     private static final long serialVersionUID = -5230501978224926296L;
 
     /**
-     * @param e
-     *            The exception to be shown
+     * @param e The exception to be shown
      */
     public ExceptionUI(Throwable e)
     {
@@ -30,8 +28,7 @@ public class ExceptionUI extends JFrame
     }
 
     /**
-     * @param e
-     *            The exception to be shown
+     * @param e The exception to be shown
      */
     public ExceptionUI(String e)
     {
@@ -39,10 +36,8 @@ public class ExceptionUI extends JFrame
     }
 
     /**
-     * @param e
-     *            The exception to be shown
-     * @param author
-     *            the author of the plugin throwing this exception.
+     * @param e      The exception to be shown
+     * @param author the author of the plugin throwing this exception.
      */
     public ExceptionUI(Throwable e, String author)
     {
@@ -50,10 +45,8 @@ public class ExceptionUI extends JFrame
     }
 
     /**
-     * @param e
-     *            The exception to be shown
-     * @param author
-     *            the author of the plugin throwing this exception.
+     * @param e      The exception to be shown
+     * @param author the author of the plugin throwing this exception.
      */
     public ExceptionUI(String e, String author)
     {

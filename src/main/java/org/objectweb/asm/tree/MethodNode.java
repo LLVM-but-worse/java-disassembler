@@ -216,8 +216,7 @@ public class MethodNode extends MethodVisitor
      * use this constructor</i>. Instead, they must use the
      * {@link #MethodNode(int)} version.
      *
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public MethodNode(ClassNode owner)
     {
@@ -231,8 +230,7 @@ public class MethodNode extends MethodVisitor
     /**
      * Constructs an uninitialized {@link MethodNode}.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
+     * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
     public MethodNode(final int api, final ClassNode owner)
@@ -249,22 +247,16 @@ public class MethodNode extends MethodVisitor
      * constructor</i>. Instead, they must use the
      * {@link #MethodNode(int, int, String, String, String, String[])} version.
      *
-     * @param access
-     *            the method's access flags (see {@link Opcodes}). This
-     *            parameter also indicates if the method is synthetic and/or
-     *            deprecated.
-     * @param name
-     *            the method's name.
-     * @param desc
-     *            the method's descriptor (see {@link Type}).
-     * @param signature
-     *            the method's signature. May be <tt>null</tt>.
-     * @param exceptions
-     *            the internal names of the method's exception classes (see
-     *            {@link Type#getInternalName() getInternalName}). May be
-     *            <tt>null</tt>.
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @param access     the method's access flags (see {@link Opcodes}). This
+     *                   parameter also indicates if the method is synthetic and/or
+     *                   deprecated.
+     * @param name       the method's name.
+     * @param desc       the method's descriptor (see {@link Type}).
+     * @param signature  the method's signature. May be <tt>null</tt>.
+     * @param exceptions the internal names of the method's exception classes (see
+     *                   {@link Type#getInternalName() getInternalName}). May be
+     *                   <tt>null</tt>.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public MethodNode(final ClassNode owner, final int access, final String name, final String desc, final String signature, final String[] exceptions)
     {
@@ -278,23 +270,17 @@ public class MethodNode extends MethodVisitor
     /**
      * Constructs a new {@link MethodNode}.
      *
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param access
-     *            the method's access flags (see {@link Opcodes}). This
-     *            parameter also indicates if the method is synthetic and/or
-     *            deprecated.
-     * @param name
-     *            the method's name.
-     * @param desc
-     *            the method's descriptor (see {@link Type}).
-     * @param signature
-     *            the method's signature. May be <tt>null</tt>.
-     * @param exceptions
-     *            the internal names of the method's exception classes (see
-     *            {@link Type#getInternalName() getInternalName}). May be
-     *            <tt>null</tt>.
+     * @param api        the ASM API version implemented by this visitor. Must be one
+     *                   of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * @param access     the method's access flags (see {@link Opcodes}). This
+     *                   parameter also indicates if the method is synthetic and/or
+     *                   deprecated.
+     * @param name       the method's name.
+     * @param desc       the method's descriptor (see {@link Type}).
+     * @param signature  the method's signature. May be <tt>null</tt>.
+     * @param exceptions the internal names of the method's exception classes (see
+     *                   {@link Type#getInternalName() getInternalName}). May be
+     *                   <tt>null</tt>.
      */
     public MethodNode(final int api, final ClassNode owner, final int access, final String name, final String desc, final String signature, final String[] exceptions)
     {
@@ -304,13 +290,13 @@ public class MethodNode extends MethodVisitor
         this.name = name;
         this.desc = desc;
         this.signature = signature;
-        this.exceptions = new ArrayList<String>(exceptions == null ? 0 : exceptions.length);
+        this.exceptions = new ArrayList<>(exceptions == null ? 0 : exceptions.length);
         boolean isAbstract = (access & Opcodes.ACC_ABSTRACT) != 0;
         if (!isAbstract)
         {
-            this.localVariables = new ArrayList<LocalVariableNode>(5);
+            this.localVariables = new ArrayList<>(5);
         }
-        this.tryCatchBlocks = new ArrayList<TryCatchBlockNode>();
+        this.tryCatchBlocks = new ArrayList<>();
         if (exceptions != null)
         {
             this.exceptions.addAll(Arrays.asList(exceptions));
@@ -329,7 +315,7 @@ public class MethodNode extends MethodVisitor
     {
         if (parameters == null)
         {
-            parameters = new ArrayList<ParameterNode>(5);
+            parameters = new ArrayList<>(5);
         }
         parameters.add(new ParameterNode(name, access));
     }
@@ -357,7 +343,7 @@ public class MethodNode extends MethodVisitor
         {
             if (visibleAnnotations == null)
             {
-                visibleAnnotations = new ArrayList<AnnotationNode>(1);
+                visibleAnnotations = new ArrayList<>(1);
             }
             visibleAnnotations.add(an);
         }
@@ -365,7 +351,7 @@ public class MethodNode extends MethodVisitor
         {
             if (invisibleAnnotations == null)
             {
-                invisibleAnnotations = new ArrayList<AnnotationNode>(1);
+                invisibleAnnotations = new ArrayList<>(1);
             }
             invisibleAnnotations.add(an);
         }
@@ -380,7 +366,7 @@ public class MethodNode extends MethodVisitor
         {
             if (visibleTypeAnnotations == null)
             {
-                visibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                visibleTypeAnnotations = new ArrayList<>(1);
             }
             visibleTypeAnnotations.add(an);
         }
@@ -388,7 +374,7 @@ public class MethodNode extends MethodVisitor
         {
             if (invisibleTypeAnnotations == null)
             {
-                invisibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                invisibleTypeAnnotations = new ArrayList<>(1);
             }
             invisibleTypeAnnotations.add(an);
         }
@@ -409,7 +395,7 @@ public class MethodNode extends MethodVisitor
             }
             if (visibleParameterAnnotations[parameter] == null)
             {
-                visibleParameterAnnotations[parameter] = new ArrayList<AnnotationNode>(1);
+                visibleParameterAnnotations[parameter] = new ArrayList<>(1);
             }
             visibleParameterAnnotations[parameter].add(an);
         }
@@ -422,7 +408,7 @@ public class MethodNode extends MethodVisitor
             }
             if (invisibleParameterAnnotations[parameter] == null)
             {
-                invisibleParameterAnnotations[parameter] = new ArrayList<AnnotationNode>(1);
+                invisibleParameterAnnotations[parameter] = new ArrayList<>(1);
             }
             invisibleParameterAnnotations[parameter].add(an);
         }
@@ -434,7 +420,7 @@ public class MethodNode extends MethodVisitor
     {
         if (attrs == null)
         {
-            attrs = new ArrayList<Attribute>(1);
+            attrs = new ArrayList<>(1);
         }
         attrs.add(attr);
     }
@@ -598,7 +584,7 @@ public class MethodNode extends MethodVisitor
         {
             if (insn.visibleTypeAnnotations == null)
             {
-                insn.visibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                insn.visibleTypeAnnotations = new ArrayList<>(1);
             }
             insn.visibleTypeAnnotations.add(an);
         }
@@ -606,7 +592,7 @@ public class MethodNode extends MethodVisitor
         {
             if (insn.invisibleTypeAnnotations == null)
             {
-                insn.invisibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                insn.invisibleTypeAnnotations = new ArrayList<>(1);
             }
             insn.invisibleTypeAnnotations.add(an);
         }
@@ -628,7 +614,7 @@ public class MethodNode extends MethodVisitor
         {
             if (tcb.visibleTypeAnnotations == null)
             {
-                tcb.visibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                tcb.visibleTypeAnnotations = new ArrayList<>(1);
             }
             tcb.visibleTypeAnnotations.add(an);
         }
@@ -636,7 +622,7 @@ public class MethodNode extends MethodVisitor
         {
             if (tcb.invisibleTypeAnnotations == null)
             {
-                tcb.invisibleTypeAnnotations = new ArrayList<TypeAnnotationNode>(1);
+                tcb.invisibleTypeAnnotations = new ArrayList<>(1);
             }
             tcb.invisibleTypeAnnotations.add(an);
         }
@@ -657,7 +643,7 @@ public class MethodNode extends MethodVisitor
         {
             if (visibleLocalVariableAnnotations == null)
             {
-                visibleLocalVariableAnnotations = new ArrayList<LocalVariableAnnotationNode>(1);
+                visibleLocalVariableAnnotations = new ArrayList<>(1);
             }
             visibleLocalVariableAnnotations.add(an);
         }
@@ -665,7 +651,7 @@ public class MethodNode extends MethodVisitor
         {
             if (invisibleLocalVariableAnnotations == null)
             {
-                invisibleLocalVariableAnnotations = new ArrayList<LocalVariableAnnotationNode>(1);
+                invisibleLocalVariableAnnotations = new ArrayList<>(1);
             }
             invisibleLocalVariableAnnotations.add(an);
         }
@@ -698,8 +684,7 @@ public class MethodNode extends MethodVisitor
      * the {@link Label#info} field to store associations between labels and
      * label nodes.
      *
-     * @param l
-     *            a Label.
+     * @param l a Label.
      * @return the LabelNode corresponding to l.
      */
     protected LabelNode getLabelNode(final Label l)
@@ -746,8 +731,7 @@ public class MethodNode extends MethodVisitor
      * recursively, do not contain elements that were introduced in more recent
      * versions of the ASM API than the given version.
      *
-     * @param api
-     *            an ASM API version. Must be one of {@link Opcodes#ASM4} or
+     * @param api an ASM API version. Must be one of {@link Opcodes#ASM4} or
      *            {@link Opcodes#ASM5}.
      */
     public void check(final int api)
@@ -809,8 +793,7 @@ public class MethodNode extends MethodVisitor
     /**
      * Makes the given class visitor visit this method.
      *
-     * @param cv
-     *            a class visitor.
+     * @param cv a class visitor.
      */
     public void accept(final ClassVisitor cv)
     {
@@ -826,8 +809,7 @@ public class MethodNode extends MethodVisitor
     /**
      * Makes the given method visitor visit this method.
      *
-     * @param mv
-     *            a method visitor.
+     * @param mv a method visitor.
      */
     public void accept(final MethodVisitor mv)
     {
@@ -952,8 +934,7 @@ public class MethodNode extends MethodVisitor
     /**
      * Gets the amount of times the given opcodes has been matched
      *
-     * @param opcode
-     *            The opcode to match
+     * @param opcode The opcode to match
      * @return The amount of times the given opcode has been matched.
      */
     public int count(int opcode)
@@ -970,8 +951,7 @@ public class MethodNode extends MethodVisitor
     /**
      * Gets the amount of times the given query has been matched
      *
-     * @param entry
-     *            The query to match
+     * @param entry The query to match
      * @return The amount of times the given query has been matched.
      */
     public int count(InsnQuery entry)

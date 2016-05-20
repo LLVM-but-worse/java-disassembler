@@ -9,7 +9,6 @@ import java.util.ArrayList;
  * A simple plugin class, it will run the plugin in a background thread.
  *
  * @author Konloch
- *
  */
 
 public abstract class Plugin extends Thread
@@ -64,8 +63,7 @@ public abstract class Plugin extends Thread
     /**
      * Whenever the plugin is started, this method is called
      *
-     * @param classNodeList
-     *            all of the loaded classes for easy access.
+     * @param classNodeList all of the loaded classes for easy access.
      */
     public abstract void execute(ArrayList<ClassNode> classNodeList);
 

@@ -34,14 +34,20 @@ import java.util.*;
  */
 public class CommandLine implements Serializable
 {
-    /** The serial version UID. */
+    /**
+     * The serial version UID.
+     */
     private static final long serialVersionUID = 1L;
 
-    /** the unrecognised options/arguments */
-    private final List<String> args = new LinkedList<String>();
+    /**
+     * the unrecognised options/arguments
+     */
+    private final List<String> args = new LinkedList<>();
 
-    /** the processed options */
-    private final List<Option> options = new ArrayList<Option>();
+    /**
+     * the processed options
+     */
+    private final List<Option> options = new ArrayList<>();
 
     /**
      * Creates a command line.
@@ -95,7 +101,7 @@ public class CommandLine implements Serializable
     }
 
     /**
-     * Return a version of this <code>Option</code> converted to a particular type. 
+     * Return a version of this <code>Option</code> converted to a particular type.
      *
      * @param opt the name of the option
      * @return the value parsed into a particular object
@@ -162,7 +168,7 @@ public class CommandLine implements Serializable
      */
     public String[] getOptionValues(String opt)
     {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
 
         for (Option option : options)
         {
@@ -215,9 +221,9 @@ public class CommandLine implements Serializable
     /**
      * Retrieve the first argument, if any, of an option.
      *
-     * @param opt name of the option
+     * @param opt          name of the option
      * @param defaultValue is the default value to be returned if the option
-     * is not specified
+     *                     is not specified
      * @return Value of the argument if option is set, and has an argument,
      * otherwise <code>defaultValue</code>.
      */
@@ -231,9 +237,9 @@ public class CommandLine implements Serializable
     /**
      * Retrieve the argument, if any, of an option.
      *
-     * @param opt character name of the option
+     * @param opt          character name of the option
      * @param defaultValue is the default value to be returned if the option
-     * is not specified
+     *                     is not specified
      * @return Value of the argument if option is set, and has an argument,
      * otherwise <code>defaultValue</code>.
      */
@@ -252,7 +258,7 @@ public class CommandLine implements Serializable
      *
      * @param opt name of the option
      * @return The Properties mapped by the option, never <tt>null</tt>
-     *         even if the option doesn't exists
+     * even if the option doesn't exists
      * @since 1.2
      */
     public Properties getOptionProperties(String opt)

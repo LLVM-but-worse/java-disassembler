@@ -37,7 +37,7 @@ public class InstructionPrinter
     {
         this.args = args;
         mNode = m;
-        labels = new HashMap<LabelNode, Integer>();
+        labels = new HashMap<>();
         // matchedInsns = new ArrayList<AbstractInsnNode>(); // ingnored because
         // match = false
         match = false;
@@ -47,17 +47,14 @@ public class InstructionPrinter
     {
         this.args = args;
         mNode = m;
-        labels = new HashMap<LabelNode, Integer>();
+        labels = new HashMap<>();
         searcher = new InstructionSearcher(m.instructions, pattern);
         match = searcher.search();
         if (match)
         {
             for (AbstractInsnNode[] ains : searcher.getMatches())
             {
-                for (AbstractInsnNode ain : ains)
-                {
-                    matchedInsns.add(ain);
-                }
+                Collections.addAll(matchedInsns, ains);
             }
         }
     }
@@ -69,7 +66,7 @@ public class InstructionPrinter
      */
     public ArrayList<String> createPrint()
     {
-        ArrayList<String> info = new ArrayList<String>();
+        ArrayList<String> info = new ArrayList<>();
         ListIterator<?> it = mNode.instructions.iterator();
         boolean firstLabel = false;
         while (it.hasNext())
@@ -180,7 +177,7 @@ public class InstructionPrinter
                 final int refIndex = vin.var - (Modifier.isStatic(mNode.access) ? 0 : 1);
                 if (refIndex >= 0 && refIndex < args.length - 1)
                 {
-                    sb.append(" // reference to " + args[refIndex].name);
+                    sb.append(" // reference to ").append(args[refIndex].name);
                 }
             }
         }
@@ -204,7 +201,7 @@ public class InstructionPrinter
     protected String printMethodInsnNode(MethodInsnNode min, ListIterator<?> it)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(nameOpcode(min.opcode()) + " " + min.owner + " " + min.name + "(");
+        sb.append(nameOpcode(min.opcode())).append(" ").append(min.owner).append(" ").append(min.name).append("(");
 
         String desc = min.desc;
         try
@@ -319,7 +316,7 @@ public class InstructionPrinter
     protected String printInvokeDynamicInsNode(InvokeDynamicInsnNode idin)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(nameOpcode(idin.opcode()) + " " + idin.bsm.getName() + "(");
+        sb.append(nameOpcode(idin.opcode())).append(" ").append(idin.bsm.getName()).append("(");
 
         String desc = idin.desc;
         String partedDesc = idin.desc.substring(2);

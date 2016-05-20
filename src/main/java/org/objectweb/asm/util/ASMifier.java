@@ -80,8 +80,7 @@ public class ASMifier extends Printer
      * constructor</i>. Instead, they must use the
      * {@link #ASMifier(int, String, int)} version.
      *
-     * @throws IllegalStateException
-     *             If a subclass calls this constructor.
+     * @throws IllegalStateException If a subclass calls this constructor.
      */
     public ASMifier()
     {
@@ -95,14 +94,11 @@ public class ASMifier extends Printer
     /**
      * Constructs a new {@link ASMifier}.
      *
-     * @param api
-     *            the ASM API version implemented by this class. Must be one of
-     *            {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param name
-     *            the name of the visitor variable in the produced code.
-     * @param id
-     *            identifier of the annotation visitor variable in the produced
-     *            code.
+     * @param api  the ASM API version implemented by this class. Must be one of
+     *             {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * @param name the name of the visitor variable in the produced code.
+     * @param id   identifier of the annotation visitor variable in the produced
+     *             code.
      */
     protected ASMifier(final int api, final String name, final int id)
     {
@@ -117,11 +113,8 @@ public class ASMifier extends Printer
      * <p>
      * Usage: ASMifier [-debug] &lt;binary class name or class file name&gt;
      *
-     * @param args
-     *            the command line arguments.
-     *
-     * @throws Exception
-     *             if the class cannot be found, or if an IO exception occurs.
+     * @param args the command line arguments.
+     * @throws Exception if the class cannot be found, or if an IO exception occurs.
      */
     public static void main(final String[] args) throws Exception
     {
@@ -948,7 +941,7 @@ public class ASMifier extends Printer
         {
             if (labelNames == null)
             {
-                labelNames = new HashMap<Label, String>();
+                labelNames = new HashMap<>();
             }
             buf.append("{\n");
             ((ASMifiable) attr).asmify(buf, "attr", labelNames);
@@ -971,8 +964,7 @@ public class ASMifier extends Printer
      * Appends a string representation of the given access modifiers to
      * {@link #buf buf}.
      *
-     * @param access
-     *            some access modifiers.
+     * @param access some access modifiers.
      */
     void appendAccess(final int access)
     {
@@ -1153,8 +1145,7 @@ public class ASMifier extends Printer
      * Appends a string representation of the given constant to the given
      * buffer.
      *
-     * @param cst
-     *            an {@link Integer}, {@link Float}, {@link Long},
+     * @param cst an {@link Integer}, {@link Float}, {@link Long},
      *            {@link Double} or {@link String} object. May be <tt>null</tt>.
      */
     protected void appendConstant(final Object cst)
@@ -1166,10 +1157,8 @@ public class ASMifier extends Printer
      * Appends a string representation of the given constant to the given
      * buffer.
      *
-     * @param buf
-     *            a string buffer.
-     * @param cst
-     *            an {@link Integer}, {@link Float}, {@link Long},
+     * @param buf a string buffer.
+     * @param cst an {@link Integer}, {@link Float}, {@link Long},
      *            {@link Double} or {@link String} object. May be <tt>null</tt>.
      */
     static void appendConstant(final StringBuffer buf, final Object cst)
@@ -1374,14 +1363,13 @@ public class ASMifier extends Printer
      * declaration is of the form "Label lXXX = new Label();". Does nothing if
      * the given label has already been declared.
      *
-     * @param l
-     *            a label.
+     * @param l a label.
      */
     protected void declareLabel(final Label l)
     {
         if (labelNames == null)
         {
-            labelNames = new HashMap<Label, String>();
+            labelNames = new HashMap<>();
         }
         String name = labelNames.get(l);
         if (name == null)
@@ -1397,8 +1385,7 @@ public class ASMifier extends Printer
      * <i>must</i> already have a name. One way to ensure this is to always call
      * {@link #declareLabel declared} before calling this method.
      *
-     * @param l
-     *            a label.
+     * @param l a label.
      */
     protected void appendLabel(final Label l)
     {

@@ -50,7 +50,8 @@ public abstract class AbstractInsnNode
      */
     public static final int INSN = 0;
 
-    /**Jump
+    /**
+     * Jump
      * The type of {@link IntInsnNode} instructions.
      */
     public static final int INT_INSN = 1;
@@ -173,8 +174,7 @@ public abstract class AbstractInsnNode
     /**
      * Constructs a new {@link AbstractInsnNode}.
      *
-     * @param opcode
-     *            the opcode of the instruction to be constructed.
+     * @param opcode the opcode of the instruction to be constructed.
      */
     protected AbstractInsnNode(final int opcode)
     {
@@ -201,7 +201,7 @@ public abstract class AbstractInsnNode
      * Returns the type of this instruction.
      *
      * @return the type of this instruction, i.e. one the constants defined in
-     *         this class.
+     * this class.
      */
     public abstract int type();
 
@@ -210,7 +210,7 @@ public abstract class AbstractInsnNode
      * belongs, if any.
      *
      * @return the previous instruction in the list to which this instruction
-     *         belongs, if any. May be <tt>null</tt>.
+     * belongs, if any. May be <tt>null</tt>.
      */
     public AbstractInsnNode getPrevious()
     {
@@ -222,7 +222,7 @@ public abstract class AbstractInsnNode
      * belongs, if any.
      *
      * @return the next instruction in the list to which this instruction
-     *         belongs, if any. May be <tt>null</tt>.
+     * belongs, if any. May be <tt>null</tt>.
      */
     public AbstractInsnNode getNext()
     {
@@ -232,16 +232,14 @@ public abstract class AbstractInsnNode
     /**
      * Makes the given code visitor visit this instruction.
      *
-     * @param cv
-     *            a code visitor.
+     * @param cv a code visitor.
      */
     public abstract void accept(final MethodVisitor cv);
 
     /**
      * Makes the given visitor visit the annotations of this instruction.
      *
-     * @param mv
-     *            a method visitor.
+     * @param mv a method visitor.
      */
     protected final void acceptAnnotations(final MethodVisitor mv)
     {
@@ -262,20 +260,17 @@ public abstract class AbstractInsnNode
     /**
      * Returns a copy of this instruction.
      *
-     * @param labels
-     *            a map from LabelNodes to cloned LabelNodes.
+     * @param labels a map from LabelNodes to cloned LabelNodes.
      * @return a copy of this instruction. The returned instruction does not
-     *         belong to any {@link InsnList}.
+     * belong to any {@link InsnList}.
      */
     public abstract AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels);
 
     /**
      * Returns the clone of the given label.
      *
-     * @param label
-     *            a label.
-     * @param map
-     *            a map from LabelNodes to cloned LabelNodes.
+     * @param label a label.
+     * @param map   a map from LabelNodes to cloned LabelNodes.
      * @return the clone of the given label.
      */
     static LabelNode clone(final LabelNode label, final Map<LabelNode, LabelNode> map)
@@ -286,10 +281,8 @@ public abstract class AbstractInsnNode
     /**
      * Returns the clones of the given labels.
      *
-     * @param labels
-     *            a list of labels.
-     * @param map
-     *            a map from LabelNodes to cloned LabelNodes.
+     * @param labels a list of labels.
+     * @param map    a map from LabelNodes to cloned LabelNodes.
      * @return the clones of the given labels.
      */
     static LabelNode[] clone(final List<LabelNode> labels, final Map<LabelNode, LabelNode> map)
@@ -305,15 +298,14 @@ public abstract class AbstractInsnNode
     /**
      * Clones the annotations of the given instruction into this instruction.
      *
-     * @param insn
-     *            the source instruction.
+     * @param insn the source instruction.
      * @return this instruction.
      */
     protected final AbstractInsnNode cloneAnnotations(final AbstractInsnNode insn)
     {
         if (insn.visibleTypeAnnotations != null)
         {
-            this.visibleTypeAnnotations = new ArrayList<TypeAnnotationNode>();
+            this.visibleTypeAnnotations = new ArrayList<>();
             for (int i = 0; i < insn.visibleTypeAnnotations.size(); ++i)
             {
                 TypeAnnotationNode src = insn.visibleTypeAnnotations.get(i);
@@ -324,7 +316,7 @@ public abstract class AbstractInsnNode
         }
         if (insn.invisibleTypeAnnotations != null)
         {
-            this.invisibleTypeAnnotations = new ArrayList<TypeAnnotationNode>();
+            this.invisibleTypeAnnotations = new ArrayList<>();
             for (int i = 0; i < insn.invisibleTypeAnnotations.size(); ++i)
             {
                 TypeAnnotationNode src = insn.invisibleTypeAnnotations.get(i);

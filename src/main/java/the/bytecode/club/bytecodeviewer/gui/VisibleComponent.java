@@ -11,7 +11,6 @@ import javax.swing.*;
  *
  * @author Konloch
  * @author WaterWolf
- *
  */
 
 public abstract class VisibleComponent extends JInternalFrame implements FileChangeNotifier

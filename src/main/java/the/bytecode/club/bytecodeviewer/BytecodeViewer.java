@@ -1,22 +1,20 @@
 package the.bytecode.club.bytecodeviewer;
 
-import me.konloch.kontainer.io.HTTPRequest;
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.bytecodeviewer.api.ClassNodeLoader;
 import the.bytecode.club.bytecodeviewer.api.ExceptionUI;
-import the.bytecode.club.bytecodeviewer.gui.*;
+import the.bytecode.club.bytecodeviewer.gui.FileNavigationPane;
+import the.bytecode.club.bytecodeviewer.gui.MainViewerGUI;
+import the.bytecode.club.bytecodeviewer.gui.WorkPane;
 import the.bytecode.club.bytecodeviewer.plugin.PluginManager;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -43,13 +41,13 @@ public class BytecodeViewer
     public static MainViewerGUI viewer = null;
     public static ClassNodeLoader loader = new ClassNodeLoader(); // TODO MAKE SECURE BECAUSE THIS IS INSECURE
     public static SecurityMan sm = new SecurityMan(); // TODO MAKE SECURE BECAUSE THIS IS INSECURE
-    public static ArrayList<FileContainer> files = new ArrayList<FileContainer>(); //all of BCV's loaded files/classes/etc
+    public static ArrayList<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
     private static int maxRecentFiles = 25;
     private static List<String> recentFiles = new ArrayList<>();
     private static List<String> recentPlugins = new ArrayList<>();
     public static boolean runningObfuscation = false;
     public static String lastDirectory = "";
-    public static ArrayList<Process> createdProcesses = new ArrayList<Process>();
+    public static ArrayList<Process> createdProcesses = new ArrayList<>();
     public static boolean deleteForiegnLibraries = true;
 
     /**
@@ -249,7 +247,7 @@ public class BytecodeViewer
      */
     public static ArrayList<ClassNode> getLoadedClasses()
     {
-        ArrayList<ClassNode> a = new ArrayList<ClassNode>();
+        ArrayList<ClassNode> a = new ArrayList<>();
 
         for (FileContainer container : files)
             for (ClassNode c : container.values())
@@ -261,7 +259,7 @@ public class BytecodeViewer
 
     public static ArrayList<ClassNode> loadAllClasses()
     {
-        ArrayList<ClassNode> a = new ArrayList<ClassNode>();
+        ArrayList<ClassNode> a = new ArrayList<>();
         for (FileContainer container : files)
         {
             for (String s : container.files.keySet())
@@ -327,9 +325,9 @@ public class BytecodeViewer
                             if (f.isDirectory())
                             {
                                 FileContainer container = new FileContainer(f);
-                                HashMap<String, byte[]> files = new HashMap<String, byte[]>();
+                                HashMap<String, byte[]> files = new HashMap<>();
                                 boolean finished = false;
-                                ArrayList<File> totalFiles = new ArrayList<File>();
+                                ArrayList<File> totalFiles = new ArrayList<>();
                                 totalFiles.add(f);
                                 String dir = f.getAbsolutePath();//f.getAbsolutePath().substring(0, f.getAbsolutePath().length()-f.getName().length());
 
@@ -408,7 +406,7 @@ public class BytecodeViewer
                                 }
                                 else
                                 {
-                                    HashMap<String, byte[]> files = new HashMap<String, byte[]>();
+                                    HashMap<String, byte[]> files = new HashMap<>();
                                     byte[] bytes = JarUtils.getBytes(new FileInputStream(f));
                                     files.put(f.getName(), bytes);
 
@@ -510,7 +508,7 @@ public class BytecodeViewer
         }
     }
 
-    private static ArrayList<String> killList = new ArrayList<String>();
+    private static ArrayList<String> killList = new ArrayList<>();
 
     /**
      * Add the recent file
@@ -541,7 +539,7 @@ public class BytecodeViewer
         resetRecentFilesMenu();
     }
 
-    private static ArrayList<String> killList2 = new ArrayList<String>();
+    private static ArrayList<String> killList2 = new ArrayList<>();
 
     /**
      * Add to the recent plugin list
@@ -582,14 +580,9 @@ public class BytecodeViewer
             if (!s.isEmpty())
             {
                 JMenuItem m = new JMenuItem(s);
-                m.addActionListener(new ActionListener()
-                {
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        JMenuItem m = (JMenuItem) e.getSource();
-                        openFiles(new File[] { new File(m.getText()) }, true);
-                    }
+                m.addActionListener(e -> {
+                    JMenuItem m1 = (JMenuItem) e.getSource();
+                    openFiles(new File[] { new File(m1.getText()) }, true);
                 });
                 viewer.mnRecentFiles.add(m);
             }
@@ -598,14 +591,9 @@ public class BytecodeViewer
             if (!s.isEmpty())
             {
                 JMenuItem m = new JMenuItem(s);
-                m.addActionListener(new ActionListener()
-                {
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        JMenuItem m = (JMenuItem) e.getSource();
-                        startPlugin(new File(m.getText()));
-                    }
+                m.addActionListener(e -> {
+                    JMenuItem m1 = (JMenuItem) e.getSource();
+                    startPlugin(new File(m1.getText()));
                 });
                 viewer.mnRecentPlugins.add(m);
             }
@@ -625,7 +613,7 @@ public class BytecodeViewer
         }
     }
 
-    public static ArrayList<String> createdRandomizedNames = new ArrayList<String>();
+    public static ArrayList<String> createdRandomizedNames = new ArrayList<>();
 
     /**
      * Ensures it will only return a uniquely generated names, contains a dupe checker to be sure
