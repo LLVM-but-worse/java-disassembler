@@ -188,7 +188,8 @@ public class WorkPane extends VisibleComponent implements ActionListener
     {
         for (Component component : tabs.getComponents())
         {
-            ((ClassViewer) component).reset();
+            if (component instanceof ClassViewer)
+                ((ClassViewer) component).reset();
         }
         tabs.removeAll();
         tabs.updateUI();
