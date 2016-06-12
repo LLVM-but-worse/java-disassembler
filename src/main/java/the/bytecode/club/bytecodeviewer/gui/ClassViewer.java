@@ -115,10 +115,11 @@ public class ClassViewer extends Viewer
 
     JSplitPane sp;
     JSplitPane sp2;
+    // todo: fix this dumb hack
     public List<Decompiler> decompilers = Arrays.asList(null, null, null);
     public List<JPanel> panels = Arrays.asList(new JPanel(new BorderLayout()), new JPanel(new BorderLayout()), new JPanel(new BorderLayout()));
     public List<JPanel> searches = Arrays.asList(new JPanel(new BorderLayout()), new JPanel(new BorderLayout()), new JPanel(new BorderLayout()));
-    public List<JCheckBox> exacts = Arrays.asList(new JCheckBox("Exact"), new JCheckBox("Exact"), new JCheckBox("Exact"));
+    public List<JCheckBox> exacts = Arrays.asList(new JCheckBox("Match case"), new JCheckBox("Match case"), new JCheckBox("Match case"));
     public List<JTextField> fields = Arrays.asList(new JTextField(), new JTextField(), new JTextField());
     public List<RSyntaxTextArea> javas = Arrays.asList(null, null, null);
 
@@ -286,15 +287,16 @@ public class ClassViewer extends Viewer
             searchPanel.add(byteButtonPane, BorderLayout.WEST);
             searchPanel.add(textField, BorderLayout.CENTER);
             searchPanel.add(checkBox, BorderLayout.EAST);
-            byteSearchNext.addActionListener(arg0 -> search(0, textField.getText(), true));
-            byteSearchPrev.addActionListener(arg0 -> search(0, textField.getText(), false));
+            final Integer index = i;
+            byteSearchNext.addActionListener(arg0 -> search(index, textField.getText(), true));
+            byteSearchPrev.addActionListener(arg0 -> search(index, textField.getText(), false));
             textField.addKeyListener(new KeyListener()
             {
                 @Override
                 public void keyReleased(KeyEvent arg0)
                 {
                     if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
-                        search(0, textField.getText(), true);
+                        search(index, textField.getText(), true);
                 }
 
                 @Override

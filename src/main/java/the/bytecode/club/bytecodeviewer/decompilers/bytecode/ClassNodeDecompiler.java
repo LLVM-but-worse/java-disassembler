@@ -47,7 +47,6 @@ public class ClassNodeDecompiler extends Decompiler
                     containerName = container.name;
             }
         }
-        System.out.println(containerName);
 
         return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
     }
