@@ -9,8 +9,6 @@ import the.bytecode.club.bytecodeviewer.decompilers.Decompiler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
  * Updates a pane
@@ -50,29 +48,6 @@ public class PaneUpdaterThread extends Thread
                 panelArea.setText(decompiler.decompileClassNode(viewer.cn, b));
                 panelArea.setCaretPosition(0);
                 panelArea.setEditable(viewer.isPaneEditable(paneId));
-                panelArea.addKeyListener(new KeyListener()
-                {
-                    @Override
-                    public void keyPressed(KeyEvent e)
-                    {
-                        if ((e.getKeyCode() == KeyEvent.VK_F) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
-                        {
-                            viewer.requestFocus(paneId);
-                        }
-
-                        BytecodeViewer.checkHotKey(e);
-                    }
-
-                    @Override
-                    public void keyReleased(KeyEvent arg0)
-                    {
-                    }
-
-                    @Override
-                    public void keyTyped(KeyEvent arg0)
-                    {
-                    }
-                });
                 scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
                 panelArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 

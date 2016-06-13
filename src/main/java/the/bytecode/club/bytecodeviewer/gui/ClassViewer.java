@@ -1,18 +1,16 @@
 package the.bytecode.club.bytecodeviewer.gui;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rtextarea.RTextScrollPane;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.bytecodeviewer.BytecodeViewer;
-import the.bytecode.club.bytecodeviewer.Resources;
 import the.bytecode.club.bytecodeviewer.decompilers.Decompiler;
 
 import javax.swing.*;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,14 +55,13 @@ public class ClassViewer extends Viewer
         return false;
     }
 
-    public void requestFocus(int pane)
-    {
-        this.fields.get(pane).requestFocus();
-    }
-
     public void updatePane(int pane, RSyntaxTextArea text, Decompiler decompiler)
     {
         javas.set(pane, text);
+        SearchPanel search = new SearchPanel(text);
+        searches.set(pane, search);
+        if (decompilers.get(pane) != Decompiler.HEXCODE)
+            panels.get(pane).add(search, BorderLayout.NORTH);
     }
 
     /**
@@ -118,199 +115,11 @@ public class ClassViewer extends Viewer
     // todo: fix this dumb hack
     public List<Decompiler> decompilers = Arrays.asList(null, null, null);
     public List<JPanel> panels = Arrays.asList(new JPanel(new BorderLayout()), new JPanel(new BorderLayout()), new JPanel(new BorderLayout()));
-    public List<JPanel> searches = Arrays.asList(new JPanel(new BorderLayout()), new JPanel(new BorderLayout()), new JPanel(new BorderLayout()));
-    public List<JCheckBox> exacts = Arrays.asList(new JCheckBox("Match case"), new JCheckBox("Match case"), new JCheckBox("Match case"));
-    public List<JTextField> fields = Arrays.asList(new JTextField(), new JTextField(), new JTextField());
     public List<RSyntaxTextArea> javas = Arrays.asList(null, null, null);
-
-    /**
-     * This was really interesting to write.
-     *
-     * @author Konloch
-     */
-    public void search(int pane, String search, boolean next)
-    {
-        try
-        {
-            Component[] com = panels.get(pane).getComponents();
-            for (Component c : com)
-            {
-                if (c instanceof RTextScrollPane)
-                {
-                    RSyntaxTextArea area = (RSyntaxTextArea) ((RTextScrollPane) c).getViewport().getComponent(0);
-
-                    if (search.isEmpty())
-                    {
-                        highlight(pane, area, "");
-                        return;
-                    }
-
-                    int startLine = area.getDocument().getDefaultRootElement().getElementIndex(area.getCaretPosition()) + 1;
-                    int currentLine = 1;
-                    boolean canSearch = false;
-                    String[] test = null;
-                    if (area.getText().split("\n").length >= 2)
-                        test = area.getText().split("\n");
-                    else
-                        test = area.getText().split("\r");
-                    int lastGoodLine = -1;
-                    int firstPos = -1;
-                    boolean found = false;
-
-                    if (next)
-                    {
-                        for (String s : test)
-                        {
-                            if (pane == 0 && !exacts.get(0).isSelected() || pane == 1 && !exacts.get(1).isSelected())
-                            {
-                                s = s.toLowerCase();
-                                search = search.toLowerCase();
-                            }
-
-                            if (currentLine == startLine)
-                            {
-                                canSearch = true;
-                            }
-                            else if (s.contains(search))
-                            {
-                                if (canSearch)
-                                {
-                                    area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(currentLine - 1).getStartOffset());
-                                    canSearch = false;
-                                    found = true;
-                                }
-
-                                if (firstPos == -1)
-                                    firstPos = currentLine;
-                            }
-
-                            currentLine++;
-                        }
-
-                        if (!found && firstPos != -1)
-                        {
-                            area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(firstPos - 1).getStartOffset());
-                        }
-                    }
-                    else
-                    {
-                        canSearch = true;
-                        for (String s : test)
-                        {
-                            if (pane == 0 && !exacts.get(0).isSelected() || pane == 1 && !exacts.get(1).isSelected() || pane == 2 && !exacts.get(2).isSelected())
-                            {
-                                s = s.toLowerCase();
-                                search = search.toLowerCase();
-                            }
-
-                            if (s.contains(search))
-                            {
-                                if (lastGoodLine != -1 && canSearch)
-                                    area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(lastGoodLine - 1).getStartOffset());
-
-                                lastGoodLine = currentLine;
-
-                                if (currentLine >= startLine)
-                                    canSearch = false;
-                            }
-                            currentLine++;
-                        }
-
-                        if (lastGoodLine != -1 && area.getDocument().getDefaultRootElement().getElementIndex(area.getCaretPosition()) + 1 == startLine)
-                        {
-                            area.setCaretPosition(area.getDocument().getDefaultRootElement().getElement(lastGoodLine - 1).getStartOffset());
-                        }
-                    }
-                    highlight(pane, area, search);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-        }
-    }
-
-    private DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(new Color(255, 62, 150));
-
-    public void highlight(int pane, JTextComponent textComp, String pattern)
-    {
-        if (pattern.isEmpty())
-        {
-            textComp.getHighlighter().removeAllHighlights();
-            return;
-        }
-
-        try
-        {
-            Highlighter hilite = textComp.getHighlighter();
-            hilite.removeAllHighlights();
-            javax.swing.text.Document doc = textComp.getDocument();
-            String text = doc.getText(0, doc.getLength());
-            int pos = 0;
-
-            if ((pane == 0 && !exacts.get(0).isSelected()) || pane == 1 && !exacts.get(1).isSelected() || pane == 2 && !exacts.get(2).isSelected())
-            {
-                pattern = pattern.toLowerCase();
-                text = text.toLowerCase();
-            }
-
-            // Search for pattern
-            while ((pos = text.indexOf(pattern, pos)) >= 0)
-            {
-                // Create highlighter using private painter and apply around
-                // pattern
-                hilite.addHighlight(pos, pos + pattern.length(), painter);
-                pos += pattern.length();
-            }
-        }
-        catch (Exception e)
-        {
-            new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
-        }
-    }
+    public List<SearchPanel> searches = Arrays.asList(null, null, null);
 
     public ClassViewer(final String name, final String container, final ClassNode cn)
     {
-        for (int i = 0; i < panels.size(); i++)
-        {
-            final JTextField textField = fields.get(i);
-            JPanel searchPanel = searches.get(i);
-            JCheckBox checkBox = exacts.get(i);
-            JButton byteSearchNext = new JButton();
-            JButton byteSearchPrev = new JButton();
-            JPanel byteButtonPane = new JPanel(new BorderLayout());
-            byteButtonPane.add(byteSearchNext, BorderLayout.WEST);
-            byteButtonPane.add(byteSearchPrev, BorderLayout.EAST);
-            byteSearchNext.setIcon(Resources.nextIcon);
-            byteSearchPrev.setIcon(Resources.prevIcon);
-            searchPanel.add(byteButtonPane, BorderLayout.WEST);
-            searchPanel.add(textField, BorderLayout.CENTER);
-            searchPanel.add(checkBox, BorderLayout.EAST);
-            final Integer index = i;
-            byteSearchNext.addActionListener(arg0 -> search(index, textField.getText(), true));
-            byteSearchPrev.addActionListener(arg0 -> search(index, textField.getText(), false));
-            textField.addKeyListener(new KeyListener()
-            {
-                @Override
-                public void keyReleased(KeyEvent arg0)
-                {
-                    if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
-                        search(index, textField.getText(), true);
-                }
-
-                @Override
-                public void keyPressed(KeyEvent arg0)
-                {
-                }
-
-                @Override
-                public void keyTyped(KeyEvent arg0)
-                {
-                }
-            });
-        }
-
         this.name = name;
         this.container = container;
         this.cn = cn;
@@ -389,10 +198,6 @@ public class ClassViewer extends Viewer
         {
             if (decompilers.get(i) != null)
             {
-                if (decompilers.get(i) != Decompiler.HEXCODE)
-                {
-                    panels.get(i).add(searches.get(i), BorderLayout.NORTH);
-                }
                 PaneUpdaterThread t = new PaneUpdaterThread(this, decompilers.get(i), i, panels.get(i), button);
                 decompileThreads.add(t);
                 t.start();
