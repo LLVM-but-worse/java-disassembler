@@ -373,8 +373,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         // scrollPane.setViewportView(tree);
         cn.setMinimumSize(new Dimension(200, 50));
-        // panel.add(cn);
-        // panel.add(sp1);
+        // searchPanel.add(cn);
+        // searchPanel.add(sp1);
         cn.setPreferredSize(new Dimension(200, 50));
         cn.setMaximumSize(new Dimension(200, 2147483647));
         sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, cn, workPane);

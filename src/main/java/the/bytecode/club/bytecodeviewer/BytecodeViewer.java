@@ -26,7 +26,7 @@ public class BytecodeViewer
 {
 
     /*per version*/
-    public static final String version = "0.0.0";
+    public static final String version = "0.0.1";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
