@@ -52,11 +52,9 @@ public class Resources
         }
 
         iconList = new ArrayList<>();
-        int size = 16;
-        for (int i = 0; i < 24; i++)
+        for (int size : new int[] { 8, 16, 24, 32, 48, 64, 96, 128, 192, 256 })
         {
             iconList.add(resize(icon, size, size));
-            size += 2;
         }
     }
 

@@ -41,6 +41,7 @@ public class AboutWindow extends JFrame
         {
             String text = IOUtils.toString(Resources.class.getResourceAsStream("/about.html"), "UTF-8");
             text = text.replace("$JDA_VERSION$", JDA.version + (JDA.previewCopy ? " (preview)" : ""));
+            text = text.replace("$JDA_ICON$", Resources.class.getClass().getResource("/icon.png").toString());
             editorPane.setText(text);
         }
         catch (IOException e)
