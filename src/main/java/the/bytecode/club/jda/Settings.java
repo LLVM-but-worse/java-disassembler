@@ -44,7 +44,7 @@ public class Settings
                     rootSettings.add(setting.getKey(), setting.getValue().get());
                 }
             }
-            FileOutputStream out = new FileOutputStream(BytecodeViewer.settingsFile);
+            FileOutputStream out = new FileOutputStream(JDA.settingsFile);
             out.write(settings.toString().getBytes("UTF-8"));
             out.close();
         }
@@ -61,7 +61,7 @@ public class Settings
             JsonObject settings = new JsonObject();
             try
             {
-                settings = JsonObject.readFrom(new FileReader(BytecodeViewer.settingsFile));
+                settings = JsonObject.readFrom(new FileReader(JDA.settingsFile));
             }
             catch (ParseException | UnsupportedOperationException e)
             {

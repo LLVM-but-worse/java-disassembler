@@ -19,8 +19,8 @@ import org.benf.cfr.reader.util.getopt.OptionsImpl;
 import org.benf.cfr.reader.util.output.*;
 import org.objectweb.asm.tree.ClassNode;
 import org.zeroturnaround.zip.ZipUtil;
-import the.bytecode.club.jda.BytecodeViewer;
 import the.bytecode.club.jda.DecompilerSettings;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 
 import java.io.File;
@@ -83,7 +83,7 @@ public class CFRDecompiler extends Decompiler
             File output = new File(zipName);
             try
             {
-                JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), tempJar.toAbsolutePath().toString());
+                JarUtils.saveAsJar(JDA.getLoadedBytes(), tempJar.toAbsolutePath().toString());
                 Options options = new GetOptParser().parse(generateMainMethod(), OptionsImpl.getFactory());
                 ClassFileSourceImpl classFileSource = new ClassFileSourceImpl(options);
                 DCCommonState dcCommonState = new DCCommonState(options, classFileSource);

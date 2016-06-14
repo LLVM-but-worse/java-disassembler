@@ -22,9 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BytecodeViewer
+public class JDA
 {
-
     /*per version*/
     public static final String version = "0.0.1";
     public static final boolean previewCopy = false;
@@ -92,11 +91,11 @@ public class BytecodeViewer
                 Settings.loadGUI();
                 viewer = new MainViewerGUI();
                 Boot.boot();
-                BytecodeViewer.BOOT(args, false);
+                JDA.BOOT(args, false);
             }
             else
             {
-                BytecodeViewer.BOOT(args, true);
+                JDA.BOOT(args, true);
                 input.executeCommandLine();
             }
         }
@@ -300,9 +299,9 @@ public class BytecodeViewer
         if (recentFiles)
             for (File f : files)
                 if (f.exists())
-                    BytecodeViewer.addRecentFile(f);
+                    JDA.addRecentFile(f);
 
-        BytecodeViewer.viewer.setIcon(true);
+        JDA.viewer.setIcon(true);
         update = true;
 
         Thread t = new Thread()
@@ -360,7 +359,7 @@ public class BytecodeViewer
                                     }
                                 }
                                 container.files = files;
-                                BytecodeViewer.files.add(container);
+                                JDA.files.add(container);
                             }
                             else
                             {
@@ -390,7 +389,7 @@ public class BytecodeViewer
                                             FileContainer container = new FileContainer(f);
                                             container.files.put(cn.name + ".class", bytes);
                                             container.add(cn);
-                                            BytecodeViewer.files.add(container);
+                                            JDA.files.add(container);
                                         }
                                         else
                                         {
@@ -413,7 +412,7 @@ public class BytecodeViewer
 
                                     FileContainer container = new FileContainer(f);
                                     container.files = files;
-                                    BytecodeViewer.files.add(container);
+                                    JDA.files.add(container);
                                 }
                             }
                         }
@@ -425,7 +424,7 @@ public class BytecodeViewer
                 }
                 finally
                 {
-                    BytecodeViewer.viewer.setIcon(false);
+                    JDA.viewer.setIcon(false);
                     if (update)
                         try
                         {
@@ -701,7 +700,7 @@ public class BytecodeViewer
             JFileChooser fc = new JFileChooser();
             try
             {
-                fc.setSelectedFile(new File(BytecodeViewer.lastDirectory));
+                fc.setSelectedFile(new File(JDA.lastDirectory));
             }
             catch (Exception e2)
             {
@@ -731,16 +730,16 @@ public class BytecodeViewer
             });
             fc.setFileHidingEnabled(false);
             fc.setAcceptAllFileFilterUsed(false);
-            int returnVal = fc.showOpenDialog(BytecodeViewer.viewer);
+            int returnVal = fc.showOpenDialog(JDA.viewer);
 
             if (returnVal == JFileChooser.APPROVE_OPTION)
             {
-                BytecodeViewer.lastDirectory = fc.getSelectedFile().getAbsolutePath();
+                JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
                 try
                 {
-                    BytecodeViewer.viewer.setIcon(true);
-                    BytecodeViewer.openFiles(new File[] { fc.getSelectedFile() }, true);
-                    BytecodeViewer.viewer.setIcon(false);
+                    JDA.viewer.setIcon(true);
+                    JDA.openFiles(new File[] { fc.getSelectedFile() }, true);
+                    JDA.viewer.setIcon(false);
                 }
                 catch (Exception e1)
                 {
@@ -751,7 +750,7 @@ public class BytecodeViewer
         else if ((e.getKeyCode() == KeyEvent.VK_N) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
             last = System.currentTimeMillis();
-            BytecodeViewer.resetWorkSpace(true);
+            JDA.resetWorkSpace(true);
         }
         else if ((e.getKeyCode() == KeyEvent.VK_R) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
@@ -762,9 +761,9 @@ public class BytecodeViewer
         {
             last = System.currentTimeMillis();
 
-            if (BytecodeViewer.getLoadedClasses().isEmpty())
+            if (JDA.getLoadedClasses().isEmpty())
             {
-                BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+                JDA.showMessage("First open a class, jar, or zip file.");
                 return;
             }
 
@@ -801,7 +800,7 @@ public class BytecodeViewer
                             JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                             Object[] options = new String[] { "Yes", "No" };
                             pane.setOptions(options);
-                            JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
+                            JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
                             dialog.setVisible(true);
                             Object obj = pane.getValue();
                             int result = -1;
@@ -821,14 +820,14 @@ public class BytecodeViewer
 
                         final File file2 = file;
 
-                        BytecodeViewer.viewer.setIcon(true);
+                        JDA.viewer.setIcon(true);
                         Thread t = new Thread()
                         {
                             @Override
                             public void run()
                             {
-                                JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), file2.getAbsolutePath());
-                                BytecodeViewer.viewer.setIcon(false);
+                                JarUtils.saveAsJar(JDA.getLoadedBytes(), file2.getAbsolutePath());
+                                JDA.viewer.setIcon(false);
                             }
                         };
                         t.start();

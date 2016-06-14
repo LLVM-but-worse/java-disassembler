@@ -34,7 +34,7 @@ public class CommandLineInput
     static
     {
         options.addOption(new Option("help", null, false, "prints the help menu."));
-        options.addOption(new Option("list", null, false, "lists all the available decompilers for JDA " + BytecodeViewer.version + "."));
+        options.addOption(new Option("list", null, false, "lists all the available decompilers for JDA " + JDA.version + "."));
         options.addOption(new Option("decompiler", null, true, "sets the decompiler, procyon by default."));
         options.addOption(new Option("i", null, true, "sets the input."));
         options.addOption(new Option("o", null, true, "sets the output."));
@@ -166,8 +166,8 @@ public class CommandLineInput
             }
 
             System.out.println("Decompiling " + input.getAbsolutePath() + " with " + use.getName());
-            BytecodeViewer.openFiles(new File[] { input }, false);
-            String containerName = BytecodeViewer.files.get(0).name;
+            JDA.openFiles(new File[] { input }, false);
+            String containerName = JDA.files.get(0).name;
             Thread.sleep(5 * 1000);
             if (target.equalsIgnoreCase("all"))
             {
@@ -177,8 +177,8 @@ public class CommandLineInput
             {
                 try
                 {
-                    ClassNode cn = BytecodeViewer.getClassNode(containerName, target);
-                    byte[] bytes = BytecodeViewer.getClassBytes(containerName, target);
+                    ClassNode cn = JDA.getClassNode(containerName, target);
+                    byte[] bytes = JDA.getClassBytes(containerName, target);
                     String contents = use.decompileClassNode(cn, bytes);
                     FileUtils.writeStringToFile(output, contents, "UTF-8");
                 }
@@ -188,7 +188,7 @@ public class CommandLineInput
                 }
             }
             System.out.println("Finished.");
-            System.out.println("Java DisAssembler CLI v" + BytecodeViewer.version);
+            System.out.println("Java DisAssembler CLI v" + JDA.version);
             System.exit(0);
         }
         catch (Exception e)

@@ -68,7 +68,7 @@ public class JarUtils
         }
         jis.close();
         container.files = files;
-        BytecodeViewer.files.add(container);
+        JDA.files.add(container);
 
     }
 
@@ -239,7 +239,7 @@ public class JarUtils
             out.write((manifest.trim() + "\r\n\r\n").getBytes());
             out.closeEntry();
 
-            for (FileContainer container : BytecodeViewer.files)
+            for (FileContainer container : JDA.files)
                 for (Entry<String, byte[]> entry : container.files.entrySet())
                 {
                     String filename = entry.getKey();
@@ -341,7 +341,7 @@ public class JarUtils
                 }
             }
 
-            for (FileContainer container : BytecodeViewer.files)
+            for (FileContainer container : JDA.files)
                 for (Entry<String, byte[]> entry : container.files.entrySet())
                 {
                     String filename = entry.getKey();

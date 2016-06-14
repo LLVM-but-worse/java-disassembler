@@ -3,8 +3,8 @@ package the.bytecode.club.jda.decompilers;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.BytecodeViewer;
 import the.bytecode.club.jda.DecompilerSettings;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
 
@@ -79,11 +79,11 @@ public abstract class Decompiler
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         e.printStackTrace();
-        String exception = "Java DisAssembler Version: " + BytecodeViewer.version + BytecodeViewer.nl + BytecodeViewer.nl + sw.toString();
-        return getName() + " encountered a problem! Send the stacktrace to https://github.com/ecx86/jda/issues" + BytecodeViewer.nl +
-                BytecodeViewer.nl +
-                "Suggested Fix: Click refresh class, if it fails again try another decompiler." + BytecodeViewer.nl +
-                BytecodeViewer.nl +
+        String exception = "Java DisAssembler Version: " + JDA.version + JDA.nl + JDA.nl + sw.toString();
+        return getName() + " encountered a problem! Send the stacktrace to https://github.com/ecx86/jda/issues" + JDA.nl +
+                JDA.nl +
+                "Suggested Fix: Click refresh class, if it fails again try another decompiler." + JDA.nl +
+                JDA.nl +
                 exception;
     }
 

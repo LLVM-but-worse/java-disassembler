@@ -6,8 +6,8 @@ import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.BytecodeViewer;
 import the.bytecode.club.jda.DecompilerSettings;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 
 import java.io.File;
@@ -137,7 +137,7 @@ public class FernFlowerDecompiler extends Decompiler
             Path outputDir = Files.createTempDirectory("fernflower_output");
             Path tempJar = Files.createTempFile("fernflower_input", ".jar");
             File output = new File(zipName);
-            JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), tempJar.toAbsolutePath().toString());
+            JarUtils.saveAsJar(JDA.getLoadedBytes(), tempJar.toAbsolutePath().toString());
             ConsoleDecompiler decompiler = new ConsoleDecompiler(outputDir.toFile(), main(generateMainMethod()));
             decompiler.addSpace(tempJar.toFile(), true);
             decompiler.decompileContext();

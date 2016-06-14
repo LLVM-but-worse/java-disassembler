@@ -1,7 +1,7 @@
 package the.bytecode.club.jda.api;
 
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 
 import java.util.ArrayList;
 
@@ -17,15 +17,15 @@ public abstract class Plugin extends Thread
     @Override
     public void run()
     {
-        BytecodeViewer.viewer.setIcon(true);
+        JDA.viewer.setIcon(true);
         try
         {
-            if (BytecodeViewer.getLoadedBytes().isEmpty())
+            if (JDA.getLoadedBytes().isEmpty())
             {
-                BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+                JDA.showMessage("First open a class, jar, or zip file.");
                 return;
             }
-            execute(BytecodeViewer.loadAllClasses());
+            execute(JDA.loadAllClasses());
         }
         catch (Exception e)
         {
@@ -34,7 +34,7 @@ public abstract class Plugin extends Thread
         finally
         {
             finished = true;
-            BytecodeViewer.viewer.setIcon(false);
+            JDA.viewer.setIcon(false);
         }
     }
 

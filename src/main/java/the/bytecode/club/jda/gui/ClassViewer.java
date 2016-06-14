@@ -2,7 +2,7 @@ package the.bytecode.club.jda.gui;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
 
 import javax.swing.*;
@@ -30,10 +30,10 @@ public class ClassViewer extends Viewer
 
     public void setPanes()
     {
-        for (int i = 0; i < BytecodeViewer.viewer.allPanes.size(); i++)
+        for (int i = 0; i < JDA.viewer.allPanes.size(); i++)
         {
-            ButtonGroup group = BytecodeViewer.viewer.allPanes.get(i);
-            for (Map.Entry<JRadioButtonMenuItem, Decompiler> entry : BytecodeViewer.viewer.allDecompilers.get(group).entrySet())
+            ButtonGroup group = JDA.viewer.allPanes.get(i);
+            for (Map.Entry<JRadioButtonMenuItem, Decompiler> entry : JDA.viewer.allDecompilers.get(group).entrySet())
             {
                 if (group.isSelected(entry.getKey().getModel()))
                 {
@@ -46,9 +46,9 @@ public class ClassViewer extends Viewer
     public boolean isPaneEditable(int pane)
     {
         setPanes();
-        ButtonGroup buttonGroup = BytecodeViewer.viewer.allPanes.get(pane);
+        ButtonGroup buttonGroup = JDA.viewer.allPanes.get(pane);
         Decompiler selected = decompilers.get(pane);
-        if (buttonGroup != null && BytecodeViewer.viewer.editButtons.get(buttonGroup) != null && BytecodeViewer.viewer.editButtons.get(buttonGroup).get(selected) != null && BytecodeViewer.viewer.editButtons.get(buttonGroup).get(selected).isSelected())
+        if (buttonGroup != null && JDA.viewer.editButtons.get(buttonGroup) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected).isSelected())
         {
             return true;
         }
@@ -130,7 +130,7 @@ public class ClassViewer extends Viewer
         this.sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sp, panels.get(2));
         this.add(sp2, BorderLayout.CENTER);
 
-        BytecodeViewer.viewer.setIcon(true);
+        JDA.viewer.setIcon(true);
         startPaneUpdater(null);
         this.addComponentListener(new ComponentAdapter()
         {
@@ -174,7 +174,7 @@ public class ClassViewer extends Viewer
 
     public void startPaneUpdater(final JButton button)
     {
-        this.cn = BytecodeViewer.getClassNode(container, cn.name); //update the classnode
+        this.cn = JDA.getClassNode(container, cn.name); //update the classnode
         setPanes();
 
         for (JPanel jpanel : panels)
