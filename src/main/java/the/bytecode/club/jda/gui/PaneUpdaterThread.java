@@ -3,7 +3,7 @@ package the.bytecode.club.jda.gui;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.decompilers.Decompiler;
 
@@ -37,7 +37,7 @@ public class PaneUpdaterThread extends Thread
     {
         try
         {
-            final byte[] b = BytecodeViewer.getClassBytes(viewer.container, viewer.cn.name + ".class");
+            final byte[] b = JDA.getClassBytes(viewer.container, viewer.cn.name + ".class");
             if (decompiler != Decompiler.HEXCODE)
             {
                 RSyntaxTextArea panelArea = new RSyntaxTextArea();
@@ -49,7 +49,7 @@ public class PaneUpdaterThread extends Thread
                 panelArea.setCaretPosition(0);
                 panelArea.setEditable(viewer.isPaneEditable(paneId));
                 scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
-                panelArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                panelArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) JDA.viewer.fontSpinner.getValue()));
 
                 SwingUtilities.invokeLater(() -> target.add(scrollPane));
                 viewer.updatePane(paneId, panelArea, decompiler);
@@ -66,7 +66,7 @@ public class PaneUpdaterThread extends Thread
         finally
         {
             viewer.resetDivider();
-            BytecodeViewer.viewer.setIcon(false);
+            JDA.viewer.setIcon(false);
             if (button != null)
                 button.setEnabled(true);
         }

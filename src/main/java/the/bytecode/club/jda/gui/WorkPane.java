@@ -1,8 +1,8 @@
 package the.bytecode.club.jda.gui;
 
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.BytecodeViewer;
 import the.bytecode.club.jda.FileChangeNotifier;
+import the.bytecode.club.jda.JDA;
 
 import javax.swing.*;
 import java.awt.*;
@@ -166,16 +166,16 @@ public class WorkPane extends VisibleComponent implements ActionListener
                         if (tabComp instanceof ClassViewer)
                         {
                             src.setEnabled(false);
-                            BytecodeViewer.viewer.setIcon(true);
+                            JDA.viewer.setIcon(true);
                             ((ClassViewer) tabComp).startPaneUpdater(src);
-                            BytecodeViewer.viewer.setIcon(false);
+                            JDA.viewer.setIcon(false);
                         }
                         else if (tabComp instanceof FileViewer)
                         {
                             src.setEnabled(false);
-                            BytecodeViewer.viewer.setIcon(true);
+                            JDA.viewer.setIcon(true);
                             ((FileViewer) tabComp).refresh(src);
-                            BytecodeViewer.viewer.setIcon(false);
+                            JDA.viewer.setIcon(false);
                         }
                     }
                 }

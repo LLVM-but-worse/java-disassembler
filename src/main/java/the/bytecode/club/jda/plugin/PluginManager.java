@@ -1,6 +1,6 @@
 package the.bytecode.club.jda.plugin;
 
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.MiscUtils;
 import the.bytecode.club.jda.api.Plugin;
 import the.bytecode.club.jda.plugin.strategies.CompiledJavaPluginLaunchStrategy;
@@ -61,7 +61,7 @@ public final class PluginManager
         }
         else if (!pluginInstance.isFinished())
         {
-            BytecodeViewer.showMessage("There is currently another plugin running right now, please wait for that to finish executing.");
+            JDA.showMessage("There is currently another plugin running right now, please wait for that to finish executing.");
         }
     }
 

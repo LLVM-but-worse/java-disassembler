@@ -1,6 +1,6 @@
 package the.bytecode.club.jda.gui;
 
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.Resources;
 
 import javax.swing.*;
@@ -66,7 +66,7 @@ public class SystemErrConsole extends JFrame
                 String start = split[0] + "'" + split[1] + "', ";
                 s = s.substring(start.length(), s.length());
             }
-            replace += s + BytecodeViewer.nl;
+            replace += s + JDA.nl;
         }
         setText(replace);
     }

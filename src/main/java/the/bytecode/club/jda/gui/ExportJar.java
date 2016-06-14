@@ -1,6 +1,6 @@
 package the.bytecode.club.jda.gui;
 
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 
 import javax.swing.*;
@@ -38,14 +38,14 @@ public class ExportJar extends JFrame
         getContentPane().add(btnNewButton);
 
         btnNewButton.addActionListener(arg0 -> {
-            BytecodeViewer.viewer.setIcon(true);
+            JDA.viewer.setIcon(true);
             Thread t = new Thread()
             {
                 @Override
                 public void run()
                 {
-                    JarUtils.saveAsJar(BytecodeViewer.getLoadedClasses(), jarPath, mani.getText());
-                    BytecodeViewer.viewer.setIcon(false);
+                    JarUtils.saveAsJar(JDA.getLoadedClasses(), jarPath, mani.getText());
+                    JDA.viewer.setIcon(false);
                 }
             };
             t.start();

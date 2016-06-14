@@ -3,7 +3,7 @@ package the.bytecode.club.jda.decompilers.bytecode;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
 
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ public class MethodNodeDecompiler
             sb.append(" {}");
             sb.append(" //");
             sb.append(m.desc);
-            sb.append(BytecodeViewer.nl);
+            sb.append(JDA.nl);
         }
         else
         {
@@ -113,7 +113,7 @@ public class MethodNodeDecompiler
             sb.append(" //");
             sb.append(m.desc);
 
-            sb.append(BytecodeViewer.nl);
+            sb.append(JDA.nl);
 
             if (m.signature != null)
             {
@@ -152,15 +152,15 @@ public class MethodNodeDecompiler
                     sb.append(tcbn.type);
                 else
                     sb.append("Type is null.");
-                sb.append(BytecodeViewer.nl);
+                sb.append(JDA.nl);
             }
             for (String insn : insnPrinter.createPrint())
             {
                 sb.append("         ");
                 sb.append(insn);
-                sb.append(BytecodeViewer.nl);
+                sb.append(JDA.nl);
             }
-            sb.append("     }" + BytecodeViewer.nl);
+            sb.append("     }" + JDA.nl);
         }
         return sb;
     }

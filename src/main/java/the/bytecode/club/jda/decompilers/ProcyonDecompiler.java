@@ -10,7 +10,7 @@ import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import com.strobel.decompiler.languages.Languages;
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 
 import java.io.*;
@@ -97,7 +97,7 @@ public class ProcyonDecompiler extends Decompiler
                 b = fixBytes(b);
             }
             final byte[] bytesToUse = b;
-            final Map<String, byte[]> loadedClasses = BytecodeViewer.getLoadedBytes();
+            final Map<String, byte[]> loadedClasses = JDA.getLoadedBytes();
             DecompilerSettings settings = getDecompilerSettings();
             MetadataSystem metadataSystem = new MetadataSystem(new ITypeLoader()
             {
@@ -151,11 +151,11 @@ public class ProcyonDecompiler extends Decompiler
     @Override
     public void decompileToZip(String zipName)
     {
-        File tempZip = new File(BytecodeViewer.tempDir, "temp.jar");
+        File tempZip = new File(JDA.tempDir, "temp.jar");
         if (tempZip.exists())
             tempZip.delete();
 
-        JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), tempZip.getAbsolutePath());
+        JarUtils.saveAsJar(JDA.getLoadedBytes(), tempZip.getAbsolutePath());
 
         try
         {

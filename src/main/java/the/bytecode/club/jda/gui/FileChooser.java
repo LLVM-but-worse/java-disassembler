@@ -1,6 +1,6 @@
 package the.bytecode.club.jda.gui;
 
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.Setting;
 import the.bytecode.club.jda.api.ExceptionUI;
 
@@ -49,7 +49,7 @@ public class FileChooser
         fc.setFileHidingEnabled(false);
         fc.setAcceptAllFileFilterUsed(false);
 
-        int returnVal = fc.showOpenDialog(BytecodeViewer.viewer);
+        int returnVal = fc.showOpenDialog(JDA.viewer);
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
             try

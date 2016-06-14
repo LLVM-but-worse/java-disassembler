@@ -2,7 +2,7 @@ package the.bytecode.club.jda.plugin.preinstalled;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.Plugin;
 import the.bytecode.club.jda.api.PluginConsole;
 
@@ -51,7 +51,7 @@ public class MaliciousCodeScanner extends Plugin
                 {
                     String s = (String) v;
                     if ((LWW && s.contains("www.")) || (LHT && s.contains("http://")) || (LHS && s.contains("https://")) || (ORE && s.contains("java/lang/Runtime")) || (ORE && s.contains("java.lang.Runtime")) || (ROB && s.contains("java.awt.Robot")) || (ROB && s.contains("java/awt/Robot")) || (LIP && s.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")))
-                        sb.append("Found LDC \"").append(s).append("\" at field ").append(classNode.name).append(".").append(f.name).append("(").append(f.desc).append(")").append(BytecodeViewer.nl);
+                        sb.append("Found LDC \"").append(s).append("\" at field ").append(classNode.name).append(".").append(f.name).append("(").append(f.desc).append(")").append(JDA.nl);
                 }
                 if (v instanceof String[])
                 {
@@ -59,7 +59,7 @@ public class MaliciousCodeScanner extends Plugin
                     {
                         String s = ((String[]) v)[i];
                         if ((LWW && s.contains("www.")) || (LHT && s.contains("http://")) || (LHS && s.contains("https://")) || (ORE && s.contains("java/lang/Runtime")) || (ORE && s.contains("java.lang.Runtime")) || (ROB && s.contains("java.awt.Robot")) || (ROB && s.contains("java/awt/Robot")) || (LIP && s.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")))
-                            sb.append("Found LDC \"").append(s).append("\" at field ").append(classNode.name).append(".").append(f.name).append("(").append(f.desc).append(")").append(BytecodeViewer.nl);
+                            sb.append("Found LDC \"").append(s).append("\" at field ").append(classNode.name).append(".").append(f.name).append("(").append(f.desc).append(")").append(JDA.nl);
                     }
                 }
             }
@@ -78,7 +78,7 @@ public class MaliciousCodeScanner extends Plugin
                         final MethodInsnNode min = (MethodInsnNode) a;
                         if ((ORE && min.owner.startsWith("java/lang/reflect")) || (ONE && min.owner.startsWith("java/net")) || (ORU && min.owner.equals("java/lang/Runtime")) || (ROB && min.owner.equals("java/awt/Robot")) || (OIO && min.owner.startsWith("java/io")))
                         {
-                            sb.append("Found Method call to ").append(min.owner).append(".").append(min.name).append("(").append(min.desc).append(") at ").append(classNode.name).append(".").append(m.name).append("(").append(m.desc).append(")").append(BytecodeViewer.nl);
+                            sb.append("Found Method call to ").append(min.owner).append(".").append(min.name).append("(").append(min.desc).append(") at ").append(classNode.name).append(".").append(m.name).append("(").append(m.desc).append(")").append(JDA.nl);
                         }
                     }
                     if (a instanceof LdcInsnNode)
@@ -88,7 +88,7 @@ public class MaliciousCodeScanner extends Plugin
                             final String s = (String) ((LdcInsnNode) a).cst;
                             if ((LWW && s.contains("www.")) || (LHT && s.contains("http://")) || (LHS && s.contains("https://")) || (ORE && s.contains("java/lang/Runtime")) || (ORE && s.contains("java.lang.Runtime")) || (ROB && s.contains("java.awt.Robot")) || (ROB && s.contains("java/awt/Robot")) || (LIP && s.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")))
                             {
-                                sb.append("Found LDC \"").append(s).append("\" at method ").append(classNode.name).append(".").append(m.name).append("(").append(m.desc).append(")").append(BytecodeViewer.nl);
+                                sb.append("Found LDC \"").append(s).append("\" at method ").append(classNode.name).append(".").append(m.name).append("(").append(m.desc).append(")").append(JDA.nl);
                             }
                         }
                     }
@@ -104,7 +104,7 @@ public class MaliciousCodeScanner extends Plugin
                         final String name = ((MethodInsnNode) a).name;
                         if ((NSM && prevInsn_aconst_null && owner.equals("java/lang/System") && name.equals("setSecurityManager")))
                         {
-                            sb.append("Found Security Manager set to null at method ").append(classNode.name).append(".").append(m.name).append("(").append(m.desc).append(")").append(BytecodeViewer.nl);
+                            sb.append("Found Security Manager set to null at method ").append(classNode.name).append(".").append(m.name).append("(").append(m.desc).append(")").append(JDA.nl);
                             prevInsn_aconst_null = false;
                         }
                     }

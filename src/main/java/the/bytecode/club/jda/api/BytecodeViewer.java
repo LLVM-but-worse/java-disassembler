@@ -1,6 +1,7 @@
 package the.bytecode.club.jda.api;
 
 import org.objectweb.asm.tree.ClassNode;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 import the.bytecode.club.jda.decompilers.Decompiler;
 
@@ -33,7 +34,7 @@ public class BytecodeViewer
      */
     public static ClassNodeLoader getClassNodeLoader()
     {
-        return the.bytecode.club.jda.BytecodeViewer.loader;
+        return JDA.loader;
     }
 
     /**
@@ -59,7 +60,7 @@ public class BytecodeViewer
     @SuppressWarnings("deprecation")
     public static List<Class<?>> loadClassesIntoClassLoader(ArrayList<ClassNode> nodeList) throws IOException, ClassNotFoundException
     {
-        File f = new File(the.bytecode.club.jda.BytecodeViewer.tempDir, "loaded_temp.jar");
+        File f = new File(JDA.tempDir, "loaded_temp.jar");
         JarUtils.saveAsJarClassesOnly(nodeList, f.getAbsolutePath());
 
         JarFile jarFile = new JarFile("" + f.getAbsolutePath());
@@ -102,8 +103,8 @@ public class BytecodeViewer
      */
     public static void createNewClassNodeLoaderInstance()
     {
-        the.bytecode.club.jda.BytecodeViewer.loader.clear();
-        the.bytecode.club.jda.BytecodeViewer.loader = new ClassNodeLoader();
+        JDA.loader.clear();
+        JDA.loader = new ClassNodeLoader();
     }
 
     /**
@@ -113,7 +114,7 @@ public class BytecodeViewer
      */
     public static void startPlugin(File plugin)
     {
-        the.bytecode.club.jda.BytecodeViewer.startPlugin(plugin);
+        JDA.startPlugin(plugin);
     }
 
     /**
@@ -124,7 +125,7 @@ public class BytecodeViewer
      */
     public static void openFiles(File[] files, boolean recentFiles)
     {
-        the.bytecode.club.jda.BytecodeViewer.openFiles(files, recentFiles);
+        JDA.openFiles(files, recentFiles);
     }
 
     /**
@@ -134,7 +135,7 @@ public class BytecodeViewer
      */
     public static ClassNode getCurrentlyOpenedClassNode()
     {
-        return the.bytecode.club.jda.BytecodeViewer.getCurrentlyOpenedClassNode();
+        return JDA.getCurrentlyOpenedClassNode();
     }
 
     /**
@@ -145,7 +146,7 @@ public class BytecodeViewer
      */
     public static ClassNode getClassNode(String containerName, String name)
     {
-        return the.bytecode.club.jda.BytecodeViewer.getClassNode(containerName, name);
+        return JDA.getClassNode(containerName, name);
     }
 
     /**
@@ -155,7 +156,7 @@ public class BytecodeViewer
      */
     public static ArrayList<ClassNode> getLoadedClasses()
     {
-        return the.bytecode.club.jda.BytecodeViewer.getLoadedClasses();
+        return JDA.getLoadedClasses();
     }
 
     /**
@@ -166,7 +167,7 @@ public class BytecodeViewer
      */
     public static void resetWorkSpace(boolean ask)
     {
-        the.bytecode.club.jda.BytecodeViewer.resetWorkSpace(ask);
+        JDA.resetWorkSpace(ask);
     }
 
     /**
@@ -177,7 +178,7 @@ public class BytecodeViewer
      */
     public static void setBusy(boolean busy)
     {
-        the.bytecode.club.jda.BytecodeViewer.viewer.setIcon(busy);
+        JDA.viewer.setIcon(busy);
     }
 
     /**
@@ -187,7 +188,7 @@ public class BytecodeViewer
      */
     public static void showMessage(String message)
     {
-        the.bytecode.club.jda.BytecodeViewer.showMessage(message);
+        JDA.showMessage(message);
     }
 
     /**

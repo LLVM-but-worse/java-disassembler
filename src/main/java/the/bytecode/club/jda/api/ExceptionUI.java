@@ -1,6 +1,6 @@
 package the.bytecode.club.jda.api;
 
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.Resources;
 
 import javax.swing.*;
@@ -57,7 +57,7 @@ public class ExceptionUI extends JFrame
     {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(600, 400));
-        setTitle("Java DisAssembler " + the.bytecode.club.jda.BytecodeViewer.version + " - Stack Trace - Send this to " + author);
+        setTitle("Java DisAssembler " + JDA.version + " - Stack Trace - Send this to " + author);
         getContentPane().setLayout(new CardLayout(0, 0));
 
         JTextArea txtrBytecodeViewerIs = new JTextArea();
@@ -68,9 +68,9 @@ public class ExceptionUI extends JFrame
         e.printStackTrace(new PrintWriter(sw));
         e.printStackTrace();
 
-        txtrBytecodeViewerIs.setText("Java DisAssembler Version: " + BytecodeViewer.version +
-                ", Preview Copy: " + BytecodeViewer.previewCopy +
-                BytecodeViewer.nl + BytecodeViewer.nl + sw.toString());
+        txtrBytecodeViewerIs.setText("Java DisAssembler Version: " + JDA.version +
+                ", Preview Copy: " + JDA.previewCopy +
+                JDA.nl + JDA.nl + sw.toString());
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -79,7 +79,7 @@ public class ExceptionUI extends JFrame
     {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(600, 400));
-        setTitle("Java DisAssembler " + BytecodeViewer.version + " - Stack Trace - Send this to " + author);
+        setTitle("Java DisAssembler " + JDA.version + " - Stack Trace - Send this to " + author);
         getContentPane().setLayout(new CardLayout(0, 0));
 
         JTextArea txtrBytecodeViewerIs = new JTextArea();

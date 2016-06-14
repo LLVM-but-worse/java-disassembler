@@ -41,7 +41,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         dialog.setModal(true);
         dialog.add(text);
         dialog.setSize(500, 100);
-        dialog.setLocationRelativeTo(BytecodeViewer.viewer);
+        dialog.setLocationRelativeTo(JDA.viewer);
         dialog.addWindowListener(new WindowAdapter()
         {
             @Override
@@ -123,7 +123,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         @Override
         public boolean dispatchKeyEvent(KeyEvent e)
         {
-            BytecodeViewer.checkHotKey(e);
+            JDA.checkHotKey(e);
             return false;
         }
     }
@@ -213,7 +213,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         menuBar.add(fileMenu);
 
-        mntmNewWorkspace.addActionListener(arg0 -> BytecodeViewer.resetWorkSpace(true));
+        mntmNewWorkspace.addActionListener(arg0 -> JDA.resetWorkSpace(true));
 
         JMenuItem mntmLoadJar = new JMenuItem("Add..");
         mntmLoadJar.addActionListener(e -> addFile());
@@ -320,9 +320,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         pluginsMenu.add(mntmShowMainMethods);
         pluginsMenu.add(mntmShowAllStrings);
         mntmReplaceStrings.addActionListener(arg0 -> {
-            if (BytecodeViewer.getLoadedClasses().isEmpty())
+            if (JDA.getLoadedClasses().isEmpty())
             {
-                BytecodeViewer.showMessage("First open a class file.");
+                JDA.showMessage("First open a class file.");
                 return;
             }
             new ReplaceStringsOptions().setVisible(true);
@@ -337,14 +337,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             fc.setFileFilter(PluginManager.fileFilter());
             fc.setFileHidingEnabled(false);
             fc.setAcceptAllFileFilterUsed(false);
-            int returnVal = fc.showOpenDialog(BytecodeViewer.viewer);
+            int returnVal = fc.showOpenDialog(JDA.viewer);
 
             if (returnVal == JFileChooser.APPROVE_OPTION)
                 try
                 {
-                    BytecodeViewer.viewer.setIcon(true);
-                    BytecodeViewer.startPlugin(fc.getSelectedFile());
-                    BytecodeViewer.viewer.setIcon(false);
+                    JDA.viewer.setIcon(true);
+                    JDA.startPlugin(fc.getSelectedFile());
+                    JDA.viewer.setIcon(false);
                 }
                 catch (Exception e1)
                 {
@@ -353,9 +353,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         });
 
         mntmMaliciousCodeScanner.addActionListener(e -> {
-            if (BytecodeViewer.getLoadedClasses().isEmpty())
+            if (JDA.getLoadedClasses().isEmpty())
             {
-                BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+                JDA.showMessage("First open a class, jar, or zip file.");
                 return;
             }
             new MaliciousCodeScannerOptions().setVisible(true);
@@ -365,10 +365,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         mntmShowMainMethods.addActionListener(e -> PluginManager.runPlugin(new ShowMainMethods()));
 
         setSize(new Dimension(800, 400));
-        if (BytecodeViewer.previewCopy)
-            setTitle("Java DisAssembler " + BytecodeViewer.version + " Preview - https://the.bytecode.club");
+        if (JDA.previewCopy)
+            setTitle("Java DisAssembler " + JDA.version + " Preview - https://the.bytecode.club");
         else
-            setTitle("Java DisAssembler " + BytecodeViewer.version + " - https://the.bytecode.club");
+            setTitle("Java DisAssembler " + JDA.version + " - https://the.bytecode.club");
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
@@ -481,7 +481,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JOptionPane pane = new JOptionPane("Are you sure you wish to reload the resources?");
         Object[] options = new String[] { "Yes", "No" };
         pane.setOptions(options);
-        JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Reload Resources");
+        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Reload Resources");
         dialog.setVisible(true);
         Object obj = pane.getValue();
         int result = -1;
@@ -492,11 +492,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         if (result == 0)
         {
             ArrayList<File> reopen = new ArrayList<>();
-            for (FileContainer container : BytecodeViewer.files)
+            for (FileContainer container : JDA.files)
                 reopen.add(container.file);
 
-            BytecodeViewer.files.clear();
-            BytecodeViewer.openFiles(reopen.toArray(new File[reopen.size()]), false);
+            JDA.files.clear();
+            JDA.openFiles(reopen.toArray(new File[reopen.size()]), false);
 
             refreshView();
         }
@@ -507,7 +507,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JFileChooser fc = new JFileChooser();
         try
         {
-            File f = new File(BytecodeViewer.lastDirectory);
+            File f = new File(JDA.lastDirectory);
             if (f.exists())
                 fc.setSelectedFile(f);
         }
@@ -539,16 +539,16 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         });
         fc.setFileHidingEnabled(false);
         fc.setAcceptAllFileFilterUsed(false);
-        int returnVal = fc.showOpenDialog(BytecodeViewer.viewer);
+        int returnVal = fc.showOpenDialog(JDA.viewer);
 
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
-            BytecodeViewer.lastDirectory = fc.getSelectedFile().getAbsolutePath();
+            JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
             try
             {
-                BytecodeViewer.viewer.setIcon(true);
-                BytecodeViewer.openFiles(new File[] { fc.getSelectedFile() }, true);
-                BytecodeViewer.viewer.setIcon(false);
+                JDA.viewer.setIcon(true);
+                JDA.openFiles(new File[] { fc.getSelectedFile() }, true);
+                JDA.viewer.setIcon(false);
             }
             catch (Exception e1)
             {
@@ -559,9 +559,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     private void saveAsZip()
     {
-        if (BytecodeViewer.getLoadedBytes().isEmpty())
+        if (JDA.getLoadedBytes().isEmpty())
         {
-            BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+            JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
         Thread t = new Thread()
@@ -597,7 +597,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -617,14 +617,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
                     final File file2 = file;
 
-                    BytecodeViewer.viewer.setIcon(true);
+                    JDA.viewer.setIcon(true);
                     Thread t = new Thread()
                     {
                         @Override
                         public void run()
                         {
-                            JarUtils.saveAsJar(BytecodeViewer.getLoadedBytes(), file2.getAbsolutePath());
-                            BytecodeViewer.viewer.setIcon(false);
+                            JarUtils.saveAsJar(JDA.getLoadedBytes(), file2.getAbsolutePath());
+                            JDA.viewer.setIcon(false);
                         }
                     };
                     t.start();
@@ -636,9 +636,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     private void saveAsRunnableJar()
     {
-        if (BytecodeViewer.getLoadedBytes().isEmpty())
+        if (JDA.getLoadedBytes().isEmpty())
         {
-            BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+            JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
         Thread t = new Thread()
@@ -675,7 +675,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -704,7 +704,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
     {
         if (workPane.getCurrentViewer() == null)
         {
-            BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+            JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
 
@@ -736,7 +736,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                 {
                     File file = fc.getSelectedFile();
 
-                    BytecodeViewer.viewer.setIcon(true);
+                    JDA.viewer.setIcon(true);
                     final String path = MiscUtils.append(file, ".java");    // cheap hax cause
                     // string is final
 
@@ -745,7 +745,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -766,14 +766,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                     JOptionPane pane = new JOptionPane("What decompiler will you use?");
                     Object[] options = new String[] { "Procyon", "CFR", "Fernflower", "Cancel" };
                     pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Select Decompiler");
+                    JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Select Decompiler");
                     dialog.setVisible(true);
                     Object obj = pane.getValue();
                     int result = -1;
                     for (int k = 0; k < options.length; k++)
                         if (options[k].equals(obj))
                             result = k;
-                    final String containerName = BytecodeViewer.files.get(0).name;
+                    final String containerName = JDA.files.get(0).name;
 
                     if (result == 0)
                     {
@@ -784,11 +784,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                             {
                                 try
                                 {
-                                    ClassNode cn1 = BytecodeViewer.getClassNode(containerName, s);
-                                    byte[] bytes = BytecodeViewer.getClassBytes(containerName, s);
+                                    ClassNode cn1 = JDA.getClassNode(containerName, s);
+                                    byte[] bytes = JDA.getClassBytes(containerName, s);
                                     String contents = Decompiler.PROCYON.decompileClassNode(cn1, bytes);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
-                                    BytecodeViewer.viewer.setIcon(false);
+                                    JDA.viewer.setIcon(false);
                                 }
                                 catch (Exception e)
                                 {
@@ -807,11 +807,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                             {
                                 try
                                 {
-                                    ClassNode cn1 = BytecodeViewer.getClassNode(containerName, s);
-                                    byte[] bytes = BytecodeViewer.getClassBytes(containerName, s);
+                                    ClassNode cn1 = JDA.getClassNode(containerName, s);
+                                    byte[] bytes = JDA.getClassBytes(containerName, s);
                                     String contents = Decompiler.CFR.decompileClassNode(cn1, bytes);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
-                                    BytecodeViewer.viewer.setIcon(false);
+                                    JDA.viewer.setIcon(false);
                                 }
                                 catch (Exception e)
                                 {
@@ -830,11 +830,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                             {
                                 try
                                 {
-                                    ClassNode cn1 = BytecodeViewer.getClassNode(containerName, s);
-                                    byte[] bytes = BytecodeViewer.getClassBytes(containerName, s);
+                                    ClassNode cn1 = JDA.getClassNode(containerName, s);
+                                    byte[] bytes = JDA.getClassBytes(containerName, s);
                                     String contents = Decompiler.FERNFLOWER.decompileClassNode(cn1, bytes);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
-                                    BytecodeViewer.viewer.setIcon(false);
+                                    JDA.viewer.setIcon(false);
                                 }
                                 catch (Exception e)
                                 {
@@ -846,7 +846,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                     }
                     if (result == 4)
                     {
-                        BytecodeViewer.viewer.setIcon(false);
+                        JDA.viewer.setIcon(false);
                     }
                 }
             }
@@ -856,9 +856,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     private void decompileSaveAllClasses()
     {
-        if (BytecodeViewer.files.isEmpty())
+        if (JDA.files.isEmpty())
         {
-            BytecodeViewer.showMessage("First open a class, jar, or zip file.");
+            JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
 
@@ -895,7 +895,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -913,14 +913,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         }
                     }
 
-                    BytecodeViewer.viewer.setIcon(true);
+                    JDA.viewer.setIcon(true);
                     final String path = MiscUtils.append(file, ".zip");    // cheap hax cause
                     // string is final
 
                     JOptionPane pane = new JOptionPane("What decompiler will you use?");
                     Object[] options = new String[] { "Procyon", "CFR", "Fernflower", "Cancel" };
                     pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Select Decompiler");
+                    JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Select Decompiler");
                     dialog.setVisible(true);
                     Object obj = pane.getValue();
                     int result = -1;
@@ -938,7 +938,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                 try
                                 {
                                     Decompiler.PROCYON.decompileToZip(path);
-                                    BytecodeViewer.viewer.setIcon(false);
+                                    JDA.viewer.setIcon(false);
                                 }
                                 catch (Exception e)
                                 {
@@ -958,7 +958,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                 try
                                 {
                                     Decompiler.CFR.decompileToZip(path);
-                                    BytecodeViewer.viewer.setIcon(false);
+                                    JDA.viewer.setIcon(false);
                                 }
                                 catch (Exception e)
                                 {
@@ -978,7 +978,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                                 try
                                 {
                                     Decompiler.FERNFLOWER.decompileToZip(path);
-                                    BytecodeViewer.viewer.setIcon(false);
+                                    JDA.viewer.setIcon(false);
                                 }
                                 catch (Exception e)
                                 {
@@ -990,7 +990,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                     }
                     else
                     {
-                        BytecodeViewer.viewer.setIcon(false);
+                        JDA.viewer.setIcon(false);
                     }
                 }
             }
@@ -1003,7 +1003,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JOptionPane pane = new JOptionPane("Are you sure you want to exit?");
         Object[] options = new String[] { "Yes", "No" };
         pane.setOptions(options);
-        JDialog dialog = pane.createDialog(BytecodeViewer.viewer, "Java DisAssembler - Exit");
+        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Exit");
         dialog.setVisible(true);
         Object obj = pane.getValue();
         int result = -1;

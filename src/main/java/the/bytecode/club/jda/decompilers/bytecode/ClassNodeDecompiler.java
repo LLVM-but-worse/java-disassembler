@@ -5,9 +5,9 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import the.bytecode.club.jda.BytecodeViewer;
 import the.bytecode.club.jda.DecompilerSettings;
 import the.bytecode.club.jda.FileContainer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class ClassNodeDecompiler extends Decompiler
     public String decompileClassNode(ClassNode cn, byte[] b)
     {
         String containerName = null;
-        for (FileContainer container : BytecodeViewer.files)
+        for (FileContainer container : JDA.files)
         {
             String name = cn.name + ".class";
             if (container.getData().containsKey(name))
@@ -80,20 +80,20 @@ public class ClassNodeDecompiler extends Decompiler
             }
         }
         sb.append(" {");
-        sb.append(BytecodeViewer.nl);
+        sb.append(JDA.nl);
         for (FieldNode fn : cn.fields)
         {
-            sb.append(BytecodeViewer.nl);
+            sb.append(JDA.nl);
             sb.append("     ");
             FieldNodeDecompiler.decompile(sb, fn);
         }
         if (cn.fields.size() > 0)
         {
-            sb.append(BytecodeViewer.nl);
+            sb.append(JDA.nl);
         }
         for (MethodNode mn : cn.methods)
         {
-            sb.append(BytecodeViewer.nl);
+            sb.append(JDA.nl);
             MethodNodeDecompiler.decompile(sb, mn, cn);
         }
 
@@ -104,14 +104,14 @@ public class ClassNodeDecompiler extends Decompiler
             if ((innerClassName != null) && !decompiledClasses.contains(innerClassName))
             {
                 decompiledClasses.add(innerClassName);
-                ClassNode cn1 = BytecodeViewer.getClassNode(containerName, innerClassName);
+                ClassNode cn1 = JDA.getClassNode(containerName, innerClassName);
                 if (cn1 != null)
                 {
                     sb.appendPrefix("     ");
-                    sb.append(BytecodeViewer.nl + BytecodeViewer.nl);
+                    sb.append(JDA.nl + JDA.nl);
                     sb = decompile(sb, decompiledClasses, containerName, cn1);
                     sb.trimPrefix(5);
-                    sb.append(BytecodeViewer.nl);
+                    sb.append(JDA.nl);
                 }
                 else
                 {
@@ -128,7 +128,7 @@ public class ClassNodeDecompiler extends Decompiler
                 sb.append(s);
                 sb.append(" ");
             }
-            sb.append(BytecodeViewer.nl);
+            sb.append(JDA.nl);
         }
 
         sb.append("}");

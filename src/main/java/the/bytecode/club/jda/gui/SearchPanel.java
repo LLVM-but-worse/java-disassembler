@@ -1,6 +1,6 @@
 package the.bytecode.club.jda.gui;
 
-import the.bytecode.club.jda.BytecodeViewer;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.Resources;
 import the.bytecode.club.jda.api.ExceptionUI;
 
@@ -42,7 +42,7 @@ public class SearchPanel extends JPanel
                     field.requestFocus();
                 }
 
-                BytecodeViewer.checkHotKey(e);
+                JDA.checkHotKey(e);
             }
 
             @Override

@@ -268,7 +268,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
     {
         if (files.length < 1)
             return;
-        BytecodeViewer.openFiles(files, true);
+        JDA.openFiles(files, true);
     }
 
     public void updateTree()
@@ -276,7 +276,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         try
         {
             treeRoot.removeAllChildren();
-            for (FileContainer container : BytecodeViewer.files)
+            for (FileContainer container : JDA.files)
             {
                 MyTreeNode root = new MyTreeNode(container.name);
                 treeRoot.add(root);
@@ -520,7 +520,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         String containerName = path.getPathComponent(1).toString();
         if (name.endsWith(".class"))
         {
-            final ClassNode cn = BytecodeViewer.getClassNode(containerName, name.substring(0, name.length() - ".class".length()));
+            final ClassNode cn = JDA.getClassNode(containerName, name.substring(0, name.length() - ".class".length()));
             if (cn != null)
             {
                 openClassFileToWorkSpace(nameBuffer.toString(), containerName, cn);
@@ -528,7 +528,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         }
         else
         {
-            openFileToWorkSpace(nameBuffer.toString(), containerName, BytecodeViewer.getFileContents(nameBuffer.toString()));
+            openFileToWorkSpace(nameBuffer.toString(), containerName, JDA.getFileContents(nameBuffer.toString()));
         }
     }
 
