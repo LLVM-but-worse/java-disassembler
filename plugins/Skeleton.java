@@ -1,4 +1,3 @@
-import the.bytecode.club.bytecodeviewer.api.*;
 import java.util.ArrayList;
 import org.objectweb.asm.tree.ClassNode;
 
