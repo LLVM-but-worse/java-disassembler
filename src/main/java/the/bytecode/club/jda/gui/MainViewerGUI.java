@@ -302,7 +302,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         menuBar.add(spinnerMenu);
 
-        setSize(new Dimension(800, 400));
+        // TODO: save window location and maximized/not maximized
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(new Dimension(size.width * 3 / 4, size.height * 2 / 3));
+
         if (JDA.previewCopy)
             setTitle("Java DisAssembler " + JDA.version + " Preview - https://the.bytecode.club");
         else
