@@ -63,9 +63,8 @@ public class JDA
         try
         {
             System.setSecurityManager(sm);
-            System.out.println("Java DisAssembler (BCV Fork) " + version);
-            CommandLineInput input = new CommandLineInput(args);
-            if (previewCopy && !input.containsCommand())
+            System.out.println("JDA (BCV Fork) v" + version);
+            if (previewCopy)
                 showMessage("WARNING: This is a preview/dev copy, you WON'T be alerted when " + version + " is actually out if you use this." + nl +
                         "Make sure to watch the repo: https://github.com/ecx86/jda for " + version + "'s release");
             getJDADirectory();
@@ -74,21 +73,10 @@ public class JDA
                 throw new RuntimeException("Could not create recent files file");
             }
             recentFiles.addAll(FileUtils.readLines(filesFile, "UTF-8"));
-            int CLI = input.parseCommandLine();
-            if (CLI == CommandLineInput.STOP)
-                return;
-            if (CLI == CommandLineInput.OPEN_FILE)
-            {
-                Settings.loadGUI();
-                viewer = new MainViewerGUI();
-                Boot.boot();
-                JDA.BOOT(args, false);
-            }
-            else
-            {
-                JDA.BOOT(args, true);
-                input.executeCommandLine();
-            }
+            Settings.loadGUI();
+            viewer = new MainViewerGUI();
+            Boot.boot();
+            JDA.boot(args, false);
         }
         catch (Exception e)
         {
@@ -113,7 +101,7 @@ public class JDA
      *
      * @param cli is it running CLI mode or not
      */
-    public static void BOOT(String[] args, boolean cli)
+    public static void boot(String[] args, boolean cli)
     {
         cleanup();
         Runtime.getRuntime().addShutdownHook(new Thread()
@@ -458,7 +446,7 @@ public class JDA
             JOptionPane pane = new JOptionPane("Are you sure you want to reset the workspace?\n\rIt will also reset your file navigator and search.");
             Object[] options = new String[] { "Yes", "No" };
             pane.setOptions(options);
-            JDialog dialog = pane.createDialog(viewer, "Java DisAssembler - Reset Workspace");
+            JDialog dialog = pane.createDialog(viewer, "JDA - Reset Workspace");
             dialog.setVisible(true);
             Object obj = pane.getValue();
             int result = -1;
@@ -729,7 +717,7 @@ public class JDA
                             JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                             Object[] options = new String[] { "Yes", "No" };
                             pane.setOptions(options);
-                            JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
+                            JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
                             dialog.setVisible(true);
                             Object obj = pane.getValue();
                             int result = -1;

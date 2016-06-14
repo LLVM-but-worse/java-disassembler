@@ -79,7 +79,7 @@ public abstract class Decompiler
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         e.printStackTrace();
-        String exception = "Java DisAssembler Version: " + JDA.version + JDA.nl + JDA.nl + sw.toString();
+        String exception = "JDA v" + JDA.version + JDA.nl + JDA.nl + sw.toString();
         return getName() + " encountered a problem! Send the stacktrace to https://github.com/ecx86/jda/issues" + JDA.nl +
                 JDA.nl +
                 "Suggested Fix: Click refresh class, if it fails again try another decompiler." + JDA.nl +
