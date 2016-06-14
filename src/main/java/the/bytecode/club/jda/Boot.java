@@ -33,7 +33,7 @@ public class Boot
 
     public static void setState(BootSequence s)
     {
-        screen.setTitle("Initialzing Java DisAssembler - " + s.getMessage());
+        screen.setTitle("Initialzing JDA - " + s.getMessage());
         screen.getProgressBar().setValue(s.ordinal());
         System.out.println(s.getMessage());
     }

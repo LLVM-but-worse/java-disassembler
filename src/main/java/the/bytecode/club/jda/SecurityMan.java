@@ -24,8 +24,7 @@ public class SecurityMan extends SecurityManager
         if (executedClass.equals("CFRDecompiler") ||
                 executedClass.equals("ProcyonDecompiler") ||
                 executedClass.equals("FernFlowerDecompiler") ||
-                executedClass.equals("JDA") ||
-                executedClass.equals("the.bytecode.club.bytecodeviewer.compilers.JavaCompiler"))
+                executedClass.equals("JDA"))
         {
             blocking = false;
         }

@@ -133,12 +133,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     public final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
     public final JMenuItem mntmAbout = new JMenuItem("About");
+    public final JMenuItem mntmIntro = new JMenuItem("Help");
     public final JMenuItem mntmSaveAsRunnableJar = new JMenuItem("Save As Runnable Jar..");
     public final JCheckBoxMenuItem mntmUpdateCheck = new JCheckBoxMenuItem("Update Check");
     public final JMenuItem mntmDecompileSaveOpenedClasses = new JMenuItem("Decompile & Save Opened Class..");
     public WorkPane workPane = new WorkPane(this);
     public final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
     public AboutWindow aboutWindow = new AboutWindow();
+    public IntroWindow introWindow = new IntroWindow();
     public final ButtonGroup panelGroup1 = new ButtonGroup();
     public final ButtonGroup panelGroup2 = new ButtonGroup();
     public final ButtonGroup panelGroup3 = new ButtonGroup();
@@ -236,9 +238,12 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         fileMenu.add(new JSeparator());
         fileMenu.add(mnRecentFiles);
         fileMenu.add(new JSeparator());
-        mntmAbout.addActionListener(arg0 -> aboutWindow.setVisible(true));
 
+        mntmAbout.addActionListener(arg0 -> aboutWindow.setVisible(true));
         fileMenu.add(mntmAbout);
+
+        mntmIntro.addActionListener(arg0 -> introWindow.setVisible(true));
+        fileMenu.add(mntmIntro);
 
         JMenuItem mntmExit = new JMenuItem("Exit");
         mntmExit.addActionListener(arg0 -> exitPrompt());
@@ -307,9 +312,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         setSize(new Dimension(size.width * 3 / 4, size.height * 2 / 3));
 
         if (JDA.previewCopy)
-            setTitle("Java DisAssembler " + JDA.version + " Preview - https://the.bytecode.club");
+            setTitle("JDA v" + JDA.version + " Preview");
         else
-            setTitle("Java DisAssembler " + JDA.version + " - https://the.bytecode.club");
+            setTitle("JDA v" + JDA.version);
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
@@ -422,7 +427,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JOptionPane pane = new JOptionPane("Are you sure you wish to reload the resources?");
         Object[] options = new String[] { "Yes", "No" };
         pane.setOptions(options);
-        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Reload Resources");
+        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Reload Resources");
         dialog.setVisible(true);
         Object obj = pane.getValue();
         int result = -1;
@@ -538,7 +543,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -616,7 +621,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -686,7 +691,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -707,7 +712,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                     JOptionPane pane = new JOptionPane("What decompiler will you use?");
                     Object[] options = new String[] { "Procyon", "CFR", "Fernflower", "Cancel" };
                     pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Select Decompiler");
+                    JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Select Decompiler");
                     dialog.setVisible(true);
                     Object obj = pane.getValue();
                     int result = -1;
@@ -836,7 +841,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                         JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
                         Object[] options = new String[] { "Yes", "No" };
                         pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Overwrite File");
+                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
                         dialog.setVisible(true);
                         Object obj = pane.getValue();
                         int result = -1;
@@ -861,7 +866,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                     JOptionPane pane = new JOptionPane("What decompiler will you use?");
                     Object[] options = new String[] { "Procyon", "CFR", "Fernflower", "Cancel" };
                     pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Select Decompiler");
+                    JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Select Decompiler");
                     dialog.setVisible(true);
                     Object obj = pane.getValue();
                     int result = -1;
@@ -944,7 +949,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JOptionPane pane = new JOptionPane("Are you sure you want to exit?");
         Object[] options = new String[] { "Yes", "No" };
         pane.setOptions(options);
-        JDialog dialog = pane.createDialog(JDA.viewer, "Java DisAssembler - Exit");
+        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Exit");
         dialog.setVisible(true);
         Object obj = pane.getValue();
         int result = -1;

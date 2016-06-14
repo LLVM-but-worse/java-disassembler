@@ -57,7 +57,7 @@ public class ExceptionUI extends JFrame
     {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(600, 400));
-        setTitle("Java DisAssembler " + JDA.version + " - Stack Trace - Send this to " + author);
+        setTitle("JDA v" + JDA.version + " - Stack Trace - Send this to " + author);
         getContentPane().setLayout(new CardLayout(0, 0));
 
         JTextArea txtrBytecodeViewerIs = new JTextArea();
@@ -68,7 +68,7 @@ public class ExceptionUI extends JFrame
         e.printStackTrace(new PrintWriter(sw));
         e.printStackTrace();
 
-        txtrBytecodeViewerIs.setText("Java DisAssembler Version: " + JDA.version +
+        txtrBytecodeViewerIs.setText("JDA v" + JDA.version +
                 ", Preview Copy: " + JDA.previewCopy +
                 JDA.nl + JDA.nl + sw.toString());
         this.setLocationRelativeTo(null);
@@ -79,7 +79,7 @@ public class ExceptionUI extends JFrame
     {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(600, 400));
-        setTitle("Java DisAssembler " + JDA.version + " - Stack Trace - Send this to " + author);
+        setTitle("JDA v" + JDA.version + " - Stack Trace - Send this to " + author);
         getContentPane().setLayout(new CardLayout(0, 0));
 
         JTextArea txtrBytecodeViewerIs = new JTextArea();
