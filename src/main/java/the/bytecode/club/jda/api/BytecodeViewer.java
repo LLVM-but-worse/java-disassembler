@@ -108,16 +108,6 @@ public class BytecodeViewer
     }
 
     /**
-     * Used to start a plugin from file.
-     *
-     * @param plugin the file of the plugin
-     */
-    public static void startPlugin(File plugin)
-    {
-        JDA.startPlugin(plugin);
-    }
-
-    /**
      * Used to load classes/jars into BCV.
      *
      * @param files       an array of the files you want loaded.

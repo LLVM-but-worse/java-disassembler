@@ -7,7 +7,6 @@ import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.gui.FileNavigationPane;
 import the.bytecode.club.jda.gui.MainViewerGUI;
 import the.bytecode.club.jda.gui.WorkPane;
-import the.bytecode.club.jda.plugin.PluginManager;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -32,7 +31,6 @@ public class JDA
     public static final String nl = System.getProperty("line.separator");
     public static final File dataDir = new File(System.getProperty("user.home") + fs + ".jda");
     public static final File filesFile = new File(dataDir, "recentfiles.jda");
-    public static final File pluginsFile = new File(dataDir, "recentplugins.jda");
     public static final File settingsFile = new File(dataDir, "settings.jda");
     @Deprecated public static final File tempDir = new File(dataDir, "jda_temp");
     private static final long start = System.currentTimeMillis();
@@ -43,8 +41,6 @@ public class JDA
     public static ArrayList<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
     private static int maxRecentFiles = 25;
     private static List<String> recentFiles = new ArrayList<>();
-    private static List<String> recentPlugins = new ArrayList<>();
-    public static boolean runningObfuscation = false;
     public static String lastDirectory = "";
     public static ArrayList<Process> createdProcesses = new ArrayList<>();
     public static boolean deleteForiegnLibraries = true;
@@ -77,12 +73,7 @@ public class JDA
             {
                 throw new RuntimeException("Could not create recent files file");
             }
-            if (!pluginsFile.exists() && !pluginsFile.createNewFile())
-            {
-                throw new RuntimeException("Could not create recent plugins file");
-            }
             recentFiles.addAll(FileUtils.readLines(filesFile, "UTF-8"));
-            recentPlugins.addAll(FileUtils.readLines(pluginsFile, "UTF-8"));
             int CLI = input.parseCommandLine();
             if (CLI == CommandLineInput.STOP)
                 return;
@@ -135,7 +126,6 @@ public class JDA
                 try
                 {
                     FileUtils.writeLines(filesFile, recentFiles);
-                    FileUtils.writeLines(pluginsFile, recentPlugins);
                 }
                 catch (IOException e)
                 {
@@ -440,27 +430,6 @@ public class JDA
     }
 
     /**
-     * Starts the specified plugin
-     *
-     * @param file the file of the plugin
-     */
-    public static void startPlugin(File file)
-    {
-        if (!file.exists())
-            return;
-
-        try
-        {
-            PluginManager.runPlugin(file);
-        }
-        catch (Throwable e)
-        {
-            new ExceptionUI(e);
-        }
-        addRecentPlugin(file);
-    }
-
-    /**
      * Send a message to alert the user
      *
      * @param message the message you need to send
@@ -541,35 +510,6 @@ public class JDA
     private static ArrayList<String> killList2 = new ArrayList<>();
 
     /**
-     * Add to the recent plugin list
-     *
-     * @param f the plugin file
-     */
-    public static void addRecentPlugin(File f)
-    {
-        for (int i = 0; i < recentPlugins.size(); i++)
-        { // remove dead strings
-            String s = recentPlugins.get(i);
-            if (s.isEmpty() || i > maxRecentFiles)
-                killList2.add(s);
-        }
-        if (!killList2.isEmpty())
-        {
-            for (String s : killList2)
-                recentPlugins.remove(s);
-            killList2.clear();
-        }
-
-        if (recentPlugins.contains(f.getAbsolutePath())) // already added on the list
-            recentPlugins.remove(f.getAbsolutePath());
-        if (recentPlugins.size() >= maxRecentFiles)
-            recentPlugins.remove(maxRecentFiles - 1); // zero indexing
-
-        recentPlugins.add(0, f.getAbsolutePath());
-        resetRecentFilesMenu();
-    }
-
-    /**
      * resets the recent files menu
      */
     public static void resetRecentFilesMenu()
@@ -584,17 +524,6 @@ public class JDA
                     openFiles(new File[] { new File(m1.getText()) }, true);
                 });
                 viewer.mnRecentFiles.add(m);
-            }
-        viewer.mnRecentPlugins.removeAll();
-        for (String s : recentPlugins)
-            if (!s.isEmpty())
-            {
-                JMenuItem m = new JMenuItem(s);
-                m.addActionListener(e -> {
-                    JMenuItem m1 = (JMenuItem) e.getSource();
-                    startPlugin(new File(m1.getText()));
-                });
-                viewer.mnRecentPlugins.add(m);
             }
     }
 

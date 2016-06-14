@@ -9,9 +9,6 @@ import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.decompilers.FernFlowerDecompiler;
 import the.bytecode.club.jda.decompilers.ProcyonDecompiler;
 import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
-import the.bytecode.club.jda.plugin.PluginManager;
-import the.bytecode.club.jda.plugin.preinstalled.ShowAllStrings;
-import the.bytecode.club.jda.plugin.preinstalled.ShowMainMethods;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -136,13 +133,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     public final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
     public final JMenuItem mntmAbout = new JMenuItem("About");
-    public final JMenuItem mntmStartExternalPlugin = new JMenuItem("Open Plugin..");
-    public JMenu mnRecentPlugins = new JMenu("Recent Plugins");
-    public final JMenuItem mntmMaliciousCodeScanner = new JMenuItem("Malicious Code Scanner");
-    public final JMenuItem mntmShowAllStrings = new JMenuItem("Show All Strings");
-    public final JMenuItem mntmShowMainMethods = new JMenuItem("Show Main Methods");
     public final JMenuItem mntmSaveAsRunnableJar = new JMenuItem("Save As Runnable Jar..");
-    public final JMenuItem mntmReplaceStrings = new JMenuItem("Replace Strings");
     public final JCheckBoxMenuItem mntmUpdateCheck = new JCheckBoxMenuItem("Update Check");
     public final JMenuItem mntmDecompileSaveOpenedClasses = new JMenuItem("Decompile & Save Opened Class..");
     public WorkPane workPane = new WorkPane(this);
@@ -206,7 +197,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JMenu fileMenu = new JMenu("File");
         JMenu viewMenu = new JMenu("View");
         JMenu settingsMenu = new JMenu("Settings");
-        JMenu pluginsMenu = new JMenu("Plugins");
         setJMenuBar(menuBar);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -310,59 +300,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         menuBar.add(settingsMenu);
 
-        menuBar.add(pluginsMenu);
-        pluginsMenu.add(mntmStartExternalPlugin);
-        pluginsMenu.add(new JSeparator());
-        pluginsMenu.add(mnRecentPlugins);
-        pluginsMenu.add(new JSeparator());
-
-        pluginsMenu.add(mntmMaliciousCodeScanner);
-        pluginsMenu.add(mntmShowMainMethods);
-        pluginsMenu.add(mntmShowAllStrings);
-        mntmReplaceStrings.addActionListener(arg0 -> {
-            if (JDA.getLoadedClasses().isEmpty())
-            {
-                JDA.showMessage("First open a class file.");
-                return;
-            }
-            new ReplaceStringsOptions().setVisible(true);
-        });
-
-        pluginsMenu.add(mntmReplaceStrings);
-
         menuBar.add(spinnerMenu);
-
-        mntmStartExternalPlugin.addActionListener(arg0 -> {
-            JFileChooser fc = new JFileChooser();
-            fc.setFileFilter(PluginManager.fileFilter());
-            fc.setFileHidingEnabled(false);
-            fc.setAcceptAllFileFilterUsed(false);
-            int returnVal = fc.showOpenDialog(JDA.viewer);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION)
-                try
-                {
-                    JDA.viewer.setIcon(true);
-                    JDA.startPlugin(fc.getSelectedFile());
-                    JDA.viewer.setIcon(false);
-                }
-                catch (Exception e1)
-                {
-                    new ExceptionUI(e1);
-                }
-        });
-
-        mntmMaliciousCodeScanner.addActionListener(e -> {
-            if (JDA.getLoadedClasses().isEmpty())
-            {
-                JDA.showMessage("First open a class, jar, or zip file.");
-                return;
-            }
-            new MaliciousCodeScannerOptions().setVisible(true);
-        });
-        mntmShowAllStrings.addActionListener(e -> PluginManager.runPlugin(new ShowAllStrings()));
-
-        mntmShowMainMethods.addActionListener(e -> PluginManager.runPlugin(new ShowMainMethods()));
 
         setSize(new Dimension(800, 400));
         if (JDA.previewCopy)
