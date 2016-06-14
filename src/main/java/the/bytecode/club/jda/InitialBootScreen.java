@@ -1,5 +1,7 @@
 package the.bytecode.club.jda;
 
+import org.apache.commons.io.IOUtils;
+
 import javax.swing.*;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
@@ -52,8 +54,8 @@ public class InitialBootScreen extends JFrame
 
         JEditorPane editorPane = new JEditorPane();
         editorPane.setEditorKit(new HTMLEditorKit());
-
-        editorPane.setText(convertStreamToString(InitialBootScreen.class.getResourceAsStream("/intro.html")));
+        editorPane.setEditable(false);
+        editorPane.setText(IOUtils.toString(Resources.class.getResourceAsStream("/intro.html"), "UTF-8"));
 
         scrollPane.setViewportView(editorPane);
 
@@ -63,15 +65,6 @@ public class InitialBootScreen extends JFrame
         gbc_progressBar.gridy = 24;
         getContentPane().add(progressBar, gbc_progressBar);
         this.setLocationRelativeTo(null);
-    }
-
-    static String convertStreamToString(java.io.InputStream is) throws IOException
-    {
-        @SuppressWarnings("resource") java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        String string = s.hasNext() ? s.next() : "";
-        is.close();
-        s.close();
-        return string;
     }
 
     public JProgressBar getProgressBar()
