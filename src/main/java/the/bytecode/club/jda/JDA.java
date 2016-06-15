@@ -6,7 +6,6 @@ import the.bytecode.club.jda.api.ClassNodeLoader;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.gui.FileNavigationPane;
 import the.bytecode.club.jda.gui.MainViewerGUI;
-import the.bytecode.club.jda.gui.WorkPane;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -76,7 +75,7 @@ public class JDA
             Settings.loadGUI();
             viewer = new MainViewerGUI();
             Boot.boot();
-            JDA.boot(args, false);
+            JDA.boot(args);
         }
         catch (Exception e)
         {
@@ -98,10 +97,8 @@ public class JDA
 
     /**
      * Boot after all of the libraries have been loaded
-     *
-     * @param cli is it running CLI mode or not
      */
-    public static void boot(String[] args, boolean cli)
+    public static void boot(String[] args)
     {
         cleanup();
         Runtime.getRuntime().addShutdownHook(new Thread()
@@ -124,23 +121,22 @@ public class JDA
             }
         });
 
-        viewer.calledAfterLoad();
         resetRecentFilesMenu();
 
         if (viewer.mntmUpdateCheck.isSelected())
             versionChecker.start();
 
-        if (!cli)
-            viewer.setVisible(true);
+        viewer.setVisible(true);
+
+        viewer.calledAfterLoad();
 
         System.out.println("Start up took " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
 
-        if (!cli)
-            if (args.length >= 1)
-                for (String s : args)
-                {
-                    openFiles(new File[] { new File(s) }, true);
-                }
+        if (args.length >= 1)
+            for (String s : args)
+            {
+                openFiles(new File[] { new File(s) }, true);
+            }
     }
 
     /**
@@ -437,8 +433,7 @@ public class JDA
         if (!ask)
         {
             files.clear();
-            MainViewerGUI.getComponent(FileNavigationPane.class).resetWorkspace();
-            MainViewerGUI.getComponent(WorkPane.class).resetWorkspace();
+            viewer.resetWorkspace();
             the.bytecode.club.jda.api.BytecodeViewer.getClassNodeLoader().clear();
         }
         else
@@ -457,8 +452,7 @@ public class JDA
             if (result == 0)
             {
                 files.clear();
-                MainViewerGUI.getComponent(FileNavigationPane.class).resetWorkspace();
-                MainViewerGUI.getComponent(WorkPane.class).resetWorkspace();
+                viewer.resetWorkspace();
                 the.bytecode.club.jda.api.BytecodeViewer.getClassNodeLoader().clear();
             }
         }

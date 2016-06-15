@@ -25,11 +25,6 @@ import java.util.List;
  */
 public class MainViewerGUI extends JFrame implements FileChangeNotifier
 {
-    public void java()
-    {
-        new FileChooser(Settings.JAVA_LOCATION, "Java Executable (Requires JRE/JDK 'C:/Program Files/Java/jre_xx/bin/java.exe')").run();
-    }
-
     public void setOptionalLibrary()
     {
         final JTextField text = new JTextField();
@@ -115,6 +110,13 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         return menu;
     }
 
+    public void resetWorkspace()
+    {
+        navigator.resetWorkspace();
+        workPane.resetWorkspace();
+        resetWindows();
+    }
+
     public class Test implements KeyEventDispatcher
     {
         @Override
@@ -129,7 +131,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     public JDesktopPane desktop;
     static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
-    public FileNavigationPane cn;
+    public FileNavigationPane navigator;
     public WorkPane workPane;
 
     public AboutWindow aboutWindow = new AboutWindow();
@@ -160,6 +162,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     public MainViewerGUI()
     {
+        initializeWindows();
+
         Decompiler.ensureInitted();
         allDecompilers.put(panelGroup1, new HashMap<>());
         allDecompilers.put(panelGroup2, new HashMap<>());
@@ -312,36 +316,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         menuBar.add(spinnerMenu);
 
-        // TODO: save window location and maximized/not maximized
-        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        size = new Dimension(size.width * 3 / 4, size.height * 2 / 3);
-        setPreferredSize(size);
-        pack();
-        size = getContentPane().getSize();
-
         if (JDA.previewCopy)
             setTitle("JDA v" + JDA.version + " Preview");
         else
             setTitle("JDA v" + JDA.version);
-
-        cn = new FileNavigationPane(this);
-        cn.setMinimumSize(new Dimension(200, 50));
-        cn.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
-        cn.setPreferredSize(new Dimension(200, size.height));
-        cn.pack();
-
-        workPane = new WorkPane(this);
-        workPane.setPreferredSize(new Dimension(size.width - 200, size.height));
-        workPane.setLocation(200, 0);
-        workPane.pack();
-
-        desktop = new JDesktopPane();
-        setContentPane(desktop);
-        desktop.add(cn);
-        desktop.add(workPane);
-
-        rfComps.add(cn);
-        rfComps.add(workPane);
 
         fontSpinner.setPreferredSize(new Dimension(42, 20));
         fontSpinner.setSize(new Dimension(42, 20));
@@ -374,6 +352,44 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         this.setLocationRelativeTo(null);
     }
 
+    private void initializeWindows()
+    {
+        // TODO: save window location and maximized/not maximized
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+        setPreferredSize(new Dimension(size.width * 3 / 4, size.height * 2 / 3));
+
+        navigator = new FileNavigationPane(this);
+        workPane = new WorkPane(this);
+
+        desktop = new JDesktopPane();
+        setContentPane(desktop);
+        desktop.add(navigator);
+        desktop.add(workPane);
+        desktop.setDesktopManager(new WorkspaceDesktopManager());
+        pack();
+
+        rfComps.add(navigator);
+        rfComps.add(workPane);
+    }
+
+    public void resetWindows()
+    {
+        Dimension clientSize = desktop.getSize();
+
+        for (VisibleComponent f : rfComps)
+        {
+            Dimension size = f.getDefaultDimensions();
+            if (size.width < 0 || size.height < 0)
+                size = new Dimension(
+                        size.width < 0 ? clientSize.width + size.width : size.width,
+                        size.height < 0 ? clientSize.height + size.height : size.height);
+            f.setPreferredSize(size);
+            f.pack();
+            Point pos = f.getDefaultPosition();
+            desktop.getDesktopManager().resizeFrame(f, pos.x, pos.y, size.width, size.height);
+        }
+    }
+
     public JSpinner fontSpinner = new JSpinner();
     private JMenuItem spinnerMenu = new JMenuItem("");
 
@@ -399,6 +415,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     public void calledAfterLoad()
     {
+        resetWindows();
     }
 
     @Override
