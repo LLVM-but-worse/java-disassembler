@@ -143,32 +143,57 @@ public class ClassViewer extends Viewer
 
     public void resetDivider()
     {
-        sp.setResizeWeight(0.5);
-        if (decompilers.get(1) != null && decompilers.get(0) != null)
+        double paneCount = 0.0;
+        for (int i = 0; i < decompilers.size(); i++)
+            if (decompilers.get(i) != null)
+                paneCount++;
+        if (paneCount == 3)
+        {
+            // left split pane gets two thirds
+            sp2.setResizeWeight(2 / 3.0);
+            sp2 = setDividerLocation(sp2, 2 / 3.0);
+            // left and right of left split pane share equally
+            sp.setResizeWeight(0.5);
             sp = setDividerLocation(sp, 0.5);
-        else if (decompilers.get(0) != null)
-            sp = setDividerLocation(sp, 1);
-        else if (decompilers.get(1) != null)
+        }
+        else if (paneCount == 1)
         {
-            sp.setResizeWeight(1);
-            sp = setDividerLocation(sp, 0);
+            if (decompilers.get(2) != null)
+            {
+                // right split pane gets everything
+                sp2.setResizeWeight(0.0);
+                sp2 = setDividerLocation(sp2, 0.0);
+            }
+            else
+            {
+                // left split pane gets everything
+                sp2.setResizeWeight(1.0);
+                sp2 = setDividerLocation(sp2, 1.0);
+                // left or right pane gets everything
+                sp.setResizeWeight(decompilers.get(1) != null ? 0.0 : 1.0);
+                sp = setDividerLocation(sp, decompilers.get(1) != null ? 0.0 : 1.0);
+            }
         }
         else
-            sp = setDividerLocation(sp, 0);
-        if (decompilers.get(2) != null)
         {
-            sp2.setResizeWeight(0.7);
-            sp2 = setDividerLocation(sp2, 0.7);
-            if ((decompilers.get(1) == null && decompilers.get(0) != null) || (decompilers.get(0) == null && decompilers.get(1) != null))
+            if (decompilers.get(2) == null)
+            {
+                // left split pane gets everything
+                sp2.setResizeWeight(1.0);
+                sp2 = setDividerLocation(sp2, 1.0);
+                // left and right panes share equally
+                sp.setResizeWeight(0.5);
+                sp = setDividerLocation(sp, 0.5);
+            }
+            else
+            {
+                // left and right split panes share equally
+                sp2.setResizeWeight(0.5);
                 sp2 = setDividerLocation(sp2, 0.5);
-            else if (decompilers.get(0) == null && decompilers.get(1) == null)
-                sp2 = setDividerLocation(sp2, 0);
-        }
-        else
-        {
-            sp.setResizeWeight(1);
-            sp2.setResizeWeight(0);
-            sp2 = setDividerLocation(sp2, 1);
+                // left or right pane on left split pane gets everything
+                sp.setResizeWeight(decompilers.get(1) == null ? 1.0 : 0.0);
+                sp = setDividerLocation(sp, decompilers.get(1) == null ? 1.0 : 0.0);
+            }
         }
     }
 
