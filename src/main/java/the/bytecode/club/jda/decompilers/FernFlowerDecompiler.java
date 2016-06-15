@@ -6,9 +6,9 @@ import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.DecompilerSettings;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
+import the.bytecode.club.jda.settings.DecompilerSettings;
 
 import java.io.File;
 import java.nio.file.Files;

@@ -9,6 +9,8 @@ import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.decompilers.FernFlowerDecompiler;
 import the.bytecode.club.jda.decompilers.ProcyonDecompiler;
 import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
+import the.bytecode.club.jda.settings.DecompilerSettings;
+import the.bytecode.club.jda.settings.Settings;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -128,9 +130,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
     }
 
     public boolean isMaximized = false;
+    public Point unmaximizedPos;
+    public Dimension unmaximizedSize;
 
     public JDesktopPane desktop;
-    static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
+    public static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
     public FileNavigationPane navigator;
     public WorkPane workPane;
 
@@ -199,9 +203,30 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
                 else if ((oldState & Frame.MAXIMIZED_BOTH) != 0 && (newState & Frame.MAXIMIZED_BOTH) == 0)
                 {
                     isMaximized = false;
+                    setSize(unmaximizedSize);
+                    setLocation(unmaximizedPos);
                 }
             }
         });
+        addComponentListener(new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                if ((getExtendedState() & Frame.MAXIMIZED_BOTH) != Frame.MAXIMIZED_BOTH)
+                    unmaximizedSize = getSize();
+                super.componentResized(e);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e)
+            {
+                if ((getExtendedState() & Frame.MAXIMIZED_BOTH) != Frame.MAXIMIZED_BOTH)
+                    unmaximizedPos = getLocation();
+                super.componentMoved(e);
+            }
+        });
+
         this.setIconImages(Resources.iconList);
 
         JMenuBar menuBar = new JMenuBar();
@@ -210,7 +235,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         JMenu settingsMenu = new JMenu("Settings");
         setJMenuBar(menuBar);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         menuBar.add(fileMenu);
 
@@ -321,6 +346,13 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         else
             setTitle("JDA v" + JDA.version);
 
+        Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
+        windowSize = new Dimension(windowSize.width * 3 / 4, windowSize.height * 2 / 3);
+        setPreferredSize(windowSize);
+        pack();
+        unmaximizedSize = getSize();
+        unmaximizedPos = getLocation();
+
         fontSpinner.setPreferredSize(new Dimension(42, 20));
         fontSpinner.setSize(new Dimension(42, 20));
         fontSpinner.setModel(new SpinnerNumberModel(12, 1, null, 1));
@@ -354,10 +386,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
     private void initializeWindows()
     {
-        // TODO: save window location and maximized/not maximized
-        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        setPreferredSize(new Dimension(size.width * 3 / 4, size.height * 2 / 3));
-
         navigator = new FileNavigationPane(this);
         workPane = new WorkPane(this);
 
@@ -366,7 +394,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         desktop.add(navigator);
         desktop.add(workPane);
         desktop.setDesktopManager(new WorkspaceDesktopManager());
-        pack();
 
         rfComps.add(navigator);
         rfComps.add(workPane);
@@ -386,6 +413,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             f.setPreferredSize(size);
             f.pack();
             Point pos = f.getDefaultPosition();
+            f.setLocation(pos);
             desktop.getDesktopManager().resizeFrame(f, pos.x, pos.y, size.width, size.height);
         }
     }
@@ -416,33 +444,28 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
     public void calledAfterLoad()
     {
         resetWindows();
+        Settings.loadWindows();
     }
 
     @Override
     public void openClassFile(final String name, String container, final ClassNode cn)
     {
         for (final VisibleComponent vc : rfComps)
-        {
             vc.openClassFile(name, container, cn);
-        }
     }
 
     @Override
     public void openFile(final String name, String container, byte[] content)
     {
         for (final VisibleComponent vc : rfComps)
-        {
             vc.openFile(name, container, content);
-        }
     }
 
     public static <T> T getComponent(final Class<T> clazz)
     {
         for (final VisibleComponent vc : rfComps)
-        {
             if (vc.getClass() == clazz)
                 return clazz.cast(vc);
-        }
         return null;
     }
 

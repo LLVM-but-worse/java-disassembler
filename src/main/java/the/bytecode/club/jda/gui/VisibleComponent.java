@@ -16,20 +16,14 @@ import java.awt.*;
 
 public abstract class VisibleComponent extends JInternalFrame implements FileChangeNotifier
 {
-    private static final long serialVersionUID = -6453413772343643526L;
+    private String windowId;
 
     public VisibleComponent(final String title)
     {
         super(title, false, false, false, false);
+        windowId = title;
         this.setFrameIcon(null);
         setResizable(true);
-    }
-
-    @SuppressWarnings("unused")
-    private VisibleComponent()
-    { // because we want to enforce the title
-        // argument
-
     }
 
     @Override
@@ -43,4 +37,9 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
 
     public abstract Dimension getDefaultDimensions();
     public abstract Point getDefaultPosition();
+
+    public String getWindowId()
+    {
+        return windowId;
+    }
 }

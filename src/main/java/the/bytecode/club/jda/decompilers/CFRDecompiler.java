@@ -19,9 +19,9 @@ import org.benf.cfr.reader.util.getopt.OptionsImpl;
 import org.benf.cfr.reader.util.output.*;
 import org.objectweb.asm.tree.ClassNode;
 import org.zeroturnaround.zip.ZipUtil;
-import the.bytecode.club.jda.DecompilerSettings;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
+import the.bytecode.club.jda.settings.DecompilerSettings;
 
 import java.io.File;
 import java.io.IOException;

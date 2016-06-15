@@ -1,8 +1,8 @@
 package the.bytecode.club.jda.gui;
 
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.Setting;
 import the.bytecode.club.jda.api.ExceptionUI;
+import the.bytecode.club.jda.settings.Setting;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

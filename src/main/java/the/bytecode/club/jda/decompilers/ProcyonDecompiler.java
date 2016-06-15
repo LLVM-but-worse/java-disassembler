@@ -53,7 +53,7 @@ public class ProcyonDecompiler extends Decompiler
         JCommander jCommander = new JCommander(options);
         String[] args = new String[Settings.values().length * 2];
         int index = 0;
-        for (the.bytecode.club.jda.DecompilerSettings.Setting setting : Settings.values())
+        for (the.bytecode.club.jda.settings.DecompilerSettings.Setting setting : Settings.values())
         {
             args[index++] = "--" + setting.getParam();
             args[index++] = String.valueOf(getSettings().isSelected(setting));
@@ -262,7 +262,7 @@ public class ProcyonDecompiler extends Decompiler
         }
     }
 
-    public enum Settings implements the.bytecode.club.jda.DecompilerSettings.Setting
+    public enum Settings implements the.bytecode.club.jda.settings.DecompilerSettings.Setting
     {
         SHOW_DEBUG_LINE_NUMBERS("debug-line-numbers", "Show Debug Line Numbers"),
         SIMPLIFY_MEMBER_REFERENCES("simplify-member-references", "Simplify Member References"),
