@@ -6,6 +6,7 @@ import the.bytecode.club.jda.api.ClassNodeLoader;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.gui.FileNavigationPane;
 import the.bytecode.club.jda.gui.MainViewerGUI;
+import the.bytecode.club.jda.settings.Settings;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -116,6 +117,8 @@ public class JDA
                 {
                     new ExceptionUI(e);
                 }
+                if (!viewer.isMaximized)
+                    viewer.unmaximizedPos = viewer.getLocation();
                 Settings.saveGUI();
                 cleanup();
             }

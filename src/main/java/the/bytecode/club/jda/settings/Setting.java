@@ -1,4 +1,4 @@
-package the.bytecode.club.jda;
+package the.bytecode.club.jda.settings;
 
 /**
  * Used to handle loading/saving the GUI (options).

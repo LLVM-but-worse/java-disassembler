@@ -1,4 +1,4 @@
-package the.bytecode.club.jda;
+package the.bytecode.club.jda.settings;
 
 import com.eclipsesource.json.JsonObject;
 import the.bytecode.club.jda.decompilers.Decompiler;

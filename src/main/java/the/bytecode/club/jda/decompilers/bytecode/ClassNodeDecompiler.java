@@ -5,10 +5,10 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import the.bytecode.club.jda.DecompilerSettings;
 import the.bytecode.club.jda.FileContainer;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.settings.DecompilerSettings;
 
 import java.util.ArrayList;
 import java.util.List;

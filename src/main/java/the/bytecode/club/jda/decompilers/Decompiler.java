@@ -3,10 +3,10 @@ package the.bytecode.club.jda.decompilers;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.DecompilerSettings;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
+import the.bytecode.club.jda.settings.DecompilerSettings;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
