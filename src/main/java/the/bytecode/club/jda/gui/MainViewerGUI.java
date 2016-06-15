@@ -125,10 +125,25 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         }
     }
 
-    public FileNavigationPane cn = new FileNavigationPane(this);
     public boolean isMaximized = false;
-    public JSplitPane sp2;
+
+    public JDesktopPane desktop;
     static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
+    public FileNavigationPane cn;
+    public WorkPane workPane;
+
+    public AboutWindow aboutWindow = new AboutWindow();
+    public IntroWindow introWindow = new IntroWindow();
+
+    public final ButtonGroup panelGroup1 = new ButtonGroup();
+    public final ButtonGroup panelGroup2 = new ButtonGroup();
+    public final ButtonGroup panelGroup3 = new ButtonGroup();
+    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
+
+    public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
+    public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
+    public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
+
     public final JMenuItem mntmNewWorkspace = new JMenuItem("New Workspace");
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     public final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
@@ -137,21 +152,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
     public final JMenuItem mntmSaveAsRunnableJar = new JMenuItem("Save As Runnable Jar..");
     public final JCheckBoxMenuItem mntmUpdateCheck = new JCheckBoxMenuItem("Update Check");
     public final JMenuItem mntmDecompileSaveOpenedClasses = new JMenuItem("Decompile & Save Opened Class..");
-    public WorkPane workPane = new WorkPane(this);
     public final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
-    public AboutWindow aboutWindow = new AboutWindow();
-    public IntroWindow introWindow = new IntroWindow();
-    public final ButtonGroup panelGroup1 = new ButtonGroup();
-    public final ButtonGroup panelGroup2 = new ButtonGroup();
-    public final ButtonGroup panelGroup3 = new ButtonGroup();
     public final JCheckBox mnShowContainer = new JCheckBox("Show Containing File's Name");
     private final JMenuItem mntmSetOptionalLibrary = new JMenuItem("Set Optional Library Folder");
     private final JMenu mnFontSize = new JMenu("Font Size");
     private final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
-    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
-    public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
 
     public MainViewerGUI()
     {
@@ -309,26 +314,33 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         // TODO: save window location and maximized/not maximized
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(new Dimension(size.width * 3 / 4, size.height * 2 / 3));
+        size = new Dimension(size.width * 3 / 4, size.height * 2 / 3);
+        setPreferredSize(size);
+        pack();
+        size = getContentPane().getSize();
 
         if (JDA.previewCopy)
             setTitle("JDA v" + JDA.version + " Preview");
         else
             setTitle("JDA v" + JDA.version);
 
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
-
-        // scrollPane.setViewportView(tree);
+        cn = new FileNavigationPane(this);
         cn.setMinimumSize(new Dimension(200, 50));
-        // searchPanel.add(cn);
-        // searchPanel.add(sp1);
-        cn.setPreferredSize(new Dimension(200, 50));
-        cn.setMaximumSize(new Dimension(200, 2147483647));
-        sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, cn, workPane);
-        getContentPane().add(sp2);
-        sp2.setResizeWeight(0.05);
-        rfComps.add(cn);
+        cn.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
+        cn.setPreferredSize(new Dimension(200, size.height));
+        cn.pack();
 
+        workPane = new WorkPane(this);
+        workPane.setPreferredSize(new Dimension(size.width - 200, size.height));
+        workPane.setLocation(200, 0);
+        workPane.pack();
+
+        desktop = new JDesktopPane();
+        setContentPane(desktop);
+        desktop.add(cn);
+        desktop.add(workPane);
+
+        rfComps.add(cn);
         rfComps.add(workPane);
 
         fontSpinner.setPreferredSize(new Dimension(42, 20));
