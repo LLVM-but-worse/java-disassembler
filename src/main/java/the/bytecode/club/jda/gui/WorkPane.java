@@ -87,6 +87,20 @@ public class WorkPane extends VisibleComponent implements ActionListener
 
     }
 
+    public static Dimension defaultDimension = new Dimension(-FileNavigationPane.defaultDimension.width, -1);
+    public static Point defaultPosition = new Point(FileNavigationPane.defaultDimension.width, 0);
+    @Override
+    public Dimension getDefaultDimensions()
+    {
+        return defaultDimension;
+    }
+
+    @Override
+    public Point getDefaultPosition()
+    {
+        return defaultPosition;
+    }
+
     int tabCount = 0;
 
     public void addWorkingFile(final String name, String container, final ClassNode cn)

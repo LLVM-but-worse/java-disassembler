@@ -37,6 +37,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
     MyTreeNode treeRoot = new MyTreeNode("Loaded Files:");
     MyTree tree = new MyTree(treeRoot);
     final JTextField quickSearch = new JTextField(quickSearchText);
+
     public transient KeyAdapter search = new KeyAdapter()
     {
         @Override
@@ -160,6 +161,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         tree.setShowsRootHandles(true);
         quickSearch.setForeground(Color.gray);
         setTitle("Files");
+        setMinimumSize(new Dimension(200, 50));
 
         this.open.addActionListener(e -> {
             final TreeNode root = (TreeNode) tree.getModel().getRoot();
@@ -251,6 +253,30 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
 
         this.setVisible(true);
         new FileDrop(this, this);
+    }
+
+    @Override
+    public void openClassFile(String name, String container, ClassNode cn)
+    {
+    }
+
+    @Override
+    public void openFile(String name, String container, byte[] contents)
+    {
+    }
+
+    public static Dimension defaultDimension = new Dimension(200, -1);
+    public static Point defaultPosition = new Point(0, 0);
+    @Override
+    public Dimension getDefaultDimensions()
+    {
+        return defaultDimension;
+    }
+
+    @Override
+    public Point getDefaultPosition()
+    {
+        return defaultPosition;
     }
 
     public void openClassFileToWorkSpace(final String name, final String container, final ClassNode node)

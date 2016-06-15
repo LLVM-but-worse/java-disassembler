@@ -4,6 +4,7 @@ import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.FileChangeNotifier;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Used to represent all the panes inside of Bytecode Viewer, this is temp code
@@ -15,13 +16,13 @@ import javax.swing.*;
 
 public abstract class VisibleComponent extends JInternalFrame implements FileChangeNotifier
 {
-
     private static final long serialVersionUID = -6453413772343643526L;
 
     public VisibleComponent(final String title)
     {
         super(title, false, false, false, false);
         this.setFrameIcon(null);
+        setResizable(true);
     }
 
     @SuppressWarnings("unused")
@@ -32,13 +33,14 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
     }
 
     @Override
-    public void openClassFile(final String name, String container, final ClassNode cn)
-    {
-    }
+    public abstract void openClassFile(final String name, String container, final ClassNode cn);
 
     @Override
-    public void openFile(final String name, String container, byte[] contents)
-    {
-    }
+    public abstract void openFile(final String name, String container, byte[] contents);
 
+    protected static Dimension defaultDimensions;
+    protected static Point defaultPosition;
+
+    public abstract Dimension getDefaultDimensions();
+    public abstract Point getDefaultPosition();
 }
