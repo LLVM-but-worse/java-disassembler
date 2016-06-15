@@ -165,7 +165,6 @@ public class WorkPane extends VisibleComponent implements ActionListener
                     {
                         if (tabComp instanceof ClassViewer)
                         {
-                            src.setEnabled(false);
                             JDA.viewer.setIcon(true);
                             ((ClassViewer) tabComp).startPaneUpdater(src);
                             JDA.viewer.setIcon(false);

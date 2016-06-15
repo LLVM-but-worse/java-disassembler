@@ -156,25 +156,7 @@ public class ClassViewer extends Viewer
             sp.setResizeWeight(0.5);
             sp = setDividerLocation(sp, 0.5);
         }
-        else if (paneCount == 1)
-        {
-            if (decompilers.get(2) != null)
-            {
-                // right split pane gets everything
-                sp2.setResizeWeight(0.0);
-                sp2 = setDividerLocation(sp2, 0.0);
-            }
-            else
-            {
-                // left split pane gets everything
-                sp2.setResizeWeight(1.0);
-                sp2 = setDividerLocation(sp2, 1.0);
-                // left or right pane gets everything
-                sp.setResizeWeight(decompilers.get(1) != null ? 0.0 : 1.0);
-                sp = setDividerLocation(sp, decompilers.get(1) != null ? 0.0 : 1.0);
-            }
-        }
-        else
+        else if (paneCount == 2)
         {
             if (decompilers.get(2) == null)
             {
@@ -195,6 +177,24 @@ public class ClassViewer extends Viewer
                 sp = setDividerLocation(sp, decompilers.get(1) == null ? 1.0 : 0.0);
             }
         }
+        else
+        {
+            if (decompilers.get(2) != null)
+            {
+                // right split pane gets everything
+                sp2.setResizeWeight(0.0);
+                sp2 = setDividerLocation(sp2, 0.0);
+            }
+            else
+            {
+                // left split pane gets everything
+                sp2.setResizeWeight(1.0);
+                sp2 = setDividerLocation(sp2, 1.0);
+                // left or right pane gets everything
+                sp.setResizeWeight(decompilers.get(1) != null ? 0.0 : 1.0);
+                sp = setDividerLocation(sp, decompilers.get(1) != null ? 0.0 : 1.0);
+            }
+        }
     }
 
     public void startPaneUpdater(final JButton button)
@@ -210,6 +210,7 @@ public class ClassViewer extends Viewer
         {
             javas.set(i, null);
         }
+        resetDivider();
         if (this.cn == null)
         {
             for (JPanel jpanel : panels)
