@@ -36,6 +36,9 @@ public class Resources
     public static ImageIcon decodedIcon = new ImageIcon(Resources.class.getClass().getResource("/decoded.png"));
     public static ImageIcon javaIcon = new ImageIcon(Resources.class.getClass().getResource("/java.png"));
 
+    public static ImageIcon fileNavigatorIcon = new ImageIcon(Resources.class.getClass().getResource("/icon.png"));
+    public static ImageIcon workPaneIcon = new ImageIcon(Resources.class.getClass().getResource("/icon.png"));
+
     public static ArrayList<BufferedImage> iconList;
     public static BufferedImage icon;
 

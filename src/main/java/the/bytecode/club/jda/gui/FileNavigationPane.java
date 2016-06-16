@@ -155,12 +155,12 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
 
     public FileNavigationPane(final FileChangeNotifier fcn)
     {
-        super("ClassNavigation");
+        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon);
+
         this.fcn = fcn;
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
         quickSearch.setForeground(Color.gray);
-        setTitle("Files");
         setMinimumSize(new Dimension(200, 50));
 
         this.open.addActionListener(e -> {
