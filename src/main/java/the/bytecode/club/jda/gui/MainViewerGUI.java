@@ -134,6 +134,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public Point unmaximizedPos;
     public Dimension unmaximizedSize;
 
+    private static final Color COLOR_DESKTOP_BACKGROUND = new Color(58, 110, 165);
     public JDesktopPane desktop;
     public static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
     public FileNavigationPane navigator;
@@ -395,6 +396,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         desktop.add(navigator);
         desktop.add(workPane);
         desktop.setDesktopManager(new WorkspaceDesktopManager());
+        if (desktop.getBackground().equals(Color.BLACK))
+            desktop.setBackground(COLOR_DESKTOP_BACKGROUND);
 
         rfComps.add(navigator);
         rfComps.add(workPane);
