@@ -90,7 +90,7 @@ public class WorkPane extends VisibleComponent implements ActionListener
     public static Dimension defaultDimension = new Dimension(-FileNavigationPane.defaultDimension.width, -1);
     public static Point defaultPosition = new Point(FileNavigationPane.defaultDimension.width, 0);
     @Override
-    public Dimension getDefaultDimensions()
+    public Dimension getDefaultSize()
     {
         return defaultDimension;
     }

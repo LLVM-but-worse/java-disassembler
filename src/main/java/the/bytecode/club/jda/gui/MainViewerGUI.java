@@ -10,6 +10,7 @@ import the.bytecode.club.jda.decompilers.FernFlowerDecompiler;
 import the.bytecode.club.jda.decompilers.ProcyonDecompiler;
 import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
 import the.bytecode.club.jda.settings.DecompilerSettings;
+import the.bytecode.club.jda.settings.IPersistentWindow;
 import the.bytecode.club.jda.settings.Settings;
 
 import javax.swing.*;
@@ -25,7 +26,7 @@ import java.util.List;
  *
  * @author Konloch
  */
-public class MainViewerGUI extends JFrame implements FileChangeNotifier
+public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersistentWindow
 {
     public void setOptionalLibrary()
     {
@@ -405,7 +406,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
 
         for (VisibleComponent f : rfComps)
         {
-            Dimension size = f.getDefaultDimensions();
+            Dimension size = f.getDefaultSize();
             if (size.width < 0 || size.height < 0)
                 size = new Dimension(
                         size.width < 0 ? clientSize.width + size.width : size.width,
@@ -414,6 +415,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
             f.pack();
             Point pos = f.getDefaultPosition();
             f.setLocation(pos);
+            f.setVisible(true);
             desktop.getDesktopManager().resizeFrame(f, pos.x, pos.y, size.width, size.height);
         }
     }
@@ -1013,5 +1015,60 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier
         {
             System.exit(0);
         }
+    }
+
+    @Override
+    public String getWindowId()
+    {
+        return "JDA";
+    }
+
+    @Override
+    public int getState()
+    {
+        return getExtendedState();
+    }
+
+    @Override
+    public void restoreState(int state)
+    {
+        setExtendedState(state);
+    }
+
+    @Override
+    public Point getPersistentPosition()
+    {
+        return unmaximizedPos;
+    }
+
+    @Override
+    public void restorePosition(Point pos)
+    {
+        unmaximizedPos = pos;
+        if (isNormalState())
+            setLocation(pos);
+    }
+
+    @Override
+    public Dimension getPersistentSize()
+    {
+        return unmaximizedSize;
+    }
+
+    @Override
+    public void restoreSize(Dimension size)
+    {
+        unmaximizedSize = size;
+        if (isNormalState())
+        {
+            setPreferredSize(size);
+            pack();
+        }
+    }
+
+    @Override
+    public boolean isNormalState()
+    {
+        return (getExtendedState() & MAXIMIZED_BOTH) != MAXIMIZED_BOTH && (getExtendedState() & ICONIFIED) != ICONIFIED;
     }
 }
