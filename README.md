@@ -1,5 +1,7 @@
 # JDA - The Java Disassembler
 
+![JDA Logo](icon.png)
+
 Java Disassembler (JDA) is a fork of Bytecode Viewer (BCV) that adds advanced code analysis features. The basic principles of BCV are maintained; however, many aspects are different.
 
 ## Motivation
@@ -25,3 +27,8 @@ tools to be built on top of.
 In the future, JDA will have powerful static analysis tools, such as control and data flow analysis, code contraction
 (copy and constant propagation), whole binary cross referencing (xrefs), and an IR engine. However, these standard
 core utilities will be distributed separately as a plugin.
+
+## Credits
+ - Logo (icosahedron) image by [Brayden Gregerson](http://braydengregerson.com), used with permission
+ - Bytecode Viewer by Konloch
+ - Disassembler by Bibl
