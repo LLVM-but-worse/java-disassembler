@@ -411,11 +411,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                 size = new Dimension(
                         size.width < 0 ? clientSize.width + size.width : size.width,
                         size.height < 0 ? clientSize.height + size.height : size.height);
-            f.setPreferredSize(size);
-            f.pack();
+            unmaximizedSize = size;
+            f.restoreState(VisibleComponent.VISIBLE);
+            f.restoreSize(size);
             Point pos = f.getDefaultPosition();
-            f.setLocation(pos);
-            f.setVisible(true);
+            f.restorePosition(pos);
             desktop.getDesktopManager().resizeFrame(f, pos.x, pos.y, size.width, size.height);
         }
     }

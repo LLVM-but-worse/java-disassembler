@@ -80,7 +80,7 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
         return windowId;
     }
 
-    private static int
+    public static int
         MAXIMIZED = 1 << 0,
         MINIMIZED = 1 << 1,
         VISIBLE = 1 << 2;
