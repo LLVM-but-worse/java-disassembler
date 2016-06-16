@@ -3,6 +3,7 @@ package the.bytecode.club.jda.gui;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.FileChangeNotifier;
 import the.bytecode.club.jda.JDA;
+import the.bytecode.club.jda.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,8 +37,7 @@ public class WorkPane extends VisibleComponent implements ActionListener
 
     public WorkPane(final FileChangeNotifier fcn)
     {
-        super("WorkPanel");
-        setTitle("Work Space");
+        super("WorkPanel", "Work Space", Resources.fileNavigatorIcon);
 
         this.tabs = new JTabbedPane();
         this.fcn = fcn;

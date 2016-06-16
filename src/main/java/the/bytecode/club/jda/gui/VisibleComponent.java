@@ -5,6 +5,8 @@ import the.bytecode.club.jda.FileChangeNotifier;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 /**
  * Used to represent all the panes inside of Bytecode Viewer, this is temp code
@@ -18,12 +20,44 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
 {
     private String windowId;
 
-    public VisibleComponent(final String title)
+    public Point unmaximizedPos;
+    public Dimension unmaximizedSize;
+
+    public VisibleComponent(final String id, final String title, final Icon icon)
     {
-        super(title, false, false, false, false);
-        windowId = title;
-        this.setFrameIcon(null);
-        setResizable(true);
+        super(title, true, true, true, true);
+        windowId = id;
+        setFrameIcon(icon);
+
+        unmaximizedPos = getLocation();
+        unmaximizedSize = getSize();
+
+        addComponentListener(new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                if (!isMaximum())
+                    unmaximizedSize = getSize();
+                super.componentResized(e);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e)
+            {
+                if (!isMaximum())
+                    unmaximizedPos = getLocation();
+                super.componentMoved(e);
+            }
+        });
+
+        addPropertyChangeListener(evt -> {
+            if (!isMaximum() && !isIcon())
+            {
+                setSize(unmaximizedSize);
+                setLocation(unmaximizedPos);
+            }
+        });
     }
 
     @Override
