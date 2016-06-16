@@ -2,11 +2,13 @@ package the.bytecode.club.jda.gui;
 
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.FileChangeNotifier;
+import the.bytecode.club.jda.settings.IPersistentWindow;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.beans.PropertyVetoException;
 
 /**
  * Used to represent all the panes inside of Bytecode Viewer, this is temp code
@@ -16,7 +18,7 @@ import java.awt.event.ComponentEvent;
  * @author WaterWolf
  */
 
-public abstract class VisibleComponent extends JInternalFrame implements FileChangeNotifier
+public abstract class VisibleComponent extends JInternalFrame implements FileChangeNotifier, IPersistentWindow
 {
     private String windowId;
 
@@ -29,8 +31,8 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
         windowId = id;
         setFrameIcon(icon);
 
-        unmaximizedPos = getLocation();
-        unmaximizedSize = getSize();
+        unmaximizedPos = getDefaultPosition();
+        unmaximizedSize = getDefaultSize();
 
         addComponentListener(new ComponentAdapter()
         {
@@ -52,7 +54,7 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
         });
 
         addPropertyChangeListener(evt -> {
-            if (!isMaximum() && !isIcon())
+            if (isNormalState())
             {
                 setSize(unmaximizedSize);
                 setLocation(unmaximizedPos);
@@ -69,11 +71,82 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
     protected static Dimension defaultDimensions;
     protected static Point defaultPosition;
 
-    public abstract Dimension getDefaultDimensions();
+    public abstract Dimension getDefaultSize();
     public abstract Point getDefaultPosition();
 
+    @Override
     public String getWindowId()
     {
         return windowId;
+    }
+
+    private static int
+        MAXIMIZED = 1 << 0,
+        MINIMIZED = 1 << 1,
+        VISIBLE = 1 << 2;
+
+    @Override
+    public int getState()
+    {
+        int state = 0;
+        if (isMaximum())
+            state |= MAXIMIZED;
+        if (isIcon())
+            state |= MINIMIZED;
+        if (isVisible())
+            state |= VISIBLE;
+        return state;
+    }
+
+    @Override
+    public void restoreState(int state)
+    {
+        try
+        {
+            setMaximum((state & MAXIMIZED) != 0);
+            setIcon((state & MINIMIZED) != 0);
+            setVisible((state & VISIBLE) != 0);
+        }
+        catch (PropertyVetoException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Point getPersistentPosition()
+    {
+        return unmaximizedPos;
+    }
+
+    @Override
+    public void restorePosition(Point pos)
+    {
+        unmaximizedPos = pos;
+        if (isNormalState())
+            setLocation(pos);
+    }
+
+    @Override
+    public Dimension getPersistentSize()
+    {
+        return unmaximizedSize;
+    }
+
+    @Override
+    public void restoreSize(Dimension size)
+    {
+        unmaximizedSize = size;
+        if (isNormalState())
+        {
+            setPreferredSize(size);
+            pack();
+        }
+    }
+
+    @Override
+    public boolean isNormalState()
+    {
+        return !isMaximum() && !isIcon();
     }
 }

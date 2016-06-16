@@ -268,7 +268,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
     public static Dimension defaultDimension = new Dimension(200, -1);
     public static Point defaultPosition = new Point(0, 0);
     @Override
-    public Dimension getDefaultDimensions()
+    public Dimension getDefaultSize()
     {
         return defaultDimension;
     }
