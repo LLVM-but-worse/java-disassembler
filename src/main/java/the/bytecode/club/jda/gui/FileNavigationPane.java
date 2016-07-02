@@ -554,7 +554,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         }
         else
         {
-            openFileToWorkSpace(nameBuffer.toString(), containerName, JDA.getFileContents(nameBuffer.toString()));
+            openFileToWorkSpace(nameBuffer.toString(), containerName, JDA.getFileContents(containerName, nameBuffer.toString()));
         }
     }
 

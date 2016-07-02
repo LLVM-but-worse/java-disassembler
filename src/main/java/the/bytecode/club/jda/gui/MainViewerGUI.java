@@ -120,13 +120,40 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         resetWindows();
     }
 
-    public class Test implements KeyEventDispatcher
+    public class JDAKeybindManager implements java.awt.KeyEventDispatcher
     {
+        private final HashMap<Integer, Boolean> keyStates = new HashMap<>();
+        private long lastEventTime = System.currentTimeMillis();
+
         @Override
         public boolean dispatchKeyEvent(KeyEvent e)
         {
-            JDA.checkHotKey(e);
-            return false;
+            if (!e.isControlDown())
+                return false;
+
+            long deltaTime = System.currentTimeMillis() - lastEventTime;
+            lastEventTime = System.currentTimeMillis();
+            if (deltaTime <= 5) // hack to fix repeated key events, thanks Java
+                return false;
+
+            int key = e.getKeyCode();
+            synchronized (keyStates)
+            {
+                if (e.getID() == KeyEvent.KEY_PRESSED)
+                {
+                    if (!keyStates.containsKey(key) || !keyStates.get(key))
+                    {
+                        keyStates.put(key, true);
+                        JDA.checkHotKey(e);
+                    }
+                    return true;
+                }
+                else if (e.getID() == KeyEvent.KEY_RELEASED)
+                {
+                    keyStates.put(key, false);
+                }
+                return false;
+            }
         }
     }
 
@@ -180,7 +207,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         editButtons.put(panelGroup1, new HashMap<>());
         editButtons.put(panelGroup2, new HashMap<>());
         editButtons.put(panelGroup3, new HashMap<>());
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new Test());
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new JDAKeybindManager());
         this.addWindowStateListener(new WindowAdapter()
         {
             @Override
@@ -396,8 +423,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         desktop.add(navigator);
         desktop.add(workPane);
         desktop.setDesktopManager(new WorkspaceDesktopManager());
-        if (desktop.getBackground().equals(Color.BLACK))
-            desktop.setBackground(COLOR_DESKTOP_BACKGROUND);
+        desktop.setBackground(COLOR_DESKTOP_BACKGROUND);
 
         rfComps.add(navigator);
         rfComps.add(workPane);
