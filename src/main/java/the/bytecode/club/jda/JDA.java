@@ -24,7 +24,7 @@ import java.util.Map;
 public class JDA
 {
     /*per version*/
-    public static final String version = "0.0.2";
+    public static final String version = "0.0.3";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
@@ -189,13 +189,16 @@ public class JDA
      * @param name the file name
      * @return the file contents as a byte[]
      */
-    public static byte[] getFileContents(String name)
+    public static byte[] getFileContents(String containerName, String name)
     {
         for (FileContainer container : files)
         {
-            HashMap<String, byte[]> files = container.files;
-            if (files.containsKey(name))
-                return files.get(name);
+            if (container.name.equals(containerName))
+            {
+                HashMap<String, byte[]> files = container.files;
+                if (files.containsKey(name))
+                    return files.get(name);
+            }
         }
 
         return null;
@@ -596,8 +599,6 @@ public class JDA
         sm.setBlocking();
     }
 
-    private static long last = System.currentTimeMillis();
-
     /**
      * Checks the hotkeys
      *
@@ -605,12 +606,8 @@ public class JDA
      */
     public static void checkHotKey(KeyEvent e)
     {
-        if (System.currentTimeMillis() - last <= (4000))
-            return;
-
         if ((e.getKeyCode() == KeyEvent.VK_O) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
-            last = System.currentTimeMillis();
             JFileChooser fc = new JFileChooser();
             try
             {
@@ -663,18 +660,14 @@ public class JDA
         }
         else if ((e.getKeyCode() == KeyEvent.VK_N) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
-            last = System.currentTimeMillis();
             JDA.resetWorkSpace(true);
         }
         else if ((e.getKeyCode() == KeyEvent.VK_R) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
-            last = System.currentTimeMillis();
             viewer.reloadResources();
         }
         else if ((e.getKeyCode() == KeyEvent.VK_S) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
-            last = System.currentTimeMillis();
-
             if (JDA.getLoadedClasses().isEmpty())
             {
                 JDA.showMessage("First open a class, jar, or zip file.");
@@ -752,7 +745,6 @@ public class JDA
         }
         else if ((e.getKeyCode() == KeyEvent.VK_W) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
         {
-            last = System.currentTimeMillis();
             if (viewer.workPane.getCurrentViewer() != null)
                 viewer.workPane.tabs.remove(viewer.workPane.getCurrentViewer());
         }
