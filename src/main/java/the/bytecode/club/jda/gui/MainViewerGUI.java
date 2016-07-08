@@ -146,7 +146,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                         keyStates.put(key, true);
                         JDA.checkHotKey(e);
                     }
-                    return true;
+                    return false;
                 }
                 else if (e.getID() == KeyEvent.KEY_RELEASED)
                 {
