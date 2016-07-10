@@ -29,7 +29,9 @@ public abstract class VisibleComponent extends JInternalFrame implements FileCha
     {
         super(title, true, true, true, true);
         windowId = id;
+        setName(title);
         setFrameIcon(icon);
+        setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 
         unmaximizedPos = getDefaultPosition();
         unmaximizedSize = getDefaultSize();

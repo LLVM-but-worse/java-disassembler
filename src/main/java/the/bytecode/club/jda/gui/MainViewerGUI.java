@@ -17,6 +17,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.*;
 import java.util.List;
@@ -28,6 +29,49 @@ import java.util.List;
  */
 public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersistentWindow
 {
+    public boolean isMaximized = false;
+    public Point unmaximizedPos;
+    public Dimension unmaximizedSize;
+
+    private static final Color COLOR_DESKTOP_BACKGROUND = new Color(58, 110, 165);
+    public JDesktopPane desktop;
+    public static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
+    public FileNavigationPane navigator;
+    public WorkPane workPane;
+
+    public AboutWindow aboutWindow = new AboutWindow();
+    public IntroWindow introWindow = new IntroWindow();
+
+    public final ButtonGroup panelGroup1 = new ButtonGroup();
+    public final ButtonGroup panelGroup2 = new ButtonGroup();
+    public final ButtonGroup panelGroup3 = new ButtonGroup();
+    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
+
+    public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
+    public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
+    public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
+
+    public final JMenuItem mntmNewWorkspace = new JMenuItem("New Workspace");
+    public JMenu mnRecentFiles = new JMenu("Recent Files");
+    public final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
+    public final JMenuItem mntmAbout = new JMenuItem("About");
+    public final JMenuItem mntmIntro = new JMenuItem("Help");
+    public final JMenuItem mntmSaveAsRunnableJar = new JMenuItem("Save As Runnable Jar..");
+    public final JCheckBoxMenuItem mntmUpdateCheck = new JCheckBoxMenuItem("Update Check");
+    public final JMenuItem mntmDecompileSaveOpenedClasses = new JMenuItem("Decompile & Save Opened Class..");
+    public final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
+    public final JCheckBox mnShowContainer = new JCheckBox("Show Containing File's Name");
+    public final JCheckBox mnSnapToEdges = new JCheckBox("Snap Windows to Edges");
+    public final JMenuItem mntmSetOptionalLibrary = new JMenuItem("Set Optional Library Folder");
+    public final JMenu mnFontSize = new JMenu("Font Size");
+    public final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
+
+    public final JMenuBar menuBar;
+    public final JMenu viewMenu;
+    public final JMenu fileMenu;
+    public final JMenu windowMenu;
+    public final JMenu settingsMenu;
+
     public void setOptionalLibrary()
     {
         final JTextField text = new JTextField();
@@ -88,18 +132,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         JMenu menu = new JMenu("Pane " + (id + 1));
         JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
         JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
-        JRadioButtonMenuItem hexcode = new JRadioButtonMenuItem("Hex Dump");
         ButtonGroup group = allPanes.get(id);
 
         group.add(none);
         group.add(bytecode);
-        group.add(hexcode);
         allDecompilers.get(group).put(none, null);
         allDecompilersRev.get(group).put(null, none);
         allDecompilers.get(group).put(bytecode, Decompiler.BYTECODE);
         allDecompilersRev.get(group).put(Decompiler.BYTECODE, bytecode);
-        allDecompilers.get(group).put(hexcode, Decompiler.HEXCODE);
-        allDecompilersRev.get(group).put(Decompiler.HEXCODE, hexcode);
 
         menu.add(none);
         menu.add(new JSeparator());
@@ -107,9 +147,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         menu.add(generateDecompilerMenu(Decompiler.CFR, id));
         menu.add(generateDecompilerMenu(Decompiler.FERNFLOWER, id));
         menu.add(new JSeparator());
-        menu.add(new JSeparator());
         menu.add(bytecode);
-        menu.add(hexcode);
         return menu;
     }
 
@@ -157,42 +195,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         }
     }
 
-    public boolean isMaximized = false;
-    public Point unmaximizedPos;
-    public Dimension unmaximizedSize;
-
-    private static final Color COLOR_DESKTOP_BACKGROUND = new Color(58, 110, 165);
-    public JDesktopPane desktop;
-    public static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
-    public FileNavigationPane navigator;
-    public WorkPane workPane;
-
-    public AboutWindow aboutWindow = new AboutWindow();
-    public IntroWindow introWindow = new IntroWindow();
-
-    public final ButtonGroup panelGroup1 = new ButtonGroup();
-    public final ButtonGroup panelGroup2 = new ButtonGroup();
-    public final ButtonGroup panelGroup3 = new ButtonGroup();
-    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
-
-    public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
-
-    public final JMenuItem mntmNewWorkspace = new JMenuItem("New Workspace");
-    public JMenu mnRecentFiles = new JMenu("Recent Files");
-    public final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
-    public final JMenuItem mntmAbout = new JMenuItem("About");
-    public final JMenuItem mntmIntro = new JMenuItem("Help");
-    public final JMenuItem mntmSaveAsRunnableJar = new JMenuItem("Save As Runnable Jar..");
-    public final JCheckBoxMenuItem mntmUpdateCheck = new JCheckBoxMenuItem("Update Check");
-    public final JMenuItem mntmDecompileSaveOpenedClasses = new JMenuItem("Decompile & Save Opened Class..");
-    public final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
-    public final JCheckBox mnShowContainer = new JCheckBox("Show Containing File's Name");
-    private final JMenuItem mntmSetOptionalLibrary = new JMenuItem("Set Optional Library Folder");
-    private final JMenu mnFontSize = new JMenu("Font Size");
-    private final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
-
     public MainViewerGUI()
     {
         initializeWindows();
@@ -231,7 +233,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                 }
                 else if ((oldState & Frame.MAXIMIZED_BOTH) != 0 && (newState & Frame.MAXIMIZED_BOTH) == 0)
                 {
-                    isMaximized = false;
                     setSize(unmaximizedSize);
                     setLocation(unmaximizedPos);
                 }
@@ -258,10 +259,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         this.setIconImages(Resources.iconList);
 
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenu viewMenu = new JMenu("View");
-        JMenu settingsMenu = new JMenu("Settings");
+        menuBar = new JMenuBar();
+        fileMenu = new JMenu("File");
+        viewMenu = new JMenu("View");
+        windowMenu = new JMenu("Window");
+        settingsMenu = new JMenu("Settings");
         setJMenuBar(menuBar);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -318,6 +320,29 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         viewMenu.add(generatePane(1));
         viewMenu.add(generatePane(2));
 
+        for (VisibleComponent frame : rfComps)
+        {
+            JMenuItem button = new JMenuItem(frame.getName());
+            button.addActionListener(e -> {
+                try
+                {
+                    frame.setIcon(false);
+                    frame.setVisible(true);
+                }
+                catch (PropertyVetoException e1)
+                {
+                }
+            });
+            windowMenu.add(button);
+        }
+        windowMenu.add(new JSeparator());
+
+        mnSnapToEdges.setSelected(Settings.SNAP_TO_EDGES.getBool());
+        mnSnapToEdges.addItemListener(e -> Settings.SNAP_TO_EDGES.set(mnSnapToEdges.isSelected()));
+        windowMenu.add(mnSnapToEdges);
+
+        menuBar.add(windowMenu);
+
         settingsMenu.add(refreshOnChange);
 
         settingsMenu.add(new JSeparator());
@@ -367,7 +392,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         settingsMenu.add(bytecodeSettingsMenu);
 
         menuBar.add(settingsMenu);
-
         menuBar.add(spinnerMenu);
 
         if (JDA.previewCopy)

@@ -29,32 +29,6 @@ public abstract class Decompiler
     public final static Decompiler FERNFLOWER = new FernFlowerDecompiler();
     public final static Decompiler PROCYON = new ProcyonDecompiler();
     public final static Decompiler CFR = new CFRDecompiler();
-    public final static Decompiler HEXCODE = new Decompiler()
-    {
-        @Override
-        public String decompileClassNode(ClassNode cn, byte[] b)
-        {
-            throw new IllegalArgumentException();
-        }
-
-        @Override
-        public void decompileToZip(String zipName)
-        {
-            throw new IllegalArgumentException();
-        }
-
-        @Override
-        public String getName()
-        {
-            return "Hexcode";
-        }
-
-        @Override
-        public DecompilerSettings getSettings()
-        {
-            throw new IllegalArgumentException();
-        }
-    };
 
     public Decompiler()
     {
