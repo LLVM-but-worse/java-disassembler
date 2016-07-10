@@ -60,8 +60,7 @@ public class ClassViewer extends Viewer
         javas.set(pane, text);
         SearchPanel search = new SearchPanel(text);
         searches.set(pane, search);
-        if (decompilers.get(pane) != Decompiler.HEXCODE)
-            panels.get(pane).add(search, BorderLayout.NORTH);
+        panels.get(pane).add(search, BorderLayout.NORTH);
     }
 
     /**

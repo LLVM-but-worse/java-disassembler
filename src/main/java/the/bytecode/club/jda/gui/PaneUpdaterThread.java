@@ -38,26 +38,19 @@ public class PaneUpdaterThread extends Thread
         try
         {
             final byte[] b = JDA.getClassBytes(viewer.container, viewer.cn.name + ".class");
-            if (decompiler != Decompiler.HEXCODE)
-            {
-                RSyntaxTextArea panelArea = new RSyntaxTextArea();
-                panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-                panelArea.setCodeFoldingEnabled(true);
-                panelArea.setAntiAliasingEnabled(true);
-                final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
-                panelArea.setText(decompiler.decompileClassNode(viewer.cn, b));
-                panelArea.setCaretPosition(0);
-                panelArea.setEditable(viewer.isPaneEditable(paneId));
-                scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
-                panelArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) JDA.viewer.fontSpinner.getValue()));
+            RSyntaxTextArea panelArea = new RSyntaxTextArea();
+            panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+            panelArea.setCodeFoldingEnabled(true);
+            panelArea.setAntiAliasingEnabled(true);
+            final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
+            panelArea.setText(decompiler.decompileClassNode(viewer.cn, b));
+            panelArea.setCaretPosition(0);
+            panelArea.setEditable(viewer.isPaneEditable(paneId));
+            scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
+            panelArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, (int) JDA.viewer.fontSpinner.getValue()));
 
-                SwingUtilities.invokeLater(() -> target.add(scrollPane));
-                viewer.updatePane(paneId, panelArea, decompiler);
-            }
-            else
-            {
-                // initialize fallback
-            }
+            SwingUtilities.invokeLater(() -> target.add(scrollPane));
+            viewer.updatePane(paneId, panelArea, decompiler);
         }
         catch (Exception e)
         {

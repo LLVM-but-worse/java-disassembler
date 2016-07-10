@@ -23,6 +23,7 @@ public class Settings
 
     public static final Setting PATH = new Setting("path", "");
     public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", "false");
+    public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", "false");
     public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", "true");
 
     public static void saveGUI()

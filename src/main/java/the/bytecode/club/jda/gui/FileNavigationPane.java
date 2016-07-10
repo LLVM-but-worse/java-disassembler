@@ -150,6 +150,8 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
             {
                 tree.grabFocus();
             }
+
+            JDA.checkHotKey(ke);
         }
     };
 
@@ -191,6 +193,7 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
 
             public void keyPressed(KeyEvent e)
             {
+                JDA.checkHotKey(e);
             }
 
             @Override
