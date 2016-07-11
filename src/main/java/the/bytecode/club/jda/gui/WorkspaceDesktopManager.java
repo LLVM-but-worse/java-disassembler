@@ -12,9 +12,9 @@ public class WorkspaceDesktopManager extends DefaultDesktopManager
     @Override
     public void dragFrame(JComponent f, int x, int y)
     {
-        if (Settings.SNAP_TO_EDGES.getBool() && f instanceof VisibleComponent)
+        if (Settings.SNAP_TO_EDGES.getBool() && f instanceof JDAWindow)
         {
-            VisibleComponent frame = (VisibleComponent) f;
+            JDAWindow frame = (JDAWindow) f;
             JDesktopPane desk = frame.getDesktopPane();
             Dimension d = desk.getSize();
             if (x < SNAP_THRESHOLD)
@@ -34,7 +34,7 @@ public class WorkspaceDesktopManager extends DefaultDesktopManager
     {
         if (Settings.SNAP_TO_EDGES.getBool())
         {
-            VisibleComponent frame = (VisibleComponent) f;
+            JDAWindow frame = (JDAWindow) f;
             JDesktopPane desk = frame.getDesktopPane();
             Dimension d = desk.getSize();
             if (x < SNAP_THRESHOLD)

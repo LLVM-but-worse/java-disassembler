@@ -29,77 +29,33 @@ import java.util.List;
  */
 public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersistentWindow
 {
-    public boolean isMaximized = false;
-    public Point unmaximizedPos;
-    public Dimension unmaximizedSize;
-
+    public static final long serialVersionUID = 1851409230530948543L;
     private static final Color COLOR_DESKTOP_BACKGROUND = new Color(58, 110, 165);
-    public JDesktopPane desktop;
-    public static ArrayList<VisibleComponent> rfComps = new ArrayList<>();
-    public FileNavigationPane navigator;
-    public WorkPane workPane;
-
-    public AboutWindow aboutWindow = new AboutWindow();
-    public IntroWindow introWindow = new IntroWindow();
 
     public final ButtonGroup panelGroup1 = new ButtonGroup();
     public final ButtonGroup panelGroup2 = new ButtonGroup();
     public final ButtonGroup panelGroup3 = new ButtonGroup();
-    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
 
-    public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
+    public JMenuBar menuBar;
+    public JMenu viewMenu;
+    public JMenu fileMenu;
+    public JMenu windowMenu;
+    public JMenu settingsMenu;
 
-    public final JMenuItem mntmNewWorkspace = new JMenuItem("New Workspace");
-    public JMenu mnRecentFiles = new JMenu("Recent Files");
-    public final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
-    public final JMenuItem mntmAbout = new JMenuItem("About");
-    public final JMenuItem mntmIntro = new JMenuItem("Help");
-    public final JMenuItem mntmSaveAsRunnableJar = new JMenuItem("Save As Runnable Jar..");
-    public final JCheckBoxMenuItem mntmUpdateCheck = new JCheckBoxMenuItem("Update Check");
-    public final JMenuItem mntmDecompileSaveOpenedClasses = new JMenuItem("Decompile & Save Opened Class..");
-    public final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
-    public final JCheckBox mnShowContainer = new JCheckBox("Show Containing File's Name");
-    public final JCheckBox mnSnapToEdges = new JCheckBox("Snap Windows to Edges");
-    public final JMenuItem mntmSetOptionalLibrary = new JMenuItem("Set Optional Library Folder");
-    public final JMenu mnFontSize = new JMenu("Font Size");
-    public final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
+    public boolean isMaximized = false;
+    public Point unmaximizedPos;
+    public Dimension unmaximizedSize;
 
-    public final JMenuBar menuBar;
-    public final JMenu viewMenu;
-    public final JMenu fileMenu;
-    public final JMenu windowMenu;
-    public final JMenu settingsMenu;
-
-    public void setOptionalLibrary()
-    {
-        final JTextField text = new JTextField();
-        text.setText(Settings.PATH.get());
-        final JDialog dialog = new JDialog();
-        dialog.setModal(true);
-        dialog.add(text);
-        dialog.setSize(500, 100);
-        dialog.setLocationRelativeTo(JDA.viewer);
-        dialog.addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent e)
-            {
-                Settings.PATH.set(text.getText());
-            }
-        });
-        dialog.setVisible(true);
-    }
-
-    public static final long serialVersionUID = 1851409230530948543L;
-
+    public JDesktopPane desktop;
+    public FileNavigationPane navigator;
+    public WorkPane workPane;
+    public static ArrayList<JDAWindow> windows = new ArrayList<>();
     private final ActionListener listener = new ActionListener()
     {
         @Override
         public void actionPerformed(ActionEvent arg0)
         {
-            if (refreshOnChange.isSelected())
+            if (Settings.REFRESH_ON_VIEW_CHANGE.getBool())
             {
                 if (workPane.getCurrentViewer() == null)
                     return;
@@ -107,93 +63,15 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             }
         }
     };
-
-    private JMenu generateDecompilerMenu(Decompiler decompiler, int panelId)
-    {
-        ButtonGroup group = allPanes.get(panelId);
-        JMenu menu = new JMenu(decompiler.getName());
-        JRadioButtonMenuItem java = new JRadioButtonMenuItem("Java");
-        java.addActionListener(listener);
-        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
-        JCheckBoxMenuItem editable = new JCheckBoxMenuItem("Editable");
-        JSeparator separator = new JSeparator();
-        menu.add(java);
-        group.add(java);
-        allDecompilers.get(group).put(java, decompiler);
-        allDecompilersRev.get(group).put(decompiler, java);
-        menu.add(separator);
-        menu.add(editable);
-        editButtons.get(group).put(decompiler, editable);
-        return menu;
-    }
-
-    private JMenu generatePane(int id)
-    {
-        JMenu menu = new JMenu("Pane " + (id + 1));
-        JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
-        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
-        ButtonGroup group = allPanes.get(id);
-
-        group.add(none);
-        group.add(bytecode);
-        allDecompilers.get(group).put(none, null);
-        allDecompilersRev.get(group).put(null, none);
-        allDecompilers.get(group).put(bytecode, Decompiler.BYTECODE);
-        allDecompilersRev.get(group).put(Decompiler.BYTECODE, bytecode);
-
-        menu.add(none);
-        menu.add(new JSeparator());
-        menu.add(generateDecompilerMenu(Decompiler.PROCYON, id));
-        menu.add(generateDecompilerMenu(Decompiler.CFR, id));
-        menu.add(generateDecompilerMenu(Decompiler.FERNFLOWER, id));
-        menu.add(new JSeparator());
-        menu.add(bytecode);
-        return menu;
-    }
-
-    public void resetWorkspace()
-    {
-        navigator.resetWorkspace();
-        workPane.resetWorkspace();
-        resetWindows();
-    }
-
-    public class JDAKeybindManager implements java.awt.KeyEventDispatcher
-    {
-        private final HashMap<Integer, Boolean> keyStates = new HashMap<>();
-        private long lastEventTime = System.currentTimeMillis();
-
-        @Override
-        public boolean dispatchKeyEvent(KeyEvent e)
-        {
-            if (!e.isControlDown())
-                return false;
-
-            long deltaTime = System.currentTimeMillis() - lastEventTime;
-            lastEventTime = System.currentTimeMillis();
-            if (deltaTime <= 5) // hack to fix repeated key events, thanks Java
-                return false;
-
-            int key = e.getKeyCode();
-            synchronized (keyStates)
-            {
-                if (e.getID() == KeyEvent.KEY_PRESSED)
-                {
-                    if (!keyStates.containsKey(key) || !keyStates.get(key))
-                    {
-                        keyStates.put(key, true);
-                        JDA.checkHotKey(e);
-                    }
-                    return false;
-                }
-                else if (e.getID() == KeyEvent.KEY_RELEASED)
-                {
-                    keyStates.put(key, false);
-                }
-                return false;
-            }
-        }
-    }
+    public AboutWindow aboutWindow = new AboutWindow();
+    public IntroWindow introWindow = new IntroWindow();
+    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
+    public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
+    public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
+    public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
+    public JMenu mnRecentFiles = new JMenu("Recent Files");
+    public JSpinner fontSpinner = new JSpinner();
+    private JMenuItem spinnerMenu = new JMenuItem("");
 
     public MainViewerGUI()
     {
@@ -259,6 +137,39 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         this.setIconImages(Resources.iconList);
 
+        initializeMenubar();
+
+        if (JDA.previewCopy)
+            setTitle("JDA v" + JDA.version + " Preview");
+        else
+            setTitle("JDA v" + JDA.version);
+
+        Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
+        windowSize = new Dimension(windowSize.width * 3 / 4, windowSize.height * 2 / 3);
+        setPreferredSize(windowSize);
+        pack();
+        unmaximizedSize = getSize();
+        unmaximizedPos = getLocation();
+
+        this.setLocationRelativeTo(null);
+    }
+
+    private void initializeMenubar()
+    {
+        final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
+        final JMenuItem mntmNewWorkspace = new JMenuItem("New Workspace");
+        final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
+        final JMenuItem mntmAbout = new JMenuItem("About");
+        final JMenuItem mntmIntro = new JMenuItem("Help");
+        final JMenuItem mntmSaveAsRunnableJar = new JMenuItem("Save As Runnable Jar..");
+        final JCheckBoxMenuItem mntmUpdateCheck = new JCheckBoxMenuItem("Update Check");
+        final JMenuItem mntmDecompileSaveOpenedClasses = new JMenuItem("Decompile & Save Opened Class..");
+        final JCheckBox mnShowContainer = new JCheckBox("Show Containing File's Name");
+        final JCheckBox mnSnapToEdges = new JCheckBox("Snap Windows to Edges");
+        final JMenuItem mntmSetOptionalLibrary = new JMenuItem("Set Optional Library Folder");
+        final JMenu mnFontSize = new JMenu("Font Size");
+        final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
+
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
         viewMenu = new JMenu("View");
@@ -320,7 +231,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         viewMenu.add(generatePane(1));
         viewMenu.add(generatePane(2));
 
-        for (VisibleComponent frame : rfComps)
+        for (JDAWindow frame : windows)
         {
             JMenuItem button = new JMenuItem(frame.getName());
             button.addActionListener(e -> {
@@ -343,6 +254,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         menuBar.add(windowMenu);
 
+        refreshOnChange.addItemListener(e -> Settings.REFRESH_ON_VIEW_CHANGE.set(refreshOnChange.isSelected()));
+        refreshOnChange.setSelected(Settings.REFRESH_ON_VIEW_CHANGE.getBool());
         settingsMenu.add(refreshOnChange);
 
         settingsMenu.add(new JSeparator());
@@ -394,18 +307,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         menuBar.add(settingsMenu);
         menuBar.add(spinnerMenu);
 
-        if (JDA.previewCopy)
-            setTitle("JDA v" + JDA.version + " Preview");
-        else
-            setTitle("JDA v" + JDA.version);
-
-        Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
-        windowSize = new Dimension(windowSize.width * 3 / 4, windowSize.height * 2 / 3);
-        setPreferredSize(windowSize);
-        pack();
-        unmaximizedSize = getSize();
-        unmaximizedPos = getLocation();
-
         fontSpinner.setPreferredSize(new Dimension(42, 20));
         fontSpinner.setSize(new Dimension(42, 20));
         fontSpinner.setModel(new SpinnerNumberModel(12, 1, null, 1));
@@ -434,7 +335,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         panelGroup1.setSelected(allDecompilersRev.get(panelGroup1).get(Decompiler.FERNFLOWER).getModel(), true);
         panelGroup2.setSelected(allDecompilersRev.get(panelGroup2).get(Decompiler.BYTECODE).getModel(), true);
         panelGroup3.setSelected(allDecompilersRev.get(panelGroup3).get(null).getModel(), true);
-        this.setLocationRelativeTo(null);
+    }
+
+    public static <T> T getComponent(final Class<T> clazz)
+    {
+        for (final JDAWindow vc : windows)
+            if (vc.getClass() == clazz)
+                return clazz.cast(vc);
+        return null;
     }
 
     private void initializeWindows()
@@ -449,15 +357,15 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         desktop.setDesktopManager(new WorkspaceDesktopManager());
         desktop.setBackground(COLOR_DESKTOP_BACKGROUND);
 
-        rfComps.add(navigator);
-        rfComps.add(workPane);
+        windows.add(navigator);
+        windows.add(workPane);
     }
 
     public void resetWindows()
     {
         Dimension clientSize = desktop.getSize();
 
-        for (VisibleComponent f : rfComps)
+        for (JDAWindow f : windows)
         {
             Dimension size = f.getDefaultSize();
             if (size.width < 0 || size.height < 0)
@@ -465,7 +373,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                         size.width < 0 ? clientSize.width + size.width : size.width,
                         size.height < 0 ? clientSize.height + size.height : size.height);
             unmaximizedSize = size;
-            f.restoreState(VisibleComponent.VISIBLE);
+            f.restoreState(JDAWindow.VISIBLE);
             f.restoreSize(size);
             Point pos = f.getDefaultPosition();
             f.restorePosition(pos);
@@ -473,8 +381,75 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         }
     }
 
-    public JSpinner fontSpinner = new JSpinner();
-    private JMenuItem spinnerMenu = new JMenuItem("");
+    public void setOptionalLibrary()
+    {
+        final JTextField text = new JTextField();
+        text.setText(Settings.PATH.get());
+        final JDialog dialog = new JDialog();
+        dialog.setModal(true);
+        dialog.add(text);
+        dialog.setSize(500, 100);
+        dialog.setLocationRelativeTo(JDA.viewer);
+        dialog.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                Settings.PATH.set(text.getText());
+            }
+        });
+        dialog.setVisible(true);
+    }
+
+    private JMenu generateDecompilerMenu(Decompiler decompiler, int panelId)
+    {
+        ButtonGroup group = allPanes.get(panelId);
+        JMenu menu = new JMenu(decompiler.getName());
+        JRadioButtonMenuItem java = new JRadioButtonMenuItem("Java");
+        java.addActionListener(listener);
+        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
+        JCheckBoxMenuItem editable = new JCheckBoxMenuItem("Editable");
+        JSeparator separator = new JSeparator();
+        menu.add(java);
+        group.add(java);
+        allDecompilers.get(group).put(java, decompiler);
+        allDecompilersRev.get(group).put(decompiler, java);
+        menu.add(separator);
+        menu.add(editable);
+        editButtons.get(group).put(decompiler, editable);
+        return menu;
+    }
+
+    private JMenu generatePane(int id)
+    {
+        JMenu menu = new JMenu("Pane " + (id + 1));
+        JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
+        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
+        ButtonGroup group = allPanes.get(id);
+
+        group.add(none);
+        group.add(bytecode);
+        allDecompilers.get(group).put(none, null);
+        allDecompilersRev.get(group).put(null, none);
+        allDecompilers.get(group).put(bytecode, Decompiler.BYTECODE);
+        allDecompilersRev.get(group).put(Decompiler.BYTECODE, bytecode);
+
+        menu.add(none);
+        menu.add(new JSeparator());
+        menu.add(generateDecompilerMenu(Decompiler.PROCYON, id));
+        menu.add(generateDecompilerMenu(Decompiler.CFR, id));
+        menu.add(generateDecompilerMenu(Decompiler.FERNFLOWER, id));
+        menu.add(new JSeparator());
+        menu.add(bytecode);
+        return menu;
+    }
+
+    public void resetWorkspace()
+    {
+        navigator.resetWorkspace();
+        workPane.resetWorkspace();
+        resetWindows();
+    }
 
     public void setIcon(final boolean busy)
     {
@@ -505,23 +480,15 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     @Override
     public void openClassFile(final String name, String container, final ClassNode cn)
     {
-        for (final VisibleComponent vc : rfComps)
+        for (final JDAWindow vc : windows)
             vc.openClassFile(name, container, cn);
     }
 
     @Override
     public void openFile(final String name, String container, byte[] content)
     {
-        for (final VisibleComponent vc : rfComps)
+        for (final JDAWindow vc : windows)
             vc.openFile(name, container, content);
-    }
-
-    public static <T> T getComponent(final Class<T> clazz)
-    {
-        for (final VisibleComponent vc : rfComps)
-            if (vc.getClass() == clazz)
-                return clazz.cast(vc);
-        return null;
     }
 
     public void refreshView()
@@ -1123,5 +1090,42 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public boolean isNormalState()
     {
         return (getExtendedState() & MAXIMIZED_BOTH) != MAXIMIZED_BOTH && (getExtendedState() & ICONIFIED) != ICONIFIED;
+    }
+
+    public class JDAKeybindManager implements java.awt.KeyEventDispatcher
+    {
+        private final HashMap<Integer, Boolean> keyStates = new HashMap<>();
+        private long lastEventTime = System.currentTimeMillis();
+
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent e)
+        {
+            if (!e.isControlDown())
+                return false;
+
+            long deltaTime = System.currentTimeMillis() - lastEventTime;
+            lastEventTime = System.currentTimeMillis();
+            if (deltaTime <= 5) // hack to fix repeated key events, thanks Java
+                return false;
+
+            int key = e.getKeyCode();
+            synchronized (keyStates)
+            {
+                if (e.getID() == KeyEvent.KEY_PRESSED)
+                {
+                    if (!keyStates.containsKey(key) || !keyStates.get(key))
+                    {
+                        keyStates.put(key, true);
+                        JDA.checkHotKey(e);
+                    }
+                    return false;
+                }
+                else if (e.getID() == KeyEvent.KEY_RELEASED)
+                {
+                    keyStates.put(key, false);
+                }
+                return false;
+            }
+        }
     }
 }

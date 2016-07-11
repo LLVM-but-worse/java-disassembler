@@ -25,7 +25,7 @@ import java.util.Map.Entry;
  */
 
 @SuppressWarnings("serial")
-public class FileNavigationPane extends VisibleComponent implements FileDrop.Listener
+public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
 {
     private static final String quickSearchText = "Quick file search (no file extension)";
 

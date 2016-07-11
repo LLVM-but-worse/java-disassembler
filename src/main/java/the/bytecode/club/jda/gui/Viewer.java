@@ -1,7 +1,7 @@
 package the.bytecode.club.jda.gui;
 
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.JDA;
+import the.bytecode.club.jda.settings.Settings;
 
 import javax.swing.*;
 
@@ -16,6 +16,6 @@ public abstract class Viewer extends JPanel
 
     public void updateName()
     {
-        this.setName(name + (JDA.viewer.mnShowContainer.isSelected() ? "(" + container + ")" : ""));
+        this.setName(name + (Settings.SHOW_CONTAINER_NAME.getBool() ? "(" + container + ")" : ""));
     }
 }

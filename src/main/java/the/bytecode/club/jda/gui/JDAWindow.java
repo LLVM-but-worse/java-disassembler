@@ -18,14 +18,14 @@ import java.beans.PropertyVetoException;
  * @author WaterWolf
  */
 
-public abstract class VisibleComponent extends JInternalFrame implements FileChangeNotifier, IPersistentWindow
+public abstract class JDAWindow extends JInternalFrame implements FileChangeNotifier, IPersistentWindow
 {
     private String windowId;
 
     public Point unmaximizedPos;
     public Dimension unmaximizedSize;
 
-    public VisibleComponent(final String id, final String title, final Icon icon)
+    public JDAWindow(final String id, final String title, final Icon icon)
     {
         super(title, true, true, true, true);
         windowId = id;
