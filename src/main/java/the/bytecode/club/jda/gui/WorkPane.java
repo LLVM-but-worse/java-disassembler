@@ -20,7 +20,7 @@ import java.util.HashMap;
  * @author WaterWolf
  */
 
-public class WorkPane extends VisibleComponent implements ActionListener
+public class WorkPane extends JDAWindow implements ActionListener
 {
 
     private static final long serialVersionUID = 6542337997679487946L;

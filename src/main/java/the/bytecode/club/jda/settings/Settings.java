@@ -3,8 +3,8 @@ package the.bytecode.club.jda.settings;
 import com.eclipsesource.json.JsonObject;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.gui.JDAWindow;
 import the.bytecode.club.jda.gui.MainViewerGUI;
-import the.bytecode.club.jda.gui.VisibleComponent;
 
 import java.awt.*;
 import java.io.FileOutputStream;
@@ -22,9 +22,11 @@ public class Settings
     static final Map<String, Setting> ALL_SETTINGS = new HashMap<>();
 
     public static final Setting PATH = new Setting("path", "");
+    // todo: I should really refactor this
     public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", "false");
     public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", "false");
     public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", "true");
+    public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", "false");
 
     public static void saveGUI()
     {
@@ -51,7 +53,7 @@ public class Settings
             if (settings.get("windows") == null)
                 settings.add("windows", new JsonObject());
             JsonObject windowsSection = settings.get("windows").asObject();
-            for (VisibleComponent f : MainViewerGUI.rfComps)
+            for (JDAWindow f : MainViewerGUI.windows)
                 saveFrame(windowsSection, f);
             saveFrame(windowsSection, JDA.viewer);
 
@@ -116,7 +118,7 @@ public class Settings
             if (rootSettings.get("windows") != null)
             {
                 JsonObject windowsSection = rootSettings.get("windows").asObject();
-                for (VisibleComponent f : MainViewerGUI.rfComps)
+                for (JDAWindow f : MainViewerGUI.windows)
                     loadFrame(windowsSection, f);
                 loadFrame(windowsSection, JDA.viewer);
             }

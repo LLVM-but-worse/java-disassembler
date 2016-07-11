@@ -126,7 +126,7 @@ public class JDA
 
         resetRecentFilesMenu();
 
-        if (viewer.mntmUpdateCheck.isSelected())
+        if (Settings.DO_UPDATE_CHECK.getBool())
             versionChecker.start();
 
         viewer.setVisible(true);
