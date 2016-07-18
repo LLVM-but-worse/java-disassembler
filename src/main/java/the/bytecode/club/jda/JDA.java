@@ -24,7 +24,7 @@ import java.util.Map;
 public class JDA
 {
     /*per version*/
-    public static final String version = "0.0.3";
+    public static final String version = "0.0.3.1";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
@@ -440,7 +440,6 @@ public class JDA
         {
             files.clear();
             viewer.resetWorkspace();
-            the.bytecode.club.jda.api.BytecodeViewer.getClassNodeLoader().clear();
         }
         else
         {
@@ -459,7 +458,6 @@ public class JDA
             {
                 files.clear();
                 viewer.resetWorkspace();
-                the.bytecode.club.jda.api.BytecodeViewer.getClassNodeLoader().clear();
             }
         }
     }

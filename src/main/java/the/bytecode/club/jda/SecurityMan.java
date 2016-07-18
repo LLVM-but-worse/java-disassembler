@@ -24,14 +24,14 @@ public class SecurityMan extends SecurityManager
         if (executedClass.equals("CFRDecompiler") ||
                 executedClass.equals("ProcyonDecompiler") ||
                 executedClass.equals("FernFlowerDecompiler") ||
-                executedClass.equals("JDA"))
+                executedClass.equals("the.bytecode.club.jda.JDA"))
         {
             blocking = false;
         }
         else
             for (StackTraceElement stackTraceElements : Thread.currentThread().getStackTrace())
             {
-                System.out.println(stackTraceElements.getClassName());
+                System.out.println(stackTraceElements.getClassName() + " tried to disable security!");
             }
     }
 
