@@ -130,7 +130,7 @@ public class ProcyonDecompiler extends Decompiler
             });
             TypeReference type = metadataSystem.lookupType(cn.name);
             DecompilationOptions decompilationOptions = new DecompilationOptions();
-            decompilationOptions.setSettings(DecompilerSettings.javaDefaults());
+            decompilationOptions.setSettings(getDecompilerSettings());
             decompilationOptions.setFullDecompilation(true);
             TypeDefinition resolvedType = null;
             if (type == null || ((resolvedType = type.resolve()) == null))
