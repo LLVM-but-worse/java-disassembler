@@ -34,8 +34,8 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
     JButton open = new JButton("+");
     JButton close = new JButton("-");
 
-    MyTreeNode treeRoot = new MyTreeNode("Loaded Files:");
-    MyTree tree = new MyTree(treeRoot);
+    FileNode treeRoot = new FileNode("Loaded Files:");
+    FileTree tree = new FileTree(treeRoot);
     final JTextField quickSearch = new JTextField(quickSearchText);
 
     public transient KeyAdapter search = new KeyAdapter()
@@ -45,7 +45,6 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
         {
             if (ke.getKeyCode() == KeyEvent.VK_ENTER)
             {
-
                 final String qt = quickSearch.getText();
                 quickSearch.setText("");
 
@@ -70,76 +69,45 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
                     path = new String[] { qt };
                 }
 
-                MyTreeNode curNode = treeRoot;
+                FileNode curNode = treeRoot;
                 if (exact.isSelected())
                 {
-                    pathLoop:
-                    for (int i = 0; i < path.length; i++)
-                    {
-                        final String pathName = path[i];
-                        final boolean isLast = i == path.length - 1;
-
-                        for (int c = 0; c < curNode.getChildCount(); c++)
-                        {
-                            final MyTreeNode child = (MyTreeNode) curNode.getChildAt(c);
-                            System.out.println(pathName + ":" + child.getUserObject());
-
-                            if (child.getUserObject().equals(pathName))
-                            {
-                                curNode = child;
-                                if (isLast)
-                                {
-                                    final TreePath pathn = new TreePath(curNode.getPath());
-                                    tree.setSelectionPath(pathn);
-                                    tree.makeVisible(pathn);
-                                    tree.scrollPathToVisible(pathn);
-                                    openPath(pathn); //auto open
-                                    System.out.println("Found! " + curNode);
-                                    break pathLoop;
-                                }
-                                continue pathLoop;
-                            }
-                        }
-
-                        System.out.println("Could not find " + pathName);
-                        break;
-                    }
+                    // TODO
                 }
                 else
                 {
+                    @SuppressWarnings("unchecked")
+                    Enumeration<FileNode> enums = curNode.depthFirstEnumeration();
+                    while (enums != null && enums.hasMoreElements())
                     {
-                        @SuppressWarnings("unchecked") Enumeration<MyTreeNode> enums = curNode.depthFirstEnumeration();
-                        while (enums != null && enums.hasMoreElements())
-                        {
 
-                            MyTreeNode node = enums.nextElement();
-                            if (node.isLeaf())
+                        FileNode node = enums.nextElement();
+                        if (node.isLeaf())
+                        {
+                            if (((String) (node.getUserObject())).contains(path[path.length - 1]))
                             {
-                                if (((String) (node.getUserObject())).contains(path[path.length - 1]))
+                                TreeNode pathArray[] = node.getPath();
+                                int k = 0;
+                                StringBuilder fullPath = new StringBuilder();
+                                while (pathArray != null && k < pathArray.length)
                                 {
-                                    TreeNode pathArray[] = node.getPath();
-                                    int k = 0;
-                                    StringBuilder fullPath = new StringBuilder();
-                                    while (pathArray != null && k < pathArray.length)
+                                    FileNode n = (FileNode) pathArray[k];
+                                    String s = (String) (n.getUserObject());
+                                    fullPath.append(s);
+                                    if (k++ != pathArray.length - 1)
                                     {
-                                        MyTreeNode n = (MyTreeNode) pathArray[k];
-                                        String s = (String) (n.getUserObject());
-                                        fullPath.append(s);
-                                        if (k++ != pathArray.length - 1)
-                                        {
-                                            fullPath.append(".");
-                                        }
+                                        fullPath.append(".");
                                     }
-                                    String fullPathString = fullPath.toString();
-                                    if (fullPathString != null && fullPathString.contains(qt))
-                                    {
-                                        System.out.println("Found! " + node);
-                                        final TreePath pathn = new TreePath(node.getPath());
-                                        tree.setSelectionPath(pathn.getParentPath());
-                                        tree.setSelectionPath(pathn);
-                                        tree.makeVisible(pathn);
-                                        tree.scrollPathToVisible(pathn);
-                                    }
+                                }
+                                String fullPathString = fullPath.toString();
+                                if (!fullPathString.equals("null") && fullPathString.contains(qt))
+                                {
+                                    System.out.println("Found! " + node);
+                                    final TreePath pathn = new TreePath(node.getPath());
+                                    tree.setSelectionPath(pathn.getParentPath());
+                                    tree.setSelectionPath(pathn);
+                                    tree.makeVisible(pathn);
+                                    tree.scrollPathToVisible(pathn);
                                 }
                             }
                         }
@@ -201,9 +169,9 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
             {
                 if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
                 {
-                    if (arg0.getSource() instanceof MyTree)
+                    if (arg0.getSource() instanceof FileTree)
                     {
-                        MyTree tree = (MyTree) arg0.getSource();
+                        FileTree tree = (FileTree) arg0.getSource();
                         openPath(tree.getSelectionPath());
                     }
                 }
@@ -245,6 +213,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
         p2.setLayout(new BorderLayout());
         p2.add(quickSearch, BorderLayout.NORTH);
         JPanel p3 = new JPanel(new BorderLayout());
+        exact.setEnabled(false);
         p3.add(exact, BorderLayout.WEST);
         JPanel p4 = new JPanel(new BorderLayout());
         p4.add(open, BorderLayout.EAST);
@@ -307,7 +276,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
             treeRoot.removeAllChildren();
             for (FileContainer container : JDA.files)
             {
-                MyTreeNode root = new MyTreeNode(container.name);
+                FileNode root = new FileNode(container.name);
                 treeRoot.add(root);
                 ImageRenderer renderer = new ImageRenderer();
                 tree.setCellRenderer(renderer);
@@ -321,25 +290,25 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
                         final String[] spl = name.split("/");
                         if (spl.length < 2)
                         {
-                            root.add(new MyTreeNode(name));
+                            root.add(new FileNode(name));
                         }
                         else
                         {
-                            MyTreeNode parent = root;
+                            FileNode parent = root;
                             for (final String s : spl)
                             {
-                                MyTreeNode child = null;
+                                FileNode child = null;
                                 for (int i = 0; i < parent.getChildCount(); i++)
                                 {
-                                    if (((MyTreeNode) parent.getChildAt(i)).getUserObject().equals(s))
+                                    if (((FileNode) parent.getChildAt(i)).getUserObject().equals(s))
                                     {
-                                        child = (MyTreeNode) parent.getChildAt(i);
+                                        child = (FileNode) parent.getChildAt(i);
                                         break;
                                     }
                                 }
                                 if (child == null)
                                 {
-                                    child = new MyTreeNode(s);
+                                    child = new FileNode(s);
                                     parent.add(child);
                                 }
                                 parent = child;
@@ -387,12 +356,12 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
         }
     }
 
-    public class MyTree extends JTree
+    public class FileTree extends JTree
     {
         private static final long serialVersionUID = -2355167326094772096L;
         DefaultMutableTreeNode treeRoot;
 
-        public MyTree(final DefaultMutableTreeNode treeRoot)
+        public FileTree(final DefaultMutableTreeNode treeRoot)
         {
             super(treeRoot);
             this.treeRoot = treeRoot;
@@ -426,12 +395,12 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
         }
     }
 
-    public class MyTreeNode extends DefaultMutableTreeNode
+    public class FileNode extends DefaultMutableTreeNode
     {
 
         private static final long serialVersionUID = -8817777566176729571L;
 
-        public MyTreeNode(final Object o)
+        public FileNode(final Object o)
         {
             super(o);
         }
@@ -448,10 +417,10 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
         }
 
         @SuppressWarnings("unchecked")
-        private void recursiveSort(final MyTreeNode node)
+        private void recursiveSort(final FileNode node)
         {
             Collections.sort(node.children, nodeComparator);
-            for (MyTreeNode nextNode : (Iterable<MyTreeNode>) node.children)
+            for (FileNode nextNode : (Iterable<FileNode>) node.children)
             {
                 if (nextNode.getChildCount() > 0)
                 {
@@ -460,29 +429,22 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
             }
         }
 
-        protected Comparator<MyTreeNode> nodeComparator = new Comparator<MyTreeNode>()
+        protected Comparator<FileNode> nodeComparator = (a, b) ->
         {
-            @Override
-            public int compare(final MyTreeNode o1, final MyTreeNode o2)
-            {
-                // To make sure nodes with children are always on top
-                final int firstOffset = o1.getChildCount() > 0 ? -1000 : 0;
-                final int secondOffset = o2.getChildCount() > 0 ? 1000 : 0;
-                return o1.toString().compareToIgnoreCase(o2.toString()) + firstOffset + secondOffset;
-            }
+            // Ensure nodes with children are always on top
+            final boolean aEmpty = a.getChildCount() > 0;
+            final boolean bEmpty = b.getChildCount() > 0;
+            if (aEmpty && !bEmpty)
+                return -1;
+            else if (!aEmpty && bEmpty)
+                return 1;
 
-            @Override
-            public boolean equals(final Object obj)
-            {
-                return false;
-            }
-
-            @Override
-            public int hashCode()
-            {
-                final int hash = 7;
-                return hash;
-            }
+            // Try insensitive first, but if they are the same insensitively do it case sensitively
+            int compare = a.toString().compareToIgnoreCase(b.toString());
+            if (compare != 0)
+                return compare;
+            else
+                return a.toString().compareTo(b.toString());
         };
     }
 
@@ -567,15 +529,14 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
      */
     public class ImageRenderer extends DefaultTreeCellRenderer
     {
-
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus)
         { //called every time there is a pane update, I.E. whenever you expand a folder
 
-            Component ret = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+            Component ret = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
-            if (value != null && value instanceof FileNavigationPane.MyTreeNode)
+            if (value != null && value instanceof FileNode)
             {
-                FileNavigationPane.MyTreeNode node = (FileNavigationPane.MyTreeNode) value;
+                FileNode node = (FileNode) value;
                 String name = node.toString();
 
                 if (name.endsWith(".jar"))
