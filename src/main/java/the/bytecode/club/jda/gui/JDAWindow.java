@@ -23,18 +23,23 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
     private String windowId;
 
     public Point unmaximizedPos;
-    public Dimension unmaximizedSize;
+    public Dimension unmaximizedSize; // unmaximized size for when JDA is maximized
+    public Dimension smallUnmaxSize; // unmaximized size for when JDA is unmaximized
 
-    public JDAWindow(final String id, final String title, final Icon icon)
+    protected final MainViewerGUI viewer;
+
+    public JDAWindow(final String id, final String title, final Icon icon, final MainViewerGUI viewer)
     {
         super(title, true, true, true, true);
         windowId = id;
         setName(title);
         setFrameIcon(icon);
         setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+        this.viewer = viewer;
 
         unmaximizedPos = getDefaultPosition();
         unmaximizedSize = getDefaultSize();
+        smallUnmaxSize = unmaximizedSize;
 
         addComponentListener(new ComponentAdapter()
         {
@@ -42,7 +47,12 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
             public void componentResized(ComponentEvent e)
             {
                 if (!isMaximum())
-                    unmaximizedSize = getSize();
+                {
+                    if (viewer.isMaximized)
+                        unmaximizedSize = getSize();
+                    else
+                        smallUnmaxSize = getSize();
+                }
                 super.componentResized(e);
             }
 
@@ -58,10 +68,26 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
         addPropertyChangeListener(evt -> {
             if (isNormalState())
             {
-                setSize(unmaximizedSize);
+                setSize(viewer.isMaximized? unmaximizedSize : smallUnmaxSize);
                 setLocation(unmaximizedPos);
             }
         });
+    }
+
+    public void onJDAResized() {
+        smallUnmaxSize = new Dimension(unmaximizedSize);
+        Dimension d = getDesktopPane().getSize();
+        if (unmaximizedPos.getX() + smallUnmaxSize.width > d.width)
+            smallUnmaxSize.width = d.width - (int) unmaximizedPos.getX();
+        if (unmaximizedPos.getY() + smallUnmaxSize.height > d.height)
+            smallUnmaxSize.height = d.height - (int) unmaximizedPos.getY();
+        if (isNormalState())
+            setSize(smallUnmaxSize);
+    }
+
+    public void onJDAMaximized() {
+        if (isNormalState())
+            setSize(unmaximizedSize);
     }
 
     @Override
@@ -139,6 +165,7 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
     public void restoreSize(Dimension size)
     {
         unmaximizedSize = size;
+        smallUnmaxSize = size;
         if (isNormalState())
         {
             setPreferredSize(size);

@@ -157,7 +157,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
 
     public FileNavigationPane(final FileChangeNotifier fcn)
     {
-        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon);
+        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
 
         this.fcn = fcn;
         tree.setRootVisible(false);

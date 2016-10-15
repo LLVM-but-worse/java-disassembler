@@ -37,7 +37,7 @@ public class WorkPane extends JDAWindow implements ActionListener
 
     public WorkPane(final FileChangeNotifier fcn)
     {
-        super("WorkPanel", "Work Space", Resources.fileNavigatorIcon);
+        super("WorkPanel", "Work Space", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
 
         this.tabs = new JTabbedPane();
         this.fcn = fcn;

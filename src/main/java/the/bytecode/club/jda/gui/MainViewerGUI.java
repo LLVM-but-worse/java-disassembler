@@ -109,11 +109,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                 if ((oldState & Frame.MAXIMIZED_BOTH) == 0 && (newState & Frame.MAXIMIZED_BOTH) != 0)
                 {
                     isMaximized = true;
+                    for (JDAWindow window : windows)
+                        window.onJDAMaximized();
                 }
                 else if ((oldState & Frame.MAXIMIZED_BOTH) != 0 && (newState & Frame.MAXIMIZED_BOTH) == 0)
                 {
                     setSize(unmaximizedSize);
                     setLocation(unmaximizedPos);
+                    isMaximized = false;
                 }
             }
         });
@@ -124,6 +127,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             {
                 if ((getExtendedState() & Frame.MAXIMIZED_BOTH) != Frame.MAXIMIZED_BOTH)
                     unmaximizedSize = getSize();
+                for (JDAWindow window : windows)
+                    window.onJDAResized();
                 super.componentResized(e);
             }
 
