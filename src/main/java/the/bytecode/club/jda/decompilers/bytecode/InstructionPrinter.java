@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 import the.bytecode.club.jda.api.ExceptionUI;
-import the.bytecode.club.jda.decompilers.Decompiler;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,6 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+
+import static the.bytecode.club.jda.decompilers.bytecode.MethodNodeDecompiler.createComments;
+import static the.bytecode.club.jda.decompilers.bytecode.MethodNodeDecompiler.createLabelBrackets;
 
 /**
  * @author Konloch
@@ -73,7 +75,7 @@ public class InstructionPrinter
         while (it.hasNext())
         {
             AbstractInsnNode ain = (AbstractInsnNode) it.next();
-            String line = "";
+            String line;
             if (ain instanceof VarInsnNode)
             {
                 line = printVarInsnNode((VarInsnNode) ain, it);
@@ -108,12 +110,12 @@ public class InstructionPrinter
             }
             else if (ain instanceof LabelNode)
             {
-                if (firstLabel && Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS))
+                if (firstLabel && createLabelBrackets())
                     info.add("}");
 
                 line = printLabelnode((LabelNode) ain);
 
-                if (Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS))
+                if (createLabelBrackets())
                 {
                     if (!firstLabel)
                         firstLabel = true;
@@ -144,9 +146,13 @@ public class InstructionPrinter
             {
                 line = printInvokeDynamicInsNode((InvokeDynamicInsnNode) ain);
             }
+            else if (ain instanceof MultiANewArrayInsnNode)
+            {
+                line = printMultiANewArrayInsnNode((MultiANewArrayInsnNode) ain);
+            }
             else
             {
-                line += "UNADDED OPCODE: " + nameOpcode(ain.opcode()) + " " + ain.toString();
+                line = "// UNADDED OPCODE: " + nameOpcode(ain.opcode()) + " " + ain.toString();
             }
             if (!line.equals(""))
             {
@@ -157,7 +163,7 @@ public class InstructionPrinter
                 info.add(line);
             }
         }
-        if (firstLabel && Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS))
+        if (firstLabel && createLabelBrackets())
             info.add("}");
         return info;
     }
@@ -167,18 +173,18 @@ public class InstructionPrinter
         StringBuilder sb = new StringBuilder();
         sb.append(nameOpcode(vin.opcode()));
         sb.append(vin.var);
-        if (Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS))
+        if (createComments())
         {
             if (vin.var == 0 && !Modifier.isStatic(mNode.access))
             {
-                sb.append(" // reference to self");
+                sb.append(" // Reference to self");
             }
             else
             {
                 final int refIndex = vin.var - (Modifier.isStatic(mNode.access) ? 0 : 1);
                 if (refIndex >= 0 && refIndex < args.length - 1)
                 {
-                    sb.append(" // reference to ").append(args[refIndex].name);
+                    sb.append(" // Reference to ").append(args[refIndex].name);
                 }
             }
         }
@@ -277,7 +283,7 @@ public class InstructionPrinter
         {
             new ExceptionUI(e);
         }
-        return "//error";
+        return "// error";
     }
 
     protected String printIincInsnNode(IincInsnNode iin)
@@ -339,6 +345,11 @@ public class InstructionPrinter
         sb.append(");");
 
         return sb.toString();
+    }
+
+    protected String printMultiANewArrayInsnNode(MultiANewArrayInsnNode manain)
+    {
+        return nameOpcode(manain.opcode()) + " " + manain.desc;
     }
 
     protected String nameOpcode(int opcode)

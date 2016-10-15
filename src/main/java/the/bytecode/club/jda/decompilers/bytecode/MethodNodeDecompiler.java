@@ -33,12 +33,33 @@ public class MethodNodeDecompiler
             class_ = cn.name;
         }
 
-        String s = getAccessString(m.access);
+        // Descriptor
+        if (createDescriptors())
+        {
+            sb.append("     // ");
+            sb.append(m.owner.name);
+            sb.append(".");
+            sb.append(m.name);
+            sb.append(m.desc);
+            sb.append(JDA.nl);
+        }
+
+        // Access
+        String access = getAccessString(m.access);
         sb.append("     ");
-        sb.append(s);
-        if (s.length() > 0)
+        sb.append(access);
+        if (access.length() > 0 && !m.name.equals("<clinit>"))
             sb.append(" ");
 
+        // Return type
+        if (m.name.charAt(0) != '<' && !m.name.endsWith("init>"))
+        {
+            Type returnType = Type.getReturnType(m.desc);
+            sb.append(returnType.getClassName());
+            sb.append(" ");
+        }
+
+        // Method name
         if (m.name.equals("<init>"))
         {
             sb.append(class_);
@@ -51,8 +72,8 @@ public class MethodNodeDecompiler
             sb.append(m.name);
         }
 
+        // Arguments
         TypeAndName[] args = new TypeAndName[0];
-
         if (!m.name.equals("<clinit>"))
         {
             sb.append("(");
@@ -78,6 +99,7 @@ public class MethodNodeDecompiler
             sb.append(")");
         }
 
+        // Throws
         int amountOfThrows = m.exceptions.size();
         if (amountOfThrows > 0)
         {
@@ -90,31 +112,28 @@ public class MethodNodeDecompiler
             }
         }
 
-        if (s.contains("abstract"))
+        // End method name
+        if (access.contains("abstract"))
         {
-            sb.append(" {}");
-            sb.append(" //");
-            sb.append(m.desc);
-            sb.append(JDA.nl);
+            sb.append(";");
         }
         else
         {
-
             sb.append(" {");
 
-            if (Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS))
+            if (createComments() && !createDescriptors())
             {
                 if (m.name.equals("<clinit>"))
                     sb.append(" // <clinit>");
                 else if (m.name.equals("<init>"))
                     sb.append(" // <init>");
             }
+        }
+        sb.append(JDA.nl);
 
-            sb.append(" //");
-            sb.append(m.desc);
-
-            sb.append(JDA.nl);
-
+        // Code
+        if (!access.contains("abstract"))
+        {
             if (m.signature != null)
             {
                 sb.append("         <sig:").append(m.signature).append(">");
@@ -137,6 +156,7 @@ public class MethodNodeDecompiler
             addAttrList(m.visibleLocalVariableAnnotations, "visLocalVarAnno", sb, insnPrinter);
             addAttrList(m.visibleTypeAnnotations, "visTypeAnno", sb, insnPrinter);
 
+            // Exception table
             for (Object o : m.tryCatchBlocks)
             {
                 TryCatchBlockNode tcbn = (TryCatchBlockNode) o;
@@ -154,14 +174,19 @@ public class MethodNodeDecompiler
                     sb.append("Type is null.");
                 sb.append(JDA.nl);
             }
+
+            // Instructions
             for (String insn : insnPrinter.createPrint())
             {
                 sb.append("         ");
                 sb.append(insn);
                 sb.append(JDA.nl);
             }
+
+            // Closing brace
             sb.append("     }" + JDA.nl);
         }
+
         return sb;
     }
 
@@ -250,5 +275,20 @@ public class MethodNodeDecompiler
             sb.append(tokens.get(i));
         }
         return sb.toString();
+    }
+
+    static boolean createComments()
+    {
+        return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS);
+    }
+
+    static boolean createLabelBrackets()
+    {
+        return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS);
+    }
+
+    static boolean createDescriptors()
+    {
+        return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.SHOW_METHOD_DESCRIPTORS);
     }
 }

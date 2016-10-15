@@ -11,6 +11,7 @@ import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.settings.DecompilerSettings;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -81,20 +82,21 @@ public class ClassNodeDecompiler extends Decompiler
         }
         sb.append(" {");
         sb.append(JDA.nl);
-        for (FieldNode fn : cn.fields)
+
+        for (Iterator<FieldNode> it = cn.fields.iterator(); it.hasNext(); )
         {
-            sb.append(JDA.nl);
             sb.append("     ");
-            FieldNodeDecompiler.decompile(sb, fn);
-        }
-        if (cn.fields.size() > 0)
-        {
+            FieldNodeDecompiler.decompile(sb, it.next());
             sb.append(JDA.nl);
+            if (!it.hasNext())
+                sb.append(JDA.nl);
         }
-        for (MethodNode mn : cn.methods)
+
+        for (Iterator<MethodNode> it = cn.methods.iterator(); it.hasNext(); )
         {
-            sb.append(JDA.nl);
-            MethodNodeDecompiler.decompile(sb, mn, cn);
+            MethodNodeDecompiler.decompile(sb, it.next(), cn);
+            if (it.hasNext())
+                sb.append(JDA.nl);
         }
 
         for (Object o : cn.innerClasses)
@@ -122,7 +124,7 @@ public class ClassNodeDecompiler extends Decompiler
 
         if (!unableToDecompile.isEmpty())
         {
-            sb.append("//the following inner classes couldn't be decompiled: ");
+            sb.append("// The following inner classes couldn't be decompiled: ");
             for (String s : unableToDecompile)
             {
                 sb.append(s);
@@ -183,7 +185,8 @@ public class ClassNodeDecompiler extends Decompiler
     public enum Settings implements DecompilerSettings.Setting
     {
         DEBUG_HELPERS("debug-helpers", "Debug Helpers", true),
-        APPEND_BRACKETS_TO_LABELS("append-brackets-to-labels", "Append Brackets to Labels", true);
+        APPEND_BRACKETS_TO_LABELS("append-brackets-to-labels", "Append Brackets to Labels", true),
+        SHOW_METHOD_DESCRIPTORS("show-method-descriptors", "Show Method Descriptors", true);
 
         private String name;
         private String param;
