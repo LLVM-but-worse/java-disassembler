@@ -6,7 +6,7 @@
 
     <groupId>groupId</groupId>
     <artifactId>jda</artifactId>
-    <version>0.0.3.2-SNAPSHOT</version>
+    <version>0.0.4</version>
 
     <repositories>
         <repository>
