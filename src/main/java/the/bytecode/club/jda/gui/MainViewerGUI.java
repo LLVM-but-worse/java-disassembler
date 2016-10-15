@@ -41,6 +41,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public JMenu fileMenu;
     public JMenu windowMenu;
     public JMenu settingsMenu;
+    public JMenu helpMenu;
 
     public boolean isMaximized = false;
     public Point unmaximizedPos;
@@ -176,6 +177,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         viewMenu = new JMenu("View");
         windowMenu = new JMenu("Window");
         settingsMenu = new JMenu("Settings");
+        helpMenu = new JMenu("Help");
         setJMenuBar(menuBar);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -218,12 +220,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         fileMenu.add(mnRecentFiles);
         fileMenu.add(new JSeparator());
 
-        mntmAbout.addActionListener(arg0 -> aboutWindow.setVisible(true));
-        fileMenu.add(mntmAbout);
-
-        mntmIntro.addActionListener(arg0 -> introWindow.setVisible(true));
-        fileMenu.add(mntmIntro);
-
         JMenuItem mntmExit = new JMenuItem("Exit");
         mntmExit.addActionListener(arg0 -> exitPrompt());
 
@@ -260,12 +256,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         refreshOnChange.addItemListener(e -> Settings.REFRESH_ON_VIEW_CHANGE.set(refreshOnChange.isSelected()));
         refreshOnChange.setSelected(Settings.REFRESH_ON_VIEW_CHANGE.getBool());
         settingsMenu.add(refreshOnChange);
-
-        settingsMenu.add(new JSeparator());
-
-        mntmUpdateCheck.setSelected(Settings.DO_UPDATE_CHECK.getBool());
-        mntmUpdateCheck.addActionListener(e -> Settings.DO_UPDATE_CHECK.set(mntmUpdateCheck.isSelected()));
-        settingsMenu.add(mntmUpdateCheck);
 
         settingsMenu.add(new JSeparator());
 
@@ -308,6 +298,18 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         settingsMenu.add(bytecodeSettingsMenu);
 
         menuBar.add(settingsMenu);
+
+        mntmAbout.addActionListener(arg0 -> aboutWindow.setVisible(true));
+        helpMenu.add(mntmAbout);
+
+        mntmIntro.addActionListener(arg0 -> introWindow.setVisible(true));
+        helpMenu.add(mntmIntro);
+
+        mntmUpdateCheck.setSelected(Settings.DO_UPDATE_CHECK.getBool());
+        mntmUpdateCheck.addActionListener(e -> Settings.DO_UPDATE_CHECK.set(mntmUpdateCheck.isSelected()));
+        helpMenu.add(mntmUpdateCheck);
+        menuBar.add(helpMenu);
+
         menuBar.add(spinnerMenu);
 
         fontSpinner.setPreferredSize(new Dimension(42, 20));

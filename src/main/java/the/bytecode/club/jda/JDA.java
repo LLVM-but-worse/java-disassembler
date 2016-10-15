@@ -677,9 +677,13 @@ public class JDA
         {
             JDA.resetWorkSpace(true);
         }
-        else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e))
+        else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e) && isShiftDown(e))
         {
             viewer.reloadResources();
+        }
+        else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e))
+        {
+            viewer.refreshView();
         }
         else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e) && isShiftDown(e))
         {
