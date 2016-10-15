@@ -268,7 +268,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener
     {
     }
 
-    public static Dimension defaultDimension = new Dimension(200, -1);
+    public static Dimension defaultDimension = new Dimension(350, -1);
     public static Point defaultPosition = new Point(0, 0);
     @Override
     public Dimension getDefaultSize()

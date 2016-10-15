@@ -158,6 +158,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     {
         final JCheckBoxMenuItem refreshOnChange = new JCheckBoxMenuItem("Refresh On View Change");
         final JMenuItem mntmNewWorkspace = new JMenuItem("New Workspace");
+        final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
+        final JMenuItem mntmCloseResources = new JMenuItem("Close Resources");
         final JMenuItem mntmDecompileSaveAllClasses = new JMenuItem("Decompile & Save All Classes..");
         final JMenuItem mntmAbout = new JMenuItem("About");
         final JMenuItem mntmIntro = new JMenuItem("Help");
@@ -168,7 +170,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         final JCheckBox mnSnapToEdges = new JCheckBox("Snap Windows to Edges");
         final JMenuItem mntmSetOptionalLibrary = new JMenuItem("Set Optional Library Folder");
         final JMenu mnFontSize = new JMenu("Font Size");
-        final JMenuItem mntmReloadResources = new JMenuItem("Reload Resources");
 
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
@@ -181,24 +182,26 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         menuBar.add(fileMenu);
 
-        mntmNewWorkspace.addActionListener(arg0 -> JDA.resetWorkSpace(true));
-
         JMenuItem mntmLoadJar = new JMenuItem("Add..");
         mntmLoadJar.addActionListener(e -> addFile());
         fileMenu.add(mntmLoadJar);
 
         fileMenu.add(new JSeparator());
 
+        mntmNewWorkspace.addActionListener(arg0 -> JDA.resetWorkSpace(true));
         fileMenu.add(mntmNewWorkspace);
-
-        JMenuItem mntmSaveAsZip = new JMenuItem("Save As Zip..");
-        mntmSaveAsZip.setActionCommand("");
-        mntmSaveAsZip.addActionListener(arg0 -> saveAsZip());
 
         mntmReloadResources.addActionListener(arg0 -> reloadResources());
         fileMenu.add(mntmReloadResources);
 
+        mntmCloseResources.addActionListener(arg0 -> JDA.closeResources(true));
+        fileMenu.add(mntmCloseResources);
+
         fileMenu.add(new JSeparator());
+
+        JMenuItem mntmSaveAsZip = new JMenuItem("Save As Zip..");
+        mntmSaveAsZip.setActionCommand("");
+        mntmSaveAsZip.addActionListener(arg0 -> saveAsZip());
 
         mntmSaveAsRunnableJar.addActionListener(e -> saveAsRunnableJar());
         fileMenu.add(mntmSaveAsRunnableJar);
@@ -444,11 +447,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         return menu;
     }
 
-    public void resetWorkspace()
-    {
+    public void closeResources() {
         navigator.resetWorkspace();
         workPane.resetWorkspace();
-        resetWindows();
     }
 
     public void setIcon(final boolean busy)

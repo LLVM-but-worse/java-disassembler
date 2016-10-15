@@ -24,7 +24,7 @@ import java.util.Map;
 public class JDA
 {
     /*per version*/
-    public static final String version = "0.0.3.1";
+    public static final String version = "0.0.3.2";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
@@ -436,12 +436,7 @@ public class JDA
      */
     public static void resetWorkSpace(boolean ask)
     {
-        if (!ask)
-        {
-            files.clear();
-            viewer.resetWorkspace();
-        }
-        else
+        if (ask)
         {
             JOptionPane pane = new JOptionPane("Are you sure you want to reset the workspace?\n\rIt will also reset your file navigator and search.");
             Object[] options = new String[] { "Yes", "No" };
@@ -449,17 +444,31 @@ public class JDA
             JDialog dialog = pane.createDialog(viewer, "JDA - Reset Workspace");
             dialog.setVisible(true);
             Object obj = pane.getValue();
-            int result = -1;
             for (int k = 0; k < options.length; k++)
-                if (options[k].equals(obj))
-                    result = k;
-
-            if (result == 0)
-            {
-                files.clear();
-                viewer.resetWorkspace();
-            }
+                if (options[k].equals(obj) && k != 0)
+                    return;
         }
+
+        closeResources(false);
+        viewer.resetWindows();
+    }
+
+    public static void closeResources(boolean ask) {
+        if (ask)
+        {
+            JOptionPane pane = new JOptionPane("Are you sure you want to close all resources?");
+            Object[] options = new String[] { "Yes", "No" };
+            pane.setOptions(options);
+            JDialog dialog = pane.createDialog(viewer, "JDA - Close Resources");
+            dialog.setVisible(true);
+            Object obj = pane.getValue();
+            for (int k = 0; k < options.length; k++)
+                if (options[k].equals(obj) && k != 0)
+                    return;
+        }
+
+        files.clear();
+        viewer.closeResources();
     }
 
     private static ArrayList<String> killList = new ArrayList<>();
@@ -597,6 +606,14 @@ public class JDA
         sm.setBlocking();
     }
 
+    private static boolean isCtrlDown(KeyEvent e) {
+        return ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0);
+    }
+
+    private static boolean isShiftDown(KeyEvent e) {
+        return ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0);
+    }
+
     /**
      * Checks the hotkeys
      *
@@ -604,7 +621,7 @@ public class JDA
      */
     public static void checkHotKey(KeyEvent e)
     {
-        if ((e.getKeyCode() == KeyEvent.VK_O) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
+        if ((e.getKeyCode() == KeyEvent.VK_O) && isCtrlDown(e))
         {
             JFileChooser fc = new JFileChooser();
             try
@@ -656,15 +673,19 @@ public class JDA
                 }
             }
         }
-        else if ((e.getKeyCode() == KeyEvent.VK_N) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
+        else if ((e.getKeyCode() == KeyEvent.VK_N) && isCtrlDown(e))
         {
             JDA.resetWorkSpace(true);
         }
-        else if ((e.getKeyCode() == KeyEvent.VK_R) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
+        else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e))
         {
             viewer.reloadResources();
         }
-        else if ((e.getKeyCode() == KeyEvent.VK_S) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
+        else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e) && isShiftDown(e))
+        {
+            JDA.closeResources(true);
+        }
+        else if ((e.getKeyCode() == KeyEvent.VK_S) && isCtrlDown(e))
         {
             if (JDA.getLoadedClasses().isEmpty())
             {
@@ -741,7 +762,7 @@ public class JDA
             };
             t.start();
         }
-        else if ((e.getKeyCode() == KeyEvent.VK_W) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
+        else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e))
         {
             if (viewer.workPane.getCurrentViewer() != null)
                 viewer.workPane.tabs.remove(viewer.workPane.getCurrentViewer());
