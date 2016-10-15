@@ -30,5 +30,5 @@ core utilities will be distributed separately as a plugin.
 
 ## Credits
  - Logo (icosahedron) image by [Brayden Gregerson](http://braydengregerson.com), used with permission
- - Bytecode Viewer by Konloch
- - Disassembler by Bibl
+ - [Bytecode Viewer](https://github.com/Konloch/bytecode-viewer) by [Konloch](https://github.com/Konloch)
+ - Disassembler by [Bibl](https://github.com/TheBiblMan)
