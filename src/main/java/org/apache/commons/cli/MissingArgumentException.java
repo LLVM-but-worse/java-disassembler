@@ -23,8 +23,7 @@ package org.apache.commons.cli;
  *
  * @version $Id: MissingArgumentException.java 1443102 2013-02-06 18:12:16Z tn $
  */
-public class MissingArgumentException extends ParseException
-{
+public class MissingArgumentException extends ParseException {
     /**
      * This exception {@code serialVersionUID}.
      */
@@ -41,8 +40,7 @@ public class MissingArgumentException extends ParseException
      *
      * @param message the detail message
      */
-    public MissingArgumentException(String message)
-    {
+    public MissingArgumentException(String message) {
         super(message);
     }
 
@@ -53,8 +51,7 @@ public class MissingArgumentException extends ParseException
      * @param option the option requiring an argument
      * @since 1.2
      */
-    public MissingArgumentException(Option option)
-    {
+    public MissingArgumentException(Option option) {
         this("Missing argument for option: " + option.getKey());
         this.option = option;
     }
@@ -66,8 +63,7 @@ public class MissingArgumentException extends ParseException
      * @return the related option
      * @since 1.2
      */
-    public Option getOption()
-    {
+    public Option getOption() {
         return option;
     }
 }

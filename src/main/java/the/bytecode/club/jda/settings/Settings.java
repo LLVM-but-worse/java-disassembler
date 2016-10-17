@@ -17,8 +17,7 @@ import java.util.Map;
  *
  * @author Konloch
  */
-public class Settings
-{
+public class Settings {
     static final Map<String, Setting> ALL_SETTINGS = new HashMap<>();
 
     public static final Setting PATH = new Setting("path", "");
@@ -28,24 +27,19 @@ public class Settings
     public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", "true");
     public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", "false");
 
-    public static void saveGUI()
-    {
-        try
-        {
+    public static void saveGUI() {
+        try {
             JsonObject settings = new JsonObject();
             Decompiler.CFR.getSettings().saveTo(settings);
             Decompiler.FERNFLOWER.getSettings().saveTo(settings);
             Decompiler.PROCYON.getSettings().saveTo(settings);
             Decompiler.BYTECODE.getSettings().saveTo(settings);
-            if (settings.get("settings") == null)
-            {
+            if (settings.get("settings") == null) {
                 settings.add("settings", new JsonObject());
             }
             JsonObject rootSettings = settings.get("settings").asObject();
-            for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet())
-            {
-                if (setting.getValue().get() != null)
-                {
+            for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet()) {
+                if (setting.getValue().get() != null) {
                     rootSettings.add(setting.getKey(), setting.getValue().get());
                 }
             }
@@ -60,15 +54,12 @@ public class Settings
             FileOutputStream out = new FileOutputStream(JDA.settingsFile);
             out.write(settings.toString().getBytes("UTF-8"));
             out.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void saveFrame(JsonObject windowsSection, IPersistentWindow f)
-    {
+    public static void saveFrame(JsonObject windowsSection, IPersistentWindow f) {
         String name = f.getWindowId();
         if (windowsSection.get(name) == null)
             windowsSection.add(name, new JsonObject());
@@ -83,56 +74,42 @@ public class Settings
         windowSettings.add("state", f.getState());
     }
 
-    public static void loadGUI()
-    {
-        try
-        {
+    public static void loadGUI() {
+        try {
             JsonObject settings = JsonObject.readFrom(new FileReader(JDA.settingsFile));
             Decompiler.CFR.getSettings().loadFrom(settings);
             Decompiler.FERNFLOWER.getSettings().loadFrom(settings);
             Decompiler.PROCYON.getSettings().loadFrom(settings);
             Decompiler.BYTECODE.getSettings().loadFrom(settings);
-            if (settings.get("settings") != null)
-            {
+            if (settings.get("settings") != null) {
                 JsonObject rootSettings = settings.get("settings").asObject();
-                for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet())
-                {
-                    if (rootSettings.get(setting.getKey()) != null)
-                    {
+                for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet()) {
+                    if (rootSettings.get(setting.getKey()) != null) {
                         setting.getValue().set(rootSettings.get(setting.getKey()).asString());
                     }
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void loadWindows()
-    {
-        try
-        {
+    public static void loadWindows() {
+        try {
             JsonObject rootSettings = JsonObject.readFrom(new FileReader(JDA.settingsFile));
-            if (rootSettings.get("windows") != null)
-            {
+            if (rootSettings.get("windows") != null) {
                 JsonObject windowsSection = rootSettings.get("windows").asObject();
                 for (JDAWindow f : MainViewerGUI.windows)
                     loadFrame(windowsSection, f);
                 loadFrame(windowsSection, JDA.viewer);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void loadFrame(JsonObject windowsSection, IPersistentWindow f)
-    {
-        if (windowsSection.get(f.getWindowId()) != null)
-        {
+    private static void loadFrame(JsonObject windowsSection, IPersistentWindow f) {
+        if (windowsSection.get(f.getWindowId()) != null) {
             JsonObject settings = windowsSection.get(f.getWindowId()).asObject();
             Point pos = new Point(settings.get("x").asInt(), settings.get("y").asInt());
             Dimension size = new Dimension(settings.get("width").asInt(), settings.get("height").asInt());

@@ -18,8 +18,7 @@ import java.beans.PropertyVetoException;
  * @author WaterWolf
  */
 
-public abstract class JDAWindow extends JInternalFrame implements FileChangeNotifier, IPersistentWindow
-{
+public abstract class JDAWindow extends JInternalFrame implements FileChangeNotifier, IPersistentWindow {
     private String windowId;
 
     public Point unmaximizedPos;
@@ -28,8 +27,7 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
 
     protected final MainViewerGUI viewer;
 
-    public JDAWindow(final String id, final String title, final Icon icon, final MainViewerGUI viewer)
-    {
+    public JDAWindow(final String id, final String title, final Icon icon, final MainViewerGUI viewer) {
         super(title, true, true, true, true);
         windowId = id;
         setName(title);
@@ -41,13 +39,10 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
         unmaximizedSize = getDefaultSize();
         smallUnmaxSize = unmaximizedSize;
 
-        addComponentListener(new ComponentAdapter()
-        {
+        addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(ComponentEvent e)
-            {
-                if (!isMaximum())
-                {
+            public void componentResized(ComponentEvent e) {
+                if (!isMaximum()) {
                     if (viewer.isMaximized)
                         unmaximizedSize = getSize();
                     else
@@ -57,8 +52,7 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
             }
 
             @Override
-            public void componentMoved(ComponentEvent e)
-            {
+            public void componentMoved(ComponentEvent e) {
                 if (!isMaximum())
                     unmaximizedPos = getLocation();
                 super.componentMoved(e);
@@ -67,9 +61,8 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
 
         addPropertyChangeListener(evt ->
         {
-            if (isNormalState())
-            {
-                setSize(viewer.isMaximized? unmaximizedSize : smallUnmaxSize);
+            if (isNormalState()) {
+                setSize(viewer.isMaximized ? unmaximizedSize : smallUnmaxSize);
                 setLocation(unmaximizedPos);
             }
         });
@@ -103,22 +96,21 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
     protected static Point defaultPosition;
 
     public abstract Dimension getDefaultSize();
+
     public abstract Point getDefaultPosition();
 
     @Override
-    public String getWindowId()
-    {
+    public String getWindowId() {
         return windowId;
     }
 
     public static int
-        MAXIMIZED = 1 << 0,
-        MINIMIZED = 1 << 1,
-        VISIBLE = 1 << 2;
+            MAXIMIZED = 1 << 0,
+            MINIMIZED = 1 << 1,
+            VISIBLE = 1 << 2;
 
     @Override
-    public int getState()
-    {
+    public int getState() {
         int state = 0;
         if (isMaximum())
             state |= MAXIMIZED;
@@ -130,55 +122,45 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
     }
 
     @Override
-    public void restoreState(int state)
-    {
-        try
-        {
+    public void restoreState(int state) {
+        try {
             setMaximum((state & MAXIMIZED) != 0);
             setIcon((state & MINIMIZED) != 0);
             setVisible((state & VISIBLE) != 0);
-        }
-        catch (PropertyVetoException e)
-        {
+        } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public Point getPersistentPosition()
-    {
+    public Point getPersistentPosition() {
         return unmaximizedPos;
     }
 
     @Override
-    public void restorePosition(Point pos)
-    {
+    public void restorePosition(Point pos) {
         unmaximizedPos = pos;
         if (isNormalState())
             setLocation(pos);
     }
 
     @Override
-    public Dimension getPersistentSize()
-    {
+    public Dimension getPersistentSize() {
         return unmaximizedSize;
     }
 
     @Override
-    public void restoreSize(Dimension size)
-    {
+    public void restoreSize(Dimension size) {
         unmaximizedSize = size;
         smallUnmaxSize = size;
-        if (isNormalState())
-        {
+        if (isNormalState()) {
             setPreferredSize(size);
             pack();
         }
     }
 
     @Override
-    public boolean isNormalState()
-    {
+    public boolean isNormalState() {
         return !isMaximum() && !isIcon();
     }
 }

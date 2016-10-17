@@ -14,13 +14,11 @@ import java.io.IOException;
  *
  * @author Konloch
  */
-public class AboutWindow extends JFrame
-{
+public class AboutWindow extends JFrame {
     private static final long serialVersionUID = -8230501978224923296L;
     private JEditorPane editorPane;
 
-    public AboutWindow()
-    {
+    public AboutWindow() {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(400, 400));
         setType(Type.UTILITY);
@@ -37,15 +35,12 @@ public class AboutWindow extends JFrame
         editorPane.setEditorKit(new HTMLEditorKit());
         editorPane.setContentType("text/html");
         editorPane.setEditable(false);
-        try
-        {
+        try {
             String text = IOUtils.toString(Resources.class.getResourceAsStream("/about.html"), "UTF-8");
             text = text.replace("$JDA_VERSION$", JDA.version + (JDA.previewCopy ? " (preview)" : ""));
             text = text.replace("$JDA_ICON$", Resources.class.getClass().getResource("/icon.png").toString());
             editorPane.setText(text);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.err.println("Couldn't load about html:");
             e.printStackTrace();
         }
@@ -53,8 +48,7 @@ public class AboutWindow extends JFrame
     }
 
     @Override
-    public void setVisible(boolean b)
-    {
+    public void setVisible(boolean b) {
         super.setVisible(b);
     }
 }

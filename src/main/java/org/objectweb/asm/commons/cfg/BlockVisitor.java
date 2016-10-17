@@ -7,8 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Tyler Sedlar
  */
-public abstract class BlockVisitor implements Opcodes
-{
+public abstract class BlockVisitor implements Opcodes {
 
     public AtomicBoolean lock = new AtomicBoolean(false);
 
@@ -16,7 +15,6 @@ public abstract class BlockVisitor implements Opcodes
 
     public abstract void visit(Block block);
 
-    public void visitEnd()
-    {
+    public void visitEnd() {
     }
 }

@@ -4,19 +4,16 @@ package the.bytecode.club.jda.decompilers.bytecode;
  * @author Bibl
  */
 
-public class PrefixedStringBuilder
-{
+public class PrefixedStringBuilder {
 
     protected StringBuilder sb;
     protected String prefix;
 
-    public PrefixedStringBuilder()
-    {
+    public PrefixedStringBuilder() {
         sb = new StringBuilder();
     }
 
-    public PrefixedStringBuilder append(String s)
-    {
+    public PrefixedStringBuilder append(String s) {
         sb.append(s);
         if (s.contains("\n") && (prefix != null) && (prefix.length() > 0))// insert
             // the
@@ -30,19 +27,16 @@ public class PrefixedStringBuilder
         return this;
     }
 
-    public PrefixedStringBuilder append(Object o)
-    {
+    public PrefixedStringBuilder append(Object o) {
         return append(o.toString());
     }
 
     @SuppressWarnings("unused")
-    public void setPrefix(String prefix)
-    {
+    public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
-    public void trimPrefix(int amount)
-    {
+    public void trimPrefix(int amount) {
         if (prefix == null)
             return;
         if (prefix.length() < amount)
@@ -50,22 +44,19 @@ public class PrefixedStringBuilder
         prefix = prefix.substring(0, prefix.length() - amount);
     }
 
-    public void appendPrefix(String s)
-    {
+    public void appendPrefix(String s) {
         if (prefix == null)
             prefix = "";
         prefix += s;
     }
 
     @SuppressWarnings("unused")
-    public String getPrefix()
-    {
+    public String getPrefix() {
         return prefix;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return sb.toString();
     }
 }

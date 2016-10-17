@@ -56,8 +56,7 @@ import java.util.*;
  *
  * @author Eric Bruneton
  */
-public class CheckMethodAdapter extends MethodVisitor
-{
+public class CheckMethodAdapter extends MethodVisitor {
 
     /**
      * The class version number.
@@ -132,12 +131,10 @@ public class CheckMethodAdapter extends MethodVisitor
      */
     private static Field labelStatusField;
 
-    static
-    {
+    static {
         String s = "BBBBBBBBBBBBBBBBCCIAADDDDDAAAAAAAAAAAAAAAAAAAABBBBBBBBDD" + "DDDAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" + "BBBBBBBBBBBBBBBBBBBJBBBBBBBBBBBBBBBBBBBBHHHHHHHHHHHHHHHHD" + "KLBBBBBBFFFFGGGGAECEBBEEBBAMHHAA";
         TYPE = new int[s.length()];
-        for (int i = 0; i < TYPE.length; ++i)
-        {
+        for (int i = 0; i < TYPE.length; ++i) {
             TYPE[i] = s.charAt(i) - 'A' - 1;
         }
     }
@@ -363,8 +360,7 @@ public class CheckMethodAdapter extends MethodVisitor
      *
      * @param mv the method visitor to which this adapter must delegate calls.
      */
-    public CheckMethodAdapter(final MethodVisitor mv)
-    {
+    public CheckMethodAdapter(final MethodVisitor mv) {
         this(mv, new HashMap<>());
     }
 
@@ -379,11 +375,9 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param labels a map of already visited labels (in other methods).
      * @throws IllegalStateException If a subclass calls this constructor.
      */
-    public CheckMethodAdapter(final MethodVisitor mv, final Map<Label, Integer> labels)
-    {
+    public CheckMethodAdapter(final MethodVisitor mv, final Map<Label, Integer> labels) {
         this(Opcodes.ASM5, mv, labels);
-        if (getClass() != CheckMethodAdapter.class)
-        {
+        if (getClass() != CheckMethodAdapter.class) {
             throw new IllegalStateException();
         }
     }
@@ -396,8 +390,7 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param mv     the method visitor to which this adapter must delegate calls.
      * @param labels a map of already visited labels (in other methods).
      */
-    protected CheckMethodAdapter(final int api, final MethodVisitor mv, final Map<Label, Integer> labels)
-    {
+    protected CheckMethodAdapter(final int api, final MethodVisitor mv, final Map<Label, Integer> labels) {
         super(api, mv);
         this.labels = labels;
         this.usedLabels = new HashSet<>();
@@ -416,22 +409,15 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param cmv    the method visitor to which this adapter must delegate calls.
      * @param labels a map of already visited labels (in other methods).
      */
-    public CheckMethodAdapter(final int access, final String name, final String desc, final MethodVisitor cmv, final Map<Label, Integer> labels)
-    {
-        this(new MethodNode(Opcodes.ASM5, null, access, name, desc, null, null)
-        {
+    public CheckMethodAdapter(final int access, final String name, final String desc, final MethodVisitor cmv, final Map<Label, Integer> labels) {
+        this(new MethodNode(Opcodes.ASM5, null, access, name, desc, null, null) {
             @Override
-            public void visitEnd()
-            {
+            public void visitEnd() {
                 Analyzer<BasicValue> a = new Analyzer<>(new BasicVerifier());
-                try
-                {
+                try {
                     a.analyze("dummy", this);
-                }
-                catch (Exception e)
-                {
-                    if (e instanceof IndexOutOfBoundsException && maxLocals == 0 && maxStack == 0)
-                    {
+                } catch (Exception e) {
+                    if (e instanceof IndexOutOfBoundsException && maxLocals == 0 && maxStack == 0) {
                         throw new RuntimeException("Data flow checking option requires valid, non zero maxLocals and maxStack values.");
                     }
                     e.printStackTrace();
@@ -448,10 +434,8 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitParameter(String name, int access)
-    {
-        if (name != null)
-        {
+    public void visitParameter(String name, int access) {
+        if (name != null) {
             checkUnqualifiedName(version, name, "name");
         }
         CheckClassAdapter.checkAccess(access, Opcodes.ACC_FINAL + Opcodes.ACC_MANDATED + Opcodes.ACC_SYNTHETIC);
@@ -459,20 +443,17 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
         checkEndMethod();
         checkDesc(desc, false);
         return new CheckAnnotationAdapter(super.visitAnnotation(desc, visible));
     }
 
     @Override
-    public AnnotationVisitor visitTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         checkEndMethod();
         int sort = typeRef >>> 24;
-        if (sort != TypeReference.METHOD_TYPE_PARAMETER && sort != TypeReference.METHOD_TYPE_PARAMETER_BOUND && sort != TypeReference.METHOD_RETURN && sort != TypeReference.METHOD_RECEIVER && sort != TypeReference.METHOD_FORMAL_PARAMETER && sort != TypeReference.THROWS)
-        {
+        if (sort != TypeReference.METHOD_TYPE_PARAMETER && sort != TypeReference.METHOD_TYPE_PARAMETER_BOUND && sort != TypeReference.METHOD_RETURN && sort != TypeReference.METHOD_RECEIVER && sort != TypeReference.METHOD_FORMAL_PARAMETER && sort != TypeReference.THROWS) {
             throw new IllegalArgumentException("Invalid type reference sort 0x" + Integer.toHexString(sort));
         }
         CheckClassAdapter.checkTypeRefAndPath(typeRef, typePath);
@@ -481,36 +462,30 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public AnnotationVisitor visitAnnotationDefault()
-    {
+    public AnnotationVisitor visitAnnotationDefault() {
         checkEndMethod();
         return new CheckAnnotationAdapter(super.visitAnnotationDefault(), false);
     }
 
     @Override
-    public AnnotationVisitor visitParameterAnnotation(final int parameter, final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitParameterAnnotation(final int parameter, final String desc, final boolean visible) {
         checkEndMethod();
         checkDesc(desc, false);
         return new CheckAnnotationAdapter(super.visitParameterAnnotation(parameter, desc, visible));
     }
 
     @Override
-    public void visitAttribute(final Attribute attr)
-    {
+    public void visitAttribute(final Attribute attr) {
         checkEndMethod();
-        if (attr == null)
-        {
+        if (attr == null) {
             throw new IllegalArgumentException("Invalid attribute (must not be null)");
         }
         super.visitAttribute(attr);
     }
 
     @Override
-    public void visitCode()
-    {
-        if ((access & Opcodes.ACC_ABSTRACT) != 0)
-        {
+    public void visitCode() {
+        if ((access & Opcodes.ACC_ABSTRACT) != 0) {
             throw new RuntimeException("Abstract methods cannot have code");
         }
         startCode = true;
@@ -518,17 +493,14 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitFrame(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack)
-    {
-        if (insnCount == lastFrame)
-        {
+    public void visitFrame(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack) {
+        if (insnCount == lastFrame) {
             throw new IllegalStateException("At most one frame can be visited at a given code location.");
         }
         lastFrame = insnCount;
         int mLocal;
         int mStack;
-        switch (type)
-        {
+        switch (type) {
             case Opcodes.F_NEW:
             case Opcodes.F_FULL:
                 mLocal = Integer.MAX_VALUE;
@@ -555,52 +527,40 @@ public class CheckMethodAdapter extends MethodVisitor
                 throw new IllegalArgumentException("Invalid frame type " + type);
         }
 
-        if (nLocal > mLocal)
-        {
+        if (nLocal > mLocal) {
             throw new IllegalArgumentException("Invalid nLocal=" + nLocal + " for frame type " + type);
         }
-        if (nStack > mStack)
-        {
+        if (nStack > mStack) {
             throw new IllegalArgumentException("Invalid nStack=" + nStack + " for frame type " + type);
         }
 
-        if (type != Opcodes.F_CHOP)
-        {
-            if (nLocal > 0 && (local == null || local.length < nLocal))
-            {
+        if (type != Opcodes.F_CHOP) {
+            if (nLocal > 0 && (local == null || local.length < nLocal)) {
                 throw new IllegalArgumentException("Array local[] is shorter than nLocal");
             }
-            for (int i = 0; i < nLocal; ++i)
-            {
+            for (int i = 0; i < nLocal; ++i) {
                 checkFrameValue(local[i]);
             }
         }
-        if (nStack > 0 && (stack == null || stack.length < nStack))
-        {
+        if (nStack > 0 && (stack == null || stack.length < nStack)) {
             throw new IllegalArgumentException("Array stack[] is shorter than nStack");
         }
-        for (int i = 0; i < nStack; ++i)
-        {
+        for (int i = 0; i < nStack; ++i) {
             checkFrameValue(stack[i]);
         }
-        if (type == Opcodes.F_NEW)
-        {
+        if (type == Opcodes.F_NEW) {
             ++expandedFrames;
-        }
-        else
-        {
+        } else {
             ++compressedFrames;
         }
-        if (expandedFrames > 0 && compressedFrames > 0)
-        {
+        if (expandedFrames > 0 && compressedFrames > 0) {
             throw new RuntimeException("Expanded and compressed frames must not be mixed.");
         }
         super.visitFrame(type, nLocal, local, nStack, stack);
     }
 
     @Override
-    public void visitInsn(final int opcode)
-    {
+    public void visitInsn(final int opcode) {
         checkStartCode();
         checkEndCode();
         checkOpcode(opcode, 0);
@@ -609,13 +569,11 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitIntInsn(final int opcode, final int operand)
-    {
+    public void visitIntInsn(final int opcode, final int operand) {
         checkStartCode();
         checkEndCode();
         checkOpcode(opcode, 1);
-        switch (opcode)
-        {
+        switch (opcode) {
             case Opcodes.BIPUSH:
                 checkSignedByte(operand, "Invalid operand");
                 break;
@@ -624,8 +582,7 @@ public class CheckMethodAdapter extends MethodVisitor
                 break;
             // case Constants.NEWARRAY:
             default:
-                if (operand < Opcodes.T_BOOLEAN || operand > Opcodes.T_LONG)
-                {
+                if (operand < Opcodes.T_BOOLEAN || operand > Opcodes.T_LONG) {
                     throw new IllegalArgumentException("Invalid operand (must be an array type code T_...): " + operand);
                 }
         }
@@ -634,8 +591,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitVarInsn(final int opcode, final int var)
-    {
+    public void visitVarInsn(final int opcode, final int var) {
         checkStartCode();
         checkEndCode();
         checkOpcode(opcode, 2);
@@ -645,14 +601,12 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitTypeInsn(final int opcode, final String type)
-    {
+    public void visitTypeInsn(final int opcode, final String type) {
         checkStartCode();
         checkEndCode();
         checkOpcode(opcode, 3);
         checkInternalName(type, "type");
-        if (opcode == Opcodes.NEW && type.charAt(0) == '[')
-        {
+        if (opcode == Opcodes.NEW && type.charAt(0) == '[') {
             throw new IllegalArgumentException("NEW cannot be used to create arrays: " + type);
         }
         super.visitTypeInsn(opcode, type);
@@ -660,8 +614,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc)
-    {
+    public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc) {
         checkStartCode();
         checkEndCode();
         checkOpcode(opcode, 4);
@@ -674,10 +627,8 @@ public class CheckMethodAdapter extends MethodVisitor
 
     @Deprecated
     @Override
-    public void visitMethodInsn(int opcode, String owner, String name, String desc)
-    {
-        if (api >= Opcodes.ASM5)
-        {
+    public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+        if (api >= Opcodes.ASM5) {
             super.visitMethodInsn(opcode, owner, name, desc);
             return;
         }
@@ -685,59 +636,49 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf)
-    {
-        if (api < Opcodes.ASM5)
-        {
+    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+        if (api < Opcodes.ASM5) {
             super.visitMethodInsn(opcode, owner, name, desc, itf);
             return;
         }
         doVisitMethodInsn(opcode, owner, name, desc, itf);
     }
 
-    private void doVisitMethodInsn(int opcode, final String owner, final String name, final String desc, final boolean itf)
-    {
+    private void doVisitMethodInsn(int opcode, final String owner, final String name, final String desc, final boolean itf) {
         checkStartCode();
         checkEndCode();
         checkOpcode(opcode, 5);
-        if (opcode != Opcodes.INVOKESPECIAL || !"<init>".equals(name))
-        {
+        if (opcode != Opcodes.INVOKESPECIAL || !"<init>".equals(name)) {
             checkMethodIdentifier(version, name, "name");
         }
         checkInternalName(owner, "owner");
         checkMethodDesc(desc);
-        if (opcode == Opcodes.INVOKEVIRTUAL && itf)
-        {
+        if (opcode == Opcodes.INVOKEVIRTUAL && itf) {
             throw new IllegalArgumentException("INVOKEVIRTUAL can't be used with interfaces");
         }
-        if (opcode == Opcodes.INVOKEINTERFACE && !itf)
-        {
+        if (opcode == Opcodes.INVOKEINTERFACE && !itf) {
             throw new IllegalArgumentException("INVOKEINTERFACE can't be used with classes");
         }
         // Calling super.visitMethodInsn requires to call the correct version
         // depending on this.api (otherwise infinite loops can occur). To
         // simplify and to make it easier to automatically remove the backward
         // compatibility code, we inline the code of the overridden method here.
-        if (mv != null)
-        {
+        if (mv != null) {
             mv.visitMethodInsn(opcode, owner, name, desc, itf);
         }
         ++insnCount;
     }
 
     @Override
-    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs)
-    {
+    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
         checkStartCode();
         checkEndCode();
         checkMethodIdentifier(version, name, "name");
         checkMethodDesc(desc);
-        if (bsm.getTag() != Opcodes.H_INVOKESTATIC && bsm.getTag() != Opcodes.H_NEWINVOKESPECIAL)
-        {
+        if (bsm.getTag() != Opcodes.H_INVOKESTATIC && bsm.getTag() != Opcodes.H_NEWINVOKESPECIAL) {
             throw new IllegalArgumentException("invalid handle tag " + bsm.getTag());
         }
-        for (int i = 0; i < bsmArgs.length; i++)
-        {
+        for (int i = 0; i < bsmArgs.length; i++) {
             checkLDCConstant(bsmArgs[i]);
         }
         super.visitInvokeDynamicInsn(name, desc, bsm, bsmArgs);
@@ -745,8 +686,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitJumpInsn(final int opcode, final Label label)
-    {
+    public void visitJumpInsn(final int opcode, final Label label) {
         checkStartCode();
         checkEndCode();
         checkOpcode(opcode, 6);
@@ -758,13 +698,11 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitLabel(final Label label)
-    {
+    public void visitLabel(final Label label) {
         checkStartCode();
         checkEndCode();
         checkLabel(label, false, "label");
-        if (labels.get(label) != null)
-        {
+        if (labels.get(label) != null) {
             throw new IllegalArgumentException("Already visited label");
         }
         labels.put(label, insnCount);
@@ -772,8 +710,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitLdcInsn(final Object cst)
-    {
+    public void visitLdcInsn(final Object cst) {
         checkStartCode();
         checkEndCode();
         checkLDCConstant(cst);
@@ -782,8 +719,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitIincInsn(final int var, final int increment)
-    {
+    public void visitIincInsn(final int var, final int increment) {
         checkStartCode();
         checkEndCode();
         checkUnsignedShort(var, "Invalid variable index");
@@ -793,74 +729,61 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label... labels)
-    {
+    public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label... labels) {
         checkStartCode();
         checkEndCode();
-        if (max < min)
-        {
+        if (max < min) {
             throw new IllegalArgumentException("Max = " + max + " must be greater than or equal to min = " + min);
         }
         checkLabel(dflt, false, "default label");
         checkNonDebugLabel(dflt);
-        if (labels == null || labels.length != max - min + 1)
-        {
+        if (labels == null || labels.length != max - min + 1) {
             throw new IllegalArgumentException("There must be max - min + 1 labels");
         }
-        for (int i = 0; i < labels.length; ++i)
-        {
+        for (int i = 0; i < labels.length; ++i) {
             checkLabel(labels[i], false, "label at index " + i);
             checkNonDebugLabel(labels[i]);
         }
         super.visitTableSwitchInsn(min, max, dflt, labels);
-        for (int i = 0; i < labels.length; ++i)
-        {
+        for (int i = 0; i < labels.length; ++i) {
             usedLabels.add(labels[i]);
         }
         ++insnCount;
     }
 
     @Override
-    public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels)
-    {
+    public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels) {
         checkEndCode();
         checkStartCode();
         checkLabel(dflt, false, "default label");
         checkNonDebugLabel(dflt);
-        if (keys == null || labels == null || keys.length != labels.length)
-        {
+        if (keys == null || labels == null || keys.length != labels.length) {
             throw new IllegalArgumentException("There must be the same number of keys and labels");
         }
-        for (int i = 0; i < labels.length; ++i)
-        {
+        for (int i = 0; i < labels.length; ++i) {
             checkLabel(labels[i], false, "label at index " + i);
             checkNonDebugLabel(labels[i]);
         }
         super.visitLookupSwitchInsn(dflt, keys, labels);
         usedLabels.add(dflt);
-        for (int i = 0; i < labels.length; ++i)
-        {
+        for (int i = 0; i < labels.length; ++i) {
             usedLabels.add(labels[i]);
         }
         ++insnCount;
     }
 
     @Override
-    public void visitMultiANewArrayInsn(final String desc, final int dims)
-    {
+    public void visitMultiANewArrayInsn(final String desc, final int dims) {
         checkStartCode();
         checkEndCode();
         checkDesc(desc, false);
-        if (desc.charAt(0) != '[')
-        {
+        if (desc.charAt(0) != '[') {
             throw new IllegalArgumentException("Invalid descriptor (must be an array type descriptor): " + desc);
         }
-        if (dims < 1)
-        {
+        if (dims < 1) {
             throw new IllegalArgumentException("Invalid dimensions (must be greater than 0): " + dims);
         }
-        if (dims > desc.lastIndexOf('[') + 1)
-        {
+        if (dims > desc.lastIndexOf('[') + 1) {
             throw new IllegalArgumentException("Invalid dimensions (must not be greater than dims(desc)): " + dims);
         }
         super.visitMultiANewArrayInsn(desc, dims);
@@ -868,13 +791,11 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public AnnotationVisitor visitInsnAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitInsnAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         checkStartCode();
         checkEndCode();
         int sort = typeRef >>> 24;
-        if (sort != TypeReference.INSTANCEOF && sort != TypeReference.NEW && sort != TypeReference.CONSTRUCTOR_REFERENCE && sort != TypeReference.METHOD_REFERENCE && sort != TypeReference.CAST && sort != TypeReference.CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT && sort != TypeReference.METHOD_INVOCATION_TYPE_ARGUMENT && sort != TypeReference.CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT && sort != TypeReference.METHOD_REFERENCE_TYPE_ARGUMENT)
-        {
+        if (sort != TypeReference.INSTANCEOF && sort != TypeReference.NEW && sort != TypeReference.CONSTRUCTOR_REFERENCE && sort != TypeReference.METHOD_REFERENCE && sort != TypeReference.CAST && sort != TypeReference.CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT && sort != TypeReference.METHOD_INVOCATION_TYPE_ARGUMENT && sort != TypeReference.CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT && sort != TypeReference.METHOD_REFERENCE_TYPE_ARGUMENT) {
             throw new IllegalArgumentException("Invalid type reference sort 0x" + Integer.toHexString(sort));
         }
         CheckClassAdapter.checkTypeRefAndPath(typeRef, typePath);
@@ -883,8 +804,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitTryCatchBlock(final Label start, final Label end, final Label handler, final String type)
-    {
+    public void visitTryCatchBlock(final Label start, final Label end, final Label handler, final String type) {
         checkStartCode();
         checkEndCode();
         checkLabel(start, false, "start label");
@@ -893,12 +813,10 @@ public class CheckMethodAdapter extends MethodVisitor
         checkNonDebugLabel(start);
         checkNonDebugLabel(end);
         checkNonDebugLabel(handler);
-        if (labels.get(start) != null || labels.get(end) != null || labels.get(handler) != null)
-        {
+        if (labels.get(start) != null || labels.get(end) != null || labels.get(handler) != null) {
             throw new IllegalStateException("Try catch blocks must be visited before their labels");
         }
-        if (type != null)
-        {
+        if (type != null) {
             checkInternalName(type, "type");
         }
         super.visitTryCatchBlock(start, end, handler, type);
@@ -907,13 +825,11 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public AnnotationVisitor visitTryCatchAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitTryCatchAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         checkStartCode();
         checkEndCode();
         int sort = typeRef >>> 24;
-        if (sort != TypeReference.EXCEPTION_PARAMETER)
-        {
+        if (sort != TypeReference.EXCEPTION_PARAMETER) {
             throw new IllegalArgumentException("Invalid type reference sort 0x" + Integer.toHexString(sort));
         }
         CheckClassAdapter.checkTypeRefAndPath(typeRef, typePath);
@@ -922,8 +838,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitLocalVariable(final String name, final String desc, final String signature, final Label start, final Label end, final int index)
-    {
+    public void visitLocalVariable(final String name, final String desc, final String signature, final Label start, final Label end, final int index) {
         checkStartCode();
         checkEndCode();
         checkUnqualifiedName(version, name, "name");
@@ -933,38 +848,32 @@ public class CheckMethodAdapter extends MethodVisitor
         checkUnsignedShort(index, "Invalid variable index");
         int s = labels.get(start).intValue();
         int e = labels.get(end).intValue();
-        if (e < s)
-        {
+        if (e < s) {
             throw new IllegalArgumentException("Invalid start and end labels (end must be greater than start)");
         }
         super.visitLocalVariable(name, desc, signature, start, end, index);
     }
 
     @Override
-    public AnnotationVisitor visitLocalVariableAnnotation(int typeRef, TypePath typePath, Label[] start, Label[] end, int[] index, String desc, boolean visible)
-    {
+    public AnnotationVisitor visitLocalVariableAnnotation(int typeRef, TypePath typePath, Label[] start, Label[] end, int[] index, String desc, boolean visible) {
         checkStartCode();
         checkEndCode();
         int sort = typeRef >>> 24;
-        if (sort != TypeReference.LOCAL_VARIABLE && sort != TypeReference.RESOURCE_VARIABLE)
-        {
+        if (sort != TypeReference.LOCAL_VARIABLE && sort != TypeReference.RESOURCE_VARIABLE) {
             throw new IllegalArgumentException("Invalid type reference sort 0x" + Integer.toHexString(sort));
         }
         CheckClassAdapter.checkTypeRefAndPath(typeRef, typePath);
         checkDesc(desc, false);
-        if (start == null || end == null || index == null || end.length != start.length || index.length != start.length)
-        {
+        if (start == null || end == null || index == null || end.length != start.length || index.length != start.length) {
             throw new IllegalArgumentException("Invalid start, end and index arrays (must be non null and of identical length");
         }
-        for (int i = 0; i < start.length; ++i)
-        {
+        for (int i = 0; i < start.length; ++i) {
             checkLabel(start[i], true, "start label");
             checkLabel(end[i], true, "end label");
             checkUnsignedShort(index[i], "Invalid variable index");
             int s = labels.get(start[i]).intValue();
             int e = labels.get(end[i]).intValue();
-            if (e < s)
-            {
+            if (e < s) {
                 throw new IllegalArgumentException("Invalid start and end labels (end must be greater than start)");
             }
         }
@@ -972,8 +881,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitLineNumber(final int line, final Label start)
-    {
+    public void visitLineNumber(final int line, final Label start) {
         checkStartCode();
         checkEndCode();
         checkUnsignedShort(line, "Invalid line number");
@@ -982,28 +890,22 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitMaxs(final int maxStack, final int maxLocals)
-    {
+    public void visitMaxs(final int maxStack, final int maxLocals) {
         checkStartCode();
         checkEndCode();
         endCode = true;
-        for (Label l : usedLabels)
-        {
-            if (labels.get(l) == null)
-            {
+        for (Label l : usedLabels) {
+            if (labels.get(l) == null) {
                 throw new IllegalStateException("Undefined label used");
             }
         }
-        for (int i = 0; i < handlers.size(); )
-        {
+        for (int i = 0; i < handlers.size(); ) {
             Integer start = labels.get(handlers.get(i++));
             Integer end = labels.get(handlers.get(i++));
-            if (start == null || end == null)
-            {
+            if (start == null || end == null) {
                 throw new IllegalStateException("Undefined try catch block labels");
             }
-            if (end.intValue() <= start.intValue())
-            {
+            if (end.intValue() <= start.intValue()) {
                 throw new IllegalStateException("Emty try catch block handler range");
             }
         }
@@ -1013,8 +915,7 @@ public class CheckMethodAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitEnd()
-    {
+    public void visitEnd() {
         checkEndMethod();
         endMethod = true;
         super.visitEnd();
@@ -1025,10 +926,8 @@ public class CheckMethodAdapter extends MethodVisitor
     /**
      * Checks that the visitCode method has been called.
      */
-    void checkStartCode()
-    {
-        if (!startCode)
-        {
+    void checkStartCode() {
+        if (!startCode) {
             throw new IllegalStateException("Cannot visit instructions before visitCode has been called.");
         }
     }
@@ -1036,10 +935,8 @@ public class CheckMethodAdapter extends MethodVisitor
     /**
      * Checks that the visitMaxs method has not been called.
      */
-    void checkEndCode()
-    {
-        if (endCode)
-        {
+    void checkEndCode() {
+        if (endCode) {
             throw new IllegalStateException("Cannot visit instructions after visitMaxs has been called.");
         }
     }
@@ -1047,10 +944,8 @@ public class CheckMethodAdapter extends MethodVisitor
     /**
      * Checks that the visitEnd method has not been called.
      */
-    void checkEndMethod()
-    {
-        if (endMethod)
-        {
+    void checkEndMethod() {
+        if (endMethod) {
             throw new IllegalStateException("Cannot visit elements after visitEnd has been called.");
         }
     }
@@ -1060,23 +955,17 @@ public class CheckMethodAdapter extends MethodVisitor
      *
      * @param value the value to be checked.
      */
-    void checkFrameValue(final Object value)
-    {
-        if (value == Opcodes.TOP || value == Opcodes.INTEGER || value == Opcodes.FLOAT || value == Opcodes.LONG || value == Opcodes.DOUBLE || value == Opcodes.NULL || value == Opcodes.UNINITIALIZED_THIS)
-        {
+    void checkFrameValue(final Object value) {
+        if (value == Opcodes.TOP || value == Opcodes.INTEGER || value == Opcodes.FLOAT || value == Opcodes.LONG || value == Opcodes.DOUBLE || value == Opcodes.NULL || value == Opcodes.UNINITIALIZED_THIS) {
             return;
         }
-        if (value instanceof String)
-        {
+        if (value instanceof String) {
             checkInternalName((String) value, "Invalid stack frame value");
             return;
         }
-        if (!(value instanceof Label))
-        {
+        if (!(value instanceof Label)) {
             throw new IllegalArgumentException("Invalid stack frame value: " + value);
-        }
-        else
-        {
+        } else {
             usedLabels.add((Label) value);
         }
     }
@@ -1087,10 +976,8 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param opcode the opcode to be checked.
      * @param type   the expected opcode type.
      */
-    static void checkOpcode(final int opcode, final int type)
-    {
-        if (opcode < 0 || opcode > 199 || TYPE[opcode] != type)
-        {
+    static void checkOpcode(final int opcode, final int type) {
+        if (opcode < 0 || opcode > 199 || TYPE[opcode] != type) {
             throw new IllegalArgumentException("Invalid opcode: " + opcode);
         }
     }
@@ -1101,10 +988,8 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param value the value to be checked.
      * @param msg   an message to be used in case of error.
      */
-    static void checkSignedByte(final int value, final String msg)
-    {
-        if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE)
-        {
+    static void checkSignedByte(final int value, final String msg) {
+        if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
             throw new IllegalArgumentException(msg + " (must be a signed byte): " + value);
         }
     }
@@ -1115,10 +1000,8 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param value the value to be checked.
      * @param msg   an message to be used in case of error.
      */
-    static void checkSignedShort(final int value, final String msg)
-    {
-        if (value < Short.MIN_VALUE || value > Short.MAX_VALUE)
-        {
+    static void checkSignedShort(final int value, final String msg) {
+        if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
             throw new IllegalArgumentException(msg + " (must be a signed short): " + value);
         }
     }
@@ -1129,10 +1012,8 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param value the value to be checked.
      * @param msg   an message to be used in case of error.
      */
-    static void checkUnsignedShort(final int value, final String msg)
-    {
-        if (value < 0 || value > 65535)
-        {
+    static void checkUnsignedShort(final int value, final String msg) {
+        if (value < 0 || value > 65535) {
             throw new IllegalArgumentException(msg + " (must be an unsigned short): " + value);
         }
     }
@@ -1143,46 +1024,33 @@ public class CheckMethodAdapter extends MethodVisitor
      *
      * @param cst the value to be checked.
      */
-    static void checkConstant(final Object cst)
-    {
-        if (!(cst instanceof Integer) && !(cst instanceof Float) && !(cst instanceof Long) && !(cst instanceof Double) && !(cst instanceof String))
-        {
+    static void checkConstant(final Object cst) {
+        if (!(cst instanceof Integer) && !(cst instanceof Float) && !(cst instanceof Long) && !(cst instanceof Double) && !(cst instanceof String)) {
             throw new IllegalArgumentException("Invalid constant: " + cst);
         }
     }
 
-    void checkLDCConstant(final Object cst)
-    {
-        if (cst instanceof Type)
-        {
+    void checkLDCConstant(final Object cst) {
+        if (cst instanceof Type) {
             int s = ((Type) cst).getSort();
-            if (s != Type.OBJECT && s != Type.ARRAY && s != Type.METHOD)
-            {
+            if (s != Type.OBJECT && s != Type.ARRAY && s != Type.METHOD) {
                 throw new IllegalArgumentException("Illegal LDC constant value");
             }
-            if (s != Type.METHOD && (version & 0xFFFF) < Opcodes.V1_5)
-            {
+            if (s != Type.METHOD && (version & 0xFFFF) < Opcodes.V1_5) {
                 throw new IllegalArgumentException("ldc of a constant class requires at least version 1.5");
             }
-            if (s == Type.METHOD && (version & 0xFFFF) < Opcodes.V1_7)
-            {
+            if (s == Type.METHOD && (version & 0xFFFF) < Opcodes.V1_7) {
                 throw new IllegalArgumentException("ldc of a method type requires at least version 1.7");
             }
-        }
-        else if (cst instanceof Handle)
-        {
-            if ((version & 0xFFFF) < Opcodes.V1_7)
-            {
+        } else if (cst instanceof Handle) {
+            if ((version & 0xFFFF) < Opcodes.V1_7) {
                 throw new IllegalArgumentException("ldc of a handle requires at least version 1.7");
             }
             int tag = ((Handle) cst).getTag();
-            if (tag < Opcodes.H_GETFIELD || tag > Opcodes.H_INVOKEINTERFACE)
-            {
+            if (tag < Opcodes.H_GETFIELD || tag > Opcodes.H_INVOKEINTERFACE) {
                 throw new IllegalArgumentException("invalid handle tag " + tag);
             }
-        }
-        else
-        {
+        } else {
             checkConstant(cst);
         }
     }
@@ -1194,18 +1062,12 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param name    the string to be checked.
      * @param msg     a message to be used in case of error.
      */
-    static void checkUnqualifiedName(int version, final String name, final String msg)
-    {
-        if ((version & 0xFFFF) < Opcodes.V1_5)
-        {
+    static void checkUnqualifiedName(int version, final String name, final String msg) {
+        if ((version & 0xFFFF) < Opcodes.V1_5) {
             checkIdentifier(name, msg);
-        }
-        else
-        {
-            for (int i = 0; i < name.length(); ++i)
-            {
-                if (".;[/".indexOf(name.charAt(i)) != -1)
-                {
+        } else {
+            for (int i = 0; i < name.length(); ++i) {
+                if (".;[/".indexOf(name.charAt(i)) != -1) {
                     throw new IllegalArgumentException("Invalid " + msg + " (must be a valid unqualified name): " + name);
                 }
             }
@@ -1218,8 +1080,7 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param name the string to be checked.
      * @param msg  a message to be used in case of error.
      */
-    static void checkIdentifier(final String name, final String msg)
-    {
+    static void checkIdentifier(final String name, final String msg) {
         checkIdentifier(name, 0, -1, msg);
     }
 
@@ -1233,21 +1094,16 @@ public class CheckMethodAdapter extends MethodVisitor
      *              <tt>null</tt>.
      * @param msg   a message to be used in case of error.
      */
-    static void checkIdentifier(final String name, final int start, final int end, final String msg)
-    {
-        if (name == null || (end == -1 ? name.length() <= start : end <= start))
-        {
+    static void checkIdentifier(final String name, final int start, final int end, final String msg) {
+        if (name == null || (end == -1 ? name.length() <= start : end <= start)) {
             throw new IllegalArgumentException("Invalid " + msg + " (must not be null or empty)");
         }
-        if (!Character.isJavaIdentifierStart(name.charAt(start)))
-        {
+        if (!Character.isJavaIdentifierStart(name.charAt(start))) {
             throw new IllegalArgumentException("Invalid " + msg + " (must be a valid Java identifier): " + name);
         }
         int max = end == -1 ? name.length() : end;
-        for (int i = start + 1; i < max; ++i)
-        {
-            if (!Character.isJavaIdentifierPart(name.charAt(i)))
-            {
+        for (int i = start + 1; i < max; ++i) {
+            if (!Character.isJavaIdentifierPart(name.charAt(i))) {
                 throw new IllegalArgumentException("Invalid " + msg + " (must be a valid Java identifier): " + name);
             }
         }
@@ -1260,31 +1116,23 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param name    the string to be checked.
      * @param msg     a message to be used in case of error.
      */
-    static void checkMethodIdentifier(int version, final String name, final String msg)
-    {
-        if (name == null || name.length() == 0)
-        {
+    static void checkMethodIdentifier(int version, final String name, final String msg) {
+        if (name == null || name.length() == 0) {
             throw new IllegalArgumentException("Invalid " + msg + " (must not be null or empty)");
         }
-        if ((version & 0xFFFF) >= Opcodes.V1_5)
-        {
-            for (int i = 0; i < name.length(); ++i)
-            {
-                if (".;[/<>".indexOf(name.charAt(i)) != -1)
-                {
+        if ((version & 0xFFFF) >= Opcodes.V1_5) {
+            for (int i = 0; i < name.length(); ++i) {
+                if (".;[/<>".indexOf(name.charAt(i)) != -1) {
                     throw new IllegalArgumentException("Invalid " + msg + " (must be a valid unqualified name): " + name);
                 }
             }
             return;
         }
-        if (!Character.isJavaIdentifierStart(name.charAt(0)))
-        {
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
             throw new IllegalArgumentException("Invalid " + msg + " (must be a '<init>', '<clinit>' or a valid Java identifier): " + name);
         }
-        for (int i = 1; i < name.length(); ++i)
-        {
-            if (!Character.isJavaIdentifierPart(name.charAt(i)))
-            {
+        for (int i = 1; i < name.length(); ++i) {
+            if (!Character.isJavaIdentifierPart(name.charAt(i))) {
                 throw new IllegalArgumentException("Invalid " + msg + " (must be '<init>' or '<clinit>' or a valid Java identifier): " + name);
             }
         }
@@ -1296,18 +1144,13 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param name the string to be checked.
      * @param msg  a message to be used in case of error.
      */
-    static void checkInternalName(final String name, final String msg)
-    {
-        if (name == null || name.length() == 0)
-        {
+    static void checkInternalName(final String name, final String msg) {
+        if (name == null || name.length() == 0) {
             throw new IllegalArgumentException("Invalid " + msg + " (must not be null or empty)");
         }
-        if (name.charAt(0) == '[')
-        {
+        if (name.charAt(0) == '[') {
             checkDesc(name, false);
-        }
-        else
-        {
+        } else {
             checkInternalName(name, 0, -1, msg);
         }
     }
@@ -1322,27 +1165,21 @@ public class CheckMethodAdapter extends MethodVisitor
      *              <tt>null</tt>.
      * @param msg   a message to be used in case of error.
      */
-    static void checkInternalName(final String name, final int start, final int end, final String msg)
-    {
+    static void checkInternalName(final String name, final int start, final int end, final String msg) {
         int max = end == -1 ? name.length() : end;
-        try
-        {
+        try {
             int begin = start;
             int slash;
-            do
-            {
+            do {
                 slash = name.indexOf('/', begin + 1);
-                if (slash == -1 || slash > max)
-                {
+                if (slash == -1 || slash > max) {
                     slash = max;
                 }
                 checkIdentifier(name, begin, slash, null);
                 begin = slash + 1;
             }
             while (slash != max);
-        }
-        catch (IllegalArgumentException unused)
-        {
+        } catch (IllegalArgumentException unused) {
             throw new IllegalArgumentException("Invalid " + msg + " (must be a fully qualified class name in internal form): " + name);
         }
     }
@@ -1353,11 +1190,9 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param desc      the string to be checked.
      * @param canBeVoid <tt>true</tt> if <tt>V</tt> can be considered valid.
      */
-    static void checkDesc(final String desc, final boolean canBeVoid)
-    {
+    static void checkDesc(final String desc, final boolean canBeVoid) {
         int end = checkDesc(desc, 0, canBeVoid);
-        if (end != desc.length())
-        {
+        if (end != desc.length()) {
             throw new IllegalArgumentException("Invalid descriptor: " + desc);
         }
     }
@@ -1370,22 +1205,16 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param canBeVoid <tt>true</tt> if <tt>V</tt> can be considered valid.
      * @return the index of the last character of the type decriptor, plus one.
      */
-    static int checkDesc(final String desc, final int start, final boolean canBeVoid)
-    {
-        if (desc == null || start >= desc.length())
-        {
+    static int checkDesc(final String desc, final int start, final boolean canBeVoid) {
+        if (desc == null || start >= desc.length()) {
             throw new IllegalArgumentException("Invalid type descriptor (must not be null or empty)");
         }
         int index;
-        switch (desc.charAt(start))
-        {
+        switch (desc.charAt(start)) {
             case 'V':
-                if (canBeVoid)
-                {
+                if (canBeVoid) {
                     return start + 1;
-                }
-                else
-                {
+                } else {
                     throw new IllegalArgumentException("Invalid descriptor: " + desc);
                 }
             case 'Z':
@@ -1399,30 +1228,22 @@ public class CheckMethodAdapter extends MethodVisitor
                 return start + 1;
             case '[':
                 index = start + 1;
-                while (index < desc.length() && desc.charAt(index) == '[')
-                {
+                while (index < desc.length() && desc.charAt(index) == '[') {
                     ++index;
                 }
-                if (index < desc.length())
-                {
+                if (index < desc.length()) {
                     return checkDesc(desc, index, false);
-                }
-                else
-                {
+                } else {
                     throw new IllegalArgumentException("Invalid descriptor: " + desc);
                 }
             case 'L':
                 index = desc.indexOf(';', start);
-                if (index == -1 || index - start < 2)
-                {
+                if (index == -1 || index - start < 2) {
                     throw new IllegalArgumentException("Invalid descriptor: " + desc);
                 }
-                try
-                {
+                try {
                     checkInternalName(desc, start + 1, index, null);
-                }
-                catch (IllegalArgumentException unused)
-                {
+                } catch (IllegalArgumentException unused) {
                     throw new IllegalArgumentException("Invalid descriptor: " + desc);
                 }
                 return index + 1;
@@ -1436,23 +1257,17 @@ public class CheckMethodAdapter extends MethodVisitor
      *
      * @param desc the string to be checked.
      */
-    static void checkMethodDesc(final String desc)
-    {
-        if (desc == null || desc.length() == 0)
-        {
+    static void checkMethodDesc(final String desc) {
+        if (desc == null || desc.length() == 0) {
             throw new IllegalArgumentException("Invalid method descriptor (must not be null or empty)");
         }
-        if (desc.charAt(0) != '(' || desc.length() < 3)
-        {
+        if (desc.charAt(0) != '(' || desc.length() < 3) {
             throw new IllegalArgumentException("Invalid descriptor: " + desc);
         }
         int start = 1;
-        if (desc.charAt(start) != ')')
-        {
-            do
-            {
-                if (desc.charAt(start) == 'V')
-                {
+        if (desc.charAt(start) != ')') {
+            do {
+                if (desc.charAt(start) == 'V') {
                     throw new IllegalArgumentException("Invalid descriptor: " + desc);
                 }
                 start = checkDesc(desc, start, false);
@@ -1460,8 +1275,7 @@ public class CheckMethodAdapter extends MethodVisitor
             while (start < desc.length() && desc.charAt(start) != ')');
         }
         start = checkDesc(desc, start + 1, true);
-        if (start != desc.length())
-        {
+        if (start != desc.length()) {
             throw new IllegalArgumentException("Invalid descriptor: " + desc);
         }
     }
@@ -1474,14 +1288,11 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param checkVisited <tt>true</tt> to check that the label has been visited.
      * @param msg          a message to be used in case of error.
      */
-    void checkLabel(final Label label, final boolean checkVisited, final String msg)
-    {
-        if (label == null)
-        {
+    void checkLabel(final Label label, final boolean checkVisited, final String msg) {
+        if (label == null) {
             throw new IllegalArgumentException("Invalid " + msg + " (must not be null)");
         }
-        if (checkVisited && labels.get(label) == null)
-        {
+        if (checkVisited && labels.get(label) == null) {
             throw new IllegalArgumentException("Invalid " + msg + " (must be visited first)");
         }
     }
@@ -1491,20 +1302,15 @@ public class CheckMethodAdapter extends MethodVisitor
      *
      * @param label the label to be checked.
      */
-    private static void checkNonDebugLabel(final Label label)
-    {
+    private static void checkNonDebugLabel(final Label label) {
         Field f = getLabelStatusField();
         int status = 0;
-        try
-        {
+        try {
             status = f == null ? 0 : ((Integer) f.get(label)).intValue();
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             throw new Error("Internal error");
         }
-        if ((status & 0x01) != 0)
-        {
+        if ((status & 0x01) != 0) {
             throw new IllegalArgumentException("Labels used for debug info cannot be reused for control flow");
         }
     }
@@ -1514,13 +1320,10 @@ public class CheckMethodAdapter extends MethodVisitor
      *
      * @return the Field object corresponding to the Label.status field.
      */
-    private static Field getLabelStatusField()
-    {
-        if (labelStatusField == null)
-        {
+    private static Field getLabelStatusField() {
+        if (labelStatusField == null) {
             labelStatusField = getLabelField("a");
-            if (labelStatusField == null)
-            {
+            if (labelStatusField == null) {
                 labelStatusField = getLabelField("status");
             }
         }
@@ -1533,16 +1336,12 @@ public class CheckMethodAdapter extends MethodVisitor
      * @param name a field name.
      * @return the field of the Label class whose name is given, or null.
      */
-    private static Field getLabelField(final String name)
-    {
-        try
-        {
+    private static Field getLabelField(final String name) {
+        try {
             Field f = Label.class.getDeclaredField(name);
             f.setAccessible(true);
             return f;
-        }
-        catch (NoSuchFieldException e)
-        {
+        } catch (NoSuchFieldException e) {
             return null;
         }
     }

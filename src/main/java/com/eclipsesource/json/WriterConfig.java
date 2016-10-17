@@ -27,17 +27,14 @@ import java.io.Writer;
 /**
  * Controls the formatting of the JSON output. Use one of the available constants.
  */
-public abstract class WriterConfig
-{
+public abstract class WriterConfig {
 
     /**
      * Write JSON in its minimal form, without any additional whitespace. This is the default.
      */
-    public static WriterConfig MINIMAL = new WriterConfig()
-    {
+    public static WriterConfig MINIMAL = new WriterConfig() {
         @Override
-        JsonWriter createWriter(Writer writer)
-        {
+        JsonWriter createWriter(Writer writer) {
             return new JsonWriter(writer);
         }
     };

@@ -21,8 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JDA
-{
+public class JDA {
     /*per version*/
     public static final String version = "0.0.4";
     public static final boolean previewCopy = false;
@@ -32,7 +31,8 @@ public class JDA
     public static final File dataDir = new File(System.getProperty("user.home") + fs + ".jda");
     public static final File filesFile = new File(dataDir, "recentfiles.jda");
     public static final File settingsFile = new File(dataDir, "settings.jda");
-    @Deprecated public static final File tempDir = new File(dataDir, "jda_temp");
+    @Deprecated
+    public static final File tempDir = new File(dataDir, "jda_temp");
     private static final long start = System.currentTimeMillis();
     /*the rest*/
     public static MainViewerGUI viewer = null;
@@ -50,26 +50,20 @@ public class JDA
      *
      * @param args files you want to open or CLI
      */
-    public static void main(String[] args)
-    {
-        try
-        {
+    public static void main(String[] args) {
+        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             new ExceptionUI(e);
         }
-        try
-        {
+        try {
             System.setSecurityManager(sm);
             System.out.println("JDA (BCV Fork) v" + version);
             if (previewCopy)
                 showMessage("WARNING: This is a preview/dev copy, you WON'T be alerted when " + version + " is actually out if you use this." + nl +
                         "Make sure to watch the repo: https://github.com/ecx86/jda for " + version + "'s release");
             getJDADirectory();
-            if (!filesFile.exists() && !filesFile.createNewFile())
-            {
+            if (!filesFile.exists() && !filesFile.createNewFile()) {
                 throw new RuntimeException("Could not create recent files file");
             }
             recentFiles.addAll(FileUtils.readLines(filesFile, "UTF-8"));
@@ -77,9 +71,7 @@ public class JDA
             viewer = new MainViewerGUI();
             Boot.boot();
             JDA.boot(args);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             new ExceptionUI(e);
         }
     }
@@ -87,34 +79,26 @@ public class JDA
     /**
      * The version checker thread
      */
-    private static final Thread versionChecker = new Thread()
-    {
+    private static final Thread versionChecker = new Thread() {
         // todo: rewrite
         @Override
-        public void run()
-        {
+        public void run() {
         }
     };
 
     /**
      * Boot after all of the libraries have been loaded
      */
-    public static void boot(String[] args)
-    {
+    public static void boot(String[] args) {
         cleanup();
-        Runtime.getRuntime().addShutdownHook(new Thread()
-        {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 for (Process proc : createdProcesses)
                     proc.destroy();
-                try
-                {
+                try {
                     FileUtils.writeLines(filesFile, recentFiles);
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     new ExceptionUI(e);
                 }
                 if (!viewer.isMaximized)
@@ -136,9 +120,8 @@ public class JDA
         System.out.println("Start up took " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
 
         if (args.length >= 1)
-            for (String s : args)
-            {
-                openFiles(new File[] { new File(s) }, true);
+            for (String s : args) {
+                openFiles(new File[]{new File(s)}, true);
             }
     }
 
@@ -147,8 +130,7 @@ public class JDA
      *
      * @return the currently opened ClassNode
      */
-    public static ClassNode getCurrentlyOpenedClassNode()
-    {
+    public static ClassNode getCurrentlyOpenedClassNode() {
         return viewer.workPane.getCurrentViewer().cn;
     }
 
@@ -159,24 +141,18 @@ public class JDA
      * @param name          the class name
      * @return the ClassNode instance
      */
-    public static ClassNode getClassNode(String containerName, String name)
-    {
-        for (FileContainer container : files)
-        {
-            if (container.name.equals(containerName) && container.getData().containsKey(name + ".class"))
-            {
+    public static ClassNode getClassNode(String containerName, String name) {
+        for (FileContainer container : files) {
+            if (container.name.equals(containerName) && container.getData().containsKey(name + ".class")) {
                 return container.getClassNode(name);
             }
         }
         return null;
     }
 
-    public static byte[] getClassBytes(String containerName, String name)
-    {
-        for (FileContainer container : files)
-        {
-            if (container.name.equals(containerName) && container.getData().containsKey(name))
-            {
+    public static byte[] getClassBytes(String containerName, String name) {
+        for (FileContainer container : files) {
+            if (container.name.equals(containerName) && container.getData().containsKey(name)) {
                 return container.getData().get(name);
             }
         }
@@ -189,12 +165,9 @@ public class JDA
      * @param name the file name
      * @return the file contents as a byte[]
      */
-    public static byte[] getFileContents(String containerName, String name)
-    {
-        for (FileContainer container : files)
-        {
-            if (container.name.equals(containerName))
-            {
+    public static byte[] getFileContents(String containerName, String name) {
+        for (FileContainer container : files) {
+            if (container.name.equals(containerName)) {
                 HashMap<String, byte[]> files = container.files;
                 if (files.containsKey(name))
                     return files.get(name);
@@ -210,10 +183,8 @@ public class JDA
      * @param oldNode the old instance
      * @param newNode the new instance
      */
-    public static void updateNode(ClassNode oldNode, ClassNode newNode)
-    {
-        for (FileContainer container : files)
-        {
+    public static void updateNode(ClassNode oldNode, ClassNode newNode) {
+        for (FileContainer container : files) {
             if (container.remove(oldNode))
                 container.add(newNode);
         }
@@ -224,8 +195,7 @@ public class JDA
      *
      * @return the loaded classes as an array list
      */
-    public static ArrayList<ClassNode> getLoadedClasses()
-    {
+    public static ArrayList<ClassNode> getLoadedClasses() {
         ArrayList<ClassNode> a = new ArrayList<>();
 
         for (FileContainer container : files)
@@ -236,18 +206,14 @@ public class JDA
         return a;
     }
 
-    public static ArrayList<ClassNode> loadAllClasses()
-    {
+    public static ArrayList<ClassNode> loadAllClasses() {
         ArrayList<ClassNode> a = new ArrayList<>();
-        for (FileContainer container : files)
-        {
-            for (String s : container.files.keySet())
-            {
+        for (FileContainer container : files) {
+            for (String s : container.files.keySet()) {
                 if (!s.endsWith(".class"))
                     continue;
                 ClassNode loaded = container.getClassNode(s.substring(0, s.length() - 6));
-                if (loaded != null)
-                {
+                if (loaded != null) {
                     a.add(loaded);
                 }
             }
@@ -256,11 +222,9 @@ public class JDA
         return a;
     }
 
-    public static Map<String, byte[]> getLoadedBytes()
-    {
+    public static Map<String, byte[]> getLoadedBytes() {
         Map<String, byte[]> data = new HashMap<>();
-        for (FileContainer container : files)
-        {
+        for (FileContainer container : files) {
             data.putAll(container.getData());
         }
         return data;
@@ -274,8 +238,7 @@ public class JDA
      * @param files       the file(s) you wish to open
      * @param recentFiles if it should append to the recent files menu
      */
-    public static void openFiles(final File[] files, boolean recentFiles)
-    {
+    public static void openFiles(final File[] files, boolean recentFiles) {
         if (recentFiles)
             for (File f : files)
                 if (f.exists())
@@ -284,25 +247,17 @@ public class JDA
         JDA.viewer.setIcon(true);
         update = true;
 
-        Thread t = new Thread()
-        {
+        Thread t = new Thread() {
             @Override
-            public void run()
-            {
-                try
-                {
-                    for (final File f : files)
-                    {
+            public void run() {
+                try {
+                    for (final File f : files) {
                         final String fn = f.getName();
-                        if (!f.exists())
-                        {
+                        if (!f.exists()) {
                             update = false;
                             showMessage("The file " + f.getAbsolutePath() + " could not be found.");
-                        }
-                        else
-                        {
-                            if (f.isDirectory())
-                            {
+                        } else {
+                            if (f.isDirectory()) {
                                 FileContainer container = new FileContainer(f);
                                 HashMap<String, byte[]> files = new HashMap<>();
                                 boolean finished = false;
@@ -310,26 +265,21 @@ public class JDA
                                 totalFiles.add(f);
                                 String dir = f.getAbsolutePath();//f.getAbsolutePath().substring(0, f.getAbsolutePath().length()-f.getName().length());
 
-                                while (!finished)
-                                {
+                                while (!finished) {
                                     boolean added = false;
-                                    for (int i = 0; i < totalFiles.size(); i++)
-                                    {
+                                    for (int i = 0; i < totalFiles.size(); i++) {
                                         File child = totalFiles.get(i);
                                         if (child.listFiles() != null)
                                             for (File rocket : child.listFiles())
-                                                if (!totalFiles.contains(rocket))
-                                                {
+                                                if (!totalFiles.contains(rocket)) {
                                                     totalFiles.add(rocket);
                                                     added = true;
                                                 }
                                     }
 
-                                    if (!added)
-                                    {
+                                    if (!added) {
                                         for (File child : totalFiles)
-                                            if (child.isFile())
-                                            {
+                                            if (child.isFile()) {
                                                 String fileName = child.getAbsolutePath().substring(dir.length() + 1, child.getAbsolutePath().length()).replaceAll("\\\\", "\\/");
 
 
@@ -340,51 +290,35 @@ public class JDA
                                 }
                                 container.files = files;
                                 JDA.files.add(container);
-                            }
-                            else
-                            {
-                                if (fn.endsWith(".jar") || fn.endsWith(".zip"))
-                                {
-                                    try
-                                    {
+                            } else {
+                                if (fn.endsWith(".jar") || fn.endsWith(".zip")) {
+                                    try {
                                         JarUtils.put(f);
-                                    }
-                                    catch (final Exception e)
-                                    {
+                                    } catch (final Exception e) {
                                         new ExceptionUI(e);
                                         update = false;
                                     }
 
-                                }
-                                else if (fn.endsWith(".class"))
-                                {
-                                    try
-                                    {
+                                } else if (fn.endsWith(".class")) {
+                                    try {
                                         byte[] bytes = JarUtils.getBytes(new FileInputStream(f));
                                         String cafebabe = String.format("%02X%02X%02X%02X", bytes[0], bytes[1], bytes[2], bytes[3]);
-                                        if (cafebabe.toLowerCase().equals("cafebabe"))
-                                        {
+                                        if (cafebabe.toLowerCase().equals("cafebabe")) {
                                             final ClassNode cn = JarUtils.getNode(bytes);
 
                                             FileContainer container = new FileContainer(f);
                                             container.files.put(cn.name + ".class", bytes);
                                             container.add(cn);
                                             JDA.files.add(container);
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             showMessage(fn + ": Header does not start with CAFEBABE, ignoring.");
                                             update = false;
                                         }
-                                    }
-                                    catch (final Exception e)
-                                    {
+                                    } catch (final Exception e) {
                                         new ExceptionUI(e);
                                         update = false;
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     HashMap<String, byte[]> files = new HashMap<>();
                                     byte[] bytes = JarUtils.getBytes(new FileInputStream(f));
                                     files.put(f.getName(), bytes);
@@ -397,21 +331,14 @@ public class JDA
                             }
                         }
                     }
-                }
-                catch (final Exception e)
-                {
+                } catch (final Exception e) {
                     new ExceptionUI(e);
-                }
-                finally
-                {
+                } finally {
                     JDA.viewer.setIcon(false);
                     if (update)
-                        try
-                        {
+                        try {
                             MainViewerGUI.getComponent(FileNavigationPane.class).updateTree();
-                        }
-                        catch (java.lang.NullPointerException e)
-                        {
+                        } catch (java.lang.NullPointerException e) {
                         }
                 }
             }
@@ -424,8 +351,7 @@ public class JDA
      *
      * @param message the message you need to send
      */
-    public static void showMessage(String message)
-    {
+    public static void showMessage(String message) {
         JOptionPane.showMessageDialog(viewer, message);
     }
 
@@ -434,12 +360,10 @@ public class JDA
      *
      * @param ask if should require user input or not
      */
-    public static void resetWorkSpace(boolean ask)
-    {
-        if (ask)
-        {
+    public static void resetWorkSpace(boolean ask) {
+        if (ask) {
             JOptionPane pane = new JOptionPane("Are you sure you want to reset the workspace?\n\rIt will also reset your file navigator and search.");
-            Object[] options = new String[] { "Yes", "No" };
+            Object[] options = new String[]{"Yes", "No"};
             pane.setOptions(options);
             JDialog dialog = pane.createDialog(viewer, "JDA - Reset Workspace");
             dialog.setVisible(true);
@@ -454,10 +378,9 @@ public class JDA
     }
 
     public static void closeResources(boolean ask) {
-        if (ask)
-        {
+        if (ask) {
             JOptionPane pane = new JOptionPane("Are you sure you want to close all resources?");
-            Object[] options = new String[] { "Yes", "No" };
+            Object[] options = new String[]{"Yes", "No"};
             pane.setOptions(options);
             JDialog dialog = pane.createDialog(viewer, "JDA - Close Resources");
             dialog.setVisible(true);
@@ -478,16 +401,13 @@ public class JDA
      *
      * @param f the recent file
      */
-    public static void addRecentFile(File f)
-    {
-        for (int i = 0; i < recentFiles.size(); i++)
-        { // remove dead strings
+    public static void addRecentFile(File f) {
+        for (int i = 0; i < recentFiles.size(); i++) { // remove dead strings
             String s = recentFiles.get(i);
             if (s.isEmpty() || i > maxRecentFiles)
                 killList.add(s);
         }
-        if (!killList.isEmpty())
-        {
+        if (!killList.isEmpty()) {
             for (String s : killList)
                 recentFiles.remove(s);
             killList.clear();
@@ -507,16 +427,14 @@ public class JDA
     /**
      * resets the recent files menu
      */
-    public static void resetRecentFilesMenu()
-    {
+    public static void resetRecentFilesMenu() {
         viewer.mnRecentFiles.removeAll();
         for (String s : recentFiles)
-            if (!s.isEmpty())
-            {
+            if (!s.isEmpty()) {
                 JMenuItem m = new JMenuItem(s);
                 m.addActionListener(e -> {
                     JMenuItem m1 = (JMenuItem) e.getSource();
-                    openFiles(new File[] { new File(m1.getText()) }, true);
+                    openFiles(new File[]{new File(m1.getText())}, true);
                 });
                 viewer.mnRecentFiles.add(m);
             }
@@ -525,14 +443,10 @@ public class JDA
     /**
      * Clears the temp directory
      */
-    public static void cleanup()
-    {
-        try
-        {
+    public static void cleanup() {
+        try {
             FileUtils.cleanDirectory(tempDir);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
         }
     }
 
@@ -543,15 +457,12 @@ public class JDA
      *
      * @return the unique randomized name of 25 characters.
      */
-    public static String getRandomizedName()
-    {
+    public static String getRandomizedName() {
         boolean generated = false;
         String name = "";
-        while (!generated)
-        {
+        while (!generated) {
             String randomizedName = MiscUtils.randomString(25);
-            if (!createdRandomizedNames.contains(randomizedName))
-            {
+            if (!createdRandomizedNames.contains(randomizedName)) {
                 createdRandomizedNames.add(randomizedName);
                 name = randomizedName;
                 generated = true;
@@ -565,8 +476,7 @@ public class JDA
      *
      * @return the static BCV directory
      */
-    public static String getJDADirectory()
-    {
+    public static String getJDADirectory() {
         while (!dataDir.exists())
             dataDir.mkdirs();
 
@@ -581,8 +491,7 @@ public class JDA
      *
      * @return true if the os.name property contains 'win'
      */
-    private static boolean isWindows()
-    {
+    private static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("win");
     }
 
@@ -591,16 +500,12 @@ public class JDA
      *
      * @param f file you want hidden
      */
-    private static void hideFile(File f)
-    {
+    private static void hideFile(File f) {
         sm.stopBlocking();
-        try
-        {
+        try {
             // Hide file by running attrib system command (on Windows)
             Runtime.getRuntime().exec("attrib +H " + f.getAbsolutePath());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             new ExceptionUI(e);
         }
         sm.setBlocking();
@@ -619,24 +524,17 @@ public class JDA
      *
      * @param e
      */
-    public static void checkHotKey(KeyEvent e)
-    {
-        if ((e.getKeyCode() == KeyEvent.VK_O) && isCtrlDown(e))
-        {
+    public static void checkHotKey(KeyEvent e) {
+        if ((e.getKeyCode() == KeyEvent.VK_O) && isCtrlDown(e)) {
             JFileChooser fc = new JFileChooser();
-            try
-            {
+            try {
                 fc.setSelectedFile(new File(JDA.lastDirectory));
-            }
-            catch (Exception e2)
-            {
+            } catch (Exception e2) {
 
             }
-            fc.setFileFilter(new FileFilter()
-            {
+            fc.setFileFilter(new FileFilter() {
                 @Override
-                public boolean accept(File f)
-                {
+                public boolean accept(File f) {
                     if (f.isDirectory())
                         return true;
 
@@ -649,8 +547,7 @@ public class JDA
                 }
 
                 @Override
-                public String getDescription()
-                {
+                public String getDescription() {
                     return "Class Files or Zip/Jar Archives";
                 }
             });
@@ -658,77 +555,55 @@ public class JDA
             fc.setAcceptAllFileFilterUsed(false);
             int returnVal = fc.showOpenDialog(JDA.viewer);
 
-            if (returnVal == JFileChooser.APPROVE_OPTION)
-            {
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
                 JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
-                try
-                {
+                try {
                     JDA.viewer.setIcon(true);
-                    JDA.openFiles(new File[] { fc.getSelectedFile() }, true);
+                    JDA.openFiles(new File[]{fc.getSelectedFile()}, true);
                     JDA.viewer.setIcon(false);
-                }
-                catch (Exception e1)
-                {
+                } catch (Exception e1) {
                     new ExceptionUI(e1);
                 }
             }
-        }
-        else if ((e.getKeyCode() == KeyEvent.VK_N) && isCtrlDown(e))
-        {
+        } else if ((e.getKeyCode() == KeyEvent.VK_N) && isCtrlDown(e)) {
             JDA.resetWorkSpace(true);
-        }
-        else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e) && isShiftDown(e))
-        {
+        } else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e) && isShiftDown(e)) {
             viewer.reloadResources();
-        }
-        else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e))
-        {
+        } else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e)) {
             viewer.refreshView();
-        }
-        else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e) && isShiftDown(e))
-        {
+        } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e) && isShiftDown(e)) {
             JDA.closeResources(true);
-        }
-        else if ((e.getKeyCode() == KeyEvent.VK_S) && isCtrlDown(e))
-        {
-            if (JDA.getLoadedClasses().isEmpty())
-            {
+        } else if ((e.getKeyCode() == KeyEvent.VK_S) && isCtrlDown(e)) {
+            if (JDA.getLoadedClasses().isEmpty()) {
                 JDA.showMessage("First open a class, jar, or zip file.");
                 return;
             }
 
-            Thread t = new Thread()
-            {
-                public void run()
-                {
+            Thread t = new Thread() {
+                public void run() {
                     JFileChooser fc = new JFileChooser();
-                    fc.setFileFilter(new FileFilter()
-                    {
+                    fc.setFileFilter(new FileFilter() {
                         @Override
-                        public boolean accept(File f)
-                        {
+                        public boolean accept(File f) {
                             return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("zip");
                         }
 
                         @Override
-                        public String getDescription()
-                        {
+                        public String getDescription() {
                             return "Zip Archives";
                         }
                     });
                     fc.setFileHidingEnabled(false);
                     fc.setAcceptAllFileFilterUsed(false);
                     int returnVal = fc.showSaveDialog(viewer);
-                    if (returnVal == JFileChooser.APPROVE_OPTION)
-                    {
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
                         File file = fc.getSelectedFile();
                         if (!file.getAbsolutePath().endsWith(".zip"))
                             file = new File(file.getAbsolutePath() + ".zip");
 
-                        if (file.exists())
-                        {
+                        if (file.exists()) {
                             JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
-                            Object[] options = new String[] { "Yes", "No" };
+                            Object[] options = new String[]{"Yes", "No"};
                             pane.setOptions(options);
                             JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
                             dialog.setVisible(true);
@@ -738,12 +613,9 @@ public class JDA
                                 if (options[k].equals(obj))
                                     result = k;
 
-                            if (result == 0)
-                            {
+                            if (result == 0) {
                                 file.delete();
-                            }
-                            else
-                            {
+                            } else {
                                 return;
                             }
                         }
@@ -751,11 +623,9 @@ public class JDA
                         final File file2 = file;
 
                         JDA.viewer.setIcon(true);
-                        Thread t = new Thread()
-                        {
+                        Thread t = new Thread() {
                             @Override
-                            public void run()
-                            {
+                            public void run() {
                                 JarUtils.saveAsJar(JDA.getLoadedBytes(), file2.getAbsolutePath());
                                 JDA.viewer.setIcon(false);
                             }
@@ -765,9 +635,7 @@ public class JDA
                 }
             };
             t.start();
-        }
-        else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e))
-        {
+        } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e)) {
             if (viewer.workPane.getCurrentViewer() != null)
                 viewer.workPane.tabs.remove(viewer.workPane.getCurrentViewer());
         }

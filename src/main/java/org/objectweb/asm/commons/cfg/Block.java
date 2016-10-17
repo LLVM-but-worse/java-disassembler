@@ -14,8 +14,7 @@ import java.util.*;
 /**
  * @author Tyler Sedlar
  */
-public class Block implements Comparable<Block>
-{
+public class Block implements Comparable<Block> {
 
     public static boolean PRINT_INSNS = true;
 
@@ -38,8 +37,7 @@ public class Block implements Comparable<Block>
      *
      * @param label The label in which to create a block from.
      */
-    public Block(Label label)
-    {
+    public Block(Label label) {
         this.label = label;
         this.instructions.add(new LabelNode(label));
     }
@@ -47,8 +45,7 @@ public class Block implements Comparable<Block>
     /**
      * Constructs a NodeTree for the current block.
      */
-    public NodeTree tree()
-    {
+    public NodeTree tree() {
         if (tree != null)
             return tree;
         return (tree = new TreeBuilder().build(this));
@@ -59,8 +56,7 @@ public class Block implements Comparable<Block>
      *
      * @param index The index to set.
      */
-    public void setIndex(int index)
-    {
+    public void setIndex(int index) {
         this.index = index;
     }
 
@@ -69,8 +65,7 @@ public class Block implements Comparable<Block>
      *
      * @return <t>true</t> if the block is empty, otherwise <t>false.</t>
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return preds.isEmpty() && instructions.size() <= 1;
     }
 
@@ -80,11 +75,9 @@ public class Block implements Comparable<Block>
      * @param opcode The opcode to match
      * @return The amount of times the given opcode has been matched.
      */
-    public int count(int opcode)
-    {
+    public int count(int opcode) {
         int count = 0;
-        for (AbstractInsnNode ain : instructions)
-        {
+        for (AbstractInsnNode ain : instructions) {
             if (ain.opcode() == opcode)
                 count++;
         }
@@ -97,11 +90,9 @@ public class Block implements Comparable<Block>
      * @param query The query to match
      * @return The amount of times the given query has been matched.
      */
-    public int count(InsnQuery query)
-    {
+    public int count(InsnQuery query) {
         int count = 0;
-        for (AbstractInsnNode ain : instructions)
-        {
+        for (AbstractInsnNode ain : instructions) {
             if (query.matches(ain))
                 count++;
         }
@@ -115,13 +106,10 @@ public class Block implements Comparable<Block>
      * @param index  The index to match at
      * @return The matched instruction at the given index
      */
-    public AbstractInsnNode get(int opcode, int index)
-    {
+    public AbstractInsnNode get(int opcode, int index) {
         int i = 0;
-        for (AbstractInsnNode ain : instructions)
-        {
-            if (ain.opcode() == opcode)
-            {
+        for (AbstractInsnNode ain : instructions) {
+            if (ain.opcode() == opcode) {
                 if (i == index)
                     return ain;
                 i++;
@@ -136,8 +124,7 @@ public class Block implements Comparable<Block>
      * @param opcode The opcode of the instruction to match
      * @return The first matched instruction
      */
-    public AbstractInsnNode get(int opcode)
-    {
+    public AbstractInsnNode get(int opcode) {
         return get(opcode, 0);
     }
 
@@ -148,13 +135,10 @@ public class Block implements Comparable<Block>
      * @param index The index to match at
      * @return The matched instruction at the given index
      */
-    public AbstractInsnNode get(InsnQuery query, int index)
-    {
+    public AbstractInsnNode get(InsnQuery query, int index) {
         int i = 0;
-        for (AbstractInsnNode ain : instructions)
-        {
-            if (query.matches(ain))
-            {
+        for (AbstractInsnNode ain : instructions) {
+            if (query.matches(ain)) {
                 if (i == index)
                     return ain;
                 i++;
@@ -169,44 +153,34 @@ public class Block implements Comparable<Block>
      * @param query The query to match
      * @return The first matched instruction
      */
-    public AbstractInsnNode get(InsnQuery query)
-    {
+    public AbstractInsnNode get(InsnQuery query) {
         return get(query, 0);
     }
 
     @Override
-    public int compareTo(Block block)
-    {
+    public int compareTo(Block block) {
         return index > block.index ? 1 : -1;
     }
 
-    public int size()
-    {
+    public int size() {
         //there is always 1 label which identifies the block, so we dont count that.
         return instructions.size() - 1;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder(headerString()).append(String.format(" (len=%d)", size()));
 
-        if (PRINT_INSNS && size() > 0)
-        {
+        if (PRINT_INSNS && size() > 0) {
             sb.append(System.lineSeparator());
 
             Iterator<AbstractInsnNode> it = instructions.iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 AbstractInsnNode ain = it.next();
-                if (!(ain instanceof LabelNode))
-                {
-                    if (it.hasNext())
-                    {
+                if (!(ain instanceof LabelNode)) {
+                    if (it.hasNext()) {
                         sb.append(String.format("   %s%n", Assembly.toString(ain)));
-                    }
-                    else
-                    {
+                    } else {
                         sb.append(String.format("   %s", Assembly.toString(ain)));
                     }
                 }
@@ -215,15 +189,13 @@ public class Block implements Comparable<Block>
 
         sb.append(System.lineSeparator());
 
-        for (Block b : preds)
-        {
+        for (Block b : preds) {
             sb.append("   pred: ").append(b.headerString()).append(System.lineSeparator());
         }
         return sb.toString();
     }
 
-    public String headerString()
-    {
+    public String headerString() {
         return String.format("Block #%d", index);
     }
 }

@@ -8,8 +8,7 @@ import org.objectweb.asm.Type;
  *
  * @author Waterwolf
  */
-public class TypeAndName
-{
+public class TypeAndName {
     public Type type = null;
     public String name = null;
 }

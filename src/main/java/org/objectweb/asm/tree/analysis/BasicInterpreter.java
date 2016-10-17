@@ -42,28 +42,22 @@ import java.util.List;
  * @author Eric Bruneton
  * @author Bing Ran
  */
-public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes
-{
+public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes {
 
-    public BasicInterpreter()
-    {
+    public BasicInterpreter() {
         super(ASM5);
     }
 
-    protected BasicInterpreter(final int api)
-    {
+    protected BasicInterpreter(final int api) {
         super(api);
     }
 
     @Override
-    public BasicValue newValue(final Type type)
-    {
-        if (type == null)
-        {
+    public BasicValue newValue(final Type type) {
+        if (type == null) {
             return BasicValue.UNINITIALIZED_VALUE;
         }
-        switch (type.getSort())
-        {
+        switch (type.getSort()) {
             case Type.VOID:
                 return null;
             case Type.BOOLEAN:
@@ -87,10 +81,8 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes
     }
 
     @Override
-    public BasicValue newOperation(final AbstractInsnNode insn) throws AnalyzerException
-    {
-        switch (insn.opcode())
-        {
+    public BasicValue newOperation(final AbstractInsnNode insn) throws AnalyzerException {
+        switch (insn.opcode()) {
             case ACONST_NULL:
                 return newValue(Type.getObjectType("null"));
             case ICONST_M1:
@@ -116,48 +108,28 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes
                 return BasicValue.INT_VALUE;
             case LDC:
                 Object cst = ((LdcInsnNode) insn).cst;
-                if (cst instanceof Integer)
-                {
+                if (cst instanceof Integer) {
                     return BasicValue.INT_VALUE;
-                }
-                else if (cst instanceof Float)
-                {
+                } else if (cst instanceof Float) {
                     return BasicValue.FLOAT_VALUE;
-                }
-                else if (cst instanceof Long)
-                {
+                } else if (cst instanceof Long) {
                     return BasicValue.LONG_VALUE;
-                }
-                else if (cst instanceof Double)
-                {
+                } else if (cst instanceof Double) {
                     return BasicValue.DOUBLE_VALUE;
-                }
-                else if (cst instanceof String)
-                {
+                } else if (cst instanceof String) {
                     return newValue(Type.getObjectType("java/lang/String"));
-                }
-                else if (cst instanceof Type)
-                {
+                } else if (cst instanceof Type) {
                     int sort = ((Type) cst).getSort();
-                    if (sort == Type.OBJECT || sort == Type.ARRAY)
-                    {
+                    if (sort == Type.OBJECT || sort == Type.ARRAY) {
                         return newValue(Type.getObjectType("java/lang/Class"));
-                    }
-                    else if (sort == Type.METHOD)
-                    {
+                    } else if (sort == Type.METHOD) {
                         return newValue(Type.getObjectType("java/lang/invoke/MethodType"));
-                    }
-                    else
-                    {
+                    } else {
                         throw new IllegalArgumentException("Illegal LDC constant " + cst);
                     }
-                }
-                else if (cst instanceof Handle)
-                {
+                } else if (cst instanceof Handle) {
                     return newValue(Type.getObjectType("java/lang/invoke/MethodHandle"));
-                }
-                else
-                {
+                } else {
                     throw new IllegalArgumentException("Illegal LDC constant " + cst);
                 }
             case JSR:
@@ -172,16 +144,13 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes
     }
 
     @Override
-    public BasicValue copyOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException
-    {
+    public BasicValue copyOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException {
         return value;
     }
 
     @Override
-    public BasicValue unaryOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException
-    {
-        switch (insn.opcode())
-        {
+    public BasicValue unaryOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException {
+        switch (insn.opcode()) {
             case INEG:
             case IINC:
             case L2I:
@@ -224,8 +193,7 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes
             case GETFIELD:
                 return newValue(Type.getType(((FieldInsnNode) insn).desc));
             case NEWARRAY:
-                switch (((IntInsnNode) insn).operand)
-                {
+                switch (((IntInsnNode) insn).operand) {
                     case T_BOOLEAN:
                         return newValue(Type.getType("[Z"));
                     case T_CHAR:
@@ -268,10 +236,8 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes
     }
 
     @Override
-    public BasicValue binaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2) throws AnalyzerException
-    {
-        switch (insn.opcode())
-        {
+    public BasicValue binaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2) throws AnalyzerException {
+        switch (insn.opcode()) {
             case IALOAD:
             case BALOAD:
             case CALOAD:
@@ -339,39 +305,29 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements Opcodes
     }
 
     @Override
-    public BasicValue ternaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2, final BasicValue value3) throws AnalyzerException
-    {
+    public BasicValue ternaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2, final BasicValue value3) throws AnalyzerException {
         return null;
     }
 
     @Override
-    public BasicValue naryOperation(final AbstractInsnNode insn, final List<? extends BasicValue> values) throws AnalyzerException
-    {
+    public BasicValue naryOperation(final AbstractInsnNode insn, final List<? extends BasicValue> values) throws AnalyzerException {
         int opcode = insn.opcode();
-        if (opcode == MULTIANEWARRAY)
-        {
+        if (opcode == MULTIANEWARRAY) {
             return newValue(Type.getType(((MultiANewArrayInsnNode) insn).desc));
-        }
-        else if (opcode == INVOKEDYNAMIC)
-        {
+        } else if (opcode == INVOKEDYNAMIC) {
             return newValue(Type.getReturnType(((InvokeDynamicInsnNode) insn).desc));
-        }
-        else
-        {
+        } else {
             return newValue(Type.getReturnType(((MethodInsnNode) insn).desc));
         }
     }
 
     @Override
-    public void returnOperation(final AbstractInsnNode insn, final BasicValue value, final BasicValue expected) throws AnalyzerException
-    {
+    public void returnOperation(final AbstractInsnNode insn, final BasicValue value, final BasicValue expected) throws AnalyzerException {
     }
 
     @Override
-    public BasicValue merge(final BasicValue v, final BasicValue w)
-    {
-        if (!v.equals(w))
-        {
+    public BasicValue merge(final BasicValue v, final BasicValue w) {
+        if (!v.equals(w)) {
             return BasicValue.UNINITIALIZED_VALUE;
         }
         return v;

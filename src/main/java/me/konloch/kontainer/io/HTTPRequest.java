@@ -17,8 +17,7 @@ import java.util.Set;
  * @author Konloch
  */
 
-public class HTTPRequest
-{
+public class HTTPRequest {
 
     public URL url;
     private int timeout = 30000;
@@ -38,80 +37,70 @@ public class HTTPRequest
      *
      * @param url
      */
-    public HTTPRequest(URL url)
-    {
+    public HTTPRequest(URL url) {
         this.url = url;
     }
 
     /**
      * Sets a referer to send to the web server
      */
-    public void setReferer(String referer)
-    {
+    public void setReferer(String referer) {
         this.referer = referer;
     }
 
     /**
      * Set a cookie string to send to the web server
      */
-    public void setCookie(String cookie)
-    {
+    public void setCookie(String cookie) {
         this.cookie = cookie;
     }
 
     /**
      * Sets post data to send to the web server
      */
-    public void setPostData(String postData)
-    {
+    public void setPostData(String postData) {
         this.postData = postData;
     }
 
     /**
      * Sets a custom useragent, default 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0'
      */
-    public void setUseragent(String useragent)
-    {
+    public void setUseragent(String useragent) {
         this.useragent = useragent;
     }
 
     /**
      * Sets the seconds till timeout, default 30,000 milliseconds
      */
-    public void setTimeout(int timeout)
-    {
+    public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
     /**
      * Sets a proxy to connect through
      */
-    public void setProxy(Proxy proxy)
-    {
+    public void setProxy(Proxy proxy) {
         this.proxy = proxy;
     }
 
     /**
      * Used to get the headers the webserver sent on our last connection
      */
-    public Set<Entry<String, List<String>>> getLastConnectionHeaders()
-    {
+    public Set<Entry<String, List<String>>> getLastConnectionHeaders() {
         return lastConnectionHeaders;
     }
 
     /**
      * By default follow redirects are enabled
      */
-    public void setFollowRedirects(boolean setFollowRedirects)
-    {
+    public void setFollowRedirects(boolean setFollowRedirects) {
         this.setFollowRedirects = setFollowRedirects;
     }
 
     /**
      * Used to set up the connection to read the content.
      */
-    private void setup() throws Exception
-    {
+    private void setup() throws Exception {
         if (proxy != null)
             connection = (HttpURLConnection) url.openConnection(proxy);
         else
@@ -128,8 +117,7 @@ public class HTTPRequest
         connection.setUseCaches(false);
         HttpURLConnection.setFollowRedirects(setFollowRedirects);
 
-        if (postData != null)
-        {
+        if (postData != null) {
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -147,12 +135,10 @@ public class HTTPRequest
      * @return
      * @throws Exception
      */
-    public String[] read() throws Exception
-    {
+    public String[] read() throws Exception {
         ArrayList<String> st;
 
-        try
-        {
+        try {
             setup();
 
             st = new ArrayList<>();
@@ -161,14 +147,10 @@ public class HTTPRequest
                 st.add(s);
 
             lastConnectionHeaders = connection.getHeaderFields().entrySet();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             cleanup();
             throw e;
-        }
-        finally
-        {
+        } finally {
             cleanup();
         }
 
@@ -182,31 +164,24 @@ public class HTTPRequest
      * @return
      * @throws Exception
      */
-    public String[] read(int linesToRead) throws Exception
-    {
+    public String[] read(int linesToRead) throws Exception {
         ArrayList<String> st;
 
-        try
-        {
+        try {
             setup();
 
             st = new ArrayList<>();
-            for (int i = 0; i < linesToRead; i++)
-            {
+            for (int i = 0; i < linesToRead; i++) {
                 String s = reader.readLine();
                 if (s != null)
                     st.add(s);
             }
 
             lastConnectionHeaders = connection.getHeaderFields().entrySet();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             cleanup();
             throw e;
-        }
-        finally
-        {
+        } finally {
             cleanup();
         }
 
@@ -219,25 +194,19 @@ public class HTTPRequest
      * @return
      * @throws Exception
      */
-    public String readSingle() throws Exception
-    {
+    public String readSingle() throws Exception {
         String s;
 
-        try
-        {
+        try {
             setup();
 
             s = reader.readLine();
 
             lastConnectionHeaders = connection.getHeaderFields().entrySet();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             cleanup();
             throw e;
-        }
-        finally
-        {
+        } finally {
             cleanup();
         }
 
@@ -251,12 +220,10 @@ public class HTTPRequest
      * @return
      * @throws Exception
      */
-    public String readSingle(int linesToRead) throws Exception
-    {
+    public String readSingle(int linesToRead) throws Exception {
         String s;
 
-        try
-        {
+        try {
             setup();
 
             for (int i = 0; i < linesToRead - 1; i++)
@@ -265,14 +232,10 @@ public class HTTPRequest
             s = reader.readLine();
 
             lastConnectionHeaders = connection.getHeaderFields().entrySet();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             cleanup();
             throw e;
-        }
-        finally
-        {
+        } finally {
             cleanup();
         }
 
@@ -282,28 +245,18 @@ public class HTTPRequest
     /**
      * Used to clean up the connection, closes the connections and nulls the objects
      */
-    private void cleanup()
-    {
-        try
-        {
+    private void cleanup() {
+        try {
             reader.close();
+        } catch (Exception e) {
         }
-        catch (Exception e)
-        {
-        }
-        try
-        {
+        try {
             writer.close();
+        } catch (Exception e) {
         }
-        catch (Exception e)
-        {
-        }
-        try
-        {
+        try {
             connection.disconnect();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
         }
         reader = null;
         writer = null;

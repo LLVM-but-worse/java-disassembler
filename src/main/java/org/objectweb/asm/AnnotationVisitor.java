@@ -37,8 +37,7 @@ package org.objectweb.asm;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-public abstract class AnnotationVisitor
-{
+public abstract class AnnotationVisitor {
 
     /**
      * The ASM API version implemented by this visitor. The value of this field
@@ -58,8 +57,7 @@ public abstract class AnnotationVisitor
      * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    public AnnotationVisitor(final int api)
-    {
+    public AnnotationVisitor(final int api) {
         this(api, null);
     }
 
@@ -71,10 +69,8 @@ public abstract class AnnotationVisitor
      * @param av  the annotation visitor to which this visitor must delegate
      *            method calls. May be null.
      */
-    public AnnotationVisitor(final int api, final AnnotationVisitor av)
-    {
-        if (api != Opcodes.ASM4 && api != Opcodes.ASM5)
-        {
+    public AnnotationVisitor(final int api, final AnnotationVisitor av) {
+        if (api != Opcodes.ASM4 && api != Opcodes.ASM5) {
             throw new IllegalArgumentException();
         }
         this.api = api;
@@ -94,10 +90,8 @@ public abstract class AnnotationVisitor
      *              {@link #visitArray visitArray} and visiting each array element
      *              in turn, but is more convenient).
      */
-    public void visit(String name, Object value)
-    {
-        if (av != null)
-        {
+    public void visit(String name, Object value) {
+        if (av != null) {
             av.visit(name, value);
         }
     }
@@ -109,10 +103,8 @@ public abstract class AnnotationVisitor
      * @param desc  the class descriptor of the enumeration class.
      * @param value the actual enumeration value.
      */
-    public void visitEnum(String name, String desc, String value)
-    {
-        if (av != null)
-        {
+    public void visitEnum(String name, String desc, String value) {
+        if (av != null) {
             av.visitEnum(name, desc, value);
         }
     }
@@ -128,10 +120,8 @@ public abstract class AnnotationVisitor
      * visited before calling other methods on this annotation
      * visitor</i>.
      */
-    public AnnotationVisitor visitAnnotation(String name, String desc)
-    {
-        if (av != null)
-        {
+    public AnnotationVisitor visitAnnotation(String name, String desc) {
+        if (av != null) {
             return av.visitAnnotation(name, desc);
         }
         return null;
@@ -150,10 +140,8 @@ public abstract class AnnotationVisitor
      * visitor are ignored. <i>All the array values must be visited
      * before calling other methods on this annotation visitor</i>.
      */
-    public AnnotationVisitor visitArray(String name)
-    {
-        if (av != null)
-        {
+    public AnnotationVisitor visitArray(String name) {
+        if (av != null) {
             return av.visitArray(name);
         }
         return null;
@@ -162,10 +150,8 @@ public abstract class AnnotationVisitor
     /**
      * Visits the end of the annotation.
      */
-    public void visitEnd()
-    {
-        if (av != null)
-        {
+    public void visitEnd() {
+        if (av != null) {
             av.visitEnd();
         }
     }

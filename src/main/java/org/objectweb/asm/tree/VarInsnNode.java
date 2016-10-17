@@ -40,8 +40,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class VarInsnNode extends AbstractInsnNode
-{
+public class VarInsnNode extends AbstractInsnNode {
 
     /**
      * The operand of this instruction. This operand is the index of a local
@@ -58,8 +57,7 @@ public class VarInsnNode extends AbstractInsnNode
      * @param var    the operand of the instruction to be constructed. This operand
      *               is the index of a local variable.
      */
-    public VarInsnNode(final int opcode, final int var)
-    {
+    public VarInsnNode(final int opcode, final int var) {
         super(opcode);
         this.var = var;
     }
@@ -71,27 +69,23 @@ public class VarInsnNode extends AbstractInsnNode
      *               FLOAD, DLOAD, ALOAD, ISTORE, LSTORE, FSTORE, DSTORE, ASTORE or
      *               RET.
      */
-    public void setOpcode(final int opcode)
-    {
+    public void setOpcode(final int opcode) {
         this.opcode = opcode;
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return VAR_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitVarInsn(opcode, var);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new VarInsnNode(opcode, var).cloneAnnotations(this);
     }
 }

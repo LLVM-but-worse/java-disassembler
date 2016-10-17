@@ -36,8 +36,7 @@ import org.objectweb.asm.MethodVisitor;
  *
  * @author Remi Forax
  */
-public class ParameterNode
-{
+public class ParameterNode {
     /**
      * The parameter's name.
      */
@@ -58,8 +57,7 @@ public class ParameterNode
      *               <tt>ACC_MANDATED</tt> (see {@link org.objectweb.asm.Opcodes}).
      * @param name   the parameter's name.
      */
-    public ParameterNode(final String name, final int access)
-    {
+    public ParameterNode(final String name, final int access) {
         this.name = name;
         this.access = access;
     }
@@ -69,8 +67,7 @@ public class ParameterNode
      *
      * @param mv a method visitor.
      */
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitParameter(name, access);
     }
 }

@@ -25,30 +25,23 @@ import java.util.jar.Manifest;
  * @author WaterWolf
  */
 
-public class FernFlowerDecompiler extends Decompiler
-{
+public class FernFlowerDecompiler extends Decompiler {
 
-    public FernFlowerDecompiler()
-    {
-        for (Settings setting : Settings.values())
-        {
+    public FernFlowerDecompiler() {
+        for (Settings setting : Settings.values()) {
             settings.registerSetting(setting);
         }
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return "FernFlower";
     }
 
     @Override
-    public String decompileClassNode(final ClassNode cn, byte[] b)
-    {
-        try
-        {
-            if (cn.version < 49)
-            {
+    public String decompileClassNode(final ClassNode cn, byte[] b) {
+        try {
+            if (cn.version < 49) {
                 b = fixBytes(b);
             }
             final byte[] bytesToUse = b;
@@ -62,78 +55,63 @@ public class FernFlowerDecompiler extends Decompiler
                 byte[] clone = new byte[bytesToUse.length];
                 System.arraycopy(bytesToUse, 0, clone, 0, bytesToUse.length);
                 return clone;
-            }, new IResultSaver()
-            {
+            }, new IResultSaver() {
                 @Override
-                public void saveFolder(String s)
-                {
+                public void saveFolder(String s) {
 
                 }
 
                 @Override
-                public void copyFile(String s, String s1, String s2)
-                {
+                public void copyFile(String s, String s1, String s2) {
 
                 }
 
                 @Override
-                public void saveClassFile(String s, String s1, String s2, String s3, int[] ints)
-                {
+                public void saveClassFile(String s, String s1, String s2, String s3, int[] ints) {
                     result.set(s3);
                 }
 
                 @Override
-                public void createArchive(String s, String s1, Manifest manifest)
-                {
+                public void createArchive(String s, String s1, Manifest manifest) {
 
                 }
 
                 @Override
-                public void saveDirEntry(String s, String s1, String s2)
-                {
+                public void saveDirEntry(String s, String s1, String s2) {
 
                 }
 
                 @Override
-                public void copyEntry(String s, String s1, String s2, String s3)
-                {
+                public void copyEntry(String s, String s1, String s2, String s3) {
 
                 }
 
                 @Override
-                public void saveClassEntry(String s, String s1, String s2, String s3, String s4)
-                {
+                public void saveClassEntry(String s, String s1, String s2, String s3, String s4) {
                 }
 
                 @Override
-                public void closeArchive(String s, String s1)
-                {
+                public void closeArchive(String s, String s1) {
 
                 }
             }, options, new PrintStreamLogger(System.out));
 
             baseDecompiler.addSpace(new File(cn.name + ".class"), true);
             baseDecompiler.decompileContext();
-            while (true)
-            {
-                if (result.get() != null)
-                {
+            while (true) {
+                if (result.get() != null) {
                     break;
                 }
             }
             return result.get();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return parseException(e);
         }
     }
 
     @Override
-    public void decompileToZip(String zipName)
-    {
-        try
-        {
+    public void decompileToZip(String zipName) {
+        try {
             Path outputDir = Files.createTempDirectory("fernflower_output");
             Path tempJar = Files.createTempFile("fernflower_input", ".jar");
             File output = new File(zipName);
@@ -144,37 +122,27 @@ public class FernFlowerDecompiler extends Decompiler
             Files.move(outputDir.toFile().listFiles()[0].toPath(), output.toPath());
             Files.delete(tempJar);
             FileUtils.deleteDirectory(outputDir.toFile());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             handleException(e);
         }
     }
 
-    public Map<String, Object> main(String[] args)
-    {
+    public Map<String, Object> main(String[] args) {
         HashMap mapOptions = new HashMap();
         boolean isOption = true;
 
-        for (int destination = 0; destination < args.length - 1; ++destination)
-        {
+        for (int destination = 0; destination < args.length - 1; ++destination) {
             String logger = args[destination];
-            if (isOption && logger.length() > 5 && logger.charAt(0) == 45 && logger.charAt(4) == 61)
-            {
+            if (isOption && logger.length() > 5 && logger.charAt(0) == 45 && logger.charAt(4) == 61) {
                 String decompiler = logger.substring(5);
-                if ("true".equalsIgnoreCase(decompiler))
-                {
+                if ("true".equalsIgnoreCase(decompiler)) {
                     decompiler = "1";
-                }
-                else if ("false".equalsIgnoreCase(decompiler))
-                {
+                } else if ("false".equalsIgnoreCase(decompiler)) {
                     decompiler = "0";
                 }
 
                 mapOptions.put(logger.substring(1, 4), decompiler);
-            }
-            else
-            {
+            } else {
                 isOption = false;
             }
         }
@@ -182,20 +150,17 @@ public class FernFlowerDecompiler extends Decompiler
         return mapOptions;
     }
 
-    private String[] generateMainMethod()
-    {
+    private String[] generateMainMethod() {
         String[] result = new String[getSettings().size()];
         int index = 0;
-        for (Settings setting : Settings.values())
-        {
+        for (Settings setting : Settings.values()) {
             result[index++] = String.format("-%s=%s", setting.getParam(),
                     getSettings().isSelected(setting) ? "1" : "0");
         }
         return result;
     }
 
-    public enum Settings implements DecompilerSettings.Setting
-    {
+    public enum Settings implements DecompilerSettings.Setting {
         HIDE_BRIDGE_METHODS("rbr", "Hide Bridge Methods", true),
         HIDE_SYNTHETIC_CLASS_MEMBERS("rsy", "Hide Synthetic Class Members"),
         DECOMPILE_INNER_CLASSES("din", "Decompile Inner Classes", true),
@@ -223,30 +188,25 @@ public class FernFlowerDecompiler extends Decompiler
         private String param;
         private boolean on;
 
-        Settings(String param, String name)
-        {
+        Settings(String param, String name) {
             this(param, name, false);
         }
 
-        Settings(String param, String name, boolean on)
-        {
+        Settings(String param, String name, boolean on) {
             this.name = name;
             this.param = param;
             this.on = on;
         }
 
-        public String getText()
-        {
+        public String getText() {
             return name;
         }
 
-        public boolean isDefaultOn()
-        {
+        public boolean isDefaultOn() {
             return on;
         }
 
-        public String getParam()
-        {
+        public String getParam() {
             return param;
         }
     }

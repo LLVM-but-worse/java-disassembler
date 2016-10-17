@@ -39,8 +39,7 @@ package org.objectweb.asm;
  *
  * @author Eric Bruneton
  */
-public abstract class ClassVisitor
-{
+public abstract class ClassVisitor {
 
     /**
      * The ASM API version implemented by this visitor. The value of this field
@@ -60,8 +59,7 @@ public abstract class ClassVisitor
      * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    public ClassVisitor(final int api)
-    {
+    public ClassVisitor(final int api) {
         this(api, null);
     }
 
@@ -73,10 +71,8 @@ public abstract class ClassVisitor
      * @param cv  the class visitor to which this visitor must delegate method
      *            calls. May be null.
      */
-    public ClassVisitor(final int api, final ClassVisitor cv)
-    {
-        if (api != Opcodes.ASM4 && api != Opcodes.ASM5)
-        {
+    public ClassVisitor(final int api, final ClassVisitor cv) {
+        if (api != Opcodes.ASM4 && api != Opcodes.ASM5) {
             throw new IllegalArgumentException();
         }
         this.api = api;
@@ -102,10 +98,8 @@ public abstract class ClassVisitor
      *                   {@link Type#getInternalName() getInternalName}). May be
      *                   <tt>null</tt>.
      */
-    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces)
-    {
-        if (cv != null)
-        {
+    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        if (cv != null) {
             cv.visit(version, access, name, signature, superName, interfaces);
         }
     }
@@ -119,10 +113,8 @@ public abstract class ClassVisitor
      *               between source and compiled elements of the class. May be
      *               <tt>null</tt>.
      */
-    public void visitSource(String source, String debug)
-    {
-        if (cv != null)
-        {
+    public void visitSource(String source, String debug) {
+        if (cv != null) {
             cv.visitSource(source, debug);
         }
     }
@@ -139,10 +131,8 @@ public abstract class ClassVisitor
      *              <tt>null</tt> if the class is not enclosed in a method of its
      *              enclosing class.
      */
-    public void visitOuterClass(String owner, String name, String desc)
-    {
-        if (cv != null)
-        {
+    public void visitOuterClass(String owner, String name, String desc) {
+        if (cv != null) {
             cv.visitOuterClass(owner, name, desc);
         }
     }
@@ -155,10 +145,8 @@ public abstract class ClassVisitor
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      * this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitAnnotation(String desc, boolean visible)
-    {
-        if (cv != null)
-        {
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        if (cv != null) {
             return cv.visitAnnotation(desc, visible);
         }
         return null;
@@ -182,14 +170,11 @@ public abstract class ClassVisitor
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      * this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
-    {
-        if (api < Opcodes.ASM5)
-        {
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
+        if (api < Opcodes.ASM5) {
             throw new RuntimeException();
         }
-        if (cv != null)
-        {
+        if (cv != null) {
             return cv.visitTypeAnnotation(typeRef, typePath, desc, visible);
         }
         return null;
@@ -200,10 +185,8 @@ public abstract class ClassVisitor
      *
      * @param attr an attribute.
      */
-    public void visitAttribute(Attribute attr)
-    {
-        if (cv != null)
-        {
+    public void visitAttribute(Attribute attr) {
+        if (cv != null) {
             cv.visitAttribute(attr);
         }
     }
@@ -222,10 +205,8 @@ public abstract class ClassVisitor
      * @param access    the access flags of the inner class as originally declared in
      *                  the enclosing class.
      */
-    public void visitInnerClass(String name, String outerName, String innerName, int access)
-    {
-        if (cv != null)
-        {
+    public void visitInnerClass(String name, String outerName, String innerName, int access) {
+        if (cv != null) {
             cv.visitInnerClass(name, outerName, innerName, access);
         }
     }
@@ -252,10 +233,8 @@ public abstract class ClassVisitor
      * <tt>null</tt> if this class visitor is not interested in visiting
      * these annotations and attributes.
      */
-    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
-    {
-        if (cv != null)
-        {
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        if (cv != null) {
             return cv.visitField(access, name, desc, signature, value);
         }
         return null;
@@ -281,10 +260,8 @@ public abstract class ClassVisitor
      * if this class visitor is not interested in visiting the code of
      * this method.
      */
-    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
-    {
-        if (cv != null)
-        {
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        if (cv != null) {
             return cv.visitMethod(access, name, desc, signature, exceptions);
         }
         return null;
@@ -295,10 +272,8 @@ public abstract class ClassVisitor
      * called, is used to inform the visitor that all the fields and methods of
      * the class have been visited.
      */
-    public void visitEnd()
-    {
-        if (cv != null)
-        {
+    public void visitEnd() {
+        if (cv != null) {
             cv.visitEnd();
         }
     }

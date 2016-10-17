@@ -15,8 +15,7 @@ import java.awt.*;
  *
  * @author Konloch
  */
-public class PaneUpdaterThread extends Thread
-{
+public class PaneUpdaterThread extends Thread {
 
     private Decompiler decompiler;
     private int paneId;
@@ -24,8 +23,7 @@ public class PaneUpdaterThread extends Thread
     private ClassViewer viewer;
     private JButton button;
 
-    public PaneUpdaterThread(ClassViewer viewer, Decompiler decompiler, int paneId, JPanel target, JButton button)
-    {
+    public PaneUpdaterThread(ClassViewer viewer, Decompiler decompiler, int paneId, JPanel target, JButton button) {
         this.decompiler = decompiler;
         this.paneId = paneId;
         this.target = target;
@@ -33,10 +31,8 @@ public class PaneUpdaterThread extends Thread
         this.button = button;
     }
 
-    public void run()
-    {
-        try
-        {
+    public void run() {
+        try {
             final byte[] b = JDA.getClassBytes(viewer.container, viewer.cn.name + ".class");
             RSyntaxTextArea panelArea = new RSyntaxTextArea();
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
@@ -51,13 +47,9 @@ public class PaneUpdaterThread extends Thread
 
             SwingUtilities.invokeLater(() -> target.add(scrollPane));
             viewer.updatePane(paneId, panelArea, decompiler);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             new ExceptionUI(e);
-        }
-        finally
-        {
+        } finally {
             viewer.resetDivider();
             JDA.viewer.setIcon(false);
             if (button != null)

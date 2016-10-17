@@ -11,10 +11,8 @@ import java.awt.*;
  * @author Konloch
  */
 
-public class GraphicialReflectionKit extends JFrame
-{
-    public GraphicialReflectionKit()
-    {
+public class GraphicialReflectionKit extends JFrame {
+    public GraphicialReflectionKit() {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(382, 356));
         setTitle("Graphicial Reflection Kit");

@@ -5,8 +5,7 @@ import the.bytecode.club.jda.settings.Settings;
 
 import javax.swing.*;
 
-public abstract class Viewer extends JPanel
-{
+public abstract class Viewer extends JPanel {
 
     public ClassNode cn;
     public String name;
@@ -14,8 +13,7 @@ public abstract class Viewer extends JPanel
 
     private static final long serialVersionUID = -2965538493489119191L;
 
-    public void updateName()
-    {
+    public void updateName() {
         this.setName(name + (Settings.SHOW_CONTAINER_NAME.getBool() ? "(" + container + ")" : ""));
     }
 }

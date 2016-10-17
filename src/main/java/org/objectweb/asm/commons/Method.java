@@ -41,8 +41,7 @@ import java.util.Map;
  * @author Chris Nokleberg
  * @author Eric Bruneton
  */
-public class Method
-{
+public class Method {
 
     /**
      * The method name.
@@ -59,8 +58,7 @@ public class Method
      */
     private static final Map<String, String> DESCRIPTORS;
 
-    static
-    {
+    static {
         DESCRIPTORS = new HashMap<>();
         DESCRIPTORS.put("void", "V");
         DESCRIPTORS.put("byte", "B");
@@ -79,8 +77,7 @@ public class Method
      * @param name the method's name.
      * @param desc the method's descriptor.
      */
-    public Method(final String name, final String desc)
-    {
+    public Method(final String name, final String desc) {
         this.name = name;
         this.desc = desc;
     }
@@ -92,8 +89,7 @@ public class Method
      * @param returnType    the method's return type.
      * @param argumentTypes the method's argument types.
      */
-    public Method(final String name, final Type returnType, final Type[] argumentTypes)
-    {
+    public Method(final String name, final Type returnType, final Type[] argumentTypes) {
         this(name, Type.getMethodDescriptor(returnType, argumentTypes));
     }
 
@@ -104,8 +100,7 @@ public class Method
      * @return a {@link Method} corresponding to the given Java method
      * declaration.
      */
-    public static Method getMethod(java.lang.reflect.Method m)
-    {
+    public static Method getMethod(java.lang.reflect.Method m) {
         return new Method(m.getName(), Type.getMethodDescriptor(m));
     }
 
@@ -116,8 +111,7 @@ public class Method
      * @return a {@link Method} corresponding to the given Java constructor
      * declaration.
      */
-    public static Method getMethod(java.lang.reflect.Constructor<?> c)
-    {
+    public static Method getMethod(java.lang.reflect.Constructor<?> c) {
         return new Method("<init>", Type.getConstructorDescriptor(c));
     }
 
@@ -135,8 +129,7 @@ public class Method
      * declaration.
      * @throws IllegalArgumentException if <code>method</code> could not get parsed.
      */
-    public static Method getMethod(final String method) throws IllegalArgumentException
-    {
+    public static Method getMethod(final String method) throws IllegalArgumentException {
         return getMethod(method, false);
     }
 
@@ -159,13 +152,11 @@ public class Method
      * declaration.
      * @throws IllegalArgumentException if <code>method</code> could not get parsed.
      */
-    public static Method getMethod(final String method, final boolean defaultPackage) throws IllegalArgumentException
-    {
+    public static Method getMethod(final String method, final boolean defaultPackage) throws IllegalArgumentException {
         int space = method.indexOf(' ');
         int start = method.indexOf('(', space) + 1;
         int end = method.indexOf(')', start);
-        if (space == -1 || start == -1 || end == -1)
-        {
+        if (space == -1 || start == -1 || end == -1) {
             throw new IllegalArgumentException();
         }
         String returnType = method.substring(0, space);
@@ -173,16 +164,12 @@ public class Method
         StringBuilder sb = new StringBuilder();
         sb.append('(');
         int p;
-        do
-        {
+        do {
             String s;
             p = method.indexOf(',', start);
-            if (p == -1)
-            {
+            if (p == -1) {
                 s = map(method.substring(start, end).trim(), defaultPackage);
-            }
-            else
-            {
+            } else {
                 s = map(method.substring(start, p).trim(), defaultPackage);
                 start = p + 1;
             }
@@ -194,39 +181,29 @@ public class Method
         return new Method(methodName, sb.toString());
     }
 
-    private static String map(final String type, final boolean defaultPackage)
-    {
-        if ("".equals(type))
-        {
+    private static String map(final String type, final boolean defaultPackage) {
+        if ("".equals(type)) {
             return type;
         }
 
         StringBuilder sb = new StringBuilder();
         int index = 0;
-        while ((index = type.indexOf("[]", index) + 1) > 0)
-        {
+        while ((index = type.indexOf("[]", index) + 1) > 0) {
             sb.append('[');
         }
 
         String t = type.substring(0, type.length() - sb.length() * 2);
         String desc = DESCRIPTORS.get(t);
-        if (desc != null)
-        {
+        if (desc != null) {
             sb.append(desc);
-        }
-        else
-        {
+        } else {
             sb.append('L');
-            if (t.indexOf('.') < 0)
-            {
-                if (!defaultPackage)
-                {
+            if (t.indexOf('.') < 0) {
+                if (!defaultPackage) {
                     sb.append("java/lang/");
                 }
                 sb.append(t);
-            }
-            else
-            {
+            } else {
                 sb.append(t.replace('.', '/'));
             }
             sb.append(';');
@@ -239,8 +216,7 @@ public class Method
      *
      * @return the name of the method described by this object.
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -249,8 +225,7 @@ public class Method
      *
      * @return the descriptor of the method described by this object.
      */
-    public String getDescriptor()
-    {
+    public String getDescriptor() {
         return desc;
     }
 
@@ -259,8 +234,7 @@ public class Method
      *
      * @return the return type of the method described by this object.
      */
-    public Type getReturnType()
-    {
+    public Type getReturnType() {
         return Type.getReturnType(desc);
     }
 
@@ -269,22 +243,18 @@ public class Method
      *
      * @return the argument types of the method described by this object.
      */
-    public Type[] getArgumentTypes()
-    {
+    public Type[] getArgumentTypes() {
         return Type.getArgumentTypes(desc);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name + desc;
     }
 
     @Override
-    public boolean equals(final Object o)
-    {
-        if (!(o instanceof Method))
-        {
+    public boolean equals(final Object o) {
+        if (!(o instanceof Method)) {
             return false;
         }
         Method other = (Method) o;
@@ -292,8 +262,7 @@ public class Method
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return name.hashCode() ^ desc.hashCode();
     }
 }

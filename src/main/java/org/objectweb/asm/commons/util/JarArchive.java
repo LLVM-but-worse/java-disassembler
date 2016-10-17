@@ -18,67 +18,51 @@ import java.util.jar.Manifest;
 /**
  * @author Tyler Sedlar
  */
-public class JarArchive
-{
+public class JarArchive {
 
     private final Map<String, ClassNode> nodes = new HashMap<>();
 
     private final File file;
     private Manifest manifest;
 
-    public JarArchive(File file)
-    {
+    public JarArchive(File file) {
         this.file = file;
     }
 
-    public Map<String, ClassNode> build()
-    {
+    public Map<String, ClassNode> build() {
         if (!nodes.isEmpty())
             return nodes;
         JarFile jar = null;
-        try
-        {
+        try {
             jar = new JarFile(file);
             manifest = jar.getManifest();
             Enumeration<JarEntry> entries = jar.entries();
-            while (entries.hasMoreElements())
-            {
+            while (entries.hasMoreElements()) {
                 JarEntry entry = entries.nextElement();
                 String name = entry.getName();
-                if (name.endsWith(".class"))
-                {
+                if (name.endsWith(".class")) {
                     ClassNode cn = new ClassNode();
                     ClassReader reader = new ClassReader(jar.getInputStream(entry));
                     reader.accept(cn, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
                     nodes.put(name.replace(".class", ""), cn);
                 }
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException("Error building classes (" + file.getName() + "): ", e.getCause());
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
                 if (jar != null)
                     jar.close();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
             }
         }
         return nodes;
     }
 
-    public void write(File target)
-    {
+    public void write(File target) {
         try (JarOutputStream output = (manifest != null ? new JarOutputStream(new FileOutputStream(target), manifest)
-                : new JarOutputStream(new FileOutputStream(target))))
-        {
-            for (Map.Entry<String, ClassNode> entry : build().entrySet())
-            {
+                : new JarOutputStream(new FileOutputStream(target)))) {
+            for (Map.Entry<String, ClassNode> entry : build().entrySet()) {
                 output.putNextEntry(new JarEntry(entry.getKey().replaceAll("\\.", "/") + ".class"));
                 ClassWriter writer = new ClassWriter(0);
                 entry.getValue().accept(writer);
@@ -86,15 +70,12 @@ public class JarArchive
                 output.closeEntry();
             }
             output.flush();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void write()
-    {
+    public void write() {
         write(file);
     }
 }

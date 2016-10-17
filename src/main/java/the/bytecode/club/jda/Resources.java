@@ -14,8 +14,7 @@ import java.util.ArrayList;
  * @author Konloch
  */
 
-public class Resources
-{
+public class Resources {
     public static ImageIcon nextIcon = new ImageIcon(Resources.class.getClass().getResource("/nextIcon.png"));
     public static ImageIcon prevIcon = new ImageIcon(Resources.class.getClass().getResource("/prevIcon.png"));
     public static ImageIcon busyIcon = new ImageIcon(Resources.class.getClass().getResource("/1.gif"));
@@ -42,27 +41,21 @@ public class Resources
     public static ArrayList<BufferedImage> iconList;
     public static BufferedImage icon;
 
-    static
-    {
-        try
-        {
+    static {
+        try {
             icon = ImageIO.read(Resources.class.getClass().getResourceAsStream("/icon.png"));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.err.println("Failed to load program icon:");
             e.printStackTrace();
         }
 
         iconList = new ArrayList<>();
-        for (int size : new int[] { 8, 16, 24, 32, 48, 64, 96, 128, 192, 256 })
-        {
+        for (int size : new int[]{8, 16, 24, 32, 48, 64, 96, 128, 192, 256}) {
             iconList.add(resize(icon, size, size));
         }
     }
 
-    public static BufferedImage resize(BufferedImage image, int width, int height)
-    {
+    public static BufferedImage resize(BufferedImage image, int width, int height) {
         return Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, width, height);
     }
 }

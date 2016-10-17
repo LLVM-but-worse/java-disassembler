@@ -25,15 +25,13 @@ package com.eclipsesource.json;
  * An unchecked exception to indicate that an input does not qualify as valid JSON.
  */
 @SuppressWarnings("serial") // use default serial UID
-public class ParseException extends RuntimeException
-{
+public class ParseException extends RuntimeException {
 
     private final int offset;
     private final int line;
     private final int column;
 
-    ParseException(String message, int offset, int line, int column)
-    {
+    ParseException(String message, int offset, int line, int column) {
         super(message + " at " + line + ":" + column);
         this.offset = offset;
         this.line = line;
@@ -46,8 +44,7 @@ public class ParseException extends RuntimeException
      *
      * @return the character offset at which the error occurred, will be &gt;= 0
      */
-    public int getOffset()
-    {
+    public int getOffset() {
         return offset;
     }
 
@@ -56,8 +53,7 @@ public class ParseException extends RuntimeException
      *
      * @return the line in which the error occurred, will be &gt;= 1
      */
-    public int getLine()
-    {
+    public int getLine() {
         return line;
     }
 
@@ -67,8 +63,7 @@ public class ParseException extends RuntimeException
      *
      * @return the column in which the error occurred, will be &gt;= 0
      */
-    public int getColumn()
-    {
+    public int getColumn() {
         return column;
     }
 

@@ -19,31 +19,24 @@ import java.util.List;
  * @author Bibl
  */
 
-public class ClassNodeDecompiler extends Decompiler
-{
+public class ClassNodeDecompiler extends Decompiler {
 
-    public ClassNodeDecompiler()
-    {
-        for (Settings setting : Settings.values())
-        {
+    public ClassNodeDecompiler() {
+        for (Settings setting : Settings.values()) {
             settings.registerSetting(setting);
         }
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return "Bytecode";
     }
 
-    public String decompileClassNode(ClassNode cn, byte[] b)
-    {
+    public String decompileClassNode(ClassNode cn, byte[] b) {
         String containerName = null;
-        for (FileContainer container : JDA.files)
-        {
+        for (FileContainer container : JDA.files) {
             String name = cn.name + ".class";
-            if (container.getData().containsKey(name))
-            {
+            if (container.getData().containsKey(name)) {
                 if (container.getClassNode(name) == cn)
                     containerName = container.name;
             }
@@ -52,30 +45,25 @@ public class ClassNodeDecompiler extends Decompiler
         return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
     }
 
-    protected static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, String containerName, ClassNode cn)
-    {
+    protected static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, String containerName, ClassNode cn) {
         ArrayList<String> unableToDecompile = new ArrayList<>();
         decompiledClasses.add(cn.name);
         sb.append(getAccessString(cn.access));
         sb.append(" ");
         sb.append(cn.name);
-        if (cn.superName != null && !cn.superName.equals("java/lang/Object"))
-        {
+        if (cn.superName != null && !cn.superName.equals("java/lang/Object")) {
             sb.append(" extends ");
             sb.append(cn.superName);
         }
 
         int amountOfInterfaces = cn.interfaces.size();
-        if (amountOfInterfaces > 0)
-        {
+        if (amountOfInterfaces > 0) {
             sb.append(" implements ");
             sb.append(cn.interfaces.get(0));
-            if (amountOfInterfaces > 1)
-            {
+            if (amountOfInterfaces > 1) {
                 // sb.append(",");
             }
-            for (int i = 1; i < amountOfInterfaces; i++)
-            {
+            for (int i = 1; i < amountOfInterfaces; i++) {
                 sb.append(", ");
                 sb.append(cn.interfaces.get(i));
             }
@@ -83,8 +71,7 @@ public class ClassNodeDecompiler extends Decompiler
         sb.append(" {");
         sb.append(JDA.nl);
 
-        for (Iterator<FieldNode> it = cn.fields.iterator(); it.hasNext(); )
-        {
+        for (Iterator<FieldNode> it = cn.fields.iterator(); it.hasNext(); ) {
             sb.append("     ");
             FieldNodeDecompiler.decompile(sb, it.next());
             sb.append(JDA.nl);
@@ -92,41 +79,33 @@ public class ClassNodeDecompiler extends Decompiler
                 sb.append(JDA.nl);
         }
 
-        for (Iterator<MethodNode> it = cn.methods.iterator(); it.hasNext(); )
-        {
+        for (Iterator<MethodNode> it = cn.methods.iterator(); it.hasNext(); ) {
             MethodNodeDecompiler.decompile(sb, it.next(), cn);
             if (it.hasNext())
                 sb.append(JDA.nl);
         }
 
-        for (Object o : cn.innerClasses)
-        {
+        for (Object o : cn.innerClasses) {
             InnerClassNode innerClassNode = (InnerClassNode) o;
             String innerClassName = innerClassNode.name;
-            if ((innerClassName != null) && !decompiledClasses.contains(innerClassName))
-            {
+            if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
                 decompiledClasses.add(innerClassName);
                 ClassNode cn1 = JDA.getClassNode(containerName, innerClassName);
-                if (cn1 != null)
-                {
+                if (cn1 != null) {
                     sb.appendPrefix("     ");
                     sb.append(JDA.nl + JDA.nl);
                     sb = decompile(sb, decompiledClasses, containerName, cn1);
                     sb.trimPrefix(5);
                     sb.append(JDA.nl);
-                }
-                else
-                {
+                } else {
                     unableToDecompile.add(innerClassName);
                 }
             }
         }
 
-        if (!unableToDecompile.isEmpty())
-        {
+        if (!unableToDecompile.isEmpty()) {
             sb.append("// The following inner classes couldn't be decompiled: ");
-            for (String s : unableToDecompile)
-            {
+            for (String s : unableToDecompile) {
                 sb.append(s);
                 sb.append(" ");
             }
@@ -139,8 +118,7 @@ public class ClassNodeDecompiler extends Decompiler
         return sb;
     }
 
-    public static String getAccessString(int access)
-    {
+    public static String getAccessString(int access) {
         List<String> tokens = new ArrayList<>();
         if ((access & Opcodes.ACC_PUBLIC) != 0)
             tokens.add("public");
@@ -169,8 +147,7 @@ public class ClassNodeDecompiler extends Decompiler
 
         // hackery delimeters
         StringBuilder sb = new StringBuilder(tokens.get(0));
-        for (int i = 1; i < tokens.size(); i++)
-        {
+        for (int i = 1; i < tokens.size(); i++) {
             sb.append(" ");
             sb.append(tokens.get(i));
         }
@@ -178,12 +155,10 @@ public class ClassNodeDecompiler extends Decompiler
     }
 
     @Override
-    public void decompileToZip(String zipName)
-    {
+    public void decompileToZip(String zipName) {
     }
 
-    public enum Settings implements DecompilerSettings.Setting
-    {
+    public enum Settings implements DecompilerSettings.Setting {
         DEBUG_HELPERS("debug-helpers", "Debug Helpers", true),
         APPEND_BRACKETS_TO_LABELS("append-brackets-to-labels", "Append Brackets to Labels", true),
         SHOW_METHOD_DESCRIPTORS("show-method-descriptors", "Show Method Descriptors", true);
@@ -192,30 +167,25 @@ public class ClassNodeDecompiler extends Decompiler
         private String param;
         private boolean on;
 
-        Settings(String param, String name)
-        {
+        Settings(String param, String name) {
             this(param, name, false);
         }
 
-        Settings(String param, String name, boolean on)
-        {
+        Settings(String param, String name, boolean on) {
             this.name = name;
             this.param = param;
             this.on = on;
         }
 
-        public String getText()
-        {
+        public String getText() {
             return name;
         }
 
-        public boolean isDefaultOn()
-        {
+        public boolean isDefaultOn() {
             return on;
         }
 
-        public String getParam()
-        {
+        public String getParam() {
             return param;
         }
     }

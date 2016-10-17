@@ -15,16 +15,14 @@ import java.io.PrintStream;
  * @author Konloch
  */
 
-public class SystemErrConsole extends JFrame
-{
+public class SystemErrConsole extends JFrame {
 
     JTextArea textArea = new JTextArea();
     SearchPanel search = new SearchPanel(textArea);
     JScrollPane scrollPane = new JScrollPane();
     private PrintStream originalOut;
 
-    public SystemErrConsole(String title)
-    {
+    public SystemErrConsole(String title) {
         this.setIconImages(Resources.iconList);
         setTitle(title);
         setSize(new Dimension(542, 316));
@@ -42,14 +40,12 @@ public class SystemErrConsole extends JFrame
 
     CustomOutputStream s;
 
-    public void finished()
-    {
+    public void finished() {
         if (originalOut != null)
             System.setErr(originalOut);
     }
 
-    public void pretty()
-    {
+    public void pretty() {
         s.update();
         String[] test = null;
         if (textArea.getText().split("\n").length >= 2)
@@ -58,10 +54,8 @@ public class SystemErrConsole extends JFrame
             test = textArea.getText().split("\r");
 
         String replace = "";
-        for (String s : test)
-        {
-            if (s.startsWith("File '"))
-            {
+        for (String s : test) {
+            if (s.startsWith("File '")) {
                 String[] split = s.split("'");
                 String start = split[0] + "'" + split[1] + "', ";
                 s = s.substring(start.length(), s.length());
@@ -76,8 +70,7 @@ public class SystemErrConsole extends JFrame
      *
      * @param t the string you want to append
      */
-    public void appendText(String t)
-    {
+    public void appendText(String t) {
         textArea.setText((textArea.getText().isEmpty() ? "" : textArea.getText() + "\r\n") + t);
         textArea.setCaretPosition(0);
     }
@@ -87,30 +80,25 @@ public class SystemErrConsole extends JFrame
      *
      * @param t the text you want set
      */
-    public void setText(String t)
-    {
+    public void setText(String t) {
         textArea.setText(t);
         textArea.setCaretPosition(0);
     }
 
-    class CustomOutputStream extends OutputStream
-    {
+    class CustomOutputStream extends OutputStream {
         private StringBuffer sb = new StringBuffer();
         private JTextArea textArea;
 
-        public CustomOutputStream(JTextArea textArea)
-        {
+        public CustomOutputStream(JTextArea textArea) {
             this.textArea = textArea;
         }
 
-        public void update()
-        {
+        public void update() {
             textArea.append(sb.toString());
         }
 
         @Override
-        public void write(int b) throws IOException
-        {
+        public void write(int b) throws IOException {
             sb.append(String.valueOf((char) b));
         }
     }

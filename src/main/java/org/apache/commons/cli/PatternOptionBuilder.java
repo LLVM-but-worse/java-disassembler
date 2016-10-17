@@ -54,8 +54,7 @@ import java.util.Date;
  *
  * @version $Id: PatternOptionBuilder.java 1677406 2015-05-03 14:27:31Z britter $
  */
-public class PatternOptionBuilder
-{
+public class PatternOptionBuilder {
     /**
      * String class
      */
@@ -111,10 +110,8 @@ public class PatternOptionBuilder
      * @param ch the specified character
      * @return The class that <code>ch</code> represents
      */
-    public static Object getValueClass(char ch)
-    {
-        switch (ch)
-        {
+    public static Object getValueClass(char ch) {
+        switch (ch) {
             case '@':
                 return PatternOptionBuilder.OBJECT_VALUE;
             case ':':
@@ -145,8 +142,7 @@ public class PatternOptionBuilder
      * @param ch the specified character
      * @return true if <code>ch</code> is a value code, otherwise false.
      */
-    public static boolean isValueCode(char ch)
-    {
+    public static boolean isValueCode(char ch) {
         return ch == '@' || ch == ':' || ch == '%' || ch == '+' || ch == '#' || ch == '<' || ch == '>' || ch == '*' || ch == '/' || ch == '!';
     }
 
@@ -156,24 +152,20 @@ public class PatternOptionBuilder
      * @param pattern the pattern string
      * @return The {@link Options} instance
      */
-    public static Options parsePattern(String pattern)
-    {
+    public static Options parsePattern(String pattern) {
         char opt = ' ';
         boolean required = false;
         Class<?> type = null;
 
         Options options = new Options();
 
-        for (int i = 0; i < pattern.length(); i++)
-        {
+        for (int i = 0; i < pattern.length(); i++) {
             char ch = pattern.charAt(i);
 
             // a value code comes after an option and specifies
             // details about it
-            if (!isValueCode(ch))
-            {
-                if (opt != ' ')
-                {
+            if (!isValueCode(ch)) {
+                if (opt != ' ') {
                     final Option option = Option.builder(String.valueOf(opt)).hasArg(type != null).required(required).type(type).build();
 
                     // we have a previous one to deal with
@@ -184,19 +176,14 @@ public class PatternOptionBuilder
                 }
 
                 opt = ch;
-            }
-            else if (ch == '!')
-            {
+            } else if (ch == '!') {
                 required = true;
-            }
-            else
-            {
+            } else {
                 type = (Class<?>) getValueClass(ch);
             }
         }
 
-        if (opt != ' ')
-        {
+        if (opt != ' ') {
             final Option option = Option.builder(String.valueOf(opt)).hasArg(type != null).required(required).type(type).build();
 
             // we have a final one to deal with

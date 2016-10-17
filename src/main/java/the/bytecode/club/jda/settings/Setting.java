@@ -5,35 +5,29 @@ package the.bytecode.club.jda.settings;
  *
  * @author Konloch
  */
-public class Setting
-{
+public class Setting {
     private String key;
     private String value;
 
-    public Setting(String key, String value)
-    {
+    public Setting(String key, String value) {
         this.key = key;
         this.value = value;
         Settings.ALL_SETTINGS.put(this.key, this);
     }
 
-    public String get()
-    {
+    public String get() {
         return this.value;
     }
 
-    public boolean getBool()
-    {
+    public boolean getBool() {
         return Boolean.parseBoolean(this.value);
     }
 
-    public void set(Object value)
-    {
+    public void set(Object value) {
         this.value = value.toString();
     }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return this.value == null || this.value.isEmpty();
     }
 }

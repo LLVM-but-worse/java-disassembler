@@ -39,8 +39,7 @@ import java.util.List;
  *
  * @author Eric Bruneton
  */
-public class FieldNode extends FieldVisitor
-{
+public class FieldNode extends FieldVisitor {
 
     public ClassNode owner;
 
@@ -134,11 +133,9 @@ public class FieldNode extends FieldVisitor
      *                  {@link Double} or a {@link String}.
      * @throws IllegalStateException If a subclass calls this constructor.
      */
-    public FieldNode(final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value)
-    {
+    public FieldNode(final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value) {
         this(Opcodes.ASM5, owner, access, name, desc, signature, value);
-        if (getClass() != FieldNode.class)
-        {
+        if (getClass() != FieldNode.class) {
             throw new IllegalStateException();
         }
     }
@@ -161,8 +158,7 @@ public class FieldNode extends FieldVisitor
      *                  must be an {@link Integer}, a {@link Float}, a {@link Long}, a
      *                  {@link Double} or a {@link String}.
      */
-    public FieldNode(final int api, final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value)
-    {
+    public FieldNode(final int api, final ClassNode owner, final int access, final String name, final String desc, final String signature, final Object value) {
         super(api);
         this.owner = owner;
         this.access = access;
@@ -177,21 +173,15 @@ public class FieldNode extends FieldVisitor
     // ------------------------------------------------------------------------
 
     @Override
-    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
         AnnotationNode an = new AnnotationNode(desc);
-        if (visible)
-        {
-            if (visibleAnnotations == null)
-            {
+        if (visible) {
+            if (visibleAnnotations == null) {
                 visibleAnnotations = new ArrayList<>(1);
             }
             visibleAnnotations.add(an);
-        }
-        else
-        {
-            if (invisibleAnnotations == null)
-            {
+        } else {
+            if (invisibleAnnotations == null) {
                 invisibleAnnotations = new ArrayList<>(1);
             }
             invisibleAnnotations.add(an);
@@ -200,21 +190,15 @@ public class FieldNode extends FieldVisitor
     }
 
     @Override
-    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
-    {
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
         TypeAnnotationNode an = new TypeAnnotationNode(typeRef, typePath, desc);
-        if (visible)
-        {
-            if (visibleTypeAnnotations == null)
-            {
+        if (visible) {
+            if (visibleTypeAnnotations == null) {
                 visibleTypeAnnotations = new ArrayList<>(1);
             }
             visibleTypeAnnotations.add(an);
-        }
-        else
-        {
-            if (invisibleTypeAnnotations == null)
-            {
+        } else {
+            if (invisibleTypeAnnotations == null) {
                 invisibleTypeAnnotations = new ArrayList<>(1);
             }
             invisibleTypeAnnotations.add(an);
@@ -223,18 +207,15 @@ public class FieldNode extends FieldVisitor
     }
 
     @Override
-    public void visitAttribute(final Attribute attr)
-    {
-        if (attrs == null)
-        {
+    public void visitAttribute(final Attribute attr) {
+        if (attrs == null) {
             attrs = new ArrayList<>(1);
         }
         attrs.add(attr);
     }
 
     @Override
-    public void visitEnd()
-    {
+    public void visitEnd() {
     }
 
     // ------------------------------------------------------------------------
@@ -250,16 +231,12 @@ public class FieldNode extends FieldVisitor
      * @param api an ASM API version. Must be one of {@link Opcodes#ASM4} or
      *            {@link Opcodes#ASM5}.
      */
-    public void check(final int api)
-    {
-        if (api == Opcodes.ASM4)
-        {
-            if (visibleTypeAnnotations != null && visibleTypeAnnotations.size() > 0)
-            {
+    public void check(final int api) {
+        if (api == Opcodes.ASM4) {
+            if (visibleTypeAnnotations != null && visibleTypeAnnotations.size() > 0) {
                 throw new RuntimeException();
             }
-            if (invisibleTypeAnnotations != null && invisibleTypeAnnotations.size() > 0)
-            {
+            if (invisibleTypeAnnotations != null && invisibleTypeAnnotations.size() > 0) {
                 throw new RuntimeException();
             }
         }
@@ -270,59 +247,49 @@ public class FieldNode extends FieldVisitor
      *
      * @param cv a class visitor.
      */
-    public void accept(final ClassVisitor cv)
-    {
+    public void accept(final ClassVisitor cv) {
         FieldVisitor fv = cv.visitField(access, name, desc, signature, value);
-        if (fv == null)
-        {
+        if (fv == null) {
             return;
         }
         int i, n;
         n = visibleAnnotations == null ? 0 : visibleAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             AnnotationNode an = visibleAnnotations.get(i);
             an.accept(fv.visitAnnotation(an.desc, true));
         }
         n = invisibleAnnotations == null ? 0 : invisibleAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             AnnotationNode an = invisibleAnnotations.get(i);
             an.accept(fv.visitAnnotation(an.desc, false));
         }
         n = visibleTypeAnnotations == null ? 0 : visibleTypeAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             TypeAnnotationNode an = visibleTypeAnnotations.get(i);
             an.accept(fv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc, true));
         }
         n = invisibleTypeAnnotations == null ? 0 : invisibleTypeAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             TypeAnnotationNode an = invisibleTypeAnnotations.get(i);
             an.accept(fv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc, false));
         }
         n = attrs == null ? 0 : attrs.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             fv.visitAttribute(attrs.get(i));
         }
         fv.visitEnd();
     }
 
-    public String halfKey()
-    {
+    public String halfKey() {
         return name + " " + desc;
     }
 
-    public String key()
-    {
+    public String key() {
         return owner.name + "." + name + desc;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return key();
     }
 }

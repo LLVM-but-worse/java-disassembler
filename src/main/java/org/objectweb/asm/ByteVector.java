@@ -35,8 +35,7 @@ package org.objectweb.asm;
  *
  * @author Eric Bruneton
  */
-public class ByteVector
-{
+public class ByteVector {
 
     /**
      * The content of this vector.
@@ -52,8 +51,7 @@ public class ByteVector
      * Constructs a new {@link ByteVector ByteVector} with a default initial
      * size.
      */
-    public ByteVector()
-    {
+    public ByteVector() {
         data = new byte[64];
     }
 
@@ -63,8 +61,7 @@ public class ByteVector
      *
      * @param initialSize the initial size of the byte vector to be constructed.
      */
-    public ByteVector(final int initialSize)
-    {
+    public ByteVector(final int initialSize) {
         data = new byte[initialSize];
     }
 
@@ -75,11 +72,9 @@ public class ByteVector
      * @param b a byte.
      * @return this byte vector.
      */
-    public ByteVector putByte(final int b)
-    {
+    public ByteVector putByte(final int b) {
         int length = this.length;
-        if (length + 1 > data.length)
-        {
+        if (length + 1 > data.length) {
             enlarge(1);
         }
         data[length++] = (byte) b;
@@ -95,11 +90,9 @@ public class ByteVector
      * @param b2 another byte.
      * @return this byte vector.
      */
-    ByteVector put11(final int b1, final int b2)
-    {
+    ByteVector put11(final int b1, final int b2) {
         int length = this.length;
-        if (length + 2 > data.length)
-        {
+        if (length + 2 > data.length) {
             enlarge(2);
         }
         byte[] data = this.data;
@@ -116,11 +109,9 @@ public class ByteVector
      * @param s a short.
      * @return this byte vector.
      */
-    public ByteVector putShort(final int s)
-    {
+    public ByteVector putShort(final int s) {
         int length = this.length;
-        if (length + 2 > data.length)
-        {
+        if (length + 2 > data.length) {
             enlarge(2);
         }
         byte[] data = this.data;
@@ -138,11 +129,9 @@ public class ByteVector
      * @param s a short.
      * @return this byte vector.
      */
-    ByteVector put12(final int b, final int s)
-    {
+    ByteVector put12(final int b, final int s) {
         int length = this.length;
-        if (length + 3 > data.length)
-        {
+        if (length + 3 > data.length) {
             enlarge(3);
         }
         byte[] data = this.data;
@@ -160,11 +149,9 @@ public class ByteVector
      * @param i an int.
      * @return this byte vector.
      */
-    public ByteVector putInt(final int i)
-    {
+    public ByteVector putInt(final int i) {
         int length = this.length;
-        if (length + 4 > data.length)
-        {
+        if (length + 4 > data.length) {
             enlarge(4);
         }
         byte[] data = this.data;
@@ -183,11 +170,9 @@ public class ByteVector
      * @param l a long.
      * @return this byte vector.
      */
-    public ByteVector putLong(final long l)
-    {
+    public ByteVector putLong(final long l) {
         int length = this.length;
-        if (length + 8 > data.length)
-        {
+        if (length + 8 > data.length) {
             enlarge(8);
         }
         byte[] data = this.data;
@@ -212,16 +197,13 @@ public class ByteVector
      * @param s a String whose UTF8 encoded length must be less than 65536.
      * @return this byte vector.
      */
-    public ByteVector putUTF8(final String s)
-    {
+    public ByteVector putUTF8(final String s) {
         int charLength = s.length();
-        if (charLength > 65535)
-        {
+        if (charLength > 65535) {
             throw new IllegalArgumentException();
         }
         int len = length;
-        if (len + 2 + charLength > data.length)
-        {
+        if (len + 2 + charLength > data.length) {
             enlarge(2 + charLength);
         }
         byte[] data = this.data;
@@ -233,15 +215,11 @@ public class ByteVector
         // general method.
         data[len++] = (byte) (charLength >>> 8);
         data[len++] = (byte) charLength;
-        for (int i = 0; i < charLength; ++i)
-        {
+        for (int i = 0; i < charLength; ++i) {
             char c = s.charAt(i);
-            if (c >= '\001' && c <= '\177')
-            {
+            if (c >= '\001' && c <= '\177') {
                 data[len++] = (byte) c;
-            }
-            else
-            {
+            } else {
                 length = len;
                 return encodeUTF8(s, i, 65535);
             }
@@ -264,57 +242,41 @@ public class ByteVector
      *                      already encoded characters.
      * @return this byte vector.
      */
-    ByteVector encodeUTF8(final String s, int i, int maxByteLength)
-    {
+    ByteVector encodeUTF8(final String s, int i, int maxByteLength) {
         int charLength = s.length();
         int byteLength = i;
         char c;
-        for (int j = i; j < charLength; ++j)
-        {
+        for (int j = i; j < charLength; ++j) {
             c = s.charAt(j);
-            if (c >= '\001' && c <= '\177')
-            {
+            if (c >= '\001' && c <= '\177') {
                 byteLength++;
-            }
-            else if (c > '\u07FF')
-            {
+            } else if (c > '\u07FF') {
                 byteLength += 3;
-            }
-            else
-            {
+            } else {
                 byteLength += 2;
             }
         }
-        if (byteLength > maxByteLength)
-        {
+        if (byteLength > maxByteLength) {
             throw new IllegalArgumentException();
         }
         int start = length - i - 2;
-        if (start >= 0)
-        {
+        if (start >= 0) {
             data[start] = (byte) (byteLength >>> 8);
             data[start + 1] = (byte) byteLength;
         }
-        if (length + byteLength - i > data.length)
-        {
+        if (length + byteLength - i > data.length) {
             enlarge(byteLength - i);
         }
         int len = length;
-        for (int j = i; j < charLength; ++j)
-        {
+        for (int j = i; j < charLength; ++j) {
             c = s.charAt(j);
-            if (c >= '\001' && c <= '\177')
-            {
+            if (c >= '\001' && c <= '\177') {
                 data[len++] = (byte) c;
-            }
-            else if (c > '\u07FF')
-            {
+            } else if (c > '\u07FF') {
                 data[len++] = (byte) (0xE0 | c >> 12 & 0xF);
                 data[len++] = (byte) (0x80 | c >> 6 & 0x3F);
                 data[len++] = (byte) (0x80 | c & 0x3F);
-            }
-            else
-            {
+            } else {
                 data[len++] = (byte) (0xC0 | c >> 6 & 0x1F);
                 data[len++] = (byte) (0x80 | c & 0x3F);
             }
@@ -333,14 +295,11 @@ public class ByteVector
      * @param len number of bytes of b that must be copied.
      * @return this byte vector.
      */
-    public ByteVector putByteArray(final byte[] b, final int off, final int len)
-    {
-        if (length + len > data.length)
-        {
+    public ByteVector putByteArray(final byte[] b, final int off, final int len) {
+        if (length + len > data.length) {
             enlarge(len);
         }
-        if (b != null)
-        {
+        if (b != null) {
             System.arraycopy(b, off, data, length, len);
         }
         length += len;
@@ -353,8 +312,7 @@ public class ByteVector
      * @param size number of additional bytes that this byte vector should be
      *             able to receive.
      */
-    private void enlarge(final int size)
-    {
+    private void enlarge(final int size) {
         int length1 = 2 * data.length;
         int length2 = length + size;
         byte[] newData = new byte[length1 > length2 ? length1 : length2];

@@ -23,8 +23,7 @@ package org.apache.commons.cli;
  *
  * @version $Id: UnrecognizedOptionException.java 1443102 2013-02-06 18:12:16Z tn $
  */
-public class UnrecognizedOptionException extends ParseException
-{
+public class UnrecognizedOptionException extends ParseException {
     /**
      * This exception {@code serialVersionUID}.
      */
@@ -41,8 +40,7 @@ public class UnrecognizedOptionException extends ParseException
      *
      * @param message the detail message
      */
-    public UnrecognizedOptionException(String message)
-    {
+    public UnrecognizedOptionException(String message) {
         super(message);
     }
 
@@ -54,8 +52,7 @@ public class UnrecognizedOptionException extends ParseException
      * @param option  the unrecognized option
      * @since 1.2
      */
-    public UnrecognizedOptionException(String message, String option)
-    {
+    public UnrecognizedOptionException(String message, String option) {
         this(message);
         this.option = option;
     }
@@ -66,8 +63,7 @@ public class UnrecognizedOptionException extends ParseException
      * @return the related option
      * @since 1.2
      */
-    public String getOption()
-    {
+    public String getOption() {
         return option;
     }
 }

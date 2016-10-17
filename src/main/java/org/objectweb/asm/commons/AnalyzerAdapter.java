@@ -55,8 +55,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class AnalyzerAdapter extends MethodVisitor
-{
+public class AnalyzerAdapter extends MethodVisitor {
 
     /**
      * <code>List</code> of the local variable slots for current execution
@@ -130,11 +129,9 @@ public class AnalyzerAdapter extends MethodVisitor
      *               be <tt>null</tt>.
      * @throws IllegalStateException If a subclass calls this constructor.
      */
-    public AnalyzerAdapter(final String owner, final int access, final String name, final String desc, final MethodVisitor mv)
-    {
+    public AnalyzerAdapter(final String owner, final int access, final String name, final String desc, final MethodVisitor mv) {
         this(Opcodes.ASM5, owner, access, name, desc, mv);
-        if (getClass() != AnalyzerAdapter.class)
-        {
+        if (getClass() != AnalyzerAdapter.class) {
             throw new IllegalStateException();
         }
     }
@@ -151,31 +148,24 @@ public class AnalyzerAdapter extends MethodVisitor
      * @param mv     the method visitor to which this adapter delegates calls. May
      *               be <tt>null</tt>.
      */
-    protected AnalyzerAdapter(final int api, final String owner, final int access, final String name, final String desc, final MethodVisitor mv)
-    {
+    protected AnalyzerAdapter(final int api, final String owner, final int access, final String name, final String desc, final MethodVisitor mv) {
         super(api, mv);
         this.owner = owner;
         locals = new ArrayList<>();
         stack = new ArrayList<>();
         uninitializedTypes = new HashMap<>();
 
-        if ((access & Opcodes.ACC_STATIC) == 0)
-        {
-            if ("<init>".equals(name))
-            {
+        if ((access & Opcodes.ACC_STATIC) == 0) {
+            if ("<init>".equals(name)) {
                 locals.add(Opcodes.UNINITIALIZED_THIS);
-            }
-            else
-            {
+            } else {
                 locals.add(owner);
             }
         }
         Type[] types = Type.getArgumentTypes(desc);
-        for (int i = 0; i < types.length; ++i)
-        {
+        for (int i = 0; i < types.length; ++i) {
             Type type = types[i];
-            switch (type.getSort())
-            {
+            switch (type.getSort()) {
                 case Type.BOOLEAN:
                 case Type.CHAR:
                 case Type.BYTE:
@@ -206,25 +196,19 @@ public class AnalyzerAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitFrame(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack)
-    {
-        if (type != Opcodes.F_NEW)
-        { // uncompressed frame
+    public void visitFrame(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack) {
+        if (type != Opcodes.F_NEW) { // uncompressed frame
             throw new IllegalStateException("ClassReader.accept() should be called with EXPAND_FRAMES flag");
         }
 
-        if (mv != null)
-        {
+        if (mv != null) {
             mv.visitFrame(type, nLocal, local, nStack, stack);
         }
 
-        if (this.locals != null)
-        {
+        if (this.locals != null) {
             this.locals.clear();
             this.stack.clear();
-        }
-        else
-        {
+        } else {
             this.locals = new ArrayList<>();
             this.stack = new ArrayList<>();
         }
@@ -233,86 +217,68 @@ public class AnalyzerAdapter extends MethodVisitor
         maxStack = Math.max(maxStack, this.stack.size());
     }
 
-    private static void visitFrameTypes(final int n, final Object[] types, final List<Object> result)
-    {
-        for (int i = 0; i < n; ++i)
-        {
+    private static void visitFrameTypes(final int n, final Object[] types, final List<Object> result) {
+        for (int i = 0; i < n; ++i) {
             Object type = types[i];
             result.add(type);
-            if (type == Opcodes.LONG || type == Opcodes.DOUBLE)
-            {
+            if (type == Opcodes.LONG || type == Opcodes.DOUBLE) {
                 result.add(Opcodes.TOP);
             }
         }
     }
 
     @Override
-    public void visitInsn(final int opcode)
-    {
-        if (mv != null)
-        {
+    public void visitInsn(final int opcode) {
+        if (mv != null) {
             mv.visitInsn(opcode);
         }
         execute(opcode, 0, null);
-        if ((opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN) || opcode == Opcodes.ATHROW)
-        {
+        if ((opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN) || opcode == Opcodes.ATHROW) {
             this.locals = null;
             this.stack = null;
         }
     }
 
     @Override
-    public void visitIntInsn(final int opcode, final int operand)
-    {
-        if (mv != null)
-        {
+    public void visitIntInsn(final int opcode, final int operand) {
+        if (mv != null) {
             mv.visitIntInsn(opcode, operand);
         }
         execute(opcode, operand, null);
     }
 
     @Override
-    public void visitVarInsn(final int opcode, final int var)
-    {
-        if (mv != null)
-        {
+    public void visitVarInsn(final int opcode, final int var) {
+        if (mv != null) {
             mv.visitVarInsn(opcode, var);
         }
         execute(opcode, var, null);
     }
 
     @Override
-    public void visitTypeInsn(final int opcode, final String type)
-    {
-        if (opcode == Opcodes.NEW)
-        {
-            if (labels == null)
-            {
+    public void visitTypeInsn(final int opcode, final String type) {
+        if (opcode == Opcodes.NEW) {
+            if (labels == null) {
                 Label l = new Label();
                 labels = new ArrayList<>(3);
                 labels.add(l);
-                if (mv != null)
-                {
+                if (mv != null) {
                     mv.visitLabel(l);
                 }
             }
-            for (int i = 0; i < labels.size(); ++i)
-            {
+            for (int i = 0; i < labels.size(); ++i) {
                 uninitializedTypes.put(labels.get(i), type);
             }
         }
-        if (mv != null)
-        {
+        if (mv != null) {
             mv.visitTypeInsn(opcode, type);
         }
         execute(opcode, 0, type);
     }
 
     @Override
-    public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc)
-    {
-        if (mv != null)
-        {
+    public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc) {
+        if (mv != null) {
             mv.visitFieldInsn(opcode, owner, name, desc);
         }
         execute(opcode, 0, desc);
@@ -320,10 +286,8 @@ public class AnalyzerAdapter extends MethodVisitor
 
     @Deprecated
     @Override
-    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc)
-    {
-        if (api >= Opcodes.ASM5)
-        {
+    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc) {
+        if (api >= Opcodes.ASM5) {
             super.visitMethodInsn(opcode, owner, name, desc);
             return;
         }
@@ -331,53 +295,39 @@ public class AnalyzerAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc, final boolean itf)
-    {
-        if (api < Opcodes.ASM5)
-        {
+    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc, final boolean itf) {
+        if (api < Opcodes.ASM5) {
             super.visitMethodInsn(opcode, owner, name, desc, itf);
             return;
         }
         doVisitMethodInsn(opcode, owner, name, desc, itf);
     }
 
-    private void doVisitMethodInsn(int opcode, final String owner, final String name, final String desc, final boolean itf)
-    {
-        if (mv != null)
-        {
+    private void doVisitMethodInsn(int opcode, final String owner, final String name, final String desc, final boolean itf) {
+        if (mv != null) {
             mv.visitMethodInsn(opcode, owner, name, desc, itf);
         }
-        if (this.locals == null)
-        {
+        if (this.locals == null) {
             labels = null;
             return;
         }
         pop(desc);
-        if (opcode != Opcodes.INVOKESTATIC)
-        {
+        if (opcode != Opcodes.INVOKESTATIC) {
             Object t = pop();
-            if (opcode == Opcodes.INVOKESPECIAL && name.charAt(0) == '<')
-            {
+            if (opcode == Opcodes.INVOKESPECIAL && name.charAt(0) == '<') {
                 Object u;
-                if (t == Opcodes.UNINITIALIZED_THIS)
-                {
+                if (t == Opcodes.UNINITIALIZED_THIS) {
                     u = this.owner;
-                }
-                else
-                {
+                } else {
                     u = uninitializedTypes.get(t);
                 }
-                for (int i = 0; i < locals.size(); ++i)
-                {
-                    if (locals.get(i) == t)
-                    {
+                for (int i = 0; i < locals.size(); ++i) {
+                    if (locals.get(i) == t) {
                         locals.set(i, u);
                     }
                 }
-                for (int i = 0; i < stack.size(); ++i)
-                {
-                    if (stack.get(i) == t)
-                    {
+                for (int i = 0; i < stack.size(); ++i) {
+                    if (stack.get(i) == t) {
                         stack.set(i, u);
                     }
                 }
@@ -388,14 +338,11 @@ public class AnalyzerAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs)
-    {
-        if (mv != null)
-        {
+    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
+        if (mv != null) {
             mv.visitInvokeDynamicInsn(name, desc, bsm, bsmArgs);
         }
-        if (this.locals == null)
-        {
+        if (this.locals == null) {
             labels = null;
             return;
         }
@@ -405,110 +352,77 @@ public class AnalyzerAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitJumpInsn(final int opcode, final Label label)
-    {
-        if (mv != null)
-        {
+    public void visitJumpInsn(final int opcode, final Label label) {
+        if (mv != null) {
             mv.visitJumpInsn(opcode, label);
         }
         execute(opcode, 0, null);
-        if (opcode == Opcodes.GOTO)
-        {
+        if (opcode == Opcodes.GOTO) {
             this.locals = null;
             this.stack = null;
         }
     }
 
     @Override
-    public void visitLabel(final Label label)
-    {
-        if (mv != null)
-        {
+    public void visitLabel(final Label label) {
+        if (mv != null) {
             mv.visitLabel(label);
         }
-        if (labels == null)
-        {
+        if (labels == null) {
             labels = new ArrayList<>(3);
         }
         labels.add(label);
     }
 
     @Override
-    public void visitLdcInsn(final Object cst)
-    {
-        if (mv != null)
-        {
+    public void visitLdcInsn(final Object cst) {
+        if (mv != null) {
             mv.visitLdcInsn(cst);
         }
-        if (this.locals == null)
-        {
+        if (this.locals == null) {
             labels = null;
             return;
         }
-        if (cst instanceof Integer)
-        {
+        if (cst instanceof Integer) {
             push(Opcodes.INTEGER);
-        }
-        else if (cst instanceof Long)
-        {
+        } else if (cst instanceof Long) {
             push(Opcodes.LONG);
             push(Opcodes.TOP);
-        }
-        else if (cst instanceof Float)
-        {
+        } else if (cst instanceof Float) {
             push(Opcodes.FLOAT);
-        }
-        else if (cst instanceof Double)
-        {
+        } else if (cst instanceof Double) {
             push(Opcodes.DOUBLE);
             push(Opcodes.TOP);
-        }
-        else if (cst instanceof String)
-        {
+        } else if (cst instanceof String) {
             push("java/lang/String");
-        }
-        else if (cst instanceof Type)
-        {
+        } else if (cst instanceof Type) {
             int sort = ((Type) cst).getSort();
-            if (sort == Type.OBJECT || sort == Type.ARRAY)
-            {
+            if (sort == Type.OBJECT || sort == Type.ARRAY) {
                 push("java/lang/Class");
-            }
-            else if (sort == Type.METHOD)
-            {
+            } else if (sort == Type.METHOD) {
                 push("java/lang/invoke/MethodType");
-            }
-            else
-            {
+            } else {
                 throw new IllegalArgumentException();
             }
-        }
-        else if (cst instanceof Handle)
-        {
+        } else if (cst instanceof Handle) {
             push("java/lang/invoke/MethodHandle");
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException();
         }
         labels = null;
     }
 
     @Override
-    public void visitIincInsn(final int var, final int increment)
-    {
-        if (mv != null)
-        {
+    public void visitIincInsn(final int var, final int increment) {
+        if (mv != null) {
             mv.visitIincInsn(var, increment);
         }
         execute(Opcodes.IINC, var, null);
     }
 
     @Override
-    public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label... labels)
-    {
-        if (mv != null)
-        {
+    public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label... labels) {
+        if (mv != null) {
             mv.visitTableSwitchInsn(min, max, dflt, labels);
         }
         execute(Opcodes.TABLESWITCH, 0, null);
@@ -517,10 +431,8 @@ public class AnalyzerAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels)
-    {
-        if (mv != null)
-        {
+    public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels) {
+        if (mv != null) {
             mv.visitLookupSwitchInsn(dflt, keys, labels);
         }
         execute(Opcodes.LOOKUPSWITCH, 0, null);
@@ -529,20 +441,16 @@ public class AnalyzerAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitMultiANewArrayInsn(final String desc, final int dims)
-    {
-        if (mv != null)
-        {
+    public void visitMultiANewArrayInsn(final String desc, final int dims) {
+        if (mv != null) {
             mv.visitMultiANewArrayInsn(desc, dims);
         }
         execute(Opcodes.MULTIANEWARRAY, dims, desc);
     }
 
     @Override
-    public void visitMaxs(final int maxStack, final int maxLocals)
-    {
-        if (mv != null)
-        {
+    public void visitMaxs(final int maxStack, final int maxLocals) {
+        if (mv != null) {
             this.maxStack = Math.max(this.maxStack, maxStack);
             this.maxLocals = Math.max(this.maxLocals, maxLocals);
             mv.visitMaxs(this.maxStack, this.maxLocals);
@@ -551,33 +459,27 @@ public class AnalyzerAdapter extends MethodVisitor
 
     // ------------------------------------------------------------------------
 
-    private Object get(final int local)
-    {
+    private Object get(final int local) {
         maxLocals = Math.max(maxLocals, local + 1);
         return local < locals.size() ? locals.get(local) : Opcodes.TOP;
     }
 
-    private void set(final int local, final Object type)
-    {
+    private void set(final int local, final Object type) {
         maxLocals = Math.max(maxLocals, local + 1);
-        while (local >= locals.size())
-        {
+        while (local >= locals.size()) {
             locals.add(Opcodes.TOP);
         }
         locals.set(local, type);
     }
 
-    private void push(final Object type)
-    {
+    private void push(final Object type) {
         stack.add(type);
         maxStack = Math.max(maxStack, stack.size());
     }
 
-    private void pushDesc(final String desc)
-    {
+    private void pushDesc(final String desc) {
         int index = desc.charAt(0) == '(' ? desc.indexOf(')') + 1 : 0;
-        switch (desc.charAt(index))
-        {
+        switch (desc.charAt(index)) {
             case 'V':
                 return;
             case 'Z':
@@ -599,76 +501,57 @@ public class AnalyzerAdapter extends MethodVisitor
                 push(Opcodes.TOP);
                 return;
             case '[':
-                if (index == 0)
-                {
+                if (index == 0) {
                     push(desc);
-                }
-                else
-                {
+                } else {
                     push(desc.substring(index, desc.length()));
                 }
                 break;
             // case 'L':
             default:
-                if (index == 0)
-                {
+                if (index == 0) {
                     push(desc.substring(1, desc.length() - 1));
-                }
-                else
-                {
+                } else {
                     push(desc.substring(index + 1, desc.length() - 1));
                 }
         }
     }
 
-    private Object pop()
-    {
+    private Object pop() {
         return stack.remove(stack.size() - 1);
     }
 
-    private void pop(final int n)
-    {
+    private void pop(final int n) {
         int size = stack.size();
         int end = size - n;
-        for (int i = size - 1; i >= end; --i)
-        {
+        for (int i = size - 1; i >= end; --i) {
             stack.remove(i);
         }
     }
 
-    private void pop(final String desc)
-    {
+    private void pop(final String desc) {
         char c = desc.charAt(0);
-        if (c == '(')
-        {
+        if (c == '(') {
             int n = 0;
             Type[] types = Type.getArgumentTypes(desc);
-            for (int i = 0; i < types.length; ++i)
-            {
+            for (int i = 0; i < types.length; ++i) {
                 n += types[i].getSize();
             }
             pop(n);
-        }
-        else if (c == 'J' || c == 'D')
-        {
+        } else if (c == 'J' || c == 'D') {
             pop(2);
-        }
-        else
-        {
+        } else {
             pop(1);
         }
     }
 
-    private void execute(final int opcode, final int iarg, final String sarg)
-    {
-        if (this.locals == null)
-        {
+    private void execute(final int opcode, final int iarg, final String sarg) {
+        if (this.locals == null) {
             labels = null;
             return;
         }
         Object t1, t2, t3, t4;
-        switch (opcode)
-        {
+        switch (opcode) {
             case Opcodes.NOP:
             case Opcodes.INEG:
             case Opcodes.LNEG:
@@ -745,12 +628,9 @@ public class AnalyzerAdapter extends MethodVisitor
             case Opcodes.AALOAD:
                 pop(1);
                 t1 = pop();
-                if (t1 instanceof String)
-                {
+                if (t1 instanceof String) {
                     pushDesc(((String) t1).substring(1));
-                }
-                else
-                {
+                } else {
                     push("java/lang/Object");
                 }
                 break;
@@ -759,11 +639,9 @@ public class AnalyzerAdapter extends MethodVisitor
             case Opcodes.ASTORE:
                 t1 = pop();
                 set(iarg, t1);
-                if (iarg > 0)
-                {
+                if (iarg > 0) {
                     t2 = get(iarg - 1);
-                    if (t2 == Opcodes.LONG || t2 == Opcodes.DOUBLE)
-                    {
+                    if (t2 == Opcodes.LONG || t2 == Opcodes.DOUBLE) {
                         set(iarg - 1, Opcodes.TOP);
                     }
                 }
@@ -774,11 +652,9 @@ public class AnalyzerAdapter extends MethodVisitor
                 t1 = pop();
                 set(iarg, t1);
                 set(iarg + 1, Opcodes.TOP);
-                if (iarg > 0)
-                {
+                if (iarg > 0) {
                     t2 = get(iarg - 1);
-                    if (t2 == Opcodes.LONG || t2 == Opcodes.DOUBLE)
-                    {
+                    if (t2 == Opcodes.LONG || t2 == Opcodes.DOUBLE) {
                         set(iarg - 1, Opcodes.TOP);
                     }
                 }
@@ -993,8 +869,7 @@ public class AnalyzerAdapter extends MethodVisitor
                 break;
             case Opcodes.NEWARRAY:
                 pop();
-                switch (iarg)
-                {
+                switch (iarg) {
                     case Opcodes.T_BOOLEAN:
                         pushDesc("[Z");
                         break;

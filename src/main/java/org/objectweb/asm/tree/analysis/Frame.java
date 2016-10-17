@@ -45,8 +45,7 @@ import java.util.List;
  * @param <V> type of the Value used for the analysis.
  * @author Eric Bruneton
  */
-public class Frame<V extends Value>
-{
+public class Frame<V extends Value> {
 
     /**
      * The expected return type of the analyzed method, or <tt>null</tt> if the
@@ -76,8 +75,7 @@ public class Frame<V extends Value>
      * @param nStack  the maximum stack size of the frame.
      */
     @SuppressWarnings("unchecked")
-    public Frame(final int nLocals, final int nStack)
-    {
+    public Frame(final int nLocals, final int nStack) {
         this.values = (V[]) new Value[nLocals + nStack];
         this.locals = nLocals;
     }
@@ -87,8 +85,7 @@ public class Frame<V extends Value>
      *
      * @param src a frame.
      */
-    public Frame(final Frame<? extends V> src)
-    {
+    public Frame(final Frame<? extends V> src) {
         this(src.locals, src.values.length - src.locals);
         init(src);
     }
@@ -99,8 +96,7 @@ public class Frame<V extends Value>
      * @param src a frame.
      * @return this frame.
      */
-    public Frame<V> init(final Frame<? extends V> src)
-    {
+    public Frame<V> init(final Frame<? extends V> src) {
         returnValue = src.returnValue;
         System.arraycopy(src.values, 0, values, 0, values.length);
         top = src.top;
@@ -113,8 +109,7 @@ public class Frame<V extends Value>
      * @param v the expected return type of the analyzed method, or
      *          <tt>null</tt> if the method returns void.
      */
-    public void setReturn(final V v)
-    {
+    public void setReturn(final V v) {
         returnValue = v;
     }
 
@@ -123,8 +118,7 @@ public class Frame<V extends Value>
      *
      * @return the maximum number of local variables of this frame.
      */
-    public int getLocals()
-    {
+    public int getLocals() {
         return locals;
     }
 
@@ -133,8 +127,7 @@ public class Frame<V extends Value>
      *
      * @return the maximum stack size of this frame.
      */
-    public int getMaxStackSize()
-    {
+    public int getMaxStackSize() {
         return values.length - locals;
     }
 
@@ -145,10 +138,8 @@ public class Frame<V extends Value>
      * @return the value of the given local variable.
      * @throws IndexOutOfBoundsException if the variable does not exist.
      */
-    public V getLocal(final int i) throws IndexOutOfBoundsException
-    {
-        if (i >= locals)
-        {
+    public V getLocal(final int i) throws IndexOutOfBoundsException {
+        if (i >= locals) {
             throw new IndexOutOfBoundsException("Trying to access an inexistant local variable");
         }
         return values[i];
@@ -161,10 +152,8 @@ public class Frame<V extends Value>
      * @param value the new value of this local variable.
      * @throws IndexOutOfBoundsException if the variable does not exist.
      */
-    public void setLocal(final int i, final V value) throws IndexOutOfBoundsException
-    {
-        if (i >= locals)
-        {
+    public void setLocal(final int i, final V value) throws IndexOutOfBoundsException {
+        if (i >= locals) {
             throw new IndexOutOfBoundsException("Trying to access an inexistant local variable " + i);
         }
         values[i] = value;
@@ -176,8 +165,7 @@ public class Frame<V extends Value>
      *
      * @return the number of values in the operand stack of this frame.
      */
-    public int getStackSize()
-    {
+    public int getStackSize() {
         return top;
     }
 
@@ -188,16 +176,14 @@ public class Frame<V extends Value>
      * @return the value of the given operand stack slot.
      * @throws IndexOutOfBoundsException if the operand stack slot does not exist.
      */
-    public V getStack(final int i) throws IndexOutOfBoundsException
-    {
+    public V getStack(final int i) throws IndexOutOfBoundsException {
         return values[i + locals];
     }
 
     /**
      * Clears the operand stack of this frame.
      */
-    public void clearStack()
-    {
+    public void clearStack() {
         top = 0;
     }
 
@@ -207,10 +193,8 @@ public class Frame<V extends Value>
      * @return the value that has been popped from the stack.
      * @throws IndexOutOfBoundsException if the operand stack is empty.
      */
-    public V pop() throws IndexOutOfBoundsException
-    {
-        if (top == 0)
-        {
+    public V pop() throws IndexOutOfBoundsException {
+        if (top == 0) {
             throw new IndexOutOfBoundsException("Cannot pop operand off an empty stack.");
         }
         return values[--top + locals];
@@ -222,23 +206,19 @@ public class Frame<V extends Value>
      * @param value the value that must be pushed into the stack.
      * @throws IndexOutOfBoundsException if the operand stack is full.
      */
-    public void push(final V value) throws IndexOutOfBoundsException
-    {
-        if (top + locals >= values.length)
-        {
+    public void push(final V value) throws IndexOutOfBoundsException {
+        if (top + locals >= values.length) {
             throw new IndexOutOfBoundsException("Insufficient maximum stack size.");
         }
         values[top++ + locals] = value;
     }
 
-    public void execute(final AbstractInsnNode insn, final Interpreter<V> interpreter) throws AnalyzerException
-    {
+    public void execute(final AbstractInsnNode insn, final Interpreter<V> interpreter) throws AnalyzerException {
         V value1, value2, value3, value4;
         List<V> values;
         int var;
 
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case Opcodes.NOP:
                 break;
             case Opcodes.ACONST_NULL:
@@ -288,15 +268,12 @@ public class Frame<V extends Value>
                 value1 = interpreter.copyOperation(insn, pop());
                 var = ((VarInsnNode) insn).var;
                 setLocal(var, value1);
-                if (value1.getSize() == 2)
-                {
+                if (value1.getSize() == 2) {
                     setLocal(var + 1, interpreter.newValue(null));
                 }
-                if (var > 0)
-                {
+                if (var > 0) {
                     Value local = getLocal(var - 1);
-                    if (local != null && local.getSize() == 2)
-                    {
+                    if (local != null && local.getSize() == 2) {
                         setLocal(var - 1, interpreter.newValue(null));
                     }
                 }
@@ -315,24 +292,20 @@ public class Frame<V extends Value>
                 interpreter.ternaryOperation(insn, value1, value2, value3);
                 break;
             case Opcodes.POP:
-                if (pop().getSize() == 2)
-                {
+                if (pop().getSize() == 2) {
                     throw new AnalyzerException(insn, "Illegal use of POP");
                 }
                 break;
             case Opcodes.POP2:
-                if (pop().getSize() == 1)
-                {
-                    if (pop().getSize() != 1)
-                    {
+                if (pop().getSize() == 1) {
+                    if (pop().getSize() != 1) {
                         throw new AnalyzerException(insn, "Illegal use of POP2");
                     }
                 }
                 break;
             case Opcodes.DUP:
                 value1 = pop();
-                if (value1.getSize() != 1)
-                {
+                if (value1.getSize() != 1) {
                     throw new AnalyzerException(insn, "Illegal use of DUP");
                 }
                 push(value1);
@@ -341,8 +314,7 @@ public class Frame<V extends Value>
             case Opcodes.DUP_X1:
                 value1 = pop();
                 value2 = pop();
-                if (value1.getSize() != 1 || value2.getSize() != 1)
-                {
+                if (value1.getSize() != 1 || value2.getSize() != 1) {
                     throw new AnalyzerException(insn, "Illegal use of DUP_X1");
                 }
                 push(interpreter.copyOperation(insn, value1));
@@ -351,23 +323,18 @@ public class Frame<V extends Value>
                 break;
             case Opcodes.DUP_X2:
                 value1 = pop();
-                if (value1.getSize() == 1)
-                {
+                if (value1.getSize() == 1) {
                     value2 = pop();
-                    if (value2.getSize() == 1)
-                    {
+                    if (value2.getSize() == 1) {
                         value3 = pop();
-                        if (value3.getSize() == 1)
-                        {
+                        if (value3.getSize() == 1) {
                             push(interpreter.copyOperation(insn, value1));
                             push(value3);
                             push(value2);
                             push(value1);
                             break;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         push(interpreter.copyOperation(insn, value1));
                         push(value2);
                         push(value1);
@@ -377,20 +344,16 @@ public class Frame<V extends Value>
                 throw new AnalyzerException(insn, "Illegal use of DUP_X2");
             case Opcodes.DUP2:
                 value1 = pop();
-                if (value1.getSize() == 1)
-                {
+                if (value1.getSize() == 1) {
                     value2 = pop();
-                    if (value2.getSize() == 1)
-                    {
+                    if (value2.getSize() == 1) {
                         push(value2);
                         push(value1);
                         push(interpreter.copyOperation(insn, value2));
                         push(interpreter.copyOperation(insn, value1));
                         break;
                     }
-                }
-                else
-                {
+                } else {
                     push(value1);
                     push(interpreter.copyOperation(insn, value1));
                     break;
@@ -398,14 +361,11 @@ public class Frame<V extends Value>
                 throw new AnalyzerException(insn, "Illegal use of DUP2");
             case Opcodes.DUP2_X1:
                 value1 = pop();
-                if (value1.getSize() == 1)
-                {
+                if (value1.getSize() == 1) {
                     value2 = pop();
-                    if (value2.getSize() == 1)
-                    {
+                    if (value2.getSize() == 1) {
                         value3 = pop();
-                        if (value3.getSize() == 1)
-                        {
+                        if (value3.getSize() == 1) {
                             push(interpreter.copyOperation(insn, value2));
                             push(interpreter.copyOperation(insn, value1));
                             push(value3);
@@ -414,12 +374,9 @@ public class Frame<V extends Value>
                             break;
                         }
                     }
-                }
-                else
-                {
+                } else {
                     value2 = pop();
-                    if (value2.getSize() == 1)
-                    {
+                    if (value2.getSize() == 1) {
                         push(interpreter.copyOperation(insn, value1));
                         push(value2);
                         push(value1);
@@ -429,17 +386,13 @@ public class Frame<V extends Value>
                 throw new AnalyzerException(insn, "Illegal use of DUP2_X1");
             case Opcodes.DUP2_X2:
                 value1 = pop();
-                if (value1.getSize() == 1)
-                {
+                if (value1.getSize() == 1) {
                     value2 = pop();
-                    if (value2.getSize() == 1)
-                    {
+                    if (value2.getSize() == 1) {
                         value3 = pop();
-                        if (value3.getSize() == 1)
-                        {
+                        if (value3.getSize() == 1) {
                             value4 = pop();
-                            if (value4.getSize() == 1)
-                            {
+                            if (value4.getSize() == 1) {
                                 push(interpreter.copyOperation(insn, value2));
                                 push(interpreter.copyOperation(insn, value1));
                                 push(value4);
@@ -448,9 +401,7 @@ public class Frame<V extends Value>
                                 push(value1);
                                 break;
                             }
-                        }
-                        else
-                        {
+                        } else {
                             push(interpreter.copyOperation(insn, value2));
                             push(interpreter.copyOperation(insn, value1));
                             push(value3);
@@ -459,24 +410,18 @@ public class Frame<V extends Value>
                             break;
                         }
                     }
-                }
-                else
-                {
+                } else {
                     value2 = pop();
-                    if (value2.getSize() == 1)
-                    {
+                    if (value2.getSize() == 1) {
                         value3 = pop();
-                        if (value3.getSize() == 1)
-                        {
+                        if (value3.getSize() == 1) {
                             push(interpreter.copyOperation(insn, value1));
                             push(value3);
                             push(value2);
                             push(value1);
                             break;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         push(interpreter.copyOperation(insn, value1));
                         push(value2);
                         push(value1);
@@ -487,8 +432,7 @@ public class Frame<V extends Value>
             case Opcodes.SWAP:
                 value2 = pop();
                 value1 = pop();
-                if (value1.getSize() != 1 || value2.getSize() != 1)
-                {
+                if (value1.getSize() != 1 || value2.getSize() != 1) {
                     throw new AnalyzerException(insn, "Illegal use of SWAP");
                 }
                 push(interpreter.copyOperation(insn, value2));
@@ -611,8 +555,7 @@ public class Frame<V extends Value>
                 interpreter.returnOperation(insn, value1, returnValue);
                 break;
             case Opcodes.RETURN:
-                if (returnValue != null)
-                {
+                if (returnValue != null) {
                     throw new AnalyzerException(insn, "Incompatible return type");
                 }
                 break;
@@ -633,42 +576,31 @@ public class Frame<V extends Value>
             case Opcodes.INVOKEVIRTUAL:
             case Opcodes.INVOKESPECIAL:
             case Opcodes.INVOKESTATIC:
-            case Opcodes.INVOKEINTERFACE:
-            {
+            case Opcodes.INVOKEINTERFACE: {
                 values = new ArrayList<>();
                 String desc = ((MethodInsnNode) insn).desc;
-                for (int i = Type.getArgumentTypes(desc).length; i > 0; --i)
-                {
+                for (int i = Type.getArgumentTypes(desc).length; i > 0; --i) {
                     values.add(0, pop());
                 }
-                if (insn.opcode() != Opcodes.INVOKESTATIC)
-                {
+                if (insn.opcode() != Opcodes.INVOKESTATIC) {
                     values.add(0, pop());
                 }
-                if (Type.getReturnType(desc) == Type.VOID_TYPE)
-                {
+                if (Type.getReturnType(desc) == Type.VOID_TYPE) {
                     interpreter.naryOperation(insn, values);
-                }
-                else
-                {
+                } else {
                     push(interpreter.naryOperation(insn, values));
                 }
                 break;
             }
-            case Opcodes.INVOKEDYNAMIC:
-            {
+            case Opcodes.INVOKEDYNAMIC: {
                 values = new ArrayList<>();
                 String desc = ((InvokeDynamicInsnNode) insn).desc;
-                for (int i = Type.getArgumentTypes(desc).length; i > 0; --i)
-                {
+                for (int i = Type.getArgumentTypes(desc).length; i > 0; --i) {
                     values.add(0, pop());
                 }
-                if (Type.getReturnType(desc) == Type.VOID_TYPE)
-                {
+                if (Type.getReturnType(desc) == Type.VOID_TYPE) {
                     interpreter.naryOperation(insn, values);
-                }
-                else
-                {
+                } else {
                     push(interpreter.naryOperation(insn, values));
                 }
                 break;
@@ -694,8 +626,7 @@ public class Frame<V extends Value>
                 break;
             case Opcodes.MULTIANEWARRAY:
                 values = new ArrayList<>();
-                for (int i = ((MultiANewArrayInsnNode) insn).dims; i > 0; --i)
-                {
+                for (int i = ((MultiANewArrayInsnNode) insn).dims; i > 0; --i) {
                     values.add(0, pop());
                 }
                 push(interpreter.naryOperation(insn, values));
@@ -718,18 +649,14 @@ public class Frame<V extends Value>
      * merge operation, or <tt>false</tt> otherwise.
      * @throws AnalyzerException if the frames have incompatible sizes.
      */
-    public boolean merge(final Frame<? extends V> frame, final Interpreter<V> interpreter) throws AnalyzerException
-    {
-        if (top != frame.top)
-        {
+    public boolean merge(final Frame<? extends V> frame, final Interpreter<V> interpreter) throws AnalyzerException {
+        if (top != frame.top) {
             throw new AnalyzerException(null, "Incompatible stack heights");
         }
         boolean changes = false;
-        for (int i = 0; i < locals + top; ++i)
-        {
+        for (int i = 0; i < locals + top; ++i) {
             V v = interpreter.merge(values[i], frame.values[i]);
-            if (!v.equals(values[i]))
-            {
+            if (!v.equals(values[i])) {
                 values[i] = v;
                 changes = true;
             }
@@ -746,13 +673,10 @@ public class Frame<V extends Value>
      * @return <tt>true</tt> if this frame has been changed as a result of the
      * merge operation, or <tt>false</tt> otherwise.
      */
-    public boolean merge(final Frame<? extends V> frame, final boolean[] access)
-    {
+    public boolean merge(final Frame<? extends V> frame, final boolean[] access) {
         boolean changes = false;
-        for (int i = 0; i < locals; ++i)
-        {
-            if (!access[i] && !values[i].equals(frame.values[i]))
-            {
+        for (int i = 0; i < locals; ++i) {
+            if (!access[i] && !values[i].equals(frame.values[i])) {
                 values[i] = frame.values[i];
                 changes = true;
             }
@@ -766,16 +690,13 @@ public class Frame<V extends Value>
      * @return a string representation of this frame.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < getLocals(); ++i)
-        {
+        for (int i = 0; i < getLocals(); ++i) {
             sb.append(getLocal(i));
         }
         sb.append(' ');
-        for (int i = 0; i < getStackSize(); ++i)
-        {
+        for (int i = 0; i < getStackSize(); ++i) {
             sb.append(getStack(i).toString());
         }
         return sb.toString();

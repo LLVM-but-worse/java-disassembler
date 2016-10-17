@@ -42,35 +42,28 @@ import java.util.Set;
  *
  * @author Eric Bruneton
  */
-public class SourceInterpreter extends Interpreter<SourceValue> implements Opcodes
-{
+public class SourceInterpreter extends Interpreter<SourceValue> implements Opcodes {
 
-    public SourceInterpreter()
-    {
+    public SourceInterpreter() {
         super(ASM5);
     }
 
-    protected SourceInterpreter(final int api)
-    {
+    protected SourceInterpreter(final int api) {
         super(api);
     }
 
     @Override
-    public SourceValue newValue(final Type type)
-    {
-        if (type == Type.VOID_TYPE)
-        {
+    public SourceValue newValue(final Type type) {
+        if (type == Type.VOID_TYPE) {
             return null;
         }
         return new SourceValue(type == null ? 1 : type.getSize());
     }
 
     @Override
-    public SourceValue newOperation(final AbstractInsnNode insn)
-    {
+    public SourceValue newOperation(final AbstractInsnNode insn) {
         int size;
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case LCONST_0:
             case LCONST_1:
             case DCONST_0:
@@ -91,17 +84,14 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements Opcod
     }
 
     @Override
-    public SourceValue copyOperation(final AbstractInsnNode insn, final SourceValue value)
-    {
+    public SourceValue copyOperation(final AbstractInsnNode insn, final SourceValue value) {
         return new SourceValue(value.getSize(), insn);
     }
 
     @Override
-    public SourceValue unaryOperation(final AbstractInsnNode insn, final SourceValue value)
-    {
+    public SourceValue unaryOperation(final AbstractInsnNode insn, final SourceValue value) {
         int size;
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case LNEG:
             case DNEG:
             case I2L:
@@ -122,11 +112,9 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements Opcod
     }
 
     @Override
-    public SourceValue binaryOperation(final AbstractInsnNode insn, final SourceValue value1, final SourceValue value2)
-    {
+    public SourceValue binaryOperation(final AbstractInsnNode insn, final SourceValue value1, final SourceValue value2) {
         int size;
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case LALOAD:
             case DALOAD:
             case LADD:
@@ -154,22 +142,17 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements Opcod
     }
 
     @Override
-    public SourceValue ternaryOperation(final AbstractInsnNode insn, final SourceValue value1, final SourceValue value2, final SourceValue value3)
-    {
+    public SourceValue ternaryOperation(final AbstractInsnNode insn, final SourceValue value1, final SourceValue value2, final SourceValue value3) {
         return new SourceValue(1, insn);
     }
 
     @Override
-    public SourceValue naryOperation(final AbstractInsnNode insn, final List<? extends SourceValue> values)
-    {
+    public SourceValue naryOperation(final AbstractInsnNode insn, final List<? extends SourceValue> values) {
         int size;
         int opcode = insn.opcode();
-        if (opcode == MULTIANEWARRAY)
-        {
+        if (opcode == MULTIANEWARRAY) {
             size = 1;
-        }
-        else
-        {
+        } else {
             String desc =
                     (opcode == INVOKEDYNAMIC) ? ((InvokeDynamicInsnNode) insn).desc : ((MethodInsnNode) insn).desc;
             size = Type.getReturnType(desc).getSize();
@@ -178,27 +161,20 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements Opcod
     }
 
     @Override
-    public void returnOperation(final AbstractInsnNode insn, final SourceValue value, final SourceValue expected)
-    {
+    public void returnOperation(final AbstractInsnNode insn, final SourceValue value, final SourceValue expected) {
     }
 
     @Override
-    public SourceValue merge(final SourceValue d, final SourceValue w)
-    {
-        if (d.insns instanceof SmallSet && w.insns instanceof SmallSet)
-        {
+    public SourceValue merge(final SourceValue d, final SourceValue w) {
+        if (d.insns instanceof SmallSet && w.insns instanceof SmallSet) {
             Set<AbstractInsnNode> s = ((SmallSet<AbstractInsnNode>) d.insns).union((SmallSet<AbstractInsnNode>) w.insns);
-            if (s == d.insns && d.size == w.size)
-            {
+            if (s == d.insns && d.size == w.size) {
                 return d;
-            }
-            else
-            {
+            } else {
                 return new SourceValue(Math.min(d.size, w.size), s);
             }
         }
-        if (d.size != w.size || !d.insns.containsAll(w.insns))
-        {
+        if (d.size != w.size || !d.insns.containsAll(w.insns)) {
             HashSet<AbstractInsnNode> s = new HashSet<>();
             s.addAll(d.insns);
             s.addAll(w.insns);

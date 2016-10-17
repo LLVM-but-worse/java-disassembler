@@ -34,8 +34,7 @@ package org.objectweb.asm;
  *
  * @author Eric Bruneton
  */
-class Edge
-{
+class Edge {
 
     /**
      * Denotes a normal control flow graph edge.

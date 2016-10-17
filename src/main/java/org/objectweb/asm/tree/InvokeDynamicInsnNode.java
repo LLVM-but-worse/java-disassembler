@@ -40,8 +40,7 @@ import java.util.Map;
  *
  * @author Remi Forax
  */
-public class InvokeDynamicInsnNode extends AbstractInsnNode
-{
+public class InvokeDynamicInsnNode extends AbstractInsnNode {
 
     /**
      * Invokedynamic name.
@@ -71,8 +70,7 @@ public class InvokeDynamicInsnNode extends AbstractInsnNode
      * @param bsm     the bootstrap method.
      * @param bsmArgs the boostrap constant arguments.
      */
-    public InvokeDynamicInsnNode(final String name, final String desc, final Handle bsm, final Object... bsmArgs)
-    {
+    public InvokeDynamicInsnNode(final String name, final String desc, final Handle bsm, final Object... bsmArgs) {
         super(Opcodes.INVOKEDYNAMIC);
         this.name = name;
         this.desc = desc;
@@ -81,21 +79,18 @@ public class InvokeDynamicInsnNode extends AbstractInsnNode
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return INVOKE_DYNAMIC_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitInvokeDynamicInsn(name, desc, bsm, bsmArgs);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new InvokeDynamicInsnNode(name, desc, bsm, bsmArgs).cloneAnnotations(this);
     }
 }

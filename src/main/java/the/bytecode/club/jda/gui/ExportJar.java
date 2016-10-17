@@ -12,10 +12,8 @@ import java.awt.*;
  * @author Konloch
  */
 
-public class ExportJar extends JFrame
-{
-    public ExportJar(final String jarPath)
-    {
+public class ExportJar extends JFrame {
+    public ExportJar(final String jarPath) {
         setSize(new Dimension(250, 277));
         setResizable(false);
         setTitle("Save As Jar..");
@@ -39,11 +37,9 @@ public class ExportJar extends JFrame
 
         btnNewButton.addActionListener(arg0 -> {
             JDA.viewer.setIcon(true);
-            Thread t = new Thread()
-            {
+            Thread t = new Thread() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     JarUtils.saveAsJar(JDA.getLoadedClasses(), jarPath, mani.getText());
                     JDA.viewer.setIcon(false);
                 }

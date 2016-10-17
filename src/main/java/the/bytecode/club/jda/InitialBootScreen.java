@@ -12,14 +12,12 @@ import java.io.IOException;
  * @author Bibl (don't ban me pls)
  * @created 19 Jul 2015 04:12:21
  */
-public class InitialBootScreen extends JFrame
-{
+public class InitialBootScreen extends JFrame {
     private static final long serialVersionUID = -1098467609722393444L;
 
     private JProgressBar progressBar = new JProgressBar();
 
-    public InitialBootScreen() throws IOException
-    {
+    public InitialBootScreen() throws IOException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setIconImages(Resources.iconList);
 
@@ -35,12 +33,12 @@ public class InitialBootScreen extends JFrame
 
         setTitle("JDA - Loading");
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0 };
-        gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+        gridBagLayout.columnWidths = new int[]{0, 0};
+        gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0};
+        gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gridBagLayout.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         getContentPane().setLayout(gridBagLayout);
 
         JScrollPane scrollPane = new JScrollPane();
@@ -67,8 +65,7 @@ public class InitialBootScreen extends JFrame
         this.setLocationRelativeTo(null);
     }
 
-    public JProgressBar getProgressBar()
-    {
+    public JProgressBar getProgressBar() {
         return progressBar;
     }
 }

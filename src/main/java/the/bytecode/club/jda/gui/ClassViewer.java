@@ -23,40 +23,32 @@ import java.util.Map;
  * @author WaterWolf
  */
 
-public class ClassViewer extends Viewer
-{
+public class ClassViewer extends Viewer {
     private static final long serialVersionUID = -8650495368920680024L;
     private List<Thread> decompileThreads = new ArrayList<>();
 
-    public void setPanes()
-    {
-        for (int i = 0; i < JDA.viewer.allPanes.size(); i++)
-        {
+    public void setPanes() {
+        for (int i = 0; i < JDA.viewer.allPanes.size(); i++) {
             ButtonGroup group = JDA.viewer.allPanes.get(i);
-            for (Map.Entry<JRadioButtonMenuItem, Decompiler> entry : JDA.viewer.allDecompilers.get(group).entrySet())
-            {
-                if (group.isSelected(entry.getKey().getModel()))
-                {
+            for (Map.Entry<JRadioButtonMenuItem, Decompiler> entry : JDA.viewer.allDecompilers.get(group).entrySet()) {
+                if (group.isSelected(entry.getKey().getModel())) {
                     decompilers.set(i, entry.getValue());
                 }
             }
         }
     }
 
-    public boolean isPaneEditable(int pane)
-    {
+    public boolean isPaneEditable(int pane) {
         setPanes();
         ButtonGroup buttonGroup = JDA.viewer.allPanes.get(pane);
         Decompiler selected = decompilers.get(pane);
-        if (buttonGroup != null && JDA.viewer.editButtons.get(buttonGroup) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected).isSelected())
-        {
+        if (buttonGroup != null && JDA.viewer.editButtons.get(buttonGroup) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected).isSelected()) {
             return true;
         }
         return false;
     }
 
-    public void updatePane(int pane, RSyntaxTextArea text, Decompiler decompiler)
-    {
+    public void updatePane(int pane, RSyntaxTextArea text, Decompiler decompiler) {
         javas.set(pane, text);
         SearchPanel search = new SearchPanel(text);
         searches.set(pane, search);
@@ -70,36 +62,24 @@ public class ClassViewer extends Viewer
      * @param proportion
      * @return
      */
-    public static JSplitPane setDividerLocation(final JSplitPane splitter, final double proportion)
-    {
-        if (splitter.isShowing())
-        {
-            if (splitter.getWidth() > 0 && splitter.getHeight() > 0)
-            {
+    public static JSplitPane setDividerLocation(final JSplitPane splitter, final double proportion) {
+        if (splitter.isShowing()) {
+            if (splitter.getWidth() > 0 && splitter.getHeight() > 0) {
                 splitter.setDividerLocation(proportion);
-            }
-            else
-            {
-                splitter.addComponentListener(new ComponentAdapter()
-                {
+            } else {
+                splitter.addComponentListener(new ComponentAdapter() {
                     @Override
-                    public void componentResized(ComponentEvent ce)
-                    {
+                    public void componentResized(ComponentEvent ce) {
                         splitter.removeComponentListener(this);
                         setDividerLocation(splitter, proportion);
                     }
                 });
             }
-        }
-        else
-        {
-            splitter.addHierarchyListener(new HierarchyListener()
-            {
+        } else {
+            splitter.addHierarchyListener(new HierarchyListener() {
                 @Override
-                public void hierarchyChanged(HierarchyEvent e)
-                {
-                    if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && splitter.isShowing())
-                    {
+                public void hierarchyChanged(HierarchyEvent e) {
+                    if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && splitter.isShowing()) {
                         splitter.removeHierarchyListener(this);
                         setDividerLocation(splitter, proportion);
                     }
@@ -117,8 +97,7 @@ public class ClassViewer extends Viewer
     public List<RSyntaxTextArea> javas = Arrays.asList(null, null, null);
     public List<SearchPanel> searches = Arrays.asList(null, null, null);
 
-    public ClassViewer(final String name, final String container, final ClassNode cn)
-    {
+    public ClassViewer(final String name, final String container, final ClassNode cn) {
         this.name = name;
         this.container = container;
         this.cn = cn;
@@ -131,43 +110,34 @@ public class ClassViewer extends Viewer
 
         JDA.viewer.setIcon(true);
         startPaneUpdater(null);
-        this.addComponentListener(new ComponentAdapter()
-        {
-            public void componentResized(ComponentEvent e)
-            {
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
                 resetDivider();
             }
         });
     }
 
-    public void resetDivider()
-    {
+    public void resetDivider() {
         double paneCount = 0.0;
         for (int i = 0; i < decompilers.size(); i++)
             if (decompilers.get(i) != null)
                 paneCount++;
-        if (paneCount == 3)
-        {
+        if (paneCount == 3) {
             // left split pane gets two thirds
             sp2.setResizeWeight(2 / 3.0);
             sp2 = setDividerLocation(sp2, 2 / 3.0);
             // left and right of left split pane share equally
             sp.setResizeWeight(0.5);
             sp = setDividerLocation(sp, 0.5);
-        }
-        else if (paneCount == 2)
-        {
-            if (decompilers.get(2) == null)
-            {
+        } else if (paneCount == 2) {
+            if (decompilers.get(2) == null) {
                 // left split pane gets everything
                 sp2.setResizeWeight(1.0);
                 sp2 = setDividerLocation(sp2, 1.0);
                 // left and right panes share equally
                 sp.setResizeWeight(0.5);
                 sp = setDividerLocation(sp, 0.5);
-            }
-            else
-            {
+            } else {
                 // left and right split panes share equally
                 sp2.setResizeWeight(0.5);
                 sp2 = setDividerLocation(sp2, 0.5);
@@ -175,17 +145,12 @@ public class ClassViewer extends Viewer
                 sp.setResizeWeight(decompilers.get(1) == null ? 1.0 : 0.0);
                 sp = setDividerLocation(sp, decompilers.get(1) == null ? 1.0 : 0.0);
             }
-        }
-        else
-        {
-            if (decompilers.get(2) != null)
-            {
+        } else {
+            if (decompilers.get(2) != null) {
                 // right split pane gets everything
                 sp2.setResizeWeight(0.0);
                 sp2 = setDividerLocation(sp2, 0.0);
-            }
-            else
-            {
+            } else {
                 // left split pane gets everything
                 sp2.setResizeWeight(1.0);
                 sp2 = setDividerLocation(sp2, 1.0);
@@ -196,33 +161,26 @@ public class ClassViewer extends Viewer
         }
     }
 
-    public void startPaneUpdater(final JButton button)
-    {
+    public void startPaneUpdater(final JButton button) {
         this.cn = JDA.getClassNode(container, cn.name); //update the classnode
         setPanes();
 
-        for (JPanel jpanel : panels)
-        {
+        for (JPanel jpanel : panels) {
             jpanel.removeAll();
         }
-        for (int i = 0; i < javas.size(); i++)
-        {
+        for (int i = 0; i < javas.size(); i++) {
             javas.set(i, null);
         }
         resetDivider();
-        if (this.cn == null)
-        {
-            for (JPanel jpanel : panels)
-            {
+        if (this.cn == null) {
+            for (JPanel jpanel : panels) {
                 jpanel.add(new JLabel("This file has been removed from the reload."));
             }
             return;
         }
 
-        for (int i = 0; i < decompilers.size(); i++)
-        {
-            if (decompilers.get(i) != null)
-            {
+        for (int i = 0; i < decompilers.size(); i++) {
+            if (decompilers.get(i) != null) {
                 PaneUpdaterThread t = new PaneUpdaterThread(this, decompilers.get(i), i, panels.get(i), button);
                 decompileThreads.add(t);
                 t.start();
@@ -230,23 +188,18 @@ public class ClassViewer extends Viewer
         }
     }
 
-    public Object[] getJava()
-    {
-        for (int i = 0; i < javas.size(); i++)
-        {
+    public Object[] getJava() {
+        for (int i = 0; i < javas.size(); i++) {
             RSyntaxTextArea text = javas.get(i);
-            if (text != null)
-            {
-                return new Object[] { cn, text.getText() };
+            if (text != null) {
+                return new Object[]{cn, text.getText()};
             }
         }
         return null;
     }
 
-    public void reset()
-    {
-        for (Thread t : decompileThreads)
-        {
+    public void reset() {
+        for (Thread t : decompileThreads) {
             t.stop();
         }
     }

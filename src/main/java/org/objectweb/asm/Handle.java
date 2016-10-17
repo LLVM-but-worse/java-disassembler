@@ -36,8 +36,7 @@ package org.objectweb.asm;
  * @author Remi Forax
  * @author Eric Bruneton
  */
-public final class Handle
-{
+public final class Handle {
 
     /**
      * The kind of field or method designated by this Handle. Should be
@@ -82,8 +81,7 @@ public final class Handle
      * @param desc  the descriptor of the field or method designated by this
      *              handle.
      */
-    public Handle(int tag, String owner, String name, String desc)
-    {
+    public Handle(int tag, String owner, String name, String desc) {
         this.tag = tag;
         this.owner = owner;
         this.name = name;
@@ -100,8 +98,7 @@ public final class Handle
      * {@link Opcodes#H_NEWINVOKESPECIAL} or
      * {@link Opcodes#H_INVOKEINTERFACE}.
      */
-    public int getTag()
-    {
+    public int getTag() {
         return tag;
     }
 
@@ -112,8 +109,7 @@ public final class Handle
      * @return the internal name of the class that owns the field or method
      * designated by this handle.
      */
-    public String getOwner()
-    {
+    public String getOwner() {
         return owner;
     }
 
@@ -122,8 +118,7 @@ public final class Handle
      *
      * @return the name of the field or method designated by this handle.
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -132,20 +127,16 @@ public final class Handle
      *
      * @return the descriptor of the field or method designated by this handle.
      */
-    public String getDesc()
-    {
+    public String getDesc() {
         return desc;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this)
-        {
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Handle))
-        {
+        if (!(obj instanceof Handle)) {
             return false;
         }
         Handle h = (Handle) obj;
@@ -153,8 +144,7 @@ public final class Handle
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return tag + owner.hashCode() * name.hashCode() * desc.hashCode();
     }
 
@@ -169,8 +159,7 @@ public final class Handle
      * . As this format is unambiguous, it can be parsed if necessary.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return owner + '.' + name + desc + " (" + tag + ')';
     }
 }

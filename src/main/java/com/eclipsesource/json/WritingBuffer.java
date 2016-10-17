@@ -31,42 +31,34 @@ import java.io.Writer;
  * contract of Writer. In particular, it does not flush or close the wrapped writer nor does it
  * ensure that the wrapped writer is open.
  */
-class WritingBuffer extends Writer
-{
+class WritingBuffer extends Writer {
 
     private final Writer writer;
     private final char[] buffer;
     private int fill = 0;
 
-    WritingBuffer(Writer writer)
-    {
+    WritingBuffer(Writer writer) {
         this(writer, 16);
     }
 
-    WritingBuffer(Writer writer, int bufferSize)
-    {
+    WritingBuffer(Writer writer, int bufferSize) {
         this.writer = writer;
         buffer = new char[bufferSize];
     }
 
     @Override
-    public void write(int c) throws IOException
-    {
-        if (fill > buffer.length - 1)
-        {
+    public void write(int c) throws IOException {
+        if (fill > buffer.length - 1) {
             flush();
         }
         buffer[fill++] = (char) c;
     }
 
     @Override
-    public void write(char[] cbuf, int off, int len) throws IOException
-    {
-        if (fill > buffer.length - len)
-        {
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        if (fill > buffer.length - len) {
             flush();
-            if (len > buffer.length)
-            {
+            if (len > buffer.length) {
                 writer.write(cbuf, off, len);
                 return;
             }
@@ -76,13 +68,10 @@ class WritingBuffer extends Writer
     }
 
     @Override
-    public void write(String str, int off, int len) throws IOException
-    {
-        if (fill > buffer.length - len)
-        {
+    public void write(String str, int off, int len) throws IOException {
+        if (fill > buffer.length - len) {
             flush();
-            if (len > buffer.length)
-            {
+            if (len > buffer.length) {
                 writer.write(str, off, len);
                 return;
             }
@@ -95,8 +84,7 @@ class WritingBuffer extends Writer
      * Flushes the internal buffer but does not flush the wrapped writer.
      */
     @Override
-    public void flush() throws IOException
-    {
+    public void flush() throws IOException {
         writer.write(buffer, 0, fill);
         fill = 0;
     }
@@ -105,8 +93,7 @@ class WritingBuffer extends Writer
      * Does not close or flush the wrapped writer.
      */
     @Override
-    public void close() throws IOException
-    {
+    public void close() throws IOException {
     }
 
 }

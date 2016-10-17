@@ -43,8 +43,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class TableSwitchInsnNode extends AbstractInsnNode
-{
+public class TableSwitchInsnNode extends AbstractInsnNode {
 
     /**
      * The minimum key value.
@@ -76,31 +75,26 @@ public class TableSwitchInsnNode extends AbstractInsnNode
      * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is the
      *               beginning of the handler block for the <tt>min + i</tt> key.
      */
-    public TableSwitchInsnNode(final int min, final int max, final LabelNode dflt, final LabelNode... labels)
-    {
+    public TableSwitchInsnNode(final int min, final int max, final LabelNode dflt, final LabelNode... labels) {
         super(Opcodes.TABLESWITCH);
         this.min = min;
         this.max = max;
         this.dflt = dflt;
         this.labels = new ArrayList<>();
-        if (labels != null)
-        {
+        if (labels != null) {
             this.labels.addAll(Arrays.asList(labels));
         }
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return TABLESWITCH_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         Label[] labels = new Label[this.labels.size()];
-        for (int i = 0; i < labels.length; ++i)
-        {
+        for (int i = 0; i < labels.length; ++i) {
             labels[i] = this.labels.get(i).getLabel();
         }
         mv.visitTableSwitchInsn(min, max, dflt.getLabel(), labels);
@@ -108,8 +102,7 @@ public class TableSwitchInsnNode extends AbstractInsnNode
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new TableSwitchInsnNode(min, max, clone(dflt, labels), clone(this.labels, labels)).cloneAnnotations(this);
     }
 }

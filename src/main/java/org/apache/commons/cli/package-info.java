@@ -23,6 +23,9 @@
  * <p>
  * Commons CLI 1.3
  * @version $Id: package-info.java 1443102 2013-02-06 18:12:16Z tn $
+ * <p>
+ * Commons CLI 1.3
+ * @version $Id: package-info.java 1443102 2013-02-06 18:12:16Z tn $
  */
 
 /**

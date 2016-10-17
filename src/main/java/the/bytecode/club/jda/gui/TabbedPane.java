@@ -12,16 +12,14 @@ import java.awt.event.*;
  * @author Konloch
  * @author WaterWolf
  */
-public class TabbedPane extends JPanel
-{
+public class TabbedPane extends JPanel {
 
     private static final long serialVersionUID = -4774885688297538774L;
     private final JTabbedPane pane;
     final JButton button = new TabButton();
     private static long zero = System.currentTimeMillis();
 
-    public TabbedPane(String name, final JTabbedPane pane)
-    {
+    public TabbedPane(String name, final JTabbedPane pane) {
         // unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
@@ -32,13 +30,11 @@ public class TabbedPane extends JPanel
         setOpaque(false);
 
         // make JLabel read titles from JTabbedPane
-        final JLabel label = new JLabel()
-        {
+        final JLabel label = new JLabel() {
             private static final long serialVersionUID = -5511025206527893360L;
 
             @Override
-            public String getText()
-            {
+            public String getText() {
                 final int i = pane.indexOfTabComponent(TabbedPane.this);
                 if (i != -1)
                     return pane.getTitleAt(i);
@@ -46,8 +42,7 @@ public class TabbedPane extends JPanel
             }
 
             @Override
-            public Dimension getPreferredSize()
-            {
+            public Dimension getPreferredSize() {
                 Dimension realDimension = super.getPreferredSize();
                 if (realDimension.getWidth() >= 400)
                     return new Dimension(400, 20);
@@ -76,11 +71,9 @@ public class TabbedPane extends JPanel
             String name1 = e.getActionCommand().split(": ")[1];
             System.out.println(name1);
             boolean removedAll = false;
-            while (!removedAll)
-            {
+            while (!removedAll) {
                 int thisID = pane.indexOfTab(name1);
-                if (pane.getTabCount() <= 1)
-                {
+                if (pane.getTabCount() <= 1) {
                     removedAll = true;
                     return;
                 }
@@ -95,15 +88,11 @@ public class TabbedPane extends JPanel
         pop_up.add(closetab);
         button.setComponentPopupMenu(pop_up);
 
-        button.addMouseListener(new MouseListener()
-        {
+        button.addMouseListener(new MouseListener() {
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                if (e.getModifiers() == 8)
-                {
-                    if (System.currentTimeMillis() - zero >= 100)
-                    {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getModifiers() == 8) {
+                    if (System.currentTimeMillis() - zero >= 100) {
                         zero = System.currentTimeMillis();
                         final int i = pane.indexOfTabComponent(TabbedPane.this);
                         if (i != -1)
@@ -113,34 +102,28 @@ public class TabbedPane extends JPanel
             }
 
             @Override
-            public void mouseEntered(MouseEvent arg0)
-            {
+            public void mouseEntered(MouseEvent arg0) {
             }
 
             @Override
-            public void mouseExited(MouseEvent arg0)
-            {
+            public void mouseExited(MouseEvent arg0) {
             }
 
             @Override
-            public void mousePressed(MouseEvent arg0)
-            {
+            public void mousePressed(MouseEvent arg0) {
             }
 
             @Override
-            public void mouseReleased(MouseEvent e)
-            {
+            public void mouseReleased(MouseEvent e) {
             }
 
         });
     }
 
-    private class TabButton extends JButton implements ActionListener
-    {
+    private class TabButton extends JButton implements ActionListener {
         private static final long serialVersionUID = -4492967978286454159L;
 
-        public TabButton()
-        {
+        public TabButton() {
             final int size = 17;
             setPreferredSize(new Dimension(size, size));
             setToolTipText("Close this tab");
@@ -160,36 +143,30 @@ public class TabbedPane extends JPanel
             addActionListener(this);
         }
 
-        public void actionPerformed(final ActionEvent e)
-        {
+        public void actionPerformed(final ActionEvent e) {
             final int i = pane.indexOfTabComponent(TabbedPane.this);
-            if (i != -1)
-            {
+            if (i != -1) {
                 pane.remove(i);
             }
         }
 
         // we don't want to update UI for this button
         @Override
-        public void updateUI()
-        {
+        public void updateUI() {
         }
 
         // paint the cross
         @Override
-        protected void paintComponent(final Graphics g)
-        {
+        protected void paintComponent(final Graphics g) {
             super.paintComponent(g);
             final Graphics2D g2 = (Graphics2D) g.create();
             // shift the image for pressed buttons
-            if (getModel().isPressed())
-            {
+            if (getModel().isPressed()) {
                 g2.translate(1, 1);
             }
             g2.setStroke(new BasicStroke(2));
             g2.setColor(Color.BLACK);
-            if (getModel().isRollover())
-            {
+            if (getModel().isRollover()) {
                 g2.setColor(Color.MAGENTA);
             }
             final int delta = 6;
@@ -199,25 +176,20 @@ public class TabbedPane extends JPanel
         }
     }
 
-    private final static MouseListener buttonMouseListener = new MouseAdapter()
-    {
+    private final static MouseListener buttonMouseListener = new MouseAdapter() {
         @Override
-        public void mouseEntered(final MouseEvent e)
-        {
+        public void mouseEntered(final MouseEvent e) {
             final Component component = e.getComponent();
-            if (component instanceof AbstractButton)
-            {
+            if (component instanceof AbstractButton) {
                 final AbstractButton button = (AbstractButton) component;
                 button.setBorderPainted(true);
             }
         }
 
         @Override
-        public void mouseExited(final MouseEvent e)
-        {
+        public void mouseExited(final MouseEvent e) {
             final Component component = e.getComponent();
-            if (component instanceof AbstractButton)
-            {
+            if (component instanceof AbstractButton) {
                 final AbstractButton button = (AbstractButton) component;
                 button.setBorderPainted(false);
             }

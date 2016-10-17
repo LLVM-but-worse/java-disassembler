@@ -5,24 +5,19 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 
-public class NumberNode extends AbstractNode
-{
+public class NumberNode extends AbstractNode {
 
-    public NumberNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing)
-    {
+    public NumberNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing) {
         super(tree, insn, collapsed, producing);
     }
 
-    public int number()
-    {
+    public int number() {
         AbstractInsnNode insn = insn();
         int op = insn.opcode();
-        switch (op)
-        {
+        switch (op) {
             case NEWARRAY:
             case BIPUSH:
-            case SIPUSH:
-            {
+            case SIPUSH: {
                 return ((IntInsnNode) insn).operand;
             }
             case ICONST_M1:
@@ -31,72 +26,56 @@ public class NumberNode extends AbstractNode
             case ICONST_2:
             case ICONST_3:
             case ICONST_4:
-            case ICONST_5:
-            {
+            case ICONST_5: {
                 return op - ICONST_0;
             }
             case LCONST_0:
-            case LCONST_1:
-            {
+            case LCONST_1: {
                 return op - LCONST_0;
             }
             case FCONST_0:
             case FCONST_1:
-            case FCONST_2:
-            {
+            case FCONST_2: {
                 return op - FCONST_0;
             }
             case DCONST_0:
-            case DCONST_1:
-            {
+            case DCONST_1: {
                 return op - DCONST_0;
             }
-            case LDC:
-            {
+            case LDC: {
                 Object cst = ((LdcInsnNode) insn).cst;
-                if (cst instanceof Number)
-                {
+                if (cst instanceof Number) {
                     return ((Number) cst).intValue();
                 }
             }
-            default:
-            {
+            default: {
                 return -1;
             }
         }
     }
 
-    public void setNumber(int number)
-    {
+    public void setNumber(int number) {
         AbstractInsnNode ain = insn();
-        if (ain instanceof IntInsnNode)
-        {
+        if (ain instanceof IntInsnNode) {
             ((IntInsnNode) insn()).operand = number;
             ((IntInsnNode) ain).operand = number;
-        }
-        else if (ain instanceof LdcInsnNode)
-        {
+        } else if (ain instanceof LdcInsnNode) {
             ((LdcInsnNode) insn()).cst = number;
             ((LdcInsnNode) ain).cst = number;
         }
     }
 
-    public void setNumber(Number num)
-    {
+    public void setNumber(Number num) {
         AbstractInsnNode ain = insn();
-        if (!(ain instanceof LdcInsnNode))
-        {
+        if (!(ain instanceof LdcInsnNode)) {
             setInstruction(new LdcInsnNode(num));
-        }
-        else
-        {
+        } else {
             ((LdcInsnNode) ain).cst = num;
         }
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return insn().toString();
     }
 }

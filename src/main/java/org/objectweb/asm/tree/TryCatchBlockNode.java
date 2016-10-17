@@ -38,8 +38,7 @@ import java.util.List;
  *
  * @author Eric Bruneton
  */
-public class TryCatchBlockNode
-{
+public class TryCatchBlockNode {
 
     /**
      * Beginning of the exception handler's scope (inclusive).
@@ -92,8 +91,7 @@ public class TryCatchBlockNode
      *                handler, or <tt>null</tt> to catch any exceptions (for
      *                "finally" blocks).
      */
-    public TryCatchBlockNode(final LabelNode start, final LabelNode end, final LabelNode handler, final String type)
-    {
+    public TryCatchBlockNode(final LabelNode start, final LabelNode end, final LabelNode handler, final String type) {
         this.start = start;
         this.end = end;
         this.handler = handler;
@@ -108,20 +106,15 @@ public class TryCatchBlockNode
      * @param index the new index of this try catch block in the method's list of
      *              try catch block nodes.
      */
-    public void updateIndex(final int index)
-    {
+    public void updateIndex(final int index) {
         int newTypeRef = 0x42000000 | (index << 8);
-        if (visibleTypeAnnotations != null)
-        {
-            for (TypeAnnotationNode tan : visibleTypeAnnotations)
-            {
+        if (visibleTypeAnnotations != null) {
+            for (TypeAnnotationNode tan : visibleTypeAnnotations) {
                 tan.typeRef = newTypeRef;
             }
         }
-        if (invisibleTypeAnnotations != null)
-        {
-            for (TypeAnnotationNode tan : invisibleTypeAnnotations)
-            {
+        if (invisibleTypeAnnotations != null) {
+            for (TypeAnnotationNode tan : invisibleTypeAnnotations) {
                 tan.typeRef = newTypeRef;
             }
         }
@@ -132,18 +125,15 @@ public class TryCatchBlockNode
      *
      * @param mv a method visitor.
      */
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitTryCatchBlock(start.getLabel(), end.getLabel(), handler == null ? null : handler.getLabel(), type);
         int n = visibleTypeAnnotations == null ? 0 : visibleTypeAnnotations.size();
-        for (int i = 0; i < n; ++i)
-        {
+        for (int i = 0; i < n; ++i) {
             TypeAnnotationNode an = visibleTypeAnnotations.get(i);
             an.accept(mv.visitTryCatchAnnotation(an.typeRef, an.typePath, an.desc, true));
         }
         n = invisibleTypeAnnotations == null ? 0 : invisibleTypeAnnotations.size();
-        for (int i = 0; i < n; ++i)
-        {
+        for (int i = 0; i < n; ++i) {
             TypeAnnotationNode an = invisibleTypeAnnotations.get(i);
             an.accept(mv.visitTryCatchAnnotation(an.typeRef, an.typePath, an.desc, false));
         }

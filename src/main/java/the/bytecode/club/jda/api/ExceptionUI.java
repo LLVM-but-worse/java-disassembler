@@ -14,24 +14,21 @@ import java.io.StringWriter;
  * @author Konloch
  */
 
-public class ExceptionUI extends JFrame
-{
+public class ExceptionUI extends JFrame {
 
     private static final long serialVersionUID = -5230501978224926296L;
 
     /**
      * @param e The exception to be shown
      */
-    public ExceptionUI(Throwable e)
-    {
+    public ExceptionUI(Throwable e) {
         setup(e, "https://github.com/ecx86/jda/issues");
     }
 
     /**
      * @param e The exception to be shown
      */
-    public ExceptionUI(String e)
-    {
+    public ExceptionUI(String e) {
         setup(e, "https://github.com/ecx86/jda/issues");
     }
 
@@ -39,8 +36,7 @@ public class ExceptionUI extends JFrame
      * @param e      The exception to be shown
      * @param author the author of the plugin throwing this exception.
      */
-    public ExceptionUI(Throwable e, String author)
-    {
+    public ExceptionUI(Throwable e, String author) {
         setup(e, author);
     }
 
@@ -48,13 +44,11 @@ public class ExceptionUI extends JFrame
      * @param e      The exception to be shown
      * @param author the author of the plugin throwing this exception.
      */
-    public ExceptionUI(String e, String author)
-    {
+    public ExceptionUI(String e, String author) {
         setup(e, author);
     }
 
-    private void setup(Throwable e, String author)
-    {
+    private void setup(Throwable e, String author) {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(600, 400));
         setTitle("JDA v" + JDA.version + " - Stack Trace - Send this to " + author);
@@ -75,8 +69,7 @@ public class ExceptionUI extends JFrame
         this.setVisible(true);
     }
 
-    private void setup(String e, String author)
-    {
+    private void setup(String e, String author) {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(600, 400));
         setTitle("JDA v" + JDA.version + " - Stack Trace - Send this to " + author);

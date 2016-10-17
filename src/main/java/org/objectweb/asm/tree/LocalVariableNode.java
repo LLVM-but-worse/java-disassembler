@@ -36,8 +36,7 @@ import org.objectweb.asm.MethodVisitor;
  *
  * @author Eric Bruneton
  */
-public class LocalVariableNode
-{
+public class LocalVariableNode {
 
     /**
      * The name of a local variable.
@@ -83,8 +82,7 @@ public class LocalVariableNode
      *                  variable (exclusive).
      * @param index     the local variable's index.
      */
-    public LocalVariableNode(final String name, final String desc, final String signature, final LabelNode start, final LabelNode end, final int index)
-    {
+    public LocalVariableNode(final String name, final String desc, final String signature, final LabelNode start, final LabelNode end, final int index) {
         this.name = name;
         this.desc = desc;
         this.signature = signature;
@@ -98,8 +96,7 @@ public class LocalVariableNode
      *
      * @param mv a method visitor.
      */
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitLocalVariable(name, desc, signature, start.getLabel(), end.getLabel(), index);
     }
 }

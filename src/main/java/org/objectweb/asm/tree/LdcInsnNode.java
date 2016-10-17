@@ -39,8 +39,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class LdcInsnNode extends AbstractInsnNode
-{
+public class LdcInsnNode extends AbstractInsnNode {
 
     /**
      * The constant to be loaded on the stack. This parameter must be a non null
@@ -56,34 +55,29 @@ public class LdcInsnNode extends AbstractInsnNode
      *            a non null {@link Integer}, a {@link Float}, a {@link Long}, a
      *            {@link Double} or a {@link String}.
      */
-    public LdcInsnNode(final Object cst)
-    {
+    public LdcInsnNode(final Object cst) {
         super(Opcodes.LDC);
         this.cst = cst;
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return LDC_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitLdcInsn(cst);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new LdcInsnNode(cst).cloneAnnotations(this);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "LDC: " + cst;
     }
 }
