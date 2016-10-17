@@ -38,8 +38,7 @@ import org.objectweb.asm.Type;
  *
  * @author Eric Bruneton
  */
-public class BasicValue implements Value
-{
+public class BasicValue implements Value {
 
     public static final BasicValue UNINITIALIZED_VALUE = new BasicValue(null);
 
@@ -57,73 +56,51 @@ public class BasicValue implements Value
 
     private final Type type;
 
-    public BasicValue(final Type type)
-    {
+    public BasicValue(final Type type) {
         this.type = type;
     }
 
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
-    public int getSize()
-    {
+    public int getSize() {
         return type == Type.LONG_TYPE || type == Type.DOUBLE_TYPE ? 2 : 1;
     }
 
-    public boolean isReference()
-    {
+    public boolean isReference() {
         return type != null && (type.getSort() == Type.OBJECT || type.getSort() == Type.ARRAY);
     }
 
     @Override
-    public boolean equals(final Object value)
-    {
-        if (value == this)
-        {
+    public boolean equals(final Object value) {
+        if (value == this) {
             return true;
-        }
-        else if (value instanceof BasicValue)
-        {
-            if (type == null)
-            {
+        } else if (value instanceof BasicValue) {
+            if (type == null) {
                 return ((BasicValue) value).type == null;
-            }
-            else
-            {
+            } else {
                 return type.equals(((BasicValue) value).type);
             }
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return type == null ? 0 : type.hashCode();
     }
 
     @Override
-    public String toString()
-    {
-        if (this == UNINITIALIZED_VALUE)
-        {
+    public String toString() {
+        if (this == UNINITIALIZED_VALUE) {
             return ".";
-        }
-        else if (this == RETURNADDRESS_VALUE)
-        {
+        } else if (this == RETURNADDRESS_VALUE) {
             return "A";
-        }
-        else if (this == REFERENCE_VALUE)
-        {
+        } else if (this == REFERENCE_VALUE) {
             return "R";
-        }
-        else
-        {
+        } else {
             return type.getDescriptor();
         }
     }

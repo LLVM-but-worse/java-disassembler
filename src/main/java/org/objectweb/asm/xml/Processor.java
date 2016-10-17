@@ -87,8 +87,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Eugene Kuleshov
  */
-public class Processor
-{
+public class Processor {
 
     public static final int BYTECODE = 1;
 
@@ -110,8 +109,7 @@ public class Processor
 
     private int n = 0;
 
-    public Processor(final int inRepresenation, final int outRepresentation, final InputStream input, final OutputStream output, final Source xslt)
-    {
+    public Processor(final int inRepresenation, final int outRepresentation, final InputStream input, final OutputStream output, final Source xslt) {
         this.inRepresentation = inRepresenation;
         this.outRepresentation = outRepresentation;
         this.input = input;
@@ -119,8 +117,7 @@ public class Processor
         this.xslt = xslt;
     }
 
-    public int process() throws TransformerException, IOException, SAXException
-    {
+    public int process() throws TransformerException, IOException, SAXException {
         ZipInputStream zis = new ZipInputStream(input);
         final ZipOutputStream zos = new ZipOutputStream(output);
         final OutputStreamWriter osw = new OutputStreamWriter(zos);
@@ -128,15 +125,13 @@ public class Processor
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
         TransformerFactory tf = TransformerFactory.newInstance();
-        if (!tf.getFeature(SAXSource.FEATURE) || !tf.getFeature(SAXResult.FEATURE))
-        {
+        if (!tf.getFeature(SAXSource.FEATURE) || !tf.getFeature(SAXResult.FEATURE)) {
             return 0;
         }
 
         SAXTransformerFactory saxtf = (SAXTransformerFactory) tf;
         Templates templates = null;
-        if (xslt != null)
-        {
+        if (xslt != null) {
             templates = saxtf.newTemplates(xslt);
         }
 
@@ -146,8 +141,7 @@ public class Processor
         EntryElement entryElement = getEntryElement(zos);
 
         ContentHandler outDocHandler = null;
-        switch (outRepresentation)
-        {
+        switch (outRepresentation) {
             case BYTECODE:
                 outDocHandler = new OutputSlicingHandler(new ASMContentHandlerFactory(zos), entryElement, false);
                 break;
@@ -167,33 +161,25 @@ public class Processor
         // configuring inputDocHandlerFactory
         // /////////////////////////////////////////////////
         ContentHandler inDocHandler;
-        if (templates == null)
-        {
+        if (templates == null) {
             inDocHandler = outDocHandler;
-        }
-        else
-        {
+        } else {
             inDocHandler = new InputSlicingHandler("class", outDocHandler, new TransformerHandlerFactory(saxtf, templates, outDocHandler));
         }
         ContentHandlerFactory inDocHandlerFactory = new SubdocumentHandlerFactory(inDocHandler);
 
-        if (inDocHandler != null && inRepresentation != SINGLE_XML)
-        {
+        if (inDocHandler != null && inRepresentation != SINGLE_XML) {
             inDocHandler.startDocument();
             inDocHandler.startElement("", "classes", "classes", new AttributesImpl());
         }
 
         int i = 0;
         ZipEntry ze;
-        while ((ze = zis.getNextEntry()) != null)
-        {
+        while ((ze = zis.getNextEntry()) != null) {
             update(ze.getName(), n++);
-            if (isClassEntry(ze))
-            {
+            if (isClassEntry(ze)) {
                 processEntry(zis, ze, inDocHandlerFactory);
-            }
-            else
-            {
+            } else {
                 OutputStream os = entryElement.openEntry(getName(ze));
                 copyEntry(zis, os);
                 entryElement.closeEntry();
@@ -202,14 +188,12 @@ public class Processor
             i++;
         }
 
-        if (inDocHandler != null && inRepresentation != SINGLE_XML)
-        {
+        if (inDocHandler != null && inRepresentation != SINGLE_XML) {
             inDocHandler.endElement("", "classes", "classes");
             inDocHandler.endDocument();
         }
 
-        if (outRepresentation == SINGLE_XML)
-        {
+        if (outRepresentation == SINGLE_XML) {
             zos.closeEntry();
         }
         zos.flush();
@@ -218,32 +202,26 @@ public class Processor
         return i;
     }
 
-    private void copyEntry(final InputStream is, final OutputStream os) throws IOException
-    {
-        if (outRepresentation == SINGLE_XML)
-        {
+    private void copyEntry(final InputStream is, final OutputStream os) throws IOException {
+        if (outRepresentation == SINGLE_XML) {
             return;
         }
 
         byte[] buff = new byte[2048];
         int i;
-        while ((i = is.read(buff)) != -1)
-        {
+        while ((i = is.read(buff)) != -1) {
             os.write(buff, 0, i);
         }
     }
 
-    private boolean isClassEntry(final ZipEntry ze)
-    {
+    private boolean isClassEntry(final ZipEntry ze) {
         String name = ze.getName();
         return inRepresentation == SINGLE_XML && name.equals(SINGLE_XML_NAME) || name.endsWith(".class") || name.endsWith(".class.xml");
     }
 
-    private void processEntry(final ZipInputStream zis, final ZipEntry ze, final ContentHandlerFactory handlerFactory)
-    {
+    private void processEntry(final ZipInputStream zis, final ZipEntry ze, final ContentHandlerFactory handlerFactory) {
         ContentHandler handler = handlerFactory.createContentHandler();
-        try
-        {
+        try {
 
             // if (CODE2ASM.equals(command)) { // read bytecode and process it
             // // with TraceClassVisitor
@@ -253,33 +231,26 @@ public class Processor
             // }
 
             boolean singleInputDocument = inRepresentation == SINGLE_XML;
-            if (inRepresentation == BYTECODE)
-            { // read bytecode and process it
+            if (inRepresentation == BYTECODE) { // read bytecode and process it
                 // with handler
                 ClassReader cr = new ClassReader(readEntry(zis, ze));
                 cr.accept(new SAXClassAdapter(handler, singleInputDocument), 0);
 
-            }
-            else
-            { // read XML and process it with handler
+            } else { // read XML and process it with handler
                 XMLReader reader = XMLReaderFactory.createXMLReader();
                 reader.setContentHandler(handler);
                 reader.parse(new InputSource(singleInputDocument ? (InputStream) new ProtectedInputStream(zis)
                         : new ByteArrayInputStream(readEntry(zis, ze))));
 
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             update(ze.getName(), 0);
             update(ex, 0);
         }
     }
 
-    private EntryElement getEntryElement(final ZipOutputStream zos)
-    {
-        if (outRepresentation == SINGLE_XML)
-        {
+    private EntryElement getEntryElement(final ZipOutputStream zos) {
+        if (outRepresentation == SINGLE_XML) {
             return new SingleDocElement(zos);
         }
         return new ZipEntryElement(zos);
@@ -315,18 +286,13 @@ public class Processor
     // return factory;
     // }
 
-    private String getName(final ZipEntry ze)
-    {
+    private String getName(final ZipEntry ze) {
         String name = ze.getName();
-        if (isClassEntry(ze))
-        {
-            if (inRepresentation != BYTECODE && outRepresentation == BYTECODE)
-            {
+        if (isClassEntry(ze)) {
+            if (inRepresentation != BYTECODE && outRepresentation == BYTECODE) {
                 name = name.substring(0, name.length() - 4); // .class.xml to
                 // .class
-            }
-            else if (inRepresentation == BYTECODE && outRepresentation != BYTECODE)
-            {
+            } else if (inRepresentation == BYTECODE && outRepresentation != BYTECODE) {
                 name += ".xml"; // .class to .class.xml
             }
             // } else if( CODE2ASM.equals( command)) {
@@ -335,16 +301,13 @@ public class Processor
         return name;
     }
 
-    private static byte[] readEntry(final InputStream zis, final ZipEntry ze) throws IOException
-    {
+    private static byte[] readEntry(final InputStream zis, final ZipEntry ze) throws IOException {
         long size = ze.getSize();
-        if (size > -1)
-        {
+        if (size > -1) {
             byte[] buff = new byte[(int) size];
             int k = 0;
             int n;
-            while ((n = zis.read(buff, k, buff.length - k)) > 0)
-            {
+            while ((n = zis.read(buff, k, buff.length - k)) > 0) {
                 k += n;
             }
             return buff;
@@ -353,8 +316,7 @@ public class Processor
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buff = new byte[4096];
         int i;
-        while ((i = zis.read(buff)) != -1)
-        {
+        while ((i = zis.read(buff)) != -1) {
             bos.write(buff, 0, i);
         }
         return bos.toByteArray();
@@ -365,25 +327,18 @@ public class Processor
      * 
      * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
-    protected void update(final Object arg, final int n)
-    {
-        if (arg instanceof Throwable)
-        {
+    protected void update(final Object arg, final int n) {
+        if (arg instanceof Throwable) {
             ((Throwable) arg).printStackTrace();
-        }
-        else
-        {
-            if (n % 100 == 0)
-            {
+        } else {
+            if (n % 100 == 0) {
                 System.err.println(n + " " + arg);
             }
         }
     }
 
-    public static void main(final String[] args) throws Exception
-    {
-        if (args.length < 2)
-        {
+    public static void main(final String[] args) throws Exception {
+        if (args.length < 2) {
             showUsage();
             return;
         }
@@ -397,36 +352,27 @@ public class Processor
         Source xslt = null;
         // boolean computeMax = true;
 
-        for (int i = 2; i < args.length; i++)
-        {
-            if ("-in".equals(args[i]))
-            {
+        for (int i = 2; i < args.length; i++) {
+            if ("-in".equals(args[i])) {
                 is = new FileInputStream(args[++i]);
 
-            }
-            else if ("-out".equals(args[i]))
-            {
+            } else if ("-out".equals(args[i])) {
                 os = new BufferedOutputStream(new FileOutputStream(args[++i]));
 
-            }
-            else if ("-xslt".equals(args[i]))
-            {
+            } else if ("-xslt".equals(args[i])) {
                 xslt = new StreamSource(new FileInputStream(args[++i]));
 
                 // } else if( "-computemax".equals( args[ i].toLowerCase())) {
                 // computeMax = true;
 
-            }
-            else
-            {
+            } else {
                 showUsage();
                 return;
 
             }
         }
 
-        if (inRepresentation == 0 || outRepresentation == 0)
-        {
+        if (inRepresentation == 0 || outRepresentation == 0) {
             showUsage();
             return;
         }
@@ -440,25 +386,18 @@ public class Processor
         System.err.println((l2 - l1) + "ms  " + 1000f * n / (l2 - l1) + " resources/sec");
     }
 
-    private static int getRepresentation(final String s)
-    {
-        if ("code".equals(s))
-        {
+    private static int getRepresentation(final String s) {
+        if ("code".equals(s)) {
             return BYTECODE;
-        }
-        else if ("xml".equals(s))
-        {
+        } else if ("xml".equals(s)) {
             return MULTI_XML;
-        }
-        else if ("singlexml".equals(s))
-        {
+        } else if ("singlexml".equals(s)) {
             return SINGLE_XML;
         }
         return 0;
     }
 
-    private static void showUsage()
-    {
+    private static void showUsage() {
         System.err.println("Usage: Main <in format> <out format> [-in <input jar>] [-out <output jar>] [-xslt <xslt fiel>]");
         System.err.println("  when -in or -out is omitted sysin and sysout would be used");
         System.err.println("  <in format> and <out format> - code | xml | singlexml");
@@ -468,35 +407,29 @@ public class Processor
      * IputStream wrapper class used to protect input streams from being closed
      * by some stupid XML parsers.
      */
-    private static final class ProtectedInputStream extends InputStream
-    {
+    private static final class ProtectedInputStream extends InputStream {
         private final InputStream is;
 
-        ProtectedInputStream(final InputStream is)
-        {
+        ProtectedInputStream(final InputStream is) {
             this.is = is;
         }
 
         @Override
-        public final void close() throws IOException
-        {
+        public final void close() throws IOException {
         }
 
         @Override
-        public final int read() throws IOException
-        {
+        public final int read() throws IOException {
             return is.read();
         }
 
         @Override
-        public final int read(final byte[] b, final int off, final int len) throws IOException
-        {
+        public final int read(final byte[] b, final int off, final int len) throws IOException {
             return is.read(b, off, len);
         }
 
         @Override
-        public final int available() throws IOException
-        {
+        public final int available() throws IOException {
             return is.available();
         }
     }
@@ -506,8 +439,7 @@ public class Processor
      * {@link org.xml.sax.ContentHandler ContentHandler} instances for concrete
      * context.
      */
-    private static interface ContentHandlerFactory
-    {
+    private static interface ContentHandlerFactory {
 
         /**
          * Creates an instance of the content handler.
@@ -521,20 +453,17 @@ public class Processor
     /**
      * SAXWriterFactory
      */
-    private static final class SAXWriterFactory implements ContentHandlerFactory
-    {
+    private static final class SAXWriterFactory implements ContentHandlerFactory {
         private final Writer w;
 
         private final boolean optimizeEmptyElements;
 
-        SAXWriterFactory(final Writer w, final boolean optimizeEmptyElements)
-        {
+        SAXWriterFactory(final Writer w, final boolean optimizeEmptyElements) {
             this.w = w;
             this.optimizeEmptyElements = optimizeEmptyElements;
         }
 
-        public final ContentHandler createContentHandler()
-        {
+        public final ContentHandler createContentHandler() {
             return new SAXWriter(w, optimizeEmptyElements);
         }
 
@@ -543,29 +472,21 @@ public class Processor
     /**
      * ASMContentHandlerFactory
      */
-    private static final class ASMContentHandlerFactory implements ContentHandlerFactory
-    {
+    private static final class ASMContentHandlerFactory implements ContentHandlerFactory {
         final OutputStream os;
 
-        ASMContentHandlerFactory(final OutputStream os)
-        {
+        ASMContentHandlerFactory(final OutputStream os) {
             this.os = os;
         }
 
-        public final ContentHandler createContentHandler()
-        {
+        public final ContentHandler createContentHandler() {
             final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-            return new ASMContentHandler(cw)
-            {
+            return new ASMContentHandler(cw) {
                 @Override
-                public void endDocument() throws SAXException
-                {
-                    try
-                    {
+                public void endDocument() throws SAXException {
+                    try {
                         os.write(cw.toByteArray());
-                    }
-                    catch (IOException e)
-                    {
+                    } catch (IOException e) {
                         throw new SAXException(e);
                     }
                 }
@@ -577,31 +498,25 @@ public class Processor
     /**
      * TransformerHandlerFactory
      */
-    private static final class TransformerHandlerFactory implements ContentHandlerFactory
-    {
+    private static final class TransformerHandlerFactory implements ContentHandlerFactory {
         private SAXTransformerFactory saxtf;
 
         private final Templates templates;
 
         private ContentHandler outputHandler;
 
-        TransformerHandlerFactory(final SAXTransformerFactory saxtf, final Templates templates, final ContentHandler outputHandler)
-        {
+        TransformerHandlerFactory(final SAXTransformerFactory saxtf, final Templates templates, final ContentHandler outputHandler) {
             this.saxtf = saxtf;
             this.templates = templates;
             this.outputHandler = outputHandler;
         }
 
-        public final ContentHandler createContentHandler()
-        {
-            try
-            {
+        public final ContentHandler createContentHandler() {
+            try {
                 TransformerHandler handler = saxtf.newTransformerHandler(templates);
                 handler.setResult(new SAXResult(outputHandler));
                 return handler;
-            }
-            catch (TransformerConfigurationException ex)
-            {
+            } catch (TransformerConfigurationException ex) {
                 throw new RuntimeException(ex.toString());
             }
         }
@@ -610,17 +525,14 @@ public class Processor
     /**
      * SubdocumentHandlerFactory
      */
-    private static final class SubdocumentHandlerFactory implements ContentHandlerFactory
-    {
+    private static final class SubdocumentHandlerFactory implements ContentHandlerFactory {
         private final ContentHandler subdocumentHandler;
 
-        SubdocumentHandlerFactory(final ContentHandler subdocumentHandler)
-        {
+        SubdocumentHandlerFactory(final ContentHandler subdocumentHandler) {
             this.subdocumentHandler = subdocumentHandler;
         }
 
-        public final ContentHandler createContentHandler()
-        {
+        public final ContentHandler createContentHandler() {
             return subdocumentHandler;
         }
 
@@ -634,8 +546,7 @@ public class Processor
      * <i><blockquote> This implementation does not support namespaces, entity
      * definitions (uncluding DTD), CDATA and text elements. </blockquote></i>
      */
-    private static final class SAXWriter extends DefaultHandler implements LexicalHandler
-    {
+    private static final class SAXWriter extends DefaultHandler implements LexicalHandler {
         private static final char[] OFF = "                                                                                                        ".toCharArray();
 
         private Writer w;
@@ -653,88 +564,66 @@ public class Processor
          * @param optimizeEmptyElements if set to <code>true</code>, short XML syntax will be used
          *                              for empty elements
          */
-        SAXWriter(final Writer w, final boolean optimizeEmptyElements)
-        {
+        SAXWriter(final Writer w, final boolean optimizeEmptyElements) {
             this.w = w;
             this.optimizeEmptyElements = optimizeEmptyElements;
         }
 
         @Override
-        public final void startElement(final String ns, final String localName, final String qName, final Attributes atts) throws SAXException
-        {
-            try
-            {
+        public final void startElement(final String ns, final String localName, final String qName, final Attributes atts) throws SAXException {
+            try {
                 closeElement();
 
                 writeIdent();
                 w.write('<' + qName);
-                if (atts != null && atts.getLength() > 0)
-                {
+                if (atts != null && atts.getLength() > 0) {
                     writeAttributes(atts);
                 }
 
-                if (optimizeEmptyElements)
-                {
+                if (optimizeEmptyElements) {
                     openElement = true;
-                }
-                else
-                {
+                } else {
                     w.write(">\n");
                 }
                 ident += 2;
 
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 throw new SAXException(ex);
 
             }
         }
 
         @Override
-        public final void endElement(final String ns, final String localName, final String qName) throws SAXException
-        {
+        public final void endElement(final String ns, final String localName, final String qName) throws SAXException {
             ident -= 2;
-            try
-            {
-                if (openElement)
-                {
+            try {
+                if (openElement) {
                     w.write("/>\n");
                     openElement = false;
-                }
-                else
-                {
+                } else {
                     writeIdent();
                     w.write("</" + qName + ">\n");
                 }
 
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 throw new SAXException(ex);
 
             }
         }
 
         @Override
-        public final void endDocument() throws SAXException
-        {
-            try
-            {
+        public final void endDocument() throws SAXException {
+            try {
                 w.flush();
 
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 throw new SAXException(ex);
 
             }
         }
 
-        public final void comment(final char[] ch, final int off, final int len) throws SAXException
-        {
-            try
-            {
+        public final void comment(final char[] ch, final int off, final int len) throws SAXException {
+            try {
                 closeElement();
 
                 writeIdent();
@@ -742,44 +631,34 @@ public class Processor
                 w.write(ch, off, len);
                 w.write(" -->\n");
 
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 throw new SAXException(ex);
 
             }
         }
 
-        public final void startDTD(final String arg0, final String arg1, final String arg2) throws SAXException
-        {
+        public final void startDTD(final String arg0, final String arg1, final String arg2) throws SAXException {
         }
 
-        public final void endDTD() throws SAXException
-        {
+        public final void endDTD() throws SAXException {
         }
 
-        public final void startEntity(final String arg0) throws SAXException
-        {
+        public final void startEntity(final String arg0) throws SAXException {
         }
 
-        public final void endEntity(final String arg0) throws SAXException
-        {
+        public final void endEntity(final String arg0) throws SAXException {
         }
 
-        public final void startCDATA() throws SAXException
-        {
+        public final void startCDATA() throws SAXException {
         }
 
-        public final void endCDATA() throws SAXException
-        {
+        public final void endCDATA() throws SAXException {
         }
 
-        private final void writeAttributes(final Attributes atts) throws IOException
-        {
+        private final void writeAttributes(final Attributes atts) throws IOException {
             StringBuffer sb = new StringBuffer();
             int len = atts.getLength();
-            for (int i = 0; i < len; i++)
-            {
+            for (int i = 0; i < len; i++) {
                 sb.append(' ').append(atts.getLocalName(i)).append("=\"").append(esc(atts.getValue(i))).append('\"');
             }
             w.write(sb.toString());
@@ -791,14 +670,11 @@ public class Processor
          * @param str string to encode.
          * @return encoded string
          */
-        private static final String esc(final String str)
-        {
+        private static final String esc(final String str) {
             StringBuffer sb = new StringBuffer(str.length());
-            for (int i = 0; i < str.length(); i++)
-            {
+            for (int i = 0; i < str.length(); i++) {
                 char ch = str.charAt(i);
-                switch (ch)
-                {
+                switch (ch) {
                     case '&':
                         sb.append("&amp;");
                         break;
@@ -816,12 +692,9 @@ public class Processor
                         break;
 
                     default:
-                        if (ch > 0x7f)
-                        {
+                        if (ch > 0x7f) {
                             sb.append("&#").append(Integer.toString(ch)).append(';');
-                        }
-                        else
-                        {
+                        } else {
                             sb.append(ch);
                         }
 
@@ -830,28 +703,21 @@ public class Processor
             return sb.toString();
         }
 
-        private final void writeIdent() throws IOException
-        {
+        private final void writeIdent() throws IOException {
             int n = ident;
-            while (n > 0)
-            {
-                if (n > OFF.length)
-                {
+            while (n > 0) {
+                if (n > OFF.length) {
                     w.write(OFF);
                     n -= OFF.length;
-                }
-                else
-                {
+                } else {
                     w.write(OFF, 0, n);
                     n = 0;
                 }
             }
         }
 
-        private final void closeElement() throws IOException
-        {
-            if (openElement)
-            {
+        private final void closeElement() throws IOException {
+            if (openElement) {
                 w.write(">\n");
             }
             openElement = false;
@@ -869,8 +735,7 @@ public class Processor
      * <p>
      * TODO use complete path for subdocumentRoot
      */
-    private static final class InputSlicingHandler extends DefaultHandler
-    {
+    private static final class InputSlicingHandler extends DefaultHandler {
         private String subdocumentRoot;
 
         private final ContentHandler rootHandler;
@@ -892,79 +757,59 @@ public class Processor
          *                                  to create {@link ContentHandler ContentHandler} instances
          *                                  for subdocuments.
          */
-        InputSlicingHandler(final String subdocumentRoot, final ContentHandler rootHandler, final ContentHandlerFactory subdocumentHandlerFactory)
-        {
+        InputSlicingHandler(final String subdocumentRoot, final ContentHandler rootHandler, final ContentHandlerFactory subdocumentHandlerFactory) {
             this.subdocumentRoot = subdocumentRoot;
             this.rootHandler = rootHandler;
             this.subdocumentHandlerFactory = subdocumentHandlerFactory;
         }
 
         @Override
-        public final void startElement(final String namespaceURI, final String localName, final String qName, final Attributes list) throws SAXException
-        {
-            if (subdocument)
-            {
+        public final void startElement(final String namespaceURI, final String localName, final String qName, final Attributes list) throws SAXException {
+            if (subdocument) {
                 subdocumentHandler.startElement(namespaceURI, localName, qName, list);
-            }
-            else if (localName.equals(subdocumentRoot))
-            {
+            } else if (localName.equals(subdocumentRoot)) {
                 subdocumentHandler = subdocumentHandlerFactory.createContentHandler();
                 subdocumentHandler.startDocument();
                 subdocumentHandler.startElement(namespaceURI, localName, qName, list);
                 subdocument = true;
-            }
-            else if (rootHandler != null)
-            {
+            } else if (rootHandler != null) {
                 rootHandler.startElement(namespaceURI, localName, qName, list);
             }
         }
 
         @Override
-        public final void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException
-        {
-            if (subdocument)
-            {
+        public final void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
+            if (subdocument) {
                 subdocumentHandler.endElement(namespaceURI, localName, qName);
-                if (localName.equals(subdocumentRoot))
-                {
+                if (localName.equals(subdocumentRoot)) {
                     subdocumentHandler.endDocument();
                     subdocument = false;
                 }
-            }
-            else if (rootHandler != null)
-            {
+            } else if (rootHandler != null) {
                 rootHandler.endElement(namespaceURI, localName, qName);
             }
         }
 
         @Override
-        public final void startDocument() throws SAXException
-        {
-            if (rootHandler != null)
-            {
+        public final void startDocument() throws SAXException {
+            if (rootHandler != null) {
                 rootHandler.startDocument();
             }
         }
 
         @Override
-        public final void endDocument() throws SAXException
-        {
-            if (rootHandler != null)
-            {
+        public final void endDocument() throws SAXException {
+            if (rootHandler != null) {
                 rootHandler.endDocument();
 
             }
         }
 
         @Override
-        public final void characters(final char[] buff, final int offset, final int size) throws SAXException
-        {
-            if (subdocument)
-            {
+        public final void characters(final char[] buff, final int offset, final int size) throws SAXException {
+            if (subdocument) {
                 subdocumentHandler.characters(buff, offset, size);
-            }
-            else if (rootHandler != null)
-            {
+            } else if (rootHandler != null) {
                 rootHandler.characters(buff, offset, size);
             }
         }
@@ -982,8 +827,7 @@ public class Processor
      * <p>
      * TODO use complete path for subdocumentRoot
      */
-    private static final class OutputSlicingHandler extends DefaultHandler
-    {
+    private static final class OutputSlicingHandler extends DefaultHandler {
         private final String subdocumentRoot;
 
         private ContentHandlerFactory subdocumentHandlerFactory;
@@ -1006,8 +850,7 @@ public class Processor
          * @param entryElement              TODO.
          * @param isXml                     TODO.
          */
-        OutputSlicingHandler(final ContentHandlerFactory subdocumentHandlerFactory, final EntryElement entryElement, final boolean isXml)
-        {
+        OutputSlicingHandler(final ContentHandlerFactory subdocumentHandlerFactory, final EntryElement entryElement, final boolean isXml) {
             this.subdocumentRoot = "class";
             this.subdocumentHandlerFactory = subdocumentHandlerFactory;
             this.entryElement = entryElement;
@@ -1015,25 +858,17 @@ public class Processor
         }
 
         @Override
-        public final void startElement(final String namespaceURI, final String localName, final String qName, final Attributes list) throws SAXException
-        {
-            if (subdocument)
-            {
+        public final void startElement(final String namespaceURI, final String localName, final String qName, final Attributes list) throws SAXException {
+            if (subdocument) {
                 subdocumentHandler.startElement(namespaceURI, localName, qName, list);
-            }
-            else if (localName.equals(subdocumentRoot))
-            {
+            } else if (localName.equals(subdocumentRoot)) {
                 String name = list.getValue("name");
-                if (name == null || name.length() == 0)
-                {
+                if (name == null || name.length() == 0) {
                     throw new SAXException("Class element without name attribute.");
                 }
-                try
-                {
+                try {
                     entryElement.openEntry(isXml ? name + ".class.xml" : name + ".class");
-                }
-                catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     throw new SAXException(ex.toString(), ex);
                 }
                 subdocumentHandler = subdocumentHandlerFactory.createContentHandler();
@@ -1044,21 +879,15 @@ public class Processor
         }
 
         @Override
-        public final void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException
-        {
-            if (subdocument)
-            {
+        public final void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
+            if (subdocument) {
                 subdocumentHandler.endElement(namespaceURI, localName, qName);
-                if (localName.equals(subdocumentRoot))
-                {
+                if (localName.equals(subdocumentRoot)) {
                     subdocumentHandler.endDocument();
                     subdocument = false;
-                    try
-                    {
+                    try {
                         entryElement.closeEntry();
-                    }
-                    catch (IOException ex)
-                    {
+                    } catch (IOException ex) {
                         throw new SAXException(ex.toString(), ex);
                     }
                 }
@@ -1066,28 +895,23 @@ public class Processor
         }
 
         @Override
-        public final void startDocument() throws SAXException
-        {
+        public final void startDocument() throws SAXException {
         }
 
         @Override
-        public final void endDocument() throws SAXException
-        {
+        public final void endDocument() throws SAXException {
         }
 
         @Override
-        public final void characters(final char[] buff, final int offset, final int size) throws SAXException
-        {
-            if (subdocument)
-            {
+        public final void characters(final char[] buff, final int offset, final int size) throws SAXException {
+            if (subdocument) {
                 subdocumentHandler.characters(buff, offset, size);
             }
         }
 
     }
 
-    private static interface EntryElement
-    {
+    private static interface EntryElement {
 
         OutputStream openEntry(String name) throws IOException;
 
@@ -1095,45 +919,37 @@ public class Processor
 
     }
 
-    private static final class SingleDocElement implements EntryElement
-    {
+    private static final class SingleDocElement implements EntryElement {
         private final OutputStream os;
 
-        SingleDocElement(final OutputStream os)
-        {
+        SingleDocElement(final OutputStream os) {
             this.os = os;
         }
 
-        public OutputStream openEntry(final String name) throws IOException
-        {
+        public OutputStream openEntry(final String name) throws IOException {
             return os;
         }
 
-        public void closeEntry() throws IOException
-        {
+        public void closeEntry() throws IOException {
             os.flush();
         }
 
     }
 
-    private static final class ZipEntryElement implements EntryElement
-    {
+    private static final class ZipEntryElement implements EntryElement {
         private ZipOutputStream zos;
 
-        ZipEntryElement(final ZipOutputStream zos)
-        {
+        ZipEntryElement(final ZipOutputStream zos) {
             this.zos = zos;
         }
 
-        public OutputStream openEntry(final String name) throws IOException
-        {
+        public OutputStream openEntry(final String name) throws IOException {
             ZipEntry entry = new ZipEntry(name);
             zos.putNextEntry(entry);
             return zos;
         }
 
-        public void closeEntry() throws IOException
-        {
+        public void closeEntry() throws IOException {
             zos.flush();
             zos.closeEntry();
         }

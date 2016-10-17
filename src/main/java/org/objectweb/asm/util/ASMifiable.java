@@ -39,8 +39,7 @@ import java.util.Map;
  *
  * @author Eugene Kuleshov
  */
-public interface ASMifiable
-{
+public interface ASMifiable {
 
     /**
      * Prints the ASM code to create an attribute equal to this attribute.

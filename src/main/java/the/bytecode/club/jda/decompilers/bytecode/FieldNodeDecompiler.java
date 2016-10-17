@@ -12,11 +12,9 @@ import java.util.List;
  * @author Bibl
  */
 
-public class FieldNodeDecompiler
-{
+public class FieldNodeDecompiler {
 
-    public static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, FieldNode f)
-    {
+    public static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, FieldNode f) {
         String s = getAccessString(f.access);
         sb.append(s);
         if (s.length() > 0)
@@ -24,17 +22,13 @@ public class FieldNodeDecompiler
         sb.append(Type.getType(f.desc).getClassName());
         sb.append(" ");
         sb.append(f.name);
-        if (f.value != null)
-        {
+        if (f.value != null) {
             sb.append(" = ");
-            if (f.value instanceof String)
-            {
+            if (f.value instanceof String) {
                 sb.append("\"");
                 sb.append(f.value);
                 sb.append("\"");
-            }
-            else
-            {
+            } else {
                 sb.append(f.value);
                 sb.append(" (");
                 sb.append(f.value.getClass().getCanonicalName());
@@ -45,8 +39,7 @@ public class FieldNodeDecompiler
         return sb;
     }
 
-    private static String getAccessString(int access)
-    {
+    private static String getAccessString(int access) {
         List<String> tokens = new ArrayList<>();
         if ((access & Opcodes.ACC_PUBLIC) != 0)
             tokens.add("public");
@@ -68,8 +61,7 @@ public class FieldNodeDecompiler
             return "";
         // hackery delimeters
         StringBuilder sb = new StringBuilder(tokens.get(0));
-        for (int i = 1; i < tokens.size(); i++)
-        {
+        for (int i = 1; i < tokens.size(); i++) {
             sb.append(" ");
             sb.append(tokens.get(i));
         }

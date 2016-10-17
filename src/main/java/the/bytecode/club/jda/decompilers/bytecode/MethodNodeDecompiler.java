@@ -15,27 +15,21 @@ import java.util.List;
  * @author Bibl
  */
 
-public class MethodNodeDecompiler
-{
+public class MethodNodeDecompiler {
 
     @SuppressWarnings("unused")
-    public static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, MethodNode m, ClassNode cn)
-    {
+    public static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, MethodNode m, ClassNode cn) {
         String package_ = null;
         String class_ = null;
-        if (cn.name.contains("/"))
-        {
+        if (cn.name.contains("/")) {
             package_ = cn.name.substring(0, cn.name.lastIndexOf("/"));
             class_ = cn.name.substring(cn.name.lastIndexOf("/") + 1);
-        }
-        else
-        {
+        } else {
             class_ = cn.name;
         }
 
         // Descriptor
-        if (createDescriptors())
-        {
+        if (createDescriptors()) {
             sb.append("     // ");
             sb.append(m.owner.name);
             sb.append(".");
@@ -52,37 +46,29 @@ public class MethodNodeDecompiler
             sb.append(" ");
 
         // Return type
-        if (m.name.charAt(0) != '<' && !m.name.endsWith("init>"))
-        {
+        if (m.name.charAt(0) != '<' && !m.name.endsWith("init>")) {
             Type returnType = Type.getReturnType(m.desc);
             sb.append(returnType.getClassName());
             sb.append(" ");
         }
 
         // Method name
-        if (m.name.equals("<init>"))
-        {
+        if (m.name.equals("<init>")) {
             sb.append(class_);
-        }
-        else if (m.name.equals("<clinit>"))
-        {
-        }
-        else
-        {
+        } else if (m.name.equals("<clinit>")) {
+        } else {
             sb.append(m.name);
         }
 
         // Arguments
         TypeAndName[] args = new TypeAndName[0];
-        if (!m.name.equals("<clinit>"))
-        {
+        if (!m.name.equals("<clinit>")) {
             sb.append("(");
 
             final Type[] argTypes = Type.getArgumentTypes(m.desc);
             args = new TypeAndName[argTypes.length];
 
-            for (int i = 0; i < argTypes.length; i++)
-            {
+            for (int i = 0; i < argTypes.length; i++) {
                 final Type type = argTypes[i];
 
                 final TypeAndName tan = new TypeAndName();
@@ -101,28 +87,22 @@ public class MethodNodeDecompiler
 
         // Throws
         int amountOfThrows = m.exceptions.size();
-        if (amountOfThrows > 0)
-        {
+        if (amountOfThrows > 0) {
             sb.append(" throws ");
             sb.append(m.exceptions.get(0));// exceptions is list<string>
-            for (int i = 1; i < amountOfThrows; i++)
-            {
+            for (int i = 1; i < amountOfThrows; i++) {
                 sb.append(", ");
                 sb.append(m.exceptions.get(i));
             }
         }
 
         // End method name
-        if (access.contains("abstract"))
-        {
+        if (access.contains("abstract")) {
             sb.append(";");
-        }
-        else
-        {
+        } else {
             sb.append(" {");
 
-            if (createComments() && !createDescriptors())
-            {
+            if (createComments() && !createDescriptors()) {
                 if (m.name.equals("<clinit>"))
                     sb.append(" // <clinit>");
                 else if (m.name.equals("<init>"))
@@ -132,15 +112,12 @@ public class MethodNodeDecompiler
         sb.append(JDA.nl);
 
         // Code
-        if (!access.contains("abstract"))
-        {
-            if (m.signature != null)
-            {
+        if (!access.contains("abstract")) {
+            if (m.signature != null) {
                 sb.append("         <sig:").append(m.signature).append(">");
             }
 
-            if (m.annotationDefault != null)
-            {
+            if (m.annotationDefault != null) {
                 sb.append(m.annotationDefault);
                 sb.append("\n");
             }
@@ -157,8 +134,7 @@ public class MethodNodeDecompiler
             addAttrList(m.visibleTypeAnnotations, "visTypeAnno", sb, insnPrinter);
 
             // Exception table
-            for (Object o : m.tryCatchBlocks)
-            {
+            for (Object o : m.tryCatchBlocks) {
                 TryCatchBlockNode tcbn = (TryCatchBlockNode) o;
                 sb.append("         ");
                 sb.append("TryCatch: L");
@@ -176,8 +152,7 @@ public class MethodNodeDecompiler
             }
 
             // Instructions
-            for (String insn : insnPrinter.createPrint())
-            {
+            for (String insn : insnPrinter.createPrint()) {
                 sb.append("         ");
                 sb.append(insn);
                 sb.append(JDA.nl);
@@ -190,14 +165,11 @@ public class MethodNodeDecompiler
         return sb;
     }
 
-    private static void addAttrList(List<?> list, String name, PrefixedStringBuilder sb, InstructionPrinter insnPrinter)
-    {
+    private static void addAttrList(List<?> list, String name, PrefixedStringBuilder sb, InstructionPrinter insnPrinter) {
         if (list == null)
             return;
-        if (list.size() > 0)
-        {
-            for (Object o : list)
-            {
+        if (list.size() > 0) {
+            for (Object o : list) {
                 sb.append("         <");
                 sb.append(name);
                 sb.append(":");
@@ -209,26 +181,19 @@ public class MethodNodeDecompiler
         }
     }
 
-    private static String printAttr(Object o, InstructionPrinter insnPrinter)
-    {
-        if (o instanceof LocalVariableNode)
-        {
+    private static String printAttr(Object o, InstructionPrinter insnPrinter) {
+        if (o instanceof LocalVariableNode) {
             LocalVariableNode lvn = (LocalVariableNode) o;
             return "index=" + lvn.index + " , name=" + lvn.name + " , desc=" + lvn.desc + ", sig=" + lvn.signature + ", start=L" + insnPrinter.resolveLabel(lvn.start) + ", end=L" + insnPrinter.resolveLabel(lvn.end);
-        }
-        else if (o instanceof AnnotationNode)
-        {
+        } else if (o instanceof AnnotationNode) {
             AnnotationNode an = (AnnotationNode) o;
             StringBuilder sb = new StringBuilder();
             sb.append("desc = ");
             sb.append(an.desc);
             sb.append(" , values = ");
-            if (an.values != null)
-            {
+            if (an.values != null) {
                 sb.append(Arrays.toString(an.values.toArray()));
-            }
-            else
-            {
+            } else {
                 sb.append("[]");
             }
             return sb.toString();
@@ -238,8 +203,7 @@ public class MethodNodeDecompiler
         return o.toString();
     }
 
-    private static String getAccessString(int access)
-    {
+    private static String getAccessString(int access) {
         // public, protected, private, abstract, static,
         // final, synchronized, native & strictfp are permitted
         List<String> tokens = new ArrayList<>();
@@ -269,26 +233,22 @@ public class MethodNodeDecompiler
             return "";
         // hackery delimeters
         StringBuilder sb = new StringBuilder(tokens.get(0));
-        for (int i = 1; i < tokens.size(); i++)
-        {
+        for (int i = 1; i < tokens.size(); i++) {
             sb.append(" ");
             sb.append(tokens.get(i));
         }
         return sb.toString();
     }
 
-    static boolean createComments()
-    {
+    static boolean createComments() {
         return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS);
     }
 
-    static boolean createLabelBrackets()
-    {
+    static boolean createLabelBrackets() {
         return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS);
     }
 
-    static boolean createDescriptors()
-    {
+    static boolean createDescriptors() {
         return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.SHOW_METHOD_DESCRIPTORS);
     }
 }

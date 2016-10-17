@@ -12,31 +12,26 @@ import static org.objectweb.asm.tree.AbstractInsnNode.LABEL;
 /**
  * @author Tyler Sedlar
  */
-public class NodeTree extends AbstractNode
-{
+public class NodeTree extends AbstractNode {
 
     private final MethodNode mn;
 
-    public NodeTree(MethodNode mn)
-    {
+    public NodeTree(MethodNode mn) {
         super(null, null, -1, -1);
         this.mn = mn;
     }
 
-    public NodeTree(Block block)
-    {
+    public NodeTree(Block block) {
         this(block.owner);
     }
 
     @Override
-    public MethodNode method()
-    {
+    public MethodNode method() {
         return mn;
     }
 
     @Override
-    public void accept(NodeVisitor nv)
-    {
+    public void accept(NodeVisitor nv) {
         if (!nv.validate())
             return;
         nv.visitCode();
@@ -45,8 +40,7 @@ public class NodeTree extends AbstractNode
         nv.visitEnd();
     }
 
-    private void accept(NodeVisitor nv, AbstractNode n)
-    {
+    private void accept(NodeVisitor nv, AbstractNode n) {
         if (!nv.validate())
             return;
         n.accept(nv);
@@ -55,8 +49,7 @@ public class NodeTree extends AbstractNode
     }
 
     @Override
-    public AbstractInsnNode[] collapse()
-    {
+    public AbstractInsnNode[] collapse() {
         AbstractInsnNode[] instructions = super.collapse();
         int i = instructions.length > 1 && instructions[instructions.length - 2].type() == LABEL ? 2 : 1;
         return Arrays.copyOf(instructions, instructions.length - i);

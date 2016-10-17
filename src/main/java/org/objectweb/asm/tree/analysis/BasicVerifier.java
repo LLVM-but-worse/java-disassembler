@@ -44,25 +44,20 @@ import java.util.List;
  * @author Eric Bruneton
  * @author Bing Ran
  */
-public class BasicVerifier extends BasicInterpreter
-{
+public class BasicVerifier extends BasicInterpreter {
 
-    public BasicVerifier()
-    {
+    public BasicVerifier() {
         super(ASM5);
     }
 
-    protected BasicVerifier(final int api)
-    {
+    protected BasicVerifier(final int api) {
         super(api);
     }
 
     @Override
-    public BasicValue copyOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException
-    {
+    public BasicValue copyOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException {
         Value expected;
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case ILOAD:
             case ISTORE:
                 expected = BasicValue.INT_VALUE;
@@ -80,33 +75,28 @@ public class BasicVerifier extends BasicInterpreter
                 expected = BasicValue.DOUBLE_VALUE;
                 break;
             case ALOAD:
-                if (!value.isReference())
-                {
+                if (!value.isReference()) {
                     throw new AnalyzerException(insn, null, "an object reference", value);
                 }
                 return value;
             case ASTORE:
-                if (!value.isReference() && !BasicValue.RETURNADDRESS_VALUE.equals(value))
-                {
+                if (!value.isReference() && !BasicValue.RETURNADDRESS_VALUE.equals(value)) {
                     throw new AnalyzerException(insn, null, "an object reference or a return address", value);
                 }
                 return value;
             default:
                 return value;
         }
-        if (!expected.equals(value))
-        {
+        if (!expected.equals(value)) {
             throw new AnalyzerException(insn, null, expected, value);
         }
         return value;
     }
 
     @Override
-    public BasicValue unaryOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException
-    {
+    public BasicValue unaryOperation(final AbstractInsnNode insn, final BasicValue value) throws AnalyzerException {
         BasicValue expected;
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case INEG:
             case IINC:
             case I2F:
@@ -153,14 +143,12 @@ public class BasicVerifier extends BasicInterpreter
                 expected = newValue(Type.getObjectType(((FieldInsnNode) insn).owner));
                 break;
             case CHECKCAST:
-                if (!value.isReference())
-                {
+                if (!value.isReference()) {
                     throw new AnalyzerException(insn, null, "an object reference", value);
                 }
                 return super.unaryOperation(insn, value);
             case ARRAYLENGTH:
-                if (!isArrayValue(value))
-                {
+                if (!isArrayValue(value)) {
                     throw new AnalyzerException(insn, null, "an array reference", value);
                 }
                 return super.unaryOperation(insn, value);
@@ -171,8 +159,7 @@ public class BasicVerifier extends BasicInterpreter
             case MONITOREXIT:
             case IFNULL:
             case IFNONNULL:
-                if (!value.isReference())
-                {
+                if (!value.isReference()) {
                     throw new AnalyzerException(insn, null, "an object reference", value);
                 }
                 return super.unaryOperation(insn, value);
@@ -182,31 +169,25 @@ public class BasicVerifier extends BasicInterpreter
             default:
                 throw new Error("Internal error.");
         }
-        if (!isSubTypeOf(value, expected))
-        {
+        if (!isSubTypeOf(value, expected)) {
             throw new AnalyzerException(insn, null, expected, value);
         }
         return super.unaryOperation(insn, value);
     }
 
     @Override
-    public BasicValue binaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2) throws AnalyzerException
-    {
+    public BasicValue binaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2) throws AnalyzerException {
         BasicValue expected1;
         BasicValue expected2;
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case IALOAD:
                 expected1 = newValue(Type.getType("[I"));
                 expected2 = BasicValue.INT_VALUE;
                 break;
             case BALOAD:
-                if (isSubTypeOf(value1, newValue(Type.getType("[Z"))))
-                {
+                if (isSubTypeOf(value1, newValue(Type.getType("[Z")))) {
                     expected1 = newValue(Type.getType("[Z"));
-                }
-                else
-                {
+                } else {
                     expected1 = newValue(Type.getType("[B"));
                 }
                 expected2 = BasicValue.INT_VALUE;
@@ -306,42 +287,31 @@ public class BasicVerifier extends BasicInterpreter
             default:
                 throw new Error("Internal error.");
         }
-        if (!isSubTypeOf(value1, expected1))
-        {
+        if (!isSubTypeOf(value1, expected1)) {
             throw new AnalyzerException(insn, "First argument", expected1, value1);
-        }
-        else if (!isSubTypeOf(value2, expected2))
-        {
+        } else if (!isSubTypeOf(value2, expected2)) {
             throw new AnalyzerException(insn, "Second argument", expected2, value2);
         }
-        if (insn.opcode() == AALOAD)
-        {
+        if (insn.opcode() == AALOAD) {
             return getElementValue(value1);
-        }
-        else
-        {
+        } else {
             return super.binaryOperation(insn, value1, value2);
         }
     }
 
     @Override
-    public BasicValue ternaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2, final BasicValue value3) throws AnalyzerException
-    {
+    public BasicValue ternaryOperation(final AbstractInsnNode insn, final BasicValue value1, final BasicValue value2, final BasicValue value3) throws AnalyzerException {
         BasicValue expected1;
         BasicValue expected3;
-        switch (insn.opcode())
-        {
+        switch (insn.opcode()) {
             case IASTORE:
                 expected1 = newValue(Type.getType("[I"));
                 expected3 = BasicValue.INT_VALUE;
                 break;
             case BASTORE:
-                if (isSubTypeOf(value1, newValue(Type.getType("[Z"))))
-                {
+                if (isSubTypeOf(value1, newValue(Type.getType("[Z")))) {
                     expected1 = newValue(Type.getType("[Z"));
-                }
-                else
-                {
+                } else {
                     expected1 = newValue(Type.getType("[B"));
                 }
                 expected3 = BasicValue.INT_VALUE;
@@ -373,56 +343,41 @@ public class BasicVerifier extends BasicInterpreter
             default:
                 throw new Error("Internal error.");
         }
-        if (!isSubTypeOf(value1, expected1))
-        {
+        if (!isSubTypeOf(value1, expected1)) {
             throw new AnalyzerException(insn, "First argument", "a " + expected1 + " array reference", value1);
-        }
-        else if (!BasicValue.INT_VALUE.equals(value2))
-        {
+        } else if (!BasicValue.INT_VALUE.equals(value2)) {
             throw new AnalyzerException(insn, "Second argument", BasicValue.INT_VALUE, value2);
-        }
-        else if (!isSubTypeOf(value3, expected3))
-        {
+        } else if (!isSubTypeOf(value3, expected3)) {
             throw new AnalyzerException(insn, "Third argument", expected3, value3);
         }
         return null;
     }
 
     @Override
-    public BasicValue naryOperation(final AbstractInsnNode insn, final List<? extends BasicValue> values) throws AnalyzerException
-    {
+    public BasicValue naryOperation(final AbstractInsnNode insn, final List<? extends BasicValue> values) throws AnalyzerException {
         int opcode = insn.opcode();
-        if (opcode == MULTIANEWARRAY)
-        {
-            for (int i = 0; i < values.size(); ++i)
-            {
-                if (!BasicValue.INT_VALUE.equals(values.get(i)))
-                {
+        if (opcode == MULTIANEWARRAY) {
+            for (int i = 0; i < values.size(); ++i) {
+                if (!BasicValue.INT_VALUE.equals(values.get(i))) {
                     throw new AnalyzerException(insn, null, BasicValue.INT_VALUE, values.get(i));
                 }
             }
-        }
-        else
-        {
+        } else {
             int i = 0;
             int j = 0;
-            if (opcode != INVOKESTATIC && opcode != INVOKEDYNAMIC)
-            {
+            if (opcode != INVOKESTATIC && opcode != INVOKEDYNAMIC) {
                 Type owner = Type.getObjectType(((MethodInsnNode) insn).owner);
-                if (!isSubTypeOf(values.get(i++), newValue(owner)))
-                {
+                if (!isSubTypeOf(values.get(i++), newValue(owner))) {
                     throw new AnalyzerException(insn, "Method owner", newValue(owner), values.get(0));
                 }
             }
             String desc =
                     (opcode == INVOKEDYNAMIC) ? ((InvokeDynamicInsnNode) insn).desc : ((MethodInsnNode) insn).desc;
             Type[] args = Type.getArgumentTypes(desc);
-            while (i < values.size())
-            {
+            while (i < values.size()) {
                 BasicValue expected = newValue(args[j++]);
                 BasicValue encountered = values.get(i++);
-                if (!isSubTypeOf(encountered, expected))
-                {
+                if (!isSubTypeOf(encountered, expected)) {
                     throw new AnalyzerException(insn, "Argument " + j, expected, encountered);
                 }
             }
@@ -431,26 +386,21 @@ public class BasicVerifier extends BasicInterpreter
     }
 
     @Override
-    public void returnOperation(final AbstractInsnNode insn, final BasicValue value, final BasicValue expected) throws AnalyzerException
-    {
-        if (!isSubTypeOf(value, expected))
-        {
+    public void returnOperation(final AbstractInsnNode insn, final BasicValue value, final BasicValue expected) throws AnalyzerException {
+        if (!isSubTypeOf(value, expected)) {
             throw new AnalyzerException(insn, "Incompatible return type", expected, value);
         }
     }
 
-    protected boolean isArrayValue(final BasicValue value)
-    {
+    protected boolean isArrayValue(final BasicValue value) {
         return value.isReference();
     }
 
-    protected BasicValue getElementValue(final BasicValue objectArrayValue) throws AnalyzerException
-    {
+    protected BasicValue getElementValue(final BasicValue objectArrayValue) throws AnalyzerException {
         return BasicValue.REFERENCE_VALUE;
     }
 
-    protected boolean isSubTypeOf(final BasicValue value, final BasicValue expected)
-    {
+    protected boolean isSubTypeOf(final BasicValue value, final BasicValue expected) {
         return value.equals(expected);
     }
 }

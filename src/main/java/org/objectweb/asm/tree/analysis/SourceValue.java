@@ -39,8 +39,7 @@ import java.util.Set;
  *
  * @author Eric Bruneton
  */
-public class SourceValue implements Value
-{
+public class SourceValue implements Value {
 
     /**
      * The size of this value.
@@ -64,33 +63,27 @@ public class SourceValue implements Value
      */
     public final Set<AbstractInsnNode> insns;
 
-    public SourceValue(final int size)
-    {
+    public SourceValue(final int size) {
         this(size, SmallSet.<AbstractInsnNode>emptySet());
     }
 
-    public SourceValue(final int size, final AbstractInsnNode insn)
-    {
+    public SourceValue(final int size, final AbstractInsnNode insn) {
         this.size = size;
         this.insns = new SmallSet<>(insn, null);
     }
 
-    public SourceValue(final int size, final Set<AbstractInsnNode> insns)
-    {
+    public SourceValue(final int size, final Set<AbstractInsnNode> insns) {
         this.size = size;
         this.insns = insns;
     }
 
-    public int getSize()
-    {
+    public int getSize() {
         return size;
     }
 
     @Override
-    public boolean equals(final Object value)
-    {
-        if (!(value instanceof SourceValue))
-        {
+    public boolean equals(final Object value) {
+        if (!(value instanceof SourceValue)) {
             return false;
         }
         SourceValue v = (SourceValue) value;
@@ -98,8 +91,7 @@ public class SourceValue implements Value
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return insns.hashCode();
     }
 }

@@ -20,8 +20,7 @@ import static the.bytecode.club.jda.decompilers.bytecode.MethodNodeDecompiler.cr
  * @author Konloch
  * @author Bibl
  */
-public class InstructionPrinter
-{
+public class InstructionPrinter {
 
     /**
      * The MethodNode to print
@@ -36,8 +35,7 @@ public class InstructionPrinter
     protected List<AbstractInsnNode> matchedInsns;
     protected Map<LabelNode, Integer> labels;
 
-    public InstructionPrinter(MethodNode m, TypeAndName[] args)
-    {
+    public InstructionPrinter(MethodNode m, TypeAndName[] args) {
         this.args = args;
         mNode = m;
         labels = new HashMap<>();
@@ -46,17 +44,14 @@ public class InstructionPrinter
         match = false;
     }
 
-    public InstructionPrinter(MethodNode m, InstructionPattern pattern, TypeAndName[] args)
-    {
+    public InstructionPrinter(MethodNode m, InstructionPattern pattern, TypeAndName[] args) {
         this.args = args;
         mNode = m;
         labels = new HashMap<>();
         searcher = new InstructionSearcher(m.instructions, pattern);
         match = searcher.search();
-        if (match)
-        {
-            for (AbstractInsnNode[] ains : searcher.getMatches())
-            {
+        if (match) {
+            for (AbstractInsnNode[] ains : searcher.getMatches()) {
                 Collections.addAll(matchedInsns, ains);
             }
         }
@@ -67,95 +62,58 @@ public class InstructionPrinter
      *
      * @return The print as an ArrayList
      */
-    public ArrayList<String> createPrint()
-    {
+    public ArrayList<String> createPrint() {
         ArrayList<String> info = new ArrayList<>();
         ListIterator<?> it = mNode.instructions.iterator();
         boolean firstLabel = false;
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             AbstractInsnNode ain = (AbstractInsnNode) it.next();
             String line;
-            if (ain instanceof VarInsnNode)
-            {
+            if (ain instanceof VarInsnNode) {
                 line = printVarInsnNode((VarInsnNode) ain, it);
-            }
-            else if (ain instanceof IntInsnNode)
-            {
+            } else if (ain instanceof IntInsnNode) {
                 line = printIntInsnNode((IntInsnNode) ain, it);
-            }
-            else if (ain instanceof FieldInsnNode)
-            {
+            } else if (ain instanceof FieldInsnNode) {
                 line = printFieldInsnNode((FieldInsnNode) ain, it);
-            }
-            else if (ain instanceof MethodInsnNode)
-            {
+            } else if (ain instanceof MethodInsnNode) {
                 line = printMethodInsnNode((MethodInsnNode) ain, it);
-            }
-            else if (ain instanceof LdcInsnNode)
-            {
+            } else if (ain instanceof LdcInsnNode) {
                 line = printLdcInsnNode((LdcInsnNode) ain, it);
-            }
-            else if (ain instanceof InsnNode)
-            {
+            } else if (ain instanceof InsnNode) {
                 line = printInsnNode((InsnNode) ain, it);
-            }
-            else if (ain instanceof JumpInsnNode)
-            {
+            } else if (ain instanceof JumpInsnNode) {
                 line = printJumpInsnNode((JumpInsnNode) ain, it);
-            }
-            else if (ain instanceof LineNumberNode)
-            {
+            } else if (ain instanceof LineNumberNode) {
                 line = printLineNumberNode((LineNumberNode) ain, it);
-            }
-            else if (ain instanceof LabelNode)
-            {
+            } else if (ain instanceof LabelNode) {
                 if (firstLabel && createLabelBrackets())
                     info.add("}");
 
                 line = printLabelnode((LabelNode) ain);
 
-                if (createLabelBrackets())
-                {
+                if (createLabelBrackets()) {
                     if (!firstLabel)
                         firstLabel = true;
                     line += " {";
                 }
-            }
-            else if (ain instanceof TypeInsnNode)
-            {
+            } else if (ain instanceof TypeInsnNode) {
                 line = printTypeInsnNode((TypeInsnNode) ain);
-            }
-            else if (ain instanceof FrameNode)
-            {
+            } else if (ain instanceof FrameNode) {
                 line = "";
-            }
-            else if (ain instanceof IincInsnNode)
-            {
+            } else if (ain instanceof IincInsnNode) {
                 line = printIincInsnNode((IincInsnNode) ain);
-            }
-            else if (ain instanceof TableSwitchInsnNode)
-            {
+            } else if (ain instanceof TableSwitchInsnNode) {
                 line = printTableSwitchInsnNode((TableSwitchInsnNode) ain);
-            }
-            else if (ain instanceof LookupSwitchInsnNode)
-            {
+            } else if (ain instanceof LookupSwitchInsnNode) {
                 line = printLookupSwitchInsnNode((LookupSwitchInsnNode) ain);
-            }
-            else if (ain instanceof InvokeDynamicInsnNode)
-            {
+            } else if (ain instanceof InvokeDynamicInsnNode) {
                 line = printInvokeDynamicInsNode((InvokeDynamicInsnNode) ain);
-            }
-            else if (ain instanceof MultiANewArrayInsnNode)
-            {
+            } else if (ain instanceof MultiANewArrayInsnNode) {
                 line = printMultiANewArrayInsnNode((MultiANewArrayInsnNode) ain);
-            }
-            else
-            {
+            } else {
                 line = "// UNADDED OPCODE: " + nameOpcode(ain.opcode()) + " " + ain.toString();
             }
-            if (!line.equals(""))
-            {
+            if (!line.equals("")) {
                 if (match)
                     if (matchedInsns.contains(ain))
                         line = "   -> " + line;
@@ -168,22 +126,16 @@ public class InstructionPrinter
         return info;
     }
 
-    protected String printVarInsnNode(VarInsnNode vin, ListIterator<?> it)
-    {
+    protected String printVarInsnNode(VarInsnNode vin, ListIterator<?> it) {
         StringBuilder sb = new StringBuilder();
         sb.append(nameOpcode(vin.opcode()));
         sb.append(vin.var);
-        if (createComments())
-        {
-            if (vin.var == 0 && !Modifier.isStatic(mNode.access))
-            {
+        if (createComments()) {
+            if (vin.var == 0 && !Modifier.isStatic(mNode.access)) {
                 sb.append(" // Reference to self");
-            }
-            else
-            {
+            } else {
                 final int refIndex = vin.var - (Modifier.isStatic(mNode.access) ? 0 : 1);
-                if (refIndex >= 0 && refIndex < args.length - 1)
-                {
+                if (refIndex >= 0 && refIndex < args.length - 1) {
                     sb.append(" // Reference to ").append(args[refIndex].name);
                 }
             }
@@ -192,35 +144,29 @@ public class InstructionPrinter
         return sb.toString();
     }
 
-    protected String printIntInsnNode(IntInsnNode iin, ListIterator<?> it)
-    {
+    protected String printIntInsnNode(IntInsnNode iin, ListIterator<?> it) {
         return nameOpcode(iin.opcode()) + " " + iin.operand;
     }
 
-    protected String printFieldInsnNode(FieldInsnNode fin, ListIterator<?> it)
-    {
+    protected String printFieldInsnNode(FieldInsnNode fin, ListIterator<?> it) {
         String desc = Type.getType(fin.desc).getClassName();
         if (desc == null || desc.equals("null"))
             desc = fin.desc;
         return nameOpcode(fin.opcode()) + " " + fin.owner + "." + fin.name + ":" + desc;
     }
 
-    protected String printMethodInsnNode(MethodInsnNode min, ListIterator<?> it)
-    {
+    protected String printMethodInsnNode(MethodInsnNode min, ListIterator<?> it) {
         StringBuilder sb = new StringBuilder();
         sb.append(nameOpcode(min.opcode())).append(" ").append(min.owner).append(" ").append(min.name).append("(");
 
         String desc = min.desc;
-        try
-        {
+        try {
             if (Type.getType(min.desc) != null)
                 desc = Type.getType(min.desc).getClassName();
 
             if (desc == null || desc.equals("null"))
                 desc = min.desc;
-        }
-        catch (java.lang.ArrayIndexOutOfBoundsException e)
-        {
+        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
 
         }
 
@@ -231,87 +177,70 @@ public class InstructionPrinter
         return sb.toString();
     }
 
-    protected String printLdcInsnNode(LdcInsnNode ldc, ListIterator<?> it)
-    {
+    protected String printLdcInsnNode(LdcInsnNode ldc, ListIterator<?> it) {
         if (ldc.cst instanceof String)
             return nameOpcode(ldc.opcode()) + " \"" + StringEscapeUtils.escapeJava(ldc.cst.toString()) + "\" (" + ldc.cst.getClass().getCanonicalName() + ")";
 
         return nameOpcode(ldc.opcode()) + " " + StringEscapeUtils.escapeJava(ldc.cst.toString()) + " (" + ldc.cst.getClass().getCanonicalName() + ")";
     }
 
-    protected String printInsnNode(InsnNode in, ListIterator<?> it)
-    {
+    protected String printInsnNode(InsnNode in, ListIterator<?> it) {
         return nameOpcode(in.opcode());
     }
 
-    protected String printJumpInsnNode(JumpInsnNode jin, ListIterator<?> it)
-    {
+    protected String printJumpInsnNode(JumpInsnNode jin, ListIterator<?> it) {
         String line = nameOpcode(jin.opcode()) + " L" + resolveLabel(jin.label);
         return line;
     }
 
-    protected String printLineNumberNode(LineNumberNode lin, ListIterator<?> it)
-    {
+    protected String printLineNumberNode(LineNumberNode lin, ListIterator<?> it) {
         return "";
     }
 
-    protected String printLabelnode(LabelNode label)
-    {
+    protected String printLabelnode(LabelNode label) {
         return "L" + resolveLabel(label);
     }
 
-    protected String printTypeInsnNode(TypeInsnNode tin)
-    {
-        try
-        {
+    protected String printTypeInsnNode(TypeInsnNode tin) {
+        try {
             String desc = tin.desc;
-            try
-            {
+            try {
                 if (Type.getType(tin.desc) != null)
                     desc = Type.getType(tin.desc).getClassName();
 
                 if (desc == null || desc.equals("null"))
                     desc = tin.desc;
-            }
-            catch (java.lang.ArrayIndexOutOfBoundsException e)
-            {
+            } catch (java.lang.ArrayIndexOutOfBoundsException e) {
 
             }
             return nameOpcode(tin.opcode()) + " " + desc;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             new ExceptionUI(e);
         }
         return "// error";
     }
 
-    protected String printIincInsnNode(IincInsnNode iin)
-    {
+    protected String printIincInsnNode(IincInsnNode iin) {
         return nameOpcode(iin.opcode()) + " " + iin.var + " " + iin.incr;
     }
 
-    protected String printTableSwitchInsnNode(TableSwitchInsnNode tin)
-    {
+    protected String printTableSwitchInsnNode(TableSwitchInsnNode tin) {
         String line = nameOpcode(tin.opcode()) + " \n";
         List<?> labels = tin.labels;
         int count = 0;
-        for (int i = tin.min; i < tin.max + 1; i++)
-        {
+        for (int i = tin.min; i < tin.max + 1; i++) {
             line += "                val: " + i + " -> " + "L" + resolveLabel((LabelNode) labels.get(count++)) + "\n";
         }
         line += "                default" + " -> L" + resolveLabel(tin.dflt) + "";
         return line;
     }
 
-    protected String printLookupSwitchInsnNode(LookupSwitchInsnNode lin)
-    {
+    protected String printLookupSwitchInsnNode(LookupSwitchInsnNode lin) {
         String line = nameOpcode(lin.opcode()) + ": \n";
         List<?> keys = lin.keys;
         List<?> labels = lin.labels;
 
-        for (int i = 0; i < keys.size(); i++)
-        {
+        for (int i = 0; i < keys.size(); i++) {
             int key = (Integer) keys.get(i);
             LabelNode label = (LabelNode) labels.get(i);
             line += "                val: " + key + " -> " + "L" + resolveLabel(label) + "\n";
@@ -320,23 +249,19 @@ public class InstructionPrinter
         return line;
     }
 
-    protected String printInvokeDynamicInsNode(InvokeDynamicInsnNode idin)
-    {
+    protected String printInvokeDynamicInsNode(InvokeDynamicInsnNode idin) {
         StringBuilder sb = new StringBuilder();
         sb.append(nameOpcode(idin.opcode())).append(" ").append(idin.bsm.getName()).append("(");
 
         String desc = idin.desc;
         String partedDesc = idin.desc.substring(2);
-        try
-        {
+        try {
             if (Type.getType(partedDesc) != null)
                 desc = Type.getType(partedDesc).getClassName();
 
             if (desc == null || desc.equals("null"))
                 desc = idin.desc;
-        }
-        catch (java.lang.ArrayIndexOutOfBoundsException e)
-        {
+        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
 
         }
 
@@ -347,44 +272,33 @@ public class InstructionPrinter
         return sb.toString();
     }
 
-    protected String printMultiANewArrayInsnNode(MultiANewArrayInsnNode manain)
-    {
+    protected String printMultiANewArrayInsnNode(MultiANewArrayInsnNode manain) {
         return nameOpcode(manain.opcode()) + " " + manain.desc;
     }
 
-    protected String nameOpcode(int opcode)
-    {
+    protected String nameOpcode(int opcode) {
         return "    " + OpcodeInfo.OPCODES.get(opcode).toLowerCase();
     }
 
-    protected int resolveLabel(LabelNode label)
-    {
-        if (labels.containsKey(label))
-        {
+    protected int resolveLabel(LabelNode label) {
+        if (labels.containsKey(label)) {
             return labels.get(label);
-        }
-        else
-        {
+        } else {
             int newLabelIndex = labels.size() + 1;
             labels.put(label, newLabelIndex);
             return newLabelIndex;
         }
     }
 
-    public static void saveTo(File file, InstructionPrinter printer)
-    {
-        try
-        {
+    public static void saveTo(File file, InstructionPrinter printer) {
+        try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-            for (String s : printer.createPrint())
-            {
+            for (String s : printer.createPrint()) {
                 bw.write(s);
                 bw.newLine();
             }
             bw.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             new ExceptionUI(e);
         }
     }

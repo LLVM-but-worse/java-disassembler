@@ -40,8 +40,7 @@ import java.util.List;
  *
  * @author Eric Bruneton
  */
-class Subroutine
-{
+class Subroutine {
 
     LabelNode start;
 
@@ -49,20 +48,17 @@ class Subroutine
 
     List<JumpInsnNode> callers;
 
-    private Subroutine()
-    {
+    private Subroutine() {
     }
 
-    Subroutine(final LabelNode start, final int maxLocals, final JumpInsnNode caller)
-    {
+    Subroutine(final LabelNode start, final int maxLocals, final JumpInsnNode caller) {
         this.start = start;
         this.access = new boolean[maxLocals];
         this.callers = new ArrayList<>();
         callers.add(caller);
     }
 
-    public Subroutine copy()
-    {
+    public Subroutine copy() {
         Subroutine result = new Subroutine();
         result.start = start;
         result.access = new boolean[access.length];
@@ -71,24 +67,18 @@ class Subroutine
         return result;
     }
 
-    public boolean merge(final Subroutine subroutine) throws AnalyzerException
-    {
+    public boolean merge(final Subroutine subroutine) throws AnalyzerException {
         boolean changes = false;
-        for (int i = 0; i < access.length; ++i)
-        {
-            if (subroutine.access[i] && !access[i])
-            {
+        for (int i = 0; i < access.length; ++i) {
+            if (subroutine.access[i] && !access[i]) {
                 access[i] = true;
                 changes = true;
             }
         }
-        if (subroutine.start == start)
-        {
-            for (int i = 0; i < subroutine.callers.size(); ++i)
-            {
+        if (subroutine.start == start) {
+            for (int i = 0; i < subroutine.callers.size(); ++i) {
                 JumpInsnNode caller = subroutine.callers.get(i);
-                if (!callers.contains(caller))
-                {
+                if (!callers.contains(caller)) {
                     callers.add(caller);
                     changes = true;
                 }

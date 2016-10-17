@@ -22,8 +22,7 @@ package org.apache.commons.cli;
  *
  * @version $Id: ParseException.java 1443102 2013-02-06 18:12:16Z tn $
  */
-public class ParseException extends Exception
-{
+public class ParseException extends Exception {
     /**
      * This exception {@code serialVersionUID}.
      */
@@ -35,8 +34,7 @@ public class ParseException extends Exception
      *
      * @param message the detail message
      */
-    public ParseException(String message)
-    {
+    public ParseException(String message) {
         super(message);
     }
 }

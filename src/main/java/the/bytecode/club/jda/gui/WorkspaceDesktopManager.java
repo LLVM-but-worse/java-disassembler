@@ -5,15 +5,12 @@ import the.bytecode.club.jda.settings.Settings;
 import javax.swing.*;
 import java.awt.*;
 
-public class WorkspaceDesktopManager extends DefaultDesktopManager
-{
+public class WorkspaceDesktopManager extends DefaultDesktopManager {
     private static final int SNAP_THRESHOLD = 5;
 
     @Override
-    public void dragFrame(JComponent f, int x, int y)
-    {
-        if (Settings.SNAP_TO_EDGES.getBool() && f instanceof JDAWindow)
-        {
+    public void dragFrame(JComponent f, int x, int y) {
+        if (Settings.SNAP_TO_EDGES.getBool() && f instanceof JDAWindow) {
             JDAWindow frame = (JDAWindow) f;
             JDesktopPane desk = frame.getDesktopPane();
             Dimension d = desk.getSize();
@@ -30,10 +27,8 @@ public class WorkspaceDesktopManager extends DefaultDesktopManager
     }
 
     @Override
-    public void resizeFrame(JComponent f, int x, int y, int w, int h)
-    {
-        if (Settings.SNAP_TO_EDGES.getBool())
-        {
+    public void resizeFrame(JComponent f, int x, int y, int w, int h) {
+        if (Settings.SNAP_TO_EDGES.getBool()) {
             JDAWindow frame = (JDAWindow) f;
             JDesktopPane desk = frame.getDesktopPane();
             Dimension d = desk.getSize();

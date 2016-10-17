@@ -39,8 +39,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class IntInsnNode extends AbstractInsnNode
-{
+public class IntInsnNode extends AbstractInsnNode {
 
     /**
      * The operand of this instruction.
@@ -54,8 +53,7 @@ public class IntInsnNode extends AbstractInsnNode
      *                must be BIPUSH, SIPUSH or NEWARRAY.
      * @param operand the operand of the instruction to be constructed.
      */
-    public IntInsnNode(final int opcode, final int operand)
-    {
+    public IntInsnNode(final int opcode, final int operand) {
         super(opcode);
         this.operand = operand;
     }
@@ -67,33 +65,28 @@ public class IntInsnNode extends AbstractInsnNode
      *               or NEWARRAY.
      */
     @Override
-    public void setOpcode(final int opcode)
-    {
+    public void setOpcode(final int opcode) {
         this.opcode = opcode;
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return INT_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitIntInsn(opcode, operand);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new IntInsnNode(opcode, operand).cloneAnnotations(this);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return Printer.OPCODES[opcode()] + ", " + operand;
     }
 }

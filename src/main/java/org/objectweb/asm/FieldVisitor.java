@@ -36,8 +36,7 @@ package org.objectweb.asm;
  *
  * @author Eric Bruneton
  */
-public abstract class FieldVisitor
-{
+public abstract class FieldVisitor {
 
     /**
      * The ASM API version implemented by this visitor. The value of this field
@@ -57,8 +56,7 @@ public abstract class FieldVisitor
      * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    public FieldVisitor(final int api)
-    {
+    public FieldVisitor(final int api) {
         this(api, null);
     }
 
@@ -70,10 +68,8 @@ public abstract class FieldVisitor
      * @param fv  the field visitor to which this visitor must delegate method
      *            calls. May be null.
      */
-    public FieldVisitor(final int api, final FieldVisitor fv)
-    {
-        if (api != Opcodes.ASM4 && api != Opcodes.ASM5)
-        {
+    public FieldVisitor(final int api, final FieldVisitor fv) {
+        if (api != Opcodes.ASM4 && api != Opcodes.ASM5) {
             throw new IllegalArgumentException();
         }
         this.api = api;
@@ -88,10 +84,8 @@ public abstract class FieldVisitor
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      * this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitAnnotation(String desc, boolean visible)
-    {
-        if (fv != null)
-        {
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        if (fv != null) {
             return fv.visitAnnotation(desc, visible);
         }
         return null;
@@ -111,14 +105,11 @@ public abstract class FieldVisitor
      * @return a visitor to visit the annotation values, or <tt>null</tt> if
      * this visitor is not interested in visiting this annotation.
      */
-    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
-    {
-        if (api < Opcodes.ASM5)
-        {
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
+        if (api < Opcodes.ASM5) {
             throw new RuntimeException();
         }
-        if (fv != null)
-        {
+        if (fv != null) {
             return fv.visitTypeAnnotation(typeRef, typePath, desc, visible);
         }
         return null;
@@ -129,10 +120,8 @@ public abstract class FieldVisitor
      *
      * @param attr an attribute.
      */
-    public void visitAttribute(Attribute attr)
-    {
-        if (fv != null)
-        {
+    public void visitAttribute(Attribute attr) {
+        if (fv != null) {
             fv.visitAttribute(attr);
         }
     }
@@ -142,10 +131,8 @@ public abstract class FieldVisitor
      * called, is used to inform the visitor that all the annotations and
      * attributes of the field have been visited.
      */
-    public void visitEnd()
-    {
-        if (fv != null)
-        {
+    public void visitEnd() {
+        if (fv != null) {
             fv.visitEnd();
         }
     }

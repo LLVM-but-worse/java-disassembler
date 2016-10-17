@@ -26,81 +26,66 @@ import java.io.IOException;
 
 @SuppressWarnings("serial")
         // use default serial UID
-class JsonNumber extends JsonValue
-{
+class JsonNumber extends JsonValue {
 
     private final String string;
 
-    JsonNumber(String string)
-    {
-        if (string == null)
-        {
+    JsonNumber(String string) {
+        if (string == null) {
             throw new NullPointerException("string is null");
         }
         this.string = string;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return string;
     }
 
     @Override
-    void write(JsonWriter writer) throws IOException
-    {
+    void write(JsonWriter writer) throws IOException {
         writer.writeNumber(string);
     }
 
     @Override
-    public boolean isNumber()
-    {
+    public boolean isNumber() {
         return true;
     }
 
     @Override
-    public int asInt()
-    {
+    public int asInt() {
         return Integer.parseInt(string, 10);
     }
 
     @Override
-    public long asLong()
-    {
+    public long asLong() {
         return Long.parseLong(string, 10);
     }
 
     @Override
-    public float asFloat()
-    {
+    public float asFloat() {
         return Float.parseFloat(string);
     }
 
     @Override
-    public double asDouble()
-    {
+    public double asDouble() {
         return Double.parseDouble(string);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return string.hashCode();
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        if (this == object)
-        {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (object == null)
-        {
+        if (object == null) {
             return false;
         }
-        if (getClass() != object.getClass())
-        {
+        if (getClass() != object.getClass()) {
             return false;
         }
         JsonNumber other = (JsonNumber) object;

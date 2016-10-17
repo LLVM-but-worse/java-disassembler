@@ -38,8 +38,7 @@ import org.objectweb.asm.TypeReference;
  *
  * @author Eric Bruneton
  */
-public class TypeAnnotationNode extends AnnotationNode
-{
+public class TypeAnnotationNode extends AnnotationNode {
 
     /**
      * A reference to the annotated type. See {@link TypeReference}.
@@ -65,11 +64,9 @@ public class TypeAnnotationNode extends AnnotationNode
      * @param desc     the class descriptor of the annotation class.
      * @throws IllegalStateException If a subclass calls this constructor.
      */
-    public TypeAnnotationNode(final int typeRef, final TypePath typePath, final String desc)
-    {
+    public TypeAnnotationNode(final int typeRef, final TypePath typePath, final String desc) {
         this(Opcodes.ASM5, typeRef, typePath, desc);
-        if (getClass() != TypeAnnotationNode.class)
-        {
+        if (getClass() != TypeAnnotationNode.class) {
             throw new IllegalStateException();
         }
     }
@@ -85,8 +82,7 @@ public class TypeAnnotationNode extends AnnotationNode
      *                 <tt>null</tt> if the annotation targets 'typeRef' as a whole.
      * @param desc     the class descriptor of the annotation class.
      */
-    public TypeAnnotationNode(final int api, final int typeRef, final TypePath typePath, final String desc)
-    {
+    public TypeAnnotationNode(final int api, final int typeRef, final TypePath typePath, final String desc) {
         super(api, desc);
         this.typeRef = typeRef;
         this.typePath = typePath;

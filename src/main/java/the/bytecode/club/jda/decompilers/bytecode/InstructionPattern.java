@@ -13,8 +13,7 @@ import java.util.Arrays;
  *
  * @author Bibl
  */
-public class InstructionPattern implements Opcodes
-{
+public class InstructionPattern implements Opcodes {
 
     /**
      * Last instruction-match position pointer
@@ -34,8 +33,7 @@ public class InstructionPattern implements Opcodes
      *
      * @param insns {@link AbstractInsnNode} pattern array.
      */
-    public InstructionPattern(AbstractInsnNode[] insns)
-    {
+    public InstructionPattern(AbstractInsnNode[] insns) {
         filters = translate(insns);
         lastMatch = new AbstractInsnNode[insns.length];
     }
@@ -45,12 +43,10 @@ public class InstructionPattern implements Opcodes
      *
      * @param opcodes Opcodes to convert to {@link OpcodeFilter}s.
      */
-    public InstructionPattern(int[] opcodes)
-    {
+    public InstructionPattern(int[] opcodes) {
         filters = new InstructionFilter[opcodes.length];
         lastMatch = new AbstractInsnNode[opcodes.length];
-        for (int i = 0; i < opcodes.length; i++)
-        {
+        for (int i = 0; i < opcodes.length; i++) {
             filters[i] = new OpcodeFilter(opcodes[i]);
         }
     }
@@ -60,8 +56,7 @@ public class InstructionPattern implements Opcodes
      *
      * @param filters User-defined {@link InstructionFilter}s.
      */
-    public InstructionPattern(InstructionFilter[] filters)
-    {
+    public InstructionPattern(InstructionFilter[] filters) {
         this.filters = filters;
         lastMatch = new AbstractInsnNode[filters.length];
     }
@@ -73,23 +68,18 @@ public class InstructionPattern implements Opcodes
      * @param ain {@link AbstractInsnNode} to check.
      * @return True if this instruction successfully completed the pattern.
      */
-    public boolean accept(AbstractInsnNode ain)
-    {
+    public boolean accept(AbstractInsnNode ain) {
         if (pointer >= filters.length)
             reset();
 
         InstructionFilter filter = filters[pointer];
-        if (filter.accept(ain))
-        {
+        if (filter.accept(ain)) {
             lastMatch[pointer] = ain;
-            if (pointer >= (filters.length - 1))
-            {
+            if (pointer >= (filters.length - 1)) {
                 return true;
             }
             pointer++;
-        }
-        else
-        {
+        } else {
             reset();
         }
         return false;
@@ -99,16 +89,14 @@ public class InstructionPattern implements Opcodes
      * @return Last pattern sequence match equivilent from the inputted
      * {@link AbstractInsnNode}s.
      */
-    public AbstractInsnNode[] getLastMatch()
-    {
+    public AbstractInsnNode[] getLastMatch() {
         return lastMatch;
     }
 
     /**
      * Resets the instruction pointer and clears the last match cache data.
      */
-    public void resetMatch()
-    {
+    public void resetMatch() {
         reset();
         AbstractInsnNode[] match = lastMatch;
         lastMatch = new AbstractInsnNode[match.length];
@@ -117,8 +105,7 @@ public class InstructionPattern implements Opcodes
     /**
      * Sets the current instruction pointer to 0 (start of pattern).
      */
-    public void reset()
-    {
+    public void reset() {
         pointer = 0;
     }
 
@@ -129,11 +116,9 @@ public class InstructionPattern implements Opcodes
      * @param ains {@link AbstractInsnNode}s to convert.
      * @return Array of {@link InstructionFilter}s.
      */
-    public static InstructionFilter[] translate(AbstractInsnNode[] ains)
-    {
+    public static InstructionFilter[] translate(AbstractInsnNode[] ains) {
         InstructionFilter[] filters = new InstructionFilter[ains.length];
-        for (int i = 0; i < ains.length; i++)
-        {
+        for (int i = 0; i < ains.length; i++) {
             filters[i] = translate(ains[i]);
         }
         return filters;
@@ -146,66 +131,41 @@ public class InstructionPattern implements Opcodes
      * @param ain Instruction to convert.
      * @return A filter an an equivilent to the inputted instruction.
      */
-    public static InstructionFilter translate(AbstractInsnNode ain)
-    {
-        if (ain instanceof LdcInsnNode)
-        {
+    public static InstructionFilter translate(AbstractInsnNode ain) {
+        if (ain instanceof LdcInsnNode) {
             return new LdcInstructionFilter(((LdcInsnNode) ain).cst);
-        }
-        else if (ain instanceof TypeInsnNode)
-        {
+        } else if (ain instanceof TypeInsnNode) {
             return new TypeInstructionFilter(ain.opcode(), ((TypeInsnNode) ain).desc);
-        }
-        else if (ain instanceof FieldInsnNode)
-        {
+        } else if (ain instanceof FieldInsnNode) {
             return new FieldInstructionFilter(ain.opcode(), ((FieldInsnNode) ain).owner, ((FieldInsnNode) ain).name, ((FieldInsnNode) ain).desc);
-        }
-        else if (ain instanceof MethodInsnNode)
-        {
+        } else if (ain instanceof MethodInsnNode) {
             return new MethodInstructionFilter(ain.opcode(), ((MethodInsnNode) ain).owner, ((MethodInsnNode) ain).name, ((MethodInsnNode) ain).desc);
-        }
-        else if (ain instanceof VarInsnNode)
-        {
+        } else if (ain instanceof VarInsnNode) {
             return new VarInstructionFilter(ain.opcode(), ((VarInsnNode) ain).var);
-        }
-        else if (ain instanceof InsnNode)
-        {
+        } else if (ain instanceof InsnNode) {
             return new InsnInstructionFilter(ain.opcode());
-        }
-        else if (ain instanceof IincInsnNode)
-        {
+        } else if (ain instanceof IincInsnNode) {
             return new IincInstructionFilter(((IincInsnNode) ain).incr, ((IincInsnNode) ain).var);
-        }
-        else if (ain instanceof JumpInsnNode)
-        {
+        } else if (ain instanceof JumpInsnNode) {
             return new JumpInstructionFilter(ain.opcode());
-        }
-        else if (ain instanceof LabelNode)
-        {
+        } else if (ain instanceof LabelNode) {
             return InstructionFilter.ACCEPT_ALL; // TODO: Cache labels and
             // check. // TODO: That's a
             // fucking stupid idea.
-        }
-        else if (ain instanceof MultiANewArrayInsnNode)
-        {
+        } else if (ain instanceof MultiANewArrayInsnNode) {
             return new MultiANewArrayInstructionFilter(((MultiANewArrayInsnNode) ain).desc, ((MultiANewArrayInsnNode) ain).dims);
-        }
-        else
-        {
+        } else {
             return InstructionFilter.ACCEPT_ALL;
         }
     }
 
-    public static void main(String[] args)
-    {
-        AbstractInsnNode[] ains = new AbstractInsnNode[] { new LdcInsnNode("ldc"), new VarInsnNode(ASTORE, 0),
-                new LdcInsnNode("ldc") };
-        InstructionPattern pattern = new InstructionPattern(new AbstractInsnNode[] { new LdcInsnNode("ldc"),
-                new VarInsnNode(-1, -1) });
-        for (AbstractInsnNode ain : ains)
-        {
-            if (pattern.accept(ain))
-            {
+    public static void main(String[] args) {
+        AbstractInsnNode[] ains = new AbstractInsnNode[]{new LdcInsnNode("ldc"), new VarInsnNode(ASTORE, 0),
+                new LdcInsnNode("ldc")};
+        InstructionPattern pattern = new InstructionPattern(new AbstractInsnNode[]{new LdcInsnNode("ldc"),
+                new VarInsnNode(-1, -1)});
+        for (AbstractInsnNode ain : ains) {
+            if (pattern.accept(ain)) {
                 System.out.println(Arrays.toString(pattern.getLastMatch()));
             }
         }

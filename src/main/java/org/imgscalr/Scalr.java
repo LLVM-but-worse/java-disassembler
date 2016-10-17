@@ -184,8 +184,7 @@ import java.awt.image.*;
  * @author Riyad Kalla (software@thebuzzmedia.com)
  * @since 1.1
  */
-public class Scalr
-{
+public class Scalr {
     /**
      * System property name used to define the debug boolean flag.
      * <p/>
@@ -292,8 +291,8 @@ public class Scalr
      *
      * @since 3.0
      */
-    public static final ConvolveOp OP_ANTIALIAS = new ConvolveOp(new Kernel(3, 3, new float[] { .0f, .08f, .0f, .08f,
-            .68f, .08f, .0f, .08f, .0f }), ConvolveOp.EDGE_NO_OP, null);
+    public static final ConvolveOp OP_ANTIALIAS = new ConvolveOp(new Kernel(3, 3, new float[]{.0f, .08f, .0f, .08f,
+            .68f, .08f, .0f, .08f, .0f}), ConvolveOp.EDGE_NO_OP, null);
 
     /**
      * A {@link RescaleOp} used to make any input image 10% darker.
@@ -330,8 +329,7 @@ public class Scalr
      * Static initializer used to prepare some of the variables used by this
      * class.
      */
-    static
-    {
+    static {
         log(0, "Debug output ENABLED");
     }
 
@@ -341,8 +339,7 @@ public class Scalr
      * @author Riyad Kalla (software@thebuzzmedia.com)
      * @since 1.1
      */
-    public static enum Method
-    {
+    public static enum Method {
         /**
          * Used to indicate that the scaling implementation should decide which
          * method to use in order to get the best looking scaled image in the
@@ -405,8 +402,7 @@ public class Scalr
      * @author Riyad Kalla (software@thebuzzmedia.com)
      * @since 3.1
      */
-    public static enum Mode
-    {
+    public static enum Mode {
         /**
          * Used to indicate that the scaling implementation should calculate
          * dimensions for the resultant image by looking at the image's
@@ -456,8 +452,7 @@ public class Scalr
      * @author Riyad Kalla (software@thebuzzmedia.com)
      * @since 3.2
      */
-    public static enum Rotation
-    {
+    public static enum Rotation {
         /**
          * 90-degree, clockwise rotation (to the right). This is equivalent to a
          * quarter-turn of the image to the right; moving the picture on to its
@@ -591,8 +586,7 @@ public class Scalr
      *                                  to fail, even when using straight forward JDK-image
      *                                  operations.
      */
-    public static BufferedImage apply(BufferedImage src, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage apply(BufferedImage src, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         long t = -1;
         if (DEBUG)
             t = System.currentTimeMillis();
@@ -638,8 +632,7 @@ public class Scalr
 
         boolean hasReassignedSrc = false;
 
-        for (int i = 0; i < ops.length; i++)
-        {
+        for (int i = 0; i < ops.length; i++) {
             long subT = -1;
             if (DEBUG)
                 subT = System.currentTimeMillis();
@@ -678,7 +671,7 @@ public class Scalr
             BufferedImage result = op.filter(src, dest);
 
 			/*
-			 * Flush the 'src' image ONLY IF it is one of our interim temporary
+             * Flush the 'src' image ONLY IF it is one of our interim temporary
 			 * images being used when applying 2 or more operations back to
 			 * back. We never want to flush the original image passed in.
 			 */
@@ -744,8 +737,7 @@ public class Scalr
      *                                  to fail, even when using straight forward JDK-image
      *                                  operations.
      */
-    public static BufferedImage crop(BufferedImage src, int width, int height, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage crop(BufferedImage src, int width, int height, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return crop(src, 0, 0, width, height, ops);
     }
 
@@ -786,8 +778,7 @@ public class Scalr
      *                                  to fail, even when using straight forward JDK-image
      *                                  operations.
      */
-    public static BufferedImage crop(BufferedImage src, int x, int y, int width, int height, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage crop(BufferedImage src, int x, int y, int width, int height, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         long t = -1;
         if (DEBUG)
             t = System.currentTimeMillis();
@@ -869,8 +860,7 @@ public class Scalr
      *                                  to fail, even when using straight forward JDK-image
      *                                  operations.
      */
-    public static BufferedImage pad(BufferedImage src, int padding, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage pad(BufferedImage src, int padding, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return pad(src, padding, Color.BLACK);
     }
 
@@ -916,8 +906,7 @@ public class Scalr
      *                                  to fail, even when using straight forward JDK-image
      *                                  operations.
      */
-    public static BufferedImage pad(BufferedImage src, int padding, Color color, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage pad(BufferedImage src, int padding, Color color, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         long t = -1;
         if (DEBUG)
             t = System.currentTimeMillis();
@@ -955,15 +944,12 @@ public class Scalr
 		 * alpha if either our original image OR the padding color we are using
 		 * contain it.
 		 */
-        if (colorHasAlpha || imageHasAlpha)
-        {
+        if (colorHasAlpha || imageHasAlpha) {
             if (DEBUG)
                 log(1, "Transparency FOUND in source image or color, using ARGB image type...");
 
             result = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        }
-        else
-        {
+        } else {
             if (DEBUG)
                 log(1, "Transparency NOT FOUND in source image or color, using RGB image type...");
 
@@ -1024,8 +1010,7 @@ public class Scalr
      *                                  to fail, even when using straight forward JDK-image
      *                                  operations.
      */
-    public static BufferedImage resize(BufferedImage src, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage resize(BufferedImage src, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return resize(src, Method.AUTOMATIC, Mode.AUTOMATIC, targetSize, targetSize, ops);
     }
 
@@ -1067,8 +1052,7 @@ public class Scalr
      *                                  operations.
      * @see Method
      */
-    public static BufferedImage resize(BufferedImage src, Method scalingMethod, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage resize(BufferedImage src, Method scalingMethod, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return resize(src, scalingMethod, Mode.AUTOMATIC, targetSize, targetSize, ops);
     }
 
@@ -1118,8 +1102,7 @@ public class Scalr
      *                                  operations.
      * @see Mode
      */
-    public static BufferedImage resize(BufferedImage src, Mode resizeMode, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage resize(BufferedImage src, Mode resizeMode, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return resize(src, Method.AUTOMATIC, resizeMode, targetSize, targetSize, ops);
     }
 
@@ -1171,8 +1154,7 @@ public class Scalr
      * @see Method
      * @see Mode
      */
-    public static BufferedImage resize(BufferedImage src, Method scalingMethod, Mode resizeMode, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage resize(BufferedImage src, Method scalingMethod, Mode resizeMode, int targetSize, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return resize(src, scalingMethod, resizeMode, targetSize, targetSize, ops);
     }
 
@@ -1216,8 +1198,7 @@ public class Scalr
      *                                  to fail, even when using straight forward JDK-image
      *                                  operations.
      */
-    public static BufferedImage resize(BufferedImage src, int targetWidth, int targetHeight, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage resize(BufferedImage src, int targetWidth, int targetHeight, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return resize(src, Method.AUTOMATIC, Mode.AUTOMATIC, targetWidth, targetHeight, ops);
     }
 
@@ -1264,8 +1245,7 @@ public class Scalr
      *                                  operations.
      * @see Method
      */
-    public static BufferedImage resize(BufferedImage src, Method scalingMethod, int targetWidth, int targetHeight, BufferedImageOp... ops)
-    {
+    public static BufferedImage resize(BufferedImage src, Method scalingMethod, int targetWidth, int targetHeight, BufferedImageOp... ops) {
         return resize(src, scalingMethod, Mode.AUTOMATIC, targetWidth, targetHeight, ops);
     }
 
@@ -1320,8 +1300,7 @@ public class Scalr
      *                                  operations.
      * @see Mode
      */
-    public static BufferedImage resize(BufferedImage src, Mode resizeMode, int targetWidth, int targetHeight, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage resize(BufferedImage src, Mode resizeMode, int targetWidth, int targetHeight, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         return resize(src, Method.AUTOMATIC, resizeMode, targetWidth, targetHeight, ops);
     }
 
@@ -1379,8 +1358,7 @@ public class Scalr
      * @see Method
      * @see Mode
      */
-    public static BufferedImage resize(BufferedImage src, Method scalingMethod, Mode resizeMode, int targetWidth, int targetHeight, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage resize(BufferedImage src, Method scalingMethod, Mode resizeMode, int targetWidth, int targetHeight, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         long t = -1;
         if (DEBUG)
             t = System.currentTimeMillis();
@@ -1425,13 +1403,10 @@ public class Scalr
 		 * just specify the dimensions they would like the image to roughly fit
 		 * within and it will do the right thing without mangling the result.
 		 */
-        if (resizeMode == Mode.FIT_EXACT)
-        {
+        if (resizeMode == Mode.FIT_EXACT) {
             if (DEBUG)
                 log(1, "Resize Mode FIT_EXACT used, no width/height checking or re-calculation will be done.");
-        }
-        else if (resizeMode == Mode.BEST_FIT_BOTH)
-        {
+        } else if (resizeMode == Mode.BEST_FIT_BOTH) {
             float requestedHeightScaling = ((float) targetHeight / (float) currentHeight);
             float requestedWidthScaling = ((float) targetWidth / (float) currentWidth);
             float actualScaling = Math.min(requestedHeightScaling, requestedWidthScaling);
@@ -1444,11 +1419,8 @@ public class Scalr
 
             if (DEBUG)
                 log(1, "Auto-Corrected width and height based on scalingRatio %d.", actualScaling);
-        }
-        else
-        {
-            if ((ratio <= 1 && resizeMode == Mode.AUTOMATIC) || (resizeMode == Mode.FIT_TO_WIDTH))
-            {
+        } else {
+            if ((ratio <= 1 && resizeMode == Mode.AUTOMATIC) || (resizeMode == Mode.FIT_TO_WIDTH)) {
                 // First make sure we need to do any work in the first place
                 if (targetWidth == src.getWidth())
                     return src;
@@ -1465,9 +1437,7 @@ public class Scalr
 
                 if (DEBUG && originalTargetHeight != targetHeight)
                     log(1, "Auto-Corrected targetHeight [from=%d to=%d] to honor image proportions.", originalTargetHeight, targetHeight);
-            }
-            else
-            {
+            } else {
                 // First make sure we need to do any work in the first place
                 if (targetHeight == src.getHeight())
                     return src;
@@ -1494,16 +1464,11 @@ public class Scalr
             log(1, "Using Scaling Method: %s", scalingMethod);
 
         // Now we scale the image
-        if (scalingMethod == Scalr.Method.SPEED)
-        {
+        if (scalingMethod == Scalr.Method.SPEED) {
             result = scaleImage(src, targetWidth, targetHeight, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        }
-        else if (scalingMethod == Scalr.Method.BALANCED)
-        {
+        } else if (scalingMethod == Scalr.Method.BALANCED) {
             result = scaleImage(src, targetWidth, targetHeight, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        }
-        else if (scalingMethod == Scalr.Method.QUALITY || scalingMethod == Scalr.Method.ULTRA_QUALITY)
-        {
+        } else if (scalingMethod == Scalr.Method.QUALITY || scalingMethod == Scalr.Method.ULTRA_QUALITY) {
 			/*
 			 * If we are scaling up (in either width or height - since we know
 			 * the image will stay proportional we just check if either are
@@ -1514,8 +1479,7 @@ public class Scalr
 			 * If we are scaling down, we must use the incremental scaling
 			 * algorithm for the best result.
 			 */
-            if (targetWidth > currentWidth || targetHeight > currentHeight)
-            {
+            if (targetWidth > currentWidth || targetHeight > currentHeight) {
                 if (DEBUG)
                     log(1, "QUALITY scale-up, a single BICUBIC scale operation will be used...");
 
@@ -1528,9 +1492,7 @@ public class Scalr
 				 * wondering how they can speed their own calls up.
 				 */
                 result = scaleImage(src, targetWidth, targetHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-            }
-            else
-            {
+            } else {
                 if (DEBUG)
                     log(1, "QUALITY scale-down, incremental scaling will be used...");
 
@@ -1588,8 +1550,7 @@ public class Scalr
      *                                  operations.
      * @see Rotation
      */
-    public static BufferedImage rotate(BufferedImage src, Rotation rotation, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static BufferedImage rotate(BufferedImage src, Rotation rotation, BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         long t = -1;
         if (DEBUG)
             t = System.currentTimeMillis();
@@ -1641,8 +1602,7 @@ public class Scalr
 		 */
         AffineTransform tx = new AffineTransform();
 
-        switch (rotation)
-        {
+        switch (rotation) {
             case CW_90:
 			/*
 			 * A 90 or -90 degree rotation will cause the height and width to
@@ -1731,10 +1691,8 @@ public class Scalr
      * @see Scalr#LOG_PREFIX
      * @see Scalr#LOG_PREFIX_PROPERTY_NAME
      */
-    protected static void log(int depth, String message, Object... params)
-    {
-        if (Scalr.DEBUG)
-        {
+    protected static void log(int depth, String message, Object... params) {
+        if (Scalr.DEBUG) {
             System.out.print(Scalr.LOG_PREFIX);
 
             for (int i = 0; i < depth; i++)
@@ -1774,8 +1732,7 @@ public class Scalr
      * href="http://code.google.com/p/java-image-scaling/source/browse/trunk/src/main/java/com/mortennobel/imagescaling/MultiStepRescaleOp.java">Thanks
      * to Morten Nobel for implementation hint</a>
      */
-    protected static BufferedImage createOptimalImage(BufferedImage src)
-    {
+    protected static BufferedImage createOptimalImage(BufferedImage src) {
         return createOptimalImage(src, src.getWidth(), src.getHeight());
     }
 
@@ -1811,8 +1768,7 @@ public class Scalr
      * href="http://code.google.com/p/java-image-scaling/source/browse/trunk/src/main/java/com/mortennobel/imagescaling/MultiStepRescaleOp.java">Thanks
      * to Morten Nobel for implementation hint</a>
      */
-    protected static BufferedImage createOptimalImage(BufferedImage src, int width, int height) throws IllegalArgumentException
-    {
+    protected static BufferedImage createOptimalImage(BufferedImage src, int width, int height) throws IllegalArgumentException {
         if (width < 0 || height < 0)
             throw new IllegalArgumentException("width [" + width + "] and height [" + height + "] must be >= 0");
 
@@ -1845,8 +1801,7 @@ public class Scalr
      * already of an optimal type.
      * @throws IllegalArgumentException if <code>src</code> is <code>null</code>.
      */
-    protected static BufferedImage copyToOptimalImage(BufferedImage src) throws IllegalArgumentException
-    {
+    protected static BufferedImage copyToOptimalImage(BufferedImage src) throws IllegalArgumentException {
         if (src == null)
             throw new IllegalArgumentException("src cannot be null");
 
@@ -1886,8 +1841,7 @@ public class Scalr
      * @return the fastest {@link Method} suited for scaling the image to the
      * specified dimensions while maintaining a good-looking result.
      */
-    protected static Method determineScalingMethod(int targetWidth, int targetHeight, float ratio)
-    {
+    protected static Method determineScalingMethod(int targetWidth, int targetHeight, float ratio) {
         // Get the primary dimension based on the orientation of the image
         int length = (ratio <= 1 ? targetWidth : targetHeight);
 
@@ -1923,8 +1877,7 @@ public class Scalr
      * @return the result of scaling the original <code>src</code> to the given
      * dimensions using the given interpolation method.
      */
-    protected static BufferedImage scaleImage(BufferedImage src, int targetWidth, int targetHeight, Object interpolationHintValue)
-    {
+    protected static BufferedImage scaleImage(BufferedImage src, int targetWidth, int targetHeight, Object interpolationHintValue) {
         // Setup the rendering resources to match the source image's
         BufferedImage result = createOptimalImage(src, targetWidth, targetHeight);
         Graphics2D resultGraphics = result.createGraphics();
@@ -1963,8 +1916,7 @@ public class Scalr
      * @return an image scaled to the given dimensions using the given rendering
      * hint.
      */
-    protected static BufferedImage scaleImageIncrementally(BufferedImage src, int targetWidth, int targetHeight, Method scalingMethod, Object interpolationHintValue)
-    {
+    protected static BufferedImage scaleImageIncrementally(BufferedImage src, int targetWidth, int targetHeight, Method scalingMethod, Object interpolationHintValue) {
         boolean hasReassignedSrc = false;
         int incrementCount = 0;
         int currentWidth = src.getWidth();
@@ -2002,8 +1954,7 @@ public class Scalr
 		 */
         int fraction = (scalingMethod == Method.ULTRA_QUALITY ? 7 : 2);
 
-        do
-        {
+        do {
             int prevCurrentWidth = currentWidth;
             int prevCurrentHeight = currentHeight;
 
@@ -2011,8 +1962,7 @@ public class Scalr
 			 * If the current width is bigger than our target, cut it in half
 			 * and sample again.
 			 */
-            if (currentWidth > targetWidth)
-            {
+            if (currentWidth > targetWidth) {
                 currentWidth -= (currentWidth / fraction);
 
 				/*
@@ -2028,8 +1978,7 @@ public class Scalr
 			 * and sample again.
 			 */
 
-            if (currentHeight > targetHeight)
-            {
+            if (currentHeight > targetHeight) {
                 currentHeight -= (currentHeight / fraction);
 
 				/*

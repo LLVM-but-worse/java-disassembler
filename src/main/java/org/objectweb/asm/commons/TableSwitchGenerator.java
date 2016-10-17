@@ -38,8 +38,7 @@ import org.objectweb.asm.Label;
  * @author Chris Nokleberg
  * @author Eric Bruneton
  */
-public interface TableSwitchGenerator
-{
+public interface TableSwitchGenerator {
 
     /**
      * Generates the code for a switch case.

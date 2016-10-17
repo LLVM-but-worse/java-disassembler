@@ -38,8 +38,7 @@ import java.util.*;
  *
  * @author Eric Bruneton
  */
-public class ClassNode extends ClassVisitor
-{
+public class ClassNode extends ClassVisitor {
 
     /**
      * The class version.
@@ -185,11 +184,9 @@ public class ClassNode extends ClassVisitor
      *
      * @throws IllegalStateException If a subclass calls this constructor.
      */
-    public ClassNode()
-    {
+    public ClassNode() {
         this(Opcodes.ASM5);
-        if (getClass() != ClassNode.class)
-        {
+        if (getClass() != ClassNode.class) {
             throw new IllegalStateException();
         }
     }
@@ -200,8 +197,7 @@ public class ClassNode extends ClassVisitor
      * @param api the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    public ClassNode(final int api)
-    {
+    public ClassNode(final int api) {
         super(api);
         this.interfaces = new ArrayList<>();
         this.innerClasses = new ArrayList<>();
@@ -215,50 +211,40 @@ public class ClassNode extends ClassVisitor
     // ------------------------------------------------------------------------
 
     @Override
-    public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces)
-    {
+    public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces) {
         this.version = version;
         this.access = access;
         this.name = name;
         this.signature = signature;
         this.superName = superName;
-        if (interfaces != null)
-        {
+        if (interfaces != null) {
             this.interfaces.addAll(Arrays.asList(interfaces));
         }
     }
 
     @Override
-    public void visitSource(final String file, final String debug)
-    {
+    public void visitSource(final String file, final String debug) {
         sourceFile = file;
         sourceDebug = debug;
     }
 
     @Override
-    public void visitOuterClass(final String owner, final String name, final String desc)
-    {
+    public void visitOuterClass(final String owner, final String name, final String desc) {
         outerClass = owner;
         outerMethod = name;
         outerMethodDesc = desc;
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
         AnnotationNode an = new AnnotationNode(desc);
-        if (visible)
-        {
-            if (visibleAnnotations == null)
-            {
+        if (visible) {
+            if (visibleAnnotations == null) {
                 visibleAnnotations = new ArrayList<>(1);
             }
             visibleAnnotations.add(an);
-        }
-        else
-        {
-            if (invisibleAnnotations == null)
-            {
+        } else {
+            if (invisibleAnnotations == null) {
                 invisibleAnnotations = new ArrayList<>(1);
             }
             invisibleAnnotations.add(an);
@@ -267,21 +253,15 @@ public class ClassNode extends ClassVisitor
     }
 
     @Override
-    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
-    {
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
         TypeAnnotationNode an = new TypeAnnotationNode(typeRef, typePath, desc);
-        if (visible)
-        {
-            if (visibleTypeAnnotations == null)
-            {
+        if (visible) {
+            if (visibleTypeAnnotations == null) {
                 visibleTypeAnnotations = new ArrayList<>(1);
             }
             visibleTypeAnnotations.add(an);
-        }
-        else
-        {
-            if (invisibleTypeAnnotations == null)
-            {
+        } else {
+            if (invisibleTypeAnnotations == null) {
                 invisibleTypeAnnotations = new ArrayList<>(1);
             }
             invisibleTypeAnnotations.add(an);
@@ -290,41 +270,35 @@ public class ClassNode extends ClassVisitor
     }
 
     @Override
-    public void visitAttribute(final Attribute attr)
-    {
-        if (attrs == null)
-        {
+    public void visitAttribute(final Attribute attr) {
+        if (attrs == null) {
             attrs = new ArrayList<>(1);
         }
         attrs.add(attr);
     }
 
     @Override
-    public void visitInnerClass(final String name, final String outerName, final String innerName, final int access)
-    {
+    public void visitInnerClass(final String name, final String outerName, final String innerName, final int access) {
         InnerClassNode icn = new InnerClassNode(name, outerName, innerName, access);
         innerClasses.add(icn);
     }
 
     @Override
-    public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value)
-    {
+    public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value) {
         FieldNode fn = new FieldNode(this, access, name, desc, signature, value);
         fields.add(fn);
         return fn;
     }
 
     @Override
-    public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions)
-    {
+    public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
         MethodNode mn = new MethodNode(this, access, name, desc, signature, exceptions);
         methods.add(mn);
         return mn;
     }
 
     @Override
-    public void visitEnd()
-    {
+    public void visitEnd() {
     }
 
     // ------------------------------------------------------------------------
@@ -340,24 +314,18 @@ public class ClassNode extends ClassVisitor
      * @param api an ASM API version. Must be one of {@link Opcodes#ASM4} or
      *            {@link Opcodes#ASM5}.
      */
-    public void check(final int api)
-    {
-        if (api == Opcodes.ASM4)
-        {
-            if (visibleTypeAnnotations != null && visibleTypeAnnotations.size() > 0)
-            {
+    public void check(final int api) {
+        if (api == Opcodes.ASM4) {
+            if (visibleTypeAnnotations != null && visibleTypeAnnotations.size() > 0) {
                 throw new RuntimeException();
             }
-            if (invisibleTypeAnnotations != null && invisibleTypeAnnotations.size() > 0)
-            {
+            if (invisibleTypeAnnotations != null && invisibleTypeAnnotations.size() > 0) {
                 throw new RuntimeException();
             }
-            for (FieldNode f : fields)
-            {
+            for (FieldNode f : fields) {
                 f.check(api);
             }
-            for (MethodNode m : methods)
-            {
+            for (MethodNode m : methods) {
                 m.check(api);
             }
         }
@@ -368,97 +336,80 @@ public class ClassNode extends ClassVisitor
      *
      * @param cv a class visitor.
      */
-    public void accept(final ClassVisitor cv)
-    {
+    public void accept(final ClassVisitor cv) {
         // visits header
         String[] interfaces = new String[this.interfaces.size()];
         this.interfaces.toArray(interfaces);
         cv.visit(version, access, name, signature, superName, interfaces);
         // visits source
-        if (sourceFile != null || sourceDebug != null)
-        {
+        if (sourceFile != null || sourceDebug != null) {
             cv.visitSource(sourceFile, sourceDebug);
         }
         // visits outer class
-        if (outerClass != null)
-        {
+        if (outerClass != null) {
             cv.visitOuterClass(outerClass, outerMethod, outerMethodDesc);
         }
         // visits attributes
         int i, n;
         n = visibleAnnotations == null ? 0 : visibleAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             AnnotationNode an = visibleAnnotations.get(i);
             an.accept(cv.visitAnnotation(an.desc, true));
         }
         n = invisibleAnnotations == null ? 0 : invisibleAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             AnnotationNode an = invisibleAnnotations.get(i);
             an.accept(cv.visitAnnotation(an.desc, false));
         }
         n = visibleTypeAnnotations == null ? 0 : visibleTypeAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             TypeAnnotationNode an = visibleTypeAnnotations.get(i);
             an.accept(cv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc, true));
         }
         n = invisibleTypeAnnotations == null ? 0 : invisibleTypeAnnotations.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             TypeAnnotationNode an = invisibleTypeAnnotations.get(i);
             an.accept(cv.visitTypeAnnotation(an.typeRef, an.typePath, an.desc, false));
         }
         n = attrs == null ? 0 : attrs.size();
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             cv.visitAttribute(attrs.get(i));
         }
         // visits inner classes
-        for (i = 0; i < innerClasses.size(); ++i)
-        {
+        for (i = 0; i < innerClasses.size(); ++i) {
             innerClasses.get(i).accept(cv);
         }
         // visits fields
-        for (i = 0; i < fields.size(); ++i)
-        {
+        for (i = 0; i < fields.size(); ++i) {
             fields.get(i).accept(cv);
         }
         // visits methods
-        for (i = 0; i < methods.size(); ++i)
-        {
+        for (i = 0; i < methods.size(); ++i) {
             methods.get(i).accept(cv);
         }
         // visits end
         cv.visitEnd();
     }
 
-    public List<String> constructors()
-    {
+    public List<String> constructors() {
         List<String> constructors = new ArrayList<>();
-        for (MethodNode mn : methods)
-        {
+        for (MethodNode mn : methods) {
             if (mn.name.equals("<init>"))
                 constructors.add(mn.desc);
         }
         return constructors;
     }
 
-    public MethodNode getMethodByName(String name)
-    {
-        for (MethodNode mn : methods)
-        {
+    public MethodNode getMethodByName(String name) {
+        for (MethodNode mn : methods) {
             if (mn.name.equals(name))
                 return mn;
         }
         return null;
     }
 
-    public FieldNode getField(String field, String desc, boolean ignoreStatic)
-    {
-        for (FieldNode fn : fields)
-        {
+    public FieldNode getField(String field, String desc, boolean ignoreStatic) {
+        for (FieldNode fn : fields) {
             if (ignoreStatic && (fn.access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC)
                 continue;
             if ((field == null || fn.name.equals(field)) && (desc == null || desc.equals(fn.desc)))
@@ -467,15 +418,12 @@ public class ClassNode extends ClassVisitor
         return null;
     }
 
-    public FieldNode getField(String field, String desc)
-    {
+    public FieldNode getField(String field, String desc) {
         return getField(field, desc, true);
     }
 
-    public FieldNode getPublicField(String field, String desc, boolean ignoreStatic)
-    {
-        for (FieldNode fn : fields)
-        {
+    public FieldNode getPublicField(String field, String desc, boolean ignoreStatic) {
+        for (FieldNode fn : fields) {
             if ((fn.access & Opcodes.ACC_PUBLIC) != Opcodes.ACC_PUBLIC)
                 continue;
             if (ignoreStatic && (fn.access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC)
@@ -486,58 +434,46 @@ public class ClassNode extends ClassVisitor
         return null;
     }
 
-    public FieldNode getPublicField(String field, String desc)
-    {
+    public FieldNode getPublicField(String field, String desc) {
         return getPublicField(field, desc, true);
     }
 
-    public MethodNode getMethod(String method, String desc)
-    {
-        for (MethodNode mn : methods)
-        {
+    public MethodNode getMethod(String method, String desc) {
+        for (MethodNode mn : methods) {
             if (mn.name.equals(method) && (desc == null || desc.equals(mn.desc)))
                 return mn;
         }
         return null;
     }
 
-    public MethodNode getMethod(String desc)
-    {
-        for (MethodNode mn : methods)
-        {
+    public MethodNode getMethod(String desc) {
+        for (MethodNode mn : methods) {
             if (desc.endsWith(mn.desc))
                 return mn;
         }
         return null;
     }
 
-    public int methodCount(String desc, boolean ignoreStatic)
-    {
+    public int methodCount(String desc, boolean ignoreStatic) {
         int count = 0;
-        for (MethodNode mn : methods)
-        {
-            if (ignoreStatic && (mn.access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC)
-            {
+        for (MethodNode mn : methods) {
+            if (ignoreStatic && (mn.access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC) {
                 continue;
             }
-            if (mn.desc.equals(desc))
-            {
+            if (mn.desc.equals(desc)) {
                 count++;
             }
         }
         return count;
     }
 
-    public int methodCount(String desc)
-    {
+    public int methodCount(String desc) {
         return methodCount(desc, true);
     }
 
-    public int fieldCount(String desc, boolean ignoreStatic)
-    {
+    public int fieldCount(String desc, boolean ignoreStatic) {
         int count = 0;
-        for (FieldNode fn : fields)
-        {
+        for (FieldNode fn : fields) {
             if (ignoreStatic && (fn.access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC)
                 continue;
             if (fn.desc.equals(desc))
@@ -546,16 +482,13 @@ public class ClassNode extends ClassVisitor
         return count;
     }
 
-    public int fieldCount(String desc)
-    {
+    public int fieldCount(String desc) {
         return fieldCount(desc, true);
     }
 
-    public int getAbnormalFieldCount(boolean ignoreStatic)
-    {
+    public int getAbnormalFieldCount(boolean ignoreStatic) {
         int count = 0;
-        for (FieldNode fn : fields)
-        {
+        for (FieldNode fn : fields) {
             if (ignoreStatic && (fn.access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC)
                 continue;
             if (fn.desc.contains("L") && fn.desc.endsWith(";") && !fn.desc.contains("java"))
@@ -564,16 +497,13 @@ public class ClassNode extends ClassVisitor
         return count;
     }
 
-    public int getAbnormalFieldCount()
-    {
+    public int getAbnormalFieldCount() {
         return getAbnormalFieldCount(true);
     }
 
-    public int getFieldTypeCount(boolean ignoreStatic)
-    {
+    public int getFieldTypeCount(boolean ignoreStatic) {
         List<String> types = new ArrayList<>();
-        for (FieldNode fn : fields)
-        {
+        for (FieldNode fn : fields) {
             if (ignoreStatic && (fn.access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC)
                 continue;
             if (!types.contains(fn.desc))
@@ -582,19 +512,16 @@ public class ClassNode extends ClassVisitor
         return types.size();
     }
 
-    public int getFieldTypeCount()
-    {
+    public int getFieldTypeCount() {
         return getFieldTypeCount(true);
     }
 
-    public boolean ownerless()
-    {
+    public boolean ownerless() {
         return superName.equals("java/lang/Object");
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;
     }
 }

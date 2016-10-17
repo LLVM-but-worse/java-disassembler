@@ -60,16 +60,14 @@ import java.util.List;
  * </p>
  */
 @SuppressWarnings("serial") // use default serial UID
-public class JsonArray extends JsonValue implements Iterable<JsonValue>
-{
+public class JsonArray extends JsonValue implements Iterable<JsonValue> {
 
     private final List<JsonValue> values;
 
     /**
      * Creates a new empty JsonArray.
      */
-    public JsonArray()
-    {
+    public JsonArray() {
         values = new ArrayList<>();
     }
 
@@ -78,23 +76,17 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      *
      * @param array the JsonArray to get the initial contents from, must not be <code>null</code>
      */
-    public JsonArray(JsonArray array)
-    {
+    public JsonArray(JsonArray array) {
         this(array, false);
     }
 
-    private JsonArray(JsonArray array, boolean unmodifiable)
-    {
-        if (array == null)
-        {
+    private JsonArray(JsonArray array, boolean unmodifiable) {
+        if (array == null) {
             throw new NullPointerException("array is null");
         }
-        if (unmodifiable)
-        {
+        if (unmodifiable) {
             values = Collections.unmodifiableList(array.values);
-        }
-        else
-        {
+        } else {
             values = new ArrayList<>(array.values);
         }
     }
@@ -115,8 +107,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @deprecated Use {@link Json#parse(Reader)}{@link JsonValue#asArray() .asArray()} instead
      */
     @Deprecated
-    public static JsonArray readFrom(Reader reader) throws IOException
-    {
+    public static JsonArray readFrom(Reader reader) throws IOException {
         return JsonValue.readFrom(reader).asArray();
     }
 
@@ -130,8 +121,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @deprecated Use {@link Json#parse(String)}{@link JsonValue#asArray() .asArray()} instead
      */
     @Deprecated
-    public static JsonArray readFrom(String string)
-    {
+    public static JsonArray readFrom(String string) {
         return JsonValue.readFrom(string).asArray();
     }
 
@@ -146,8 +136,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param array the JsonArray for which an unmodifiable JsonArray is to be returned
      * @return an unmodifiable view of the specified JsonArray
      */
-    public static JsonArray unmodifiableArray(JsonArray array)
-    {
+    public static JsonArray unmodifiableArray(JsonArray array) {
         return new JsonArray(array, true);
     }
 
@@ -158,8 +147,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param value the value to add to the array
      * @return the array itself, to enable method chaining
      */
-    public JsonArray add(int value)
-    {
+    public JsonArray add(int value) {
         values.add(Json.value(value));
         return this;
     }
@@ -171,8 +159,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param value the value to add to the array
      * @return the array itself, to enable method chaining
      */
-    public JsonArray add(long value)
-    {
+    public JsonArray add(long value) {
         values.add(Json.value(value));
         return this;
     }
@@ -184,8 +171,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param value the value to add to the array
      * @return the array itself, to enable method chaining
      */
-    public JsonArray add(float value)
-    {
+    public JsonArray add(float value) {
         values.add(Json.value(value));
         return this;
     }
@@ -197,8 +183,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param value the value to add to the array
      * @return the array itself, to enable method chaining
      */
-    public JsonArray add(double value)
-    {
+    public JsonArray add(double value) {
         values.add(Json.value(value));
         return this;
     }
@@ -210,8 +195,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param value the value to add to the array
      * @return the array itself, to enable method chaining
      */
-    public JsonArray add(boolean value)
-    {
+    public JsonArray add(boolean value) {
         values.add(Json.value(value));
         return this;
     }
@@ -222,8 +206,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param value the string to add to the array
      * @return the array itself, to enable method chaining
      */
-    public JsonArray add(String value)
-    {
+    public JsonArray add(String value) {
         values.add(Json.value(value));
         return this;
     }
@@ -234,10 +217,8 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @param value the JsonValue to add to the array, must not be <code>null</code>
      * @return the array itself, to enable method chaining
      */
-    public JsonArray add(JsonValue value)
-    {
-        if (value == null)
-        {
+    public JsonArray add(JsonValue value) {
+        if (value == null) {
             throw new NullPointerException("value is null");
         }
         values.add(value);
@@ -254,8 +235,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray set(int index, int value)
-    {
+    public JsonArray set(int index, int value) {
         values.set(index, Json.value(value));
         return this;
     }
@@ -270,8 +250,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray set(int index, long value)
-    {
+    public JsonArray set(int index, long value) {
         values.set(index, Json.value(value));
         return this;
     }
@@ -286,8 +265,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray set(int index, float value)
-    {
+    public JsonArray set(int index, float value) {
         values.set(index, Json.value(value));
         return this;
     }
@@ -302,8 +280,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray set(int index, double value)
-    {
+    public JsonArray set(int index, double value) {
         values.set(index, Json.value(value));
         return this;
     }
@@ -318,8 +295,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray set(int index, boolean value)
-    {
+    public JsonArray set(int index, boolean value) {
         values.set(index, Json.value(value));
         return this;
     }
@@ -334,8 +310,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray set(int index, String value)
-    {
+    public JsonArray set(int index, String value) {
         values.set(index, Json.value(value));
         return this;
     }
@@ -349,10 +324,8 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray set(int index, JsonValue value)
-    {
-        if (value == null)
-        {
+    public JsonArray set(int index, JsonValue value) {
+        if (value == null) {
             throw new NullPointerException("value is null");
         }
         values.set(index, value);
@@ -367,8 +340,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonArray remove(int index)
-    {
+    public JsonArray remove(int index) {
         values.remove(index);
         return this;
     }
@@ -378,8 +350,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      *
      * @return the number of elements in this array
      */
-    public int size()
-    {
+    public int size() {
         return values.size();
     }
 
@@ -388,8 +359,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      *
      * @return <code>true</code> if this array contains no elements
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return values.isEmpty();
     }
 
@@ -401,8 +371,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      * @throws IndexOutOfBoundsException if the index is out of range, i.e. <code>index &lt; 0</code> or
      *                                   <code>index &gt;= size</code>
      */
-    public JsonValue get(int index)
-    {
+    public JsonValue get(int index) {
         return values.get(index);
     }
 
@@ -413,8 +382,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      *
      * @return a list of the values in this array
      */
-    public List<JsonValue> values()
-    {
+    public List<JsonValue> values() {
         return Collections.unmodifiableList(values);
     }
 
@@ -424,39 +392,31 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
      *
      * @return an iterator over the values of this array
      */
-    public Iterator<JsonValue> iterator()
-    {
+    public Iterator<JsonValue> iterator() {
         final Iterator<JsonValue> iterator = values.iterator();
-        return new Iterator<JsonValue>()
-        {
+        return new Iterator<JsonValue>() {
 
-            public boolean hasNext()
-            {
+            public boolean hasNext() {
                 return iterator.hasNext();
             }
 
-            public JsonValue next()
-            {
+            public JsonValue next() {
                 return iterator.next();
             }
 
-            public void remove()
-            {
+            public void remove() {
                 throw new UnsupportedOperationException();
             }
         };
     }
 
     @Override
-    void write(JsonWriter writer) throws IOException
-    {
+    void write(JsonWriter writer) throws IOException {
         writer.writeArrayOpen();
         Iterator<JsonValue> iterator = iterator();
         boolean first = true;
-        while (iterator.hasNext())
-        {
-            if (!first)
-            {
+        while (iterator.hasNext()) {
+            if (!first) {
                 writer.writeArraySeparator();
             }
             iterator.next().write(writer);
@@ -466,36 +426,29 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue>
     }
 
     @Override
-    public boolean isArray()
-    {
+    public boolean isArray() {
         return true;
     }
 
     @Override
-    public JsonArray asArray()
-    {
+    public JsonArray asArray() {
         return this;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return values.hashCode();
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        if (this == object)
-        {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (object == null)
-        {
+        if (object == null) {
             return false;
         }
-        if (getClass() != object.getClass())
-        {
+        if (getClass() != object.getClass()) {
             return false;
         }
         JsonArray other = (JsonArray) object;

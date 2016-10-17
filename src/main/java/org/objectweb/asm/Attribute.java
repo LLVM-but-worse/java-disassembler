@@ -35,8 +35,7 @@ package org.objectweb.asm;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-public class Attribute
-{
+public class Attribute {
 
     /**
      * The type of this attribute.
@@ -58,8 +57,7 @@ public class Attribute
      *
      * @param type the type of the attribute.
      */
-    protected Attribute(final String type)
-    {
+    protected Attribute(final String type) {
         this.type = type;
     }
 
@@ -69,8 +67,7 @@ public class Attribute
      *
      * @return <tt>true</tt> if this type of attribute is unknown.
      */
-    public boolean isUnknown()
-    {
+    public boolean isUnknown() {
         return true;
     }
 
@@ -79,8 +76,7 @@ public class Attribute
      *
      * @return <tt>true</tt> if this type of attribute is a code attribute.
      */
-    public boolean isCodeAttribute()
-    {
+    public boolean isCodeAttribute() {
         return false;
     }
 
@@ -90,8 +86,7 @@ public class Attribute
      * @return the labels corresponding to this attribute, or <tt>null</tt> if
      * this attribute is not a code attribute that contains labels.
      */
-    protected Label[] getLabels()
-    {
+    protected Label[] getLabels() {
         return null;
     }
 
@@ -120,8 +115,7 @@ public class Attribute
      * @return a <i>new</i> {@link Attribute} object corresponding to the given
      * bytes.
      */
-    protected Attribute read(final ClassReader cr, final int off, final int len, final char[] buf, final int codeOff, final Label[] labels)
-    {
+    protected Attribute read(final ClassReader cr, final int off, final int len, final char[] buf, final int codeOff, final Label[] labels) {
         Attribute attr = new Attribute(type);
         attr.value = new byte[len];
         System.arraycopy(cr.b, off, attr.value, 0, len);
@@ -148,8 +142,7 @@ public class Attribute
      *                  is not a code attribute.
      * @return the byte array form of this attribute.
      */
-    protected ByteVector write(final ClassWriter cw, final byte[] code, final int len, final int maxStack, final int maxLocals)
-    {
+    protected ByteVector write(final ClassWriter cw, final byte[] code, final int len, final int maxStack, final int maxLocals) {
         ByteVector v = new ByteVector();
         v.data = value;
         v.length = value.length;
@@ -161,12 +154,10 @@ public class Attribute
      *
      * @return the length of the attribute list that begins with this attribute.
      */
-    final int getCount()
-    {
+    final int getCount() {
         int count = 0;
         Attribute attr = this;
-        while (attr != null)
-        {
+        while (attr != null) {
             count += 1;
             attr = attr.next;
         }
@@ -193,12 +184,10 @@ public class Attribute
      * @return the size of all the attributes in this attribute list. This size
      * includes the size of the attribute headers.
      */
-    final int getSize(final ClassWriter cw, final byte[] code, final int len, final int maxStack, final int maxLocals)
-    {
+    final int getSize(final ClassWriter cw, final byte[] code, final int len, final int maxStack, final int maxLocals) {
         Attribute attr = this;
         int size = 0;
-        while (attr != null)
-        {
+        while (attr != null) {
             cw.newUTF8(attr.type);
             size += attr.write(cw, code, len, maxStack, maxLocals).length + 6;
             attr = attr.next;
@@ -226,11 +215,9 @@ public class Attribute
      *                  attributes are not code attributes.
      * @param out       where the attributes must be written.
      */
-    final void put(final ClassWriter cw, final byte[] code, final int len, final int maxStack, final int maxLocals, final ByteVector out)
-    {
+    final void put(final ClassWriter cw, final byte[] code, final int len, final int maxStack, final int maxLocals, final ByteVector out) {
         Attribute attr = this;
-        while (attr != null)
-        {
+        while (attr != null) {
             ByteVector b = attr.write(cw, code, len, maxStack, maxLocals);
             out.putShort(cw.newUTF8(attr.type)).putInt(b.length);
             out.putByteArray(b.data, 0, b.length);

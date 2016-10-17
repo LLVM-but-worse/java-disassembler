@@ -14,10 +14,8 @@ import java.util.Map;
  * @author Konloch
  */
 
-public class FileContainer
-{
-    public FileContainer(File f)
-    {
+public class FileContainer {
+    public FileContainer(File f) {
         this.file = f;
         this.name = f.getName();
     }
@@ -28,13 +26,10 @@ public class FileContainer
     public HashMap<String, byte[]> files = new HashMap<>();
     private Map<String, ClassNode> classes = new HashMap<>();
 
-    public ClassNode getClassNode(String name)
-    {
-        if (!classes.containsKey(name))
-        {
+    public ClassNode getClassNode(String name) {
+        if (!classes.containsKey(name)) {
             byte[] bytes = files.get(name + ".class");
-            if (bytes != null)
-            {
+            if (bytes != null) {
                 ClassReader reader = new ClassReader(bytes);
                 ClassNode classNode = new ClassNode();
                 reader.accept(classNode, ClassReader.EXPAND_FRAMES);
@@ -44,23 +39,19 @@ public class FileContainer
         return classes.get(name);
     }
 
-    public Map<String, byte[]> getData()
-    {
+    public Map<String, byte[]> getData() {
         return files;
     }
 
-    public boolean remove(ClassNode classNode)
-    {
+    public boolean remove(ClassNode classNode) {
         return classes.remove(classNode.name) != null;
     }
 
-    public void add(ClassNode classNode)
-    {
+    public void add(ClassNode classNode) {
         classes.put(classNode.name, classNode);
     }
 
-    public Collection<ClassNode> values()
-    {
+    public Collection<ClassNode> values() {
         return classes.values();
     }
 }

@@ -26,57 +26,46 @@ import java.io.IOException;
 
 @SuppressWarnings("serial")
         // use default serial UID
-class JsonString extends JsonValue
-{
+class JsonString extends JsonValue {
 
     private final String string;
 
-    JsonString(String string)
-    {
-        if (string == null)
-        {
+    JsonString(String string) {
+        if (string == null) {
             throw new NullPointerException("string is null");
         }
         this.string = string;
     }
 
     @Override
-    void write(JsonWriter writer) throws IOException
-    {
+    void write(JsonWriter writer) throws IOException {
         writer.writeString(string);
     }
 
     @Override
-    public boolean isString()
-    {
+    public boolean isString() {
         return true;
     }
 
     @Override
-    public String asString()
-    {
+    public String asString() {
         return string;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return string.hashCode();
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        if (this == object)
-        {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (object == null)
-        {
+        if (object == null) {
             return false;
         }
-        if (getClass() != object.getClass())
-        {
+        if (getClass() != object.getClass()) {
             return false;
         }
         JsonString other = (JsonString) object;

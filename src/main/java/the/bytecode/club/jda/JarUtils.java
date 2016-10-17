@@ -21,8 +21,7 @@ import java.util.zip.ZipInputStream;
  * @author WaterWolf
  */
 
-public class JarUtils
-{
+public class JarUtils {
 
     /**
      * Loads the classes and resources from the input jar file
@@ -31,38 +30,27 @@ public class JarUtils
      * @param clazzList the existing map of loaded classes
      * @throws IOException
      */
-    public static void put(final File jarFile) throws IOException
-    {
+    public static void put(final File jarFile) throws IOException {
         FileContainer container = new FileContainer(jarFile);
         HashMap<String, byte[]> files = new HashMap<>();
 
         ZipInputStream jis = new ZipInputStream(new FileInputStream(jarFile));
         ZipEntry entry;
-        while ((entry = jis.getNextEntry()) != null)
-        {
-            try
-            {
+        while ((entry = jis.getNextEntry()) != null) {
+            try {
                 final String name = entry.getName();
                 final byte[] bytes = getBytes(jis);
-                if (!files.containsKey(name))
-                {
-                    if (!name.endsWith(".class"))
-                    {
+                if (!files.containsKey(name)) {
+                    if (!name.endsWith(".class")) {
                         if (!entry.isDirectory())
                             files.put(name, bytes);
-                    }
-                    else
-                    {
+                    } else {
                         files.put(name, bytes);
                     }
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 new ExceptionUI(e);
-            }
-            finally
-            {
+            } finally {
                 jis.closeEntry();
             }
         }
@@ -73,45 +61,31 @@ public class JarUtils
     }
 
 
-    public static ArrayList<ClassNode> loadClasses(final File jarFile) throws IOException
-    {
+    public static ArrayList<ClassNode> loadClasses(final File jarFile) throws IOException {
         ArrayList<ClassNode> classes = new ArrayList<>();
         ZipInputStream jis = new ZipInputStream(new FileInputStream(jarFile));
         ZipEntry entry;
-        while ((entry = jis.getNextEntry()) != null)
-        {
-            try
-            {
+        while ((entry = jis.getNextEntry()) != null) {
+            try {
                 final String name = entry.getName();
-                if (name.endsWith(".class"))
-                {
+                if (name.endsWith(".class")) {
                     byte[] bytes = getBytes(jis);
                     String cafebabe = String.format("%02X%02X%02X%02X", bytes[0], bytes[1], bytes[2], bytes[3]);
-                    if (cafebabe.toLowerCase().equals("cafebabe"))
-                    {
-                        try
-                        {
+                    if (cafebabe.toLowerCase().equals("cafebabe")) {
+                        try {
                             final ClassNode cn = getNode(bytes);
                             classes.add(cn);
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    else
-                    {
+                    } else {
                         System.out.println(jarFile + ">" + name + ": Header does not start with CAFEBABE, ignoring.");
                     }
                 }
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 new ExceptionUI(e);
-            }
-            finally
-            {
+            } finally {
                 jis.closeEntry();
             }
         }
@@ -125,8 +99,7 @@ public class JarUtils
      * @param zipFile the input zip file
      * @throws IOException
      */
-    public static HashMap<String, byte[]> loadResources(final File zipFile) throws IOException
-    {
+    public static HashMap<String, byte[]> loadResources(final File zipFile) throws IOException {
         if (!zipFile.exists())
             return null; //just ignore
 
@@ -134,26 +107,19 @@ public class JarUtils
 
         ZipInputStream jis = new ZipInputStream(new FileInputStream(zipFile));
         ZipEntry entry;
-        while ((entry = jis.getNextEntry()) != null)
-        {
-            try
-            {
+        while ((entry = jis.getNextEntry()) != null) {
+            try {
                 final String name = entry.getName();
-                if (!name.endsWith(".class"))
-                {
+                if (!name.endsWith(".class")) {
                     if (!entry.isDirectory())
                         files.put(name, getBytes(jis));
 
                     jis.closeEntry();
                     continue;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 new ExceptionUI(e);
-            }
-            finally
-            {
+            } finally {
                 jis.closeEntry();
             }
         }
@@ -170,13 +136,11 @@ public class JarUtils
      * @return the read byte[]
      * @throws IOException
      */
-    public static byte[] getBytes(final InputStream is) throws IOException
-    {
+    public static byte[] getBytes(final InputStream is) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int a = 0;
-        while ((a = is.read(buffer)) != -1)
-        {
+        while ((a = is.read(buffer)) != -1) {
             baos.write(buffer, 0, a);
         }
         baos.close();
@@ -190,22 +154,15 @@ public class JarUtils
      * @param bytez the class file's byte[]
      * @return the ClassNode instance
      */
-    public static ClassNode getNode(final byte[] bytez)
-    {
+    public static ClassNode getNode(final byte[] bytez) {
         ClassReader cr = new ClassReader(bytez);
         ClassNode cn = new ClassNode();
-        try
-        {
+        try {
             cr.accept(cn, ClassReader.EXPAND_FRAMES);
-        }
-        catch (Exception e)
-        {
-            try
-            {
+        } catch (Exception e) {
+            try {
                 cr.accept(cn, ClassReader.SKIP_FRAMES);
-            }
-            catch (Exception e2)
-            {
+            } catch (Exception e2) {
                 e2.printStackTrace(); //just skip it
             }
         }
@@ -220,13 +177,10 @@ public class JarUtils
      * @param path     the exact path of the output jar file
      * @param manifest the manifest contents
      */
-    public static void saveAsJar(ArrayList<ClassNode> nodeList, String path, String manifest)
-    {
-        try
-        {
+    public static void saveAsJar(ArrayList<ClassNode> nodeList, String path, String manifest) {
+        try {
             JarOutputStream out = new JarOutputStream(new FileOutputStream(path));
-            for (ClassNode cn : nodeList)
-            {
+            for (ClassNode cn : nodeList) {
                 ClassWriter cw = new ClassWriter(0);
                 cn.accept(cw);
 
@@ -240,11 +194,9 @@ public class JarUtils
             out.closeEntry();
 
             for (FileContainer container : JDA.files)
-                for (Entry<String, byte[]> entry : container.files.entrySet())
-                {
+                for (Entry<String, byte[]> entry : container.files.entrySet()) {
                     String filename = entry.getKey();
-                    if (!filename.startsWith("META-INF"))
-                    {
+                    if (!filename.startsWith("META-INF")) {
                         out.putNextEntry(new ZipEntry(filename));
                         out.write(entry.getValue());
                         out.closeEntry();
@@ -252,9 +204,7 @@ public class JarUtils
                 }
 
             out.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             new ExceptionUI(e);
         }
     }
@@ -265,21 +215,17 @@ public class JarUtils
      * @param nodeList The loaded ClassNodes
      * @param path     the exact jar output path
      */
-    public static void saveAsJarClassesOnly(ArrayList<ClassNode> nodeList, String path)
-    {
-        try
-        {
+    public static void saveAsJarClassesOnly(ArrayList<ClassNode> nodeList, String path) {
+        try {
             JarOutputStream out = new JarOutputStream(new FileOutputStream(path));
             ArrayList<String> noDupe = new ArrayList<>();
-            for (ClassNode cn : nodeList)
-            {
+            for (ClassNode cn : nodeList) {
                 ClassWriter cw = new ClassWriter(0);
                 cn.accept(cw);
 
                 String name = cn.name + ".class";
 
-                if (!noDupe.contains(name))
-                {
+                if (!noDupe.contains(name)) {
                     noDupe.add(name);
                     out.putNextEntry(new ZipEntry(name));
                     out.write(cw.toByteArray());
@@ -289,24 +235,18 @@ public class JarUtils
 
             noDupe.clear();
             out.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             new ExceptionUI(e);
         }
     }
 
-    public static void saveAsJarClassesOnly(Map<String, byte[]> nodeList, String path)
-    {
-        try
-        {
+    public static void saveAsJarClassesOnly(Map<String, byte[]> nodeList, String path) {
+        try {
             JarOutputStream out = new JarOutputStream(new FileOutputStream(path));
             ArrayList<String> noDupe = new ArrayList<>();
-            for (Entry<String, byte[]> cn : nodeList.entrySet())
-            {
+            for (Entry<String, byte[]> cn : nodeList.entrySet()) {
                 String name = cn.getKey();
-                if (!noDupe.contains(name))
-                {
+                if (!noDupe.contains(name)) {
                     noDupe.add(name);
                     out.putNextEntry(new ZipEntry(name));
                     out.write(cn.getValue());
@@ -316,24 +256,18 @@ public class JarUtils
 
             noDupe.clear();
             out.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             new ExceptionUI(e);
         }
     }
 
-    public static void saveAsJar(Map<String, byte[]> nodeList, String path)
-    {
-        try
-        {
+    public static void saveAsJar(Map<String, byte[]> nodeList, String path) {
+        try {
             JarOutputStream out = new JarOutputStream(new FileOutputStream(path));
             ArrayList<String> noDupe = new ArrayList<>();
-            for (Entry<String, byte[]> entry : nodeList.entrySet())
-            {
+            for (Entry<String, byte[]> entry : nodeList.entrySet()) {
                 String name = entry.getKey();
-                if (!noDupe.contains(name))
-                {
+                if (!noDupe.contains(name)) {
                     noDupe.add(name);
                     out.putNextEntry(new ZipEntry(name));
                     out.write(entry.getValue());
@@ -342,13 +276,10 @@ public class JarUtils
             }
 
             for (FileContainer container : JDA.files)
-                for (Entry<String, byte[]> entry : container.files.entrySet())
-                {
+                for (Entry<String, byte[]> entry : container.files.entrySet()) {
                     String filename = entry.getKey();
-                    if (!filename.startsWith("META-INF"))
-                    {
-                        if (!noDupe.contains(filename))
-                        {
+                    if (!filename.startsWith("META-INF")) {
+                        if (!noDupe.contains(filename)) {
                             noDupe.add(filename);
                             out.putNextEntry(new ZipEntry(filename));
                             out.write(entry.getValue());
@@ -359,9 +290,7 @@ public class JarUtils
 
             noDupe.clear();
             out.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             new ExceptionUI(e);
         }
     }

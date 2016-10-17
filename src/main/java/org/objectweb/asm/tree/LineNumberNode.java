@@ -39,8 +39,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class LineNumberNode extends AbstractInsnNode
-{
+public class LineNumberNode extends AbstractInsnNode {
 
     /**
      * A line number. This number refers to the source file from which the class
@@ -60,28 +59,24 @@ public class LineNumberNode extends AbstractInsnNode
      *              which the class was compiled.
      * @param start the first instruction corresponding to this line number.
      */
-    public LineNumberNode(final int line, final LabelNode start)
-    {
+    public LineNumberNode(final int line, final LabelNode start) {
         super(-1);
         this.line = line;
         this.start = start;
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return LINE;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitLineNumber(line, start.getLabel());
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new LineNumberNode(line, clone(start, labels));
     }
 }

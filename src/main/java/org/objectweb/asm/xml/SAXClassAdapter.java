@@ -43,8 +43,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @see org.objectweb.asm.xml.Processor
  * @see org.objectweb.asm.xml.ASMContentHandler
  */
-public final class SAXClassAdapter extends ClassVisitor
-{
+public final class SAXClassAdapter extends ClassVisitor {
 
     SAXAdapter sa;
 
@@ -73,27 +72,22 @@ public final class SAXClassAdapter extends ClassVisitor
      *                       {@link ContentHandler#startDocument() startDocument()} and
      *                       {@link ContentHandler#endDocument() endDocument()} events.
      */
-    public SAXClassAdapter(final ContentHandler h, boolean singleDocument)
-    {
+    public SAXClassAdapter(final ContentHandler h, boolean singleDocument) {
         super(Opcodes.ASM5);
         this.sa = new SAXAdapter(h);
         this.singleDocument = singleDocument;
-        if (!singleDocument)
-        {
+        if (!singleDocument) {
             sa.addDocumentStart();
         }
     }
 
     @Override
-    public void visitSource(final String source, final String debug)
-    {
+    public void visitSource(final String source, final String debug) {
         AttributesImpl att = new AttributesImpl();
-        if (source != null)
-        {
+        if (source != null) {
             att.addAttribute("", "file", "file", "", encode(source));
         }
-        if (debug != null)
-        {
+        if (debug != null) {
             att.addAttribute("", "debug", "debug", "", encode(debug));
         }
 
@@ -101,16 +95,13 @@ public final class SAXClassAdapter extends ClassVisitor
     }
 
     @Override
-    public void visitOuterClass(final String owner, final String name, final String desc)
-    {
+    public void visitOuterClass(final String owner, final String name, final String desc) {
         AttributesImpl att = new AttributesImpl();
         att.addAttribute("", "owner", "owner", "", owner);
-        if (name != null)
-        {
+        if (name != null) {
             att.addAttribute("", "name", "name", "", name);
         }
-        if (desc != null)
-        {
+        if (desc != null) {
             att.addAttribute("", "desc", "desc", "", desc);
         }
 
@@ -118,35 +109,29 @@ public final class SAXClassAdapter extends ClassVisitor
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible)
-    {
+    public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
         return new SAXAnnotationAdapter(sa, "annotation", visible ? 1 : -1, null, desc);
     }
 
     @Override
-    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible)
-    {
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
         return new SAXAnnotationAdapter(sa, "typeAnnotation", visible ? 1 : -1, null, desc, typeRef, typePath);
     }
 
     @Override
-    public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces)
-    {
+    public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces) {
         StringBuffer sb = new StringBuffer();
         appendAccess(access | ACCESS_CLASS, sb);
 
         AttributesImpl att = new AttributesImpl();
         att.addAttribute("", "access", "access", "", sb.toString());
-        if (name != null)
-        {
+        if (name != null) {
             att.addAttribute("", "name", "name", "", name);
         }
-        if (signature != null)
-        {
+        if (signature != null) {
             att.addAttribute("", "signature", "signature", "", encode(signature));
         }
-        if (superName != null)
-        {
+        if (superName != null) {
             att.addAttribute("", "parent", "parent", "", superName);
         }
         att.addAttribute("", "major", "major", "", Integer.toString(version & 0xFFFF));
@@ -154,10 +139,8 @@ public final class SAXClassAdapter extends ClassVisitor
         sa.addStart("class", att);
 
         sa.addStart("interfaces", new AttributesImpl());
-        if (interfaces != null && interfaces.length > 0)
-        {
-            for (int i = 0; i < interfaces.length; i++)
-            {
+        if (interfaces != null && interfaces.length > 0) {
+            for (int i = 0; i < interfaces.length; i++) {
                 AttributesImpl att2 = new AttributesImpl();
                 att2.addAttribute("", "name", "name", "", interfaces[i]);
                 sa.addElement("interface", att2);
@@ -167,8 +150,7 @@ public final class SAXClassAdapter extends ClassVisitor
     }
 
     @Override
-    public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value)
-    {
+    public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value) {
         StringBuffer sb = new StringBuffer();
         appendAccess(access | ACCESS_FIELD, sb);
 
@@ -176,12 +158,10 @@ public final class SAXClassAdapter extends ClassVisitor
         att.addAttribute("", "access", "access", "", sb.toString());
         att.addAttribute("", "name", "name", "", name);
         att.addAttribute("", "desc", "desc", "", desc);
-        if (signature != null)
-        {
+        if (signature != null) {
             att.addAttribute("", "signature", "signature", "", encode(signature));
         }
-        if (value != null)
-        {
+        if (value != null) {
             att.addAttribute("", "value", "value", "", encode(value.toString()));
         }
 
@@ -189,8 +169,7 @@ public final class SAXClassAdapter extends ClassVisitor
     }
 
     @Override
-    public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions)
-    {
+    public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
         StringBuffer sb = new StringBuffer();
         appendAccess(access, sb);
 
@@ -198,17 +177,14 @@ public final class SAXClassAdapter extends ClassVisitor
         att.addAttribute("", "access", "access", "", sb.toString());
         att.addAttribute("", "name", "name", "", name);
         att.addAttribute("", "desc", "desc", "", desc);
-        if (signature != null)
-        {
+        if (signature != null) {
             att.addAttribute("", "signature", "signature", "", signature);
         }
         sa.addStart("method", att);
 
         sa.addStart("exceptions", new AttributesImpl());
-        if (exceptions != null && exceptions.length > 0)
-        {
-            for (int i = 0; i < exceptions.length; i++)
-            {
+        if (exceptions != null && exceptions.length > 0) {
+            for (int i = 0; i < exceptions.length; i++) {
                 AttributesImpl att2 = new AttributesImpl();
                 att2.addAttribute("", "name", "name", "", exceptions[i]);
                 sa.addElement("exception", att2);
@@ -220,162 +196,117 @@ public final class SAXClassAdapter extends ClassVisitor
     }
 
     @Override
-    public final void visitInnerClass(final String name, final String outerName, final String innerName, final int access)
-    {
+    public final void visitInnerClass(final String name, final String outerName, final String innerName, final int access) {
         StringBuffer sb = new StringBuffer();
         appendAccess(access | ACCESS_INNER, sb);
 
         AttributesImpl att = new AttributesImpl();
         att.addAttribute("", "access", "access", "", sb.toString());
-        if (name != null)
-        {
+        if (name != null) {
             att.addAttribute("", "name", "name", "", name);
         }
-        if (outerName != null)
-        {
+        if (outerName != null) {
             att.addAttribute("", "outerName", "outerName", "", outerName);
         }
-        if (innerName != null)
-        {
+        if (innerName != null) {
             att.addAttribute("", "innerName", "innerName", "", innerName);
         }
         sa.addElement("innerclass", att);
     }
 
     @Override
-    public final void visitEnd()
-    {
+    public final void visitEnd() {
         sa.addEnd("class");
-        if (!singleDocument)
-        {
+        if (!singleDocument) {
             sa.addDocumentEnd();
         }
     }
 
-    static final String encode(final String s)
-    {
+    static final String encode(final String s) {
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < s.length(); i++)
-        {
+        for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == '\\')
-            {
+            if (c == '\\') {
                 sb.append("\\\\");
-            }
-            else if (c < 0x20 || c > 0x7f)
-            {
+            } else if (c < 0x20 || c > 0x7f) {
                 sb.append("\\u");
-                if (c < 0x10)
-                {
+                if (c < 0x10) {
                     sb.append("000");
-                }
-                else if (c < 0x100)
-                {
+                } else if (c < 0x100) {
                     sb.append("00");
-                }
-                else if (c < 0x1000)
-                {
+                } else if (c < 0x1000) {
                     sb.append('0');
                 }
                 sb.append(Integer.toString(c, 16));
-            }
-            else
-            {
+            } else {
                 sb.append(c);
             }
         }
         return sb.toString();
     }
 
-    static void appendAccess(final int access, final StringBuffer sb)
-    {
-        if ((access & Opcodes.ACC_PUBLIC) != 0)
-        {
+    static void appendAccess(final int access, final StringBuffer sb) {
+        if ((access & Opcodes.ACC_PUBLIC) != 0) {
             sb.append("public ");
         }
-        if ((access & Opcodes.ACC_PRIVATE) != 0)
-        {
+        if ((access & Opcodes.ACC_PRIVATE) != 0) {
             sb.append("private ");
         }
-        if ((access & Opcodes.ACC_PROTECTED) != 0)
-        {
+        if ((access & Opcodes.ACC_PROTECTED) != 0) {
             sb.append("protected ");
         }
-        if ((access & Opcodes.ACC_FINAL) != 0)
-        {
+        if ((access & Opcodes.ACC_FINAL) != 0) {
             sb.append("final ");
         }
-        if ((access & Opcodes.ACC_STATIC) != 0)
-        {
+        if ((access & Opcodes.ACC_STATIC) != 0) {
             sb.append("static ");
         }
-        if ((access & Opcodes.ACC_SUPER) != 0)
-        {
-            if ((access & ACCESS_CLASS) == 0)
-            {
+        if ((access & Opcodes.ACC_SUPER) != 0) {
+            if ((access & ACCESS_CLASS) == 0) {
                 sb.append("synchronized ");
-            }
-            else
-            {
+            } else {
                 sb.append("super ");
             }
         }
-        if ((access & Opcodes.ACC_VOLATILE) != 0)
-        {
-            if ((access & ACCESS_FIELD) == 0)
-            {
+        if ((access & Opcodes.ACC_VOLATILE) != 0) {
+            if ((access & ACCESS_FIELD) == 0) {
                 sb.append("bridge ");
-            }
-            else
-            {
+            } else {
                 sb.append("volatile ");
             }
         }
-        if ((access & Opcodes.ACC_TRANSIENT) != 0)
-        {
-            if ((access & ACCESS_FIELD) == 0)
-            {
+        if ((access & Opcodes.ACC_TRANSIENT) != 0) {
+            if ((access & ACCESS_FIELD) == 0) {
                 sb.append("varargs ");
-            }
-            else
-            {
+            } else {
                 sb.append("transient ");
             }
         }
-        if ((access & Opcodes.ACC_NATIVE) != 0)
-        {
+        if ((access & Opcodes.ACC_NATIVE) != 0) {
             sb.append("native ");
         }
-        if ((access & Opcodes.ACC_STRICT) != 0)
-        {
+        if ((access & Opcodes.ACC_STRICT) != 0) {
             sb.append("strict ");
         }
-        if ((access & Opcodes.ACC_INTERFACE) != 0)
-        {
+        if ((access & Opcodes.ACC_INTERFACE) != 0) {
             sb.append("interface ");
         }
-        if ((access & Opcodes.ACC_ABSTRACT) != 0)
-        {
+        if ((access & Opcodes.ACC_ABSTRACT) != 0) {
             sb.append("abstract ");
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0)
-        {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0) {
             sb.append("synthetic ");
         }
-        if ((access & Opcodes.ACC_ANNOTATION) != 0)
-        {
+        if ((access & Opcodes.ACC_ANNOTATION) != 0) {
             sb.append("annotation ");
         }
-        if ((access & Opcodes.ACC_ENUM) != 0)
-        {
+        if ((access & Opcodes.ACC_ENUM) != 0) {
             sb.append("enum ");
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0)
-        {
+        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
             sb.append("deprecated ");
         }
-        if ((access & Opcodes.ACC_MANDATED) != 0)
-        {
+        if ((access & Opcodes.ACC_MANDATED) != 0) {
             sb.append("mandated ");
         }
     }

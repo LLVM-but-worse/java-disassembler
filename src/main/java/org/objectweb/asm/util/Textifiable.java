@@ -42,8 +42,7 @@ import java.util.Map;
  *
  * @author Eugene Kuleshov
  */
-public interface Textifiable
-{
+public interface Textifiable {
 
     /**
      * Build a human readable representation of this attribute.

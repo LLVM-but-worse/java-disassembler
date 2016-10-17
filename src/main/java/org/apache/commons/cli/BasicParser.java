@@ -25,8 +25,7 @@ package org.apache.commons.cli;
  * @deprecated since 1.3, use the {@link DefaultParser} instead
  */
 @Deprecated
-public class BasicParser extends Parser
-{
+public class BasicParser extends Parser {
     /**
      * <p>A simple implementation of {@link Parser}'s abstract
      * {@link Parser#flatten(Options, String[], boolean) flatten} method.</p>
@@ -41,8 +40,7 @@ public class BasicParser extends Parser
      * @return The <code>arguments</code> String array.
      */
     @Override
-    protected String[] flatten(@SuppressWarnings("unused") Options options, String[] arguments, @SuppressWarnings("unused") boolean stopAtNonOption)
-    {
+    protected String[] flatten(@SuppressWarnings("unused") Options options, String[] arguments, @SuppressWarnings("unused") boolean stopAtNonOption) {
         // just echo the arguments
         return arguments;
     }

@@ -36,8 +36,7 @@ package org.objectweb.asm;
  *
  * @author Eric Bruneton
  */
-public class TypePath
-{
+public class TypePath {
 
     /**
      * A type path step that steps into the element type of an array type. See
@@ -80,8 +79,7 @@ public class TypePath
      *               format.
      * @param offset the offset of the first byte of the type path in 'b'.
      */
-    TypePath(byte[] b, int offset)
-    {
+    TypePath(byte[] b, int offset) {
         this.b = b;
         this.offset = offset;
     }
@@ -91,8 +89,7 @@ public class TypePath
      *
      * @return the length of this path.
      */
-    public int getLength()
-    {
+    public int getLength() {
         return b[offset];
     }
 
@@ -104,8 +101,7 @@ public class TypePath
      * INNER_TYPE}, {@link #WILDCARD_BOUND WILDCARD_BOUND}, or
      * {@link #TYPE_ARGUMENT TYPE_ARGUMENT}.
      */
-    public int getStep(int index)
-    {
+    public int getStep(int index) {
         return b[offset + 2 * index + 1];
     }
 
@@ -118,8 +114,7 @@ public class TypePath
      * @return the index of the type argument that the given step is stepping
      * into.
      */
-    public int getStepArgument(int index)
-    {
+    public int getStepArgument(int index) {
         return b[offset + 2 * index + 2];
     }
 
@@ -131,40 +126,28 @@ public class TypePath
      *                 {@link #toString()}. May be null or empty.
      * @return the corresponding TypePath object, or null if the path is empty.
      */
-    public static TypePath fromString(final String typePath)
-    {
-        if (typePath == null || typePath.length() == 0)
-        {
+    public static TypePath fromString(final String typePath) {
+        if (typePath == null || typePath.length() == 0) {
             return null;
         }
         int n = typePath.length();
         ByteVector out = new ByteVector(n);
         out.putByte(0);
-        for (int i = 0; i < n; )
-        {
+        for (int i = 0; i < n; ) {
             char c = typePath.charAt(i++);
-            if (c == '[')
-            {
+            if (c == '[') {
                 out.put11(ARRAY_ELEMENT, 0);
-            }
-            else if (c == '.')
-            {
+            } else if (c == '.') {
                 out.put11(INNER_TYPE, 0);
-            }
-            else if (c == '*')
-            {
+            } else if (c == '*') {
                 out.put11(WILDCARD_BOUND, 0);
-            }
-            else if (c >= '0' && c <= '9')
-            {
+            } else if (c >= '0' && c <= '9') {
                 int typeArg = c - '0';
-                while (i < n && (c = typePath.charAt(i)) >= '0' && c <= '9')
-                {
+                while (i < n && (c = typePath.charAt(i)) >= '0' && c <= '9') {
                     typeArg = typeArg * 10 + c - '0';
                     i += 1;
                 }
-                if (i < n && typePath.charAt(i) == ';')
-                {
+                if (i < n && typePath.charAt(i) == ';') {
                     i += 1;
                 }
                 out.put11(TYPE_ARGUMENT, typeArg);
@@ -182,14 +165,11 @@ public class TypePath
      * argument index in decimal form followed by ';'.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         int length = getLength();
         StringBuilder result = new StringBuilder(length * 2);
-        for (int i = 0; i < length; ++i)
-        {
-            switch (getStep(i))
-            {
+        for (int i = 0; i < length; ++i) {
+            switch (getStep(i)) {
                 case ARRAY_ELEMENT:
                     result.append('[');
                     break;

@@ -39,8 +39,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class TypeInsnNode extends AbstractInsnNode
-{
+public class TypeInsnNode extends AbstractInsnNode {
 
     /**
      * The operand of this instruction. This operand is an internal name (see
@@ -56,8 +55,7 @@ public class TypeInsnNode extends AbstractInsnNode
      * @param desc   the operand of the instruction to be constructed. This operand
      *               is an internal name (see {@link org.objectweb.asm.Type}).
      */
-    public TypeInsnNode(final int opcode, final String desc)
-    {
+    public TypeInsnNode(final int opcode, final String desc) {
         super(opcode);
         this.desc = desc;
     }
@@ -68,27 +66,23 @@ public class TypeInsnNode extends AbstractInsnNode
      * @param opcode the new instruction opcode. This opcode must be NEW,
      *               ANEWARRAY, CHECKCAST or INSTANCEOF.
      */
-    public void setOpcode(final int opcode)
-    {
+    public void setOpcode(final int opcode) {
         this.opcode = opcode;
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return TYPE_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitTypeInsn(opcode, desc);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new TypeInsnNode(opcode, desc).cloneAnnotations(this);
     }
 }

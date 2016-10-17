@@ -38,8 +38,7 @@ import org.objectweb.asm.*;
  *
  * @author Eric Bruneton
  */
-public class InstructionAdapter extends MethodVisitor
-{
+public class InstructionAdapter extends MethodVisitor {
 
     public final static Type OBJECT_TYPE = Type.getType("Ljava/lang/Object;");
 
@@ -51,11 +50,9 @@ public class InstructionAdapter extends MethodVisitor
      * @param mv the method visitor to which this adapter delegates calls.
      * @throws IllegalStateException If a subclass calls this constructor.
      */
-    public InstructionAdapter(final MethodVisitor mv)
-    {
+    public InstructionAdapter(final MethodVisitor mv) {
         this(Opcodes.ASM5, mv);
-        if (getClass() != InstructionAdapter.class)
-        {
+        if (getClass() != InstructionAdapter.class) {
             throw new IllegalStateException();
         }
     }
@@ -67,16 +64,13 @@ public class InstructionAdapter extends MethodVisitor
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      * @param mv  the method visitor to which this adapter delegates calls.
      */
-    protected InstructionAdapter(final int api, final MethodVisitor mv)
-    {
+    protected InstructionAdapter(final int api, final MethodVisitor mv) {
         super(api, mv);
     }
 
     @Override
-    public void visitInsn(final int opcode)
-    {
-        switch (opcode)
-        {
+    public void visitInsn(final int opcode) {
+        switch (opcode) {
             case Opcodes.NOP:
                 nop();
                 break;
@@ -384,10 +378,8 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitIntInsn(final int opcode, final int operand)
-    {
-        switch (opcode)
-        {
+    public void visitIntInsn(final int opcode, final int operand) {
+        switch (opcode) {
             case Opcodes.BIPUSH:
                 iconst(operand);
                 break;
@@ -395,8 +387,7 @@ public class InstructionAdapter extends MethodVisitor
                 iconst(operand);
                 break;
             case Opcodes.NEWARRAY:
-                switch (operand)
-                {
+                switch (operand) {
                     case Opcodes.T_BOOLEAN:
                         newarray(Type.BOOLEAN_TYPE);
                         break;
@@ -431,10 +422,8 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitVarInsn(final int opcode, final int var)
-    {
-        switch (opcode)
-        {
+    public void visitVarInsn(final int opcode, final int var) {
+        switch (opcode) {
             case Opcodes.ILOAD:
                 load(var, Type.INT_TYPE);
                 break;
@@ -474,11 +463,9 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitTypeInsn(final int opcode, final String type)
-    {
+    public void visitTypeInsn(final int opcode, final String type) {
         Type t = Type.getObjectType(type);
-        switch (opcode)
-        {
+        switch (opcode) {
             case Opcodes.NEW:
                 anew(t);
                 break;
@@ -497,10 +484,8 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc)
-    {
-        switch (opcode)
-        {
+    public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc) {
+        switch (opcode) {
             case Opcodes.GETSTATIC:
                 getstatic(owner, name, desc);
                 break;
@@ -520,10 +505,8 @@ public class InstructionAdapter extends MethodVisitor
 
     @Deprecated
     @Override
-    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc)
-    {
-        if (api >= Opcodes.ASM5)
-        {
+    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc) {
+        if (api >= Opcodes.ASM5) {
             super.visitMethodInsn(opcode, owner, name, desc);
             return;
         }
@@ -531,20 +514,16 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc, final boolean itf)
-    {
-        if (api < Opcodes.ASM5)
-        {
+    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc, final boolean itf) {
+        if (api < Opcodes.ASM5) {
             super.visitMethodInsn(opcode, owner, name, desc, itf);
             return;
         }
         doVisitMethodInsn(opcode, owner, name, desc, itf);
     }
 
-    private void doVisitMethodInsn(int opcode, final String owner, final String name, final String desc, final boolean itf)
-    {
-        switch (opcode)
-        {
+    private void doVisitMethodInsn(int opcode, final String owner, final String name, final String desc, final boolean itf) {
+        switch (opcode) {
             case Opcodes.INVOKESPECIAL:
                 invokespecial(owner, name, desc, itf);
                 break;
@@ -563,16 +542,13 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs)
-    {
+    public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
         invokedynamic(name, desc, bsm, bsmArgs);
     }
 
     @Override
-    public void visitJumpInsn(final int opcode, final Label label)
-    {
-        switch (opcode)
-        {
+    public void visitJumpInsn(final int opcode, final Label label) {
+        switch (opcode) {
             case Opcodes.IFEQ:
                 ifeq(label);
                 break;
@@ -633,547 +609,398 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Override
-    public void visitLabel(final Label label)
-    {
+    public void visitLabel(final Label label) {
         mark(label);
     }
 
     @Override
-    public void visitLdcInsn(final Object cst)
-    {
-        if (cst instanceof Integer)
-        {
+    public void visitLdcInsn(final Object cst) {
+        if (cst instanceof Integer) {
             int val = ((Integer) cst).intValue();
             iconst(val);
-        }
-        else if (cst instanceof Byte)
-        {
+        } else if (cst instanceof Byte) {
             int val = ((Byte) cst).intValue();
             iconst(val);
-        }
-        else if (cst instanceof Character)
-        {
+        } else if (cst instanceof Character) {
             int val = ((Character) cst).charValue();
             iconst(val);
-        }
-        else if (cst instanceof Short)
-        {
+        } else if (cst instanceof Short) {
             int val = ((Short) cst).intValue();
             iconst(val);
-        }
-        else if (cst instanceof Boolean)
-        {
+        } else if (cst instanceof Boolean) {
             int val = ((Boolean) cst).booleanValue() ? 1 : 0;
             iconst(val);
-        }
-        else if (cst instanceof Float)
-        {
+        } else if (cst instanceof Float) {
             float val = ((Float) cst).floatValue();
             fconst(val);
-        }
-        else if (cst instanceof Long)
-        {
+        } else if (cst instanceof Long) {
             long val = ((Long) cst).longValue();
             lconst(val);
-        }
-        else if (cst instanceof Double)
-        {
+        } else if (cst instanceof Double) {
             double val = ((Double) cst).doubleValue();
             dconst(val);
-        }
-        else if (cst instanceof String)
-        {
+        } else if (cst instanceof String) {
             aconst(cst);
-        }
-        else if (cst instanceof Type)
-        {
+        } else if (cst instanceof Type) {
             tconst((Type) cst);
-        }
-        else if (cst instanceof Handle)
-        {
+        } else if (cst instanceof Handle) {
             hconst((Handle) cst);
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException();
         }
     }
 
     @Override
-    public void visitIincInsn(final int var, final int increment)
-    {
+    public void visitIincInsn(final int var, final int increment) {
         iinc(var, increment);
     }
 
     @Override
-    public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label... labels)
-    {
+    public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label... labels) {
         tableswitch(min, max, dflt, labels);
     }
 
     @Override
-    public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels)
-    {
+    public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels) {
         lookupswitch(dflt, keys, labels);
     }
 
     @Override
-    public void visitMultiANewArrayInsn(final String desc, final int dims)
-    {
+    public void visitMultiANewArrayInsn(final String desc, final int dims) {
         multianewarray(desc, dims);
     }
 
     // -----------------------------------------------------------------------
 
-    public void nop()
-    {
+    public void nop() {
         mv.visitInsn(Opcodes.NOP);
     }
 
-    public void aconst(final Object cst)
-    {
-        if (cst == null)
-        {
+    public void aconst(final Object cst) {
+        if (cst == null) {
             mv.visitInsn(Opcodes.ACONST_NULL);
-        }
-        else
-        {
+        } else {
             mv.visitLdcInsn(cst);
         }
     }
 
-    public void iconst(final int cst)
-    {
-        if (cst >= -1 && cst <= 5)
-        {
+    public void iconst(final int cst) {
+        if (cst >= -1 && cst <= 5) {
             mv.visitInsn(Opcodes.ICONST_0 + cst);
-        }
-        else if (cst >= Byte.MIN_VALUE && cst <= Byte.MAX_VALUE)
-        {
+        } else if (cst >= Byte.MIN_VALUE && cst <= Byte.MAX_VALUE) {
             mv.visitIntInsn(Opcodes.BIPUSH, cst);
-        }
-        else if (cst >= Short.MIN_VALUE && cst <= Short.MAX_VALUE)
-        {
+        } else if (cst >= Short.MIN_VALUE && cst <= Short.MAX_VALUE) {
             mv.visitIntInsn(Opcodes.SIPUSH, cst);
-        }
-        else
-        {
+        } else {
             mv.visitLdcInsn(cst);
         }
     }
 
-    public void lconst(final long cst)
-    {
-        if (cst == 0L || cst == 1L)
-        {
+    public void lconst(final long cst) {
+        if (cst == 0L || cst == 1L) {
             mv.visitInsn(Opcodes.LCONST_0 + (int) cst);
-        }
-        else
-        {
+        } else {
             mv.visitLdcInsn(cst);
         }
     }
 
-    public void fconst(final float cst)
-    {
+    public void fconst(final float cst) {
         int bits = Float.floatToIntBits(cst);
-        if (bits == 0L || bits == 0x3f800000 || bits == 0x40000000)
-        { // 0..2
+        if (bits == 0L || bits == 0x3f800000 || bits == 0x40000000) { // 0..2
             mv.visitInsn(Opcodes.FCONST_0 + (int) cst);
-        }
-        else
-        {
+        } else {
             mv.visitLdcInsn(cst);
         }
     }
 
-    public void dconst(final double cst)
-    {
+    public void dconst(final double cst) {
         long bits = Double.doubleToLongBits(cst);
-        if (bits == 0L || bits == 0x3ff0000000000000L)
-        { // +0.0d and 1.0d
+        if (bits == 0L || bits == 0x3ff0000000000000L) { // +0.0d and 1.0d
             mv.visitInsn(Opcodes.DCONST_0 + (int) cst);
-        }
-        else
-        {
+        } else {
             mv.visitLdcInsn(cst);
         }
     }
 
-    public void tconst(final Type type)
-    {
+    public void tconst(final Type type) {
         mv.visitLdcInsn(type);
     }
 
-    public void hconst(final Handle handle)
-    {
+    public void hconst(final Handle handle) {
         mv.visitLdcInsn(handle);
     }
 
-    public void load(final int var, final Type type)
-    {
+    public void load(final int var, final Type type) {
         mv.visitVarInsn(type.getOpcode(Opcodes.ILOAD), var);
     }
 
-    public void aload(final Type type)
-    {
+    public void aload(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IALOAD));
     }
 
-    public void store(final int var, final Type type)
-    {
+    public void store(final int var, final Type type) {
         mv.visitVarInsn(type.getOpcode(Opcodes.ISTORE), var);
     }
 
-    public void astore(final Type type)
-    {
+    public void astore(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IASTORE));
     }
 
-    public void pop()
-    {
+    public void pop() {
         mv.visitInsn(Opcodes.POP);
     }
 
-    public void pop2()
-    {
+    public void pop2() {
         mv.visitInsn(Opcodes.POP2);
     }
 
-    public void dup()
-    {
+    public void dup() {
         mv.visitInsn(Opcodes.DUP);
     }
 
-    public void dup2()
-    {
+    public void dup2() {
         mv.visitInsn(Opcodes.DUP2);
     }
 
-    public void dupX1()
-    {
+    public void dupX1() {
         mv.visitInsn(Opcodes.DUP_X1);
     }
 
-    public void dupX2()
-    {
+    public void dupX2() {
         mv.visitInsn(Opcodes.DUP_X2);
     }
 
-    public void dup2X1()
-    {
+    public void dup2X1() {
         mv.visitInsn(Opcodes.DUP2_X1);
     }
 
-    public void dup2X2()
-    {
+    public void dup2X2() {
         mv.visitInsn(Opcodes.DUP2_X2);
     }
 
-    public void swap()
-    {
+    public void swap() {
         mv.visitInsn(Opcodes.SWAP);
     }
 
-    public void add(final Type type)
-    {
+    public void add(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IADD));
     }
 
-    public void sub(final Type type)
-    {
+    public void sub(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.ISUB));
     }
 
-    public void mul(final Type type)
-    {
+    public void mul(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IMUL));
     }
 
-    public void div(final Type type)
-    {
+    public void div(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IDIV));
     }
 
-    public void rem(final Type type)
-    {
+    public void rem(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IREM));
     }
 
-    public void neg(final Type type)
-    {
+    public void neg(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.INEG));
     }
 
-    public void shl(final Type type)
-    {
+    public void shl(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.ISHL));
     }
 
-    public void shr(final Type type)
-    {
+    public void shr(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.ISHR));
     }
 
-    public void ushr(final Type type)
-    {
+    public void ushr(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IUSHR));
     }
 
-    public void and(final Type type)
-    {
+    public void and(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IAND));
     }
 
-    public void or(final Type type)
-    {
+    public void or(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IOR));
     }
 
-    public void xor(final Type type)
-    {
+    public void xor(final Type type) {
         mv.visitInsn(type.getOpcode(Opcodes.IXOR));
     }
 
-    public void iinc(final int var, final int increment)
-    {
+    public void iinc(final int var, final int increment) {
         mv.visitIincInsn(var, increment);
     }
 
-    public void cast(final Type from, final Type to)
-    {
-        if (from != to)
-        {
-            if (from == Type.DOUBLE_TYPE)
-            {
-                if (to == Type.FLOAT_TYPE)
-                {
+    public void cast(final Type from, final Type to) {
+        if (from != to) {
+            if (from == Type.DOUBLE_TYPE) {
+                if (to == Type.FLOAT_TYPE) {
                     mv.visitInsn(Opcodes.D2F);
-                }
-                else if (to == Type.LONG_TYPE)
-                {
+                } else if (to == Type.LONG_TYPE) {
                     mv.visitInsn(Opcodes.D2L);
-                }
-                else
-                {
+                } else {
                     mv.visitInsn(Opcodes.D2I);
                     cast(Type.INT_TYPE, to);
                 }
-            }
-            else if (from == Type.FLOAT_TYPE)
-            {
-                if (to == Type.DOUBLE_TYPE)
-                {
+            } else if (from == Type.FLOAT_TYPE) {
+                if (to == Type.DOUBLE_TYPE) {
                     mv.visitInsn(Opcodes.F2D);
-                }
-                else if (to == Type.LONG_TYPE)
-                {
+                } else if (to == Type.LONG_TYPE) {
                     mv.visitInsn(Opcodes.F2L);
-                }
-                else
-                {
+                } else {
                     mv.visitInsn(Opcodes.F2I);
                     cast(Type.INT_TYPE, to);
                 }
-            }
-            else if (from == Type.LONG_TYPE)
-            {
-                if (to == Type.DOUBLE_TYPE)
-                {
+            } else if (from == Type.LONG_TYPE) {
+                if (to == Type.DOUBLE_TYPE) {
                     mv.visitInsn(Opcodes.L2D);
-                }
-                else if (to == Type.FLOAT_TYPE)
-                {
+                } else if (to == Type.FLOAT_TYPE) {
                     mv.visitInsn(Opcodes.L2F);
-                }
-                else
-                {
+                } else {
                     mv.visitInsn(Opcodes.L2I);
                     cast(Type.INT_TYPE, to);
                 }
-            }
-            else
-            {
-                if (to == Type.BYTE_TYPE)
-                {
+            } else {
+                if (to == Type.BYTE_TYPE) {
                     mv.visitInsn(Opcodes.I2B);
-                }
-                else if (to == Type.CHAR_TYPE)
-                {
+                } else if (to == Type.CHAR_TYPE) {
                     mv.visitInsn(Opcodes.I2C);
-                }
-                else if (to == Type.DOUBLE_TYPE)
-                {
+                } else if (to == Type.DOUBLE_TYPE) {
                     mv.visitInsn(Opcodes.I2D);
-                }
-                else if (to == Type.FLOAT_TYPE)
-                {
+                } else if (to == Type.FLOAT_TYPE) {
                     mv.visitInsn(Opcodes.I2F);
-                }
-                else if (to == Type.LONG_TYPE)
-                {
+                } else if (to == Type.LONG_TYPE) {
                     mv.visitInsn(Opcodes.I2L);
-                }
-                else if (to == Type.SHORT_TYPE)
-                {
+                } else if (to == Type.SHORT_TYPE) {
                     mv.visitInsn(Opcodes.I2S);
                 }
             }
         }
     }
 
-    public void lcmp()
-    {
+    public void lcmp() {
         mv.visitInsn(Opcodes.LCMP);
     }
 
-    public void cmpl(final Type type)
-    {
+    public void cmpl(final Type type) {
         mv.visitInsn(type == Type.FLOAT_TYPE ? Opcodes.FCMPL : Opcodes.DCMPL);
     }
 
-    public void cmpg(final Type type)
-    {
+    public void cmpg(final Type type) {
         mv.visitInsn(type == Type.FLOAT_TYPE ? Opcodes.FCMPG : Opcodes.DCMPG);
     }
 
-    public void ifeq(final Label label)
-    {
+    public void ifeq(final Label label) {
         mv.visitJumpInsn(Opcodes.IFEQ, label);
     }
 
-    public void ifne(final Label label)
-    {
+    public void ifne(final Label label) {
         mv.visitJumpInsn(Opcodes.IFNE, label);
     }
 
-    public void iflt(final Label label)
-    {
+    public void iflt(final Label label) {
         mv.visitJumpInsn(Opcodes.IFLT, label);
     }
 
-    public void ifge(final Label label)
-    {
+    public void ifge(final Label label) {
         mv.visitJumpInsn(Opcodes.IFGE, label);
     }
 
-    public void ifgt(final Label label)
-    {
+    public void ifgt(final Label label) {
         mv.visitJumpInsn(Opcodes.IFGT, label);
     }
 
-    public void ifle(final Label label)
-    {
+    public void ifle(final Label label) {
         mv.visitJumpInsn(Opcodes.IFLE, label);
     }
 
-    public void ificmpeq(final Label label)
-    {
+    public void ificmpeq(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
     }
 
-    public void ificmpne(final Label label)
-    {
+    public void ificmpne(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ICMPNE, label);
     }
 
-    public void ificmplt(final Label label)
-    {
+    public void ificmplt(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ICMPLT, label);
     }
 
-    public void ificmpge(final Label label)
-    {
+    public void ificmpge(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ICMPGE, label);
     }
 
-    public void ificmpgt(final Label label)
-    {
+    public void ificmpgt(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ICMPGT, label);
     }
 
-    public void ificmple(final Label label)
-    {
+    public void ificmple(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ICMPLE, label);
     }
 
-    public void ifacmpeq(final Label label)
-    {
+    public void ifacmpeq(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ACMPEQ, label);
     }
 
-    public void ifacmpne(final Label label)
-    {
+    public void ifacmpne(final Label label) {
         mv.visitJumpInsn(Opcodes.IF_ACMPNE, label);
     }
 
-    public void goTo(final Label label)
-    {
+    public void goTo(final Label label) {
         mv.visitJumpInsn(Opcodes.GOTO, label);
     }
 
-    public void jsr(final Label label)
-    {
+    public void jsr(final Label label) {
         mv.visitJumpInsn(Opcodes.JSR, label);
     }
 
-    public void ret(final int var)
-    {
+    public void ret(final int var) {
         mv.visitVarInsn(Opcodes.RET, var);
     }
 
-    public void tableswitch(final int min, final int max, final Label dflt, final Label... labels)
-    {
+    public void tableswitch(final int min, final int max, final Label dflt, final Label... labels) {
         mv.visitTableSwitchInsn(min, max, dflt, labels);
     }
 
-    public void lookupswitch(final Label dflt, final int[] keys, final Label[] labels)
-    {
+    public void lookupswitch(final Label dflt, final int[] keys, final Label[] labels) {
         mv.visitLookupSwitchInsn(dflt, keys, labels);
     }
 
-    public void areturn(final Type t)
-    {
+    public void areturn(final Type t) {
         mv.visitInsn(t.getOpcode(Opcodes.IRETURN));
     }
 
-    public void getstatic(final String owner, final String name, final String desc)
-    {
+    public void getstatic(final String owner, final String name, final String desc) {
         mv.visitFieldInsn(Opcodes.GETSTATIC, owner, name, desc);
     }
 
-    public void putstatic(final String owner, final String name, final String desc)
-    {
+    public void putstatic(final String owner, final String name, final String desc) {
         mv.visitFieldInsn(Opcodes.PUTSTATIC, owner, name, desc);
     }
 
-    public void getfield(final String owner, final String name, final String desc)
-    {
+    public void getfield(final String owner, final String name, final String desc) {
         mv.visitFieldInsn(Opcodes.GETFIELD, owner, name, desc);
     }
 
-    public void putfield(final String owner, final String name, final String desc)
-    {
+    public void putfield(final String owner, final String name, final String desc) {
         mv.visitFieldInsn(Opcodes.PUTFIELD, owner, name, desc);
     }
 
     @Deprecated
-    public void invokevirtual(final String owner, final String name, final String desc)
-    {
-        if (api >= Opcodes.ASM5)
-        {
+    public void invokevirtual(final String owner, final String name, final String desc) {
+        if (api >= Opcodes.ASM5) {
             invokevirtual(owner, name, desc, false);
             return;
         }
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, owner, name, desc);
     }
 
-    public void invokevirtual(final String owner, final String name, final String desc, final boolean itf)
-    {
-        if (api < Opcodes.ASM5)
-        {
-            if (itf)
-            {
+    public void invokevirtual(final String owner, final String name, final String desc, final boolean itf) {
+        if (api < Opcodes.ASM5) {
+            if (itf) {
                 throw new IllegalArgumentException("INVOKEVIRTUAL on interfaces require ASM 5");
             }
             invokevirtual(owner, name, desc);
@@ -1183,22 +1010,17 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Deprecated
-    public void invokespecial(final String owner, final String name, final String desc)
-    {
-        if (api >= Opcodes.ASM5)
-        {
+    public void invokespecial(final String owner, final String name, final String desc) {
+        if (api >= Opcodes.ASM5) {
             invokespecial(owner, name, desc, false);
             return;
         }
         mv.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, name, desc, false);
     }
 
-    public void invokespecial(final String owner, final String name, final String desc, final boolean itf)
-    {
-        if (api < Opcodes.ASM5)
-        {
-            if (itf)
-            {
+    public void invokespecial(final String owner, final String name, final String desc, final boolean itf) {
+        if (api < Opcodes.ASM5) {
+            if (itf) {
                 throw new IllegalArgumentException("INVOKESPECIAL on interfaces require ASM 5");
             }
             invokespecial(owner, name, desc);
@@ -1208,22 +1030,17 @@ public class InstructionAdapter extends MethodVisitor
     }
 
     @Deprecated
-    public void invokestatic(final String owner, final String name, final String desc)
-    {
-        if (api >= Opcodes.ASM5)
-        {
+    public void invokestatic(final String owner, final String name, final String desc) {
+        if (api >= Opcodes.ASM5) {
             invokestatic(owner, name, desc, false);
             return;
         }
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc, false);
     }
 
-    public void invokestatic(final String owner, final String name, final String desc, final boolean itf)
-    {
-        if (api < Opcodes.ASM5)
-        {
-            if (itf)
-            {
+    public void invokestatic(final String owner, final String name, final String desc, final boolean itf) {
+        if (api < Opcodes.ASM5) {
+            if (itf) {
                 throw new IllegalArgumentException("INVOKESTATIC on interfaces require ASM 5");
             }
             invokestatic(owner, name, desc);
@@ -1232,26 +1049,21 @@ public class InstructionAdapter extends MethodVisitor
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc, itf);
     }
 
-    public void invokeinterface(final String owner, final String name, final String desc)
-    {
+    public void invokeinterface(final String owner, final String name, final String desc) {
         mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, owner, name, desc, true);
     }
 
-    public void invokedynamic(String name, String desc, Handle bsm, Object[] bsmArgs)
-    {
+    public void invokedynamic(String name, String desc, Handle bsm, Object[] bsmArgs) {
         mv.visitInvokeDynamicInsn(name, desc, bsm, bsmArgs);
     }
 
-    public void anew(final Type type)
-    {
+    public void anew(final Type type) {
         mv.visitTypeInsn(Opcodes.NEW, type.getInternalName());
     }
 
-    public void newarray(final Type type)
-    {
+    public void newarray(final Type type) {
         int typ;
-        switch (type.getSort())
-        {
+        switch (type.getSort()) {
             case Type.BOOLEAN:
                 typ = Opcodes.T_BOOLEAN;
                 break;
@@ -1283,53 +1095,43 @@ public class InstructionAdapter extends MethodVisitor
         mv.visitIntInsn(Opcodes.NEWARRAY, typ);
     }
 
-    public void arraylength()
-    {
+    public void arraylength() {
         mv.visitInsn(Opcodes.ARRAYLENGTH);
     }
 
-    public void athrow()
-    {
+    public void athrow() {
         mv.visitInsn(Opcodes.ATHROW);
     }
 
-    public void checkcast(final Type type)
-    {
+    public void checkcast(final Type type) {
         mv.visitTypeInsn(Opcodes.CHECKCAST, type.getInternalName());
     }
 
-    public void instanceOf(final Type type)
-    {
+    public void instanceOf(final Type type) {
         mv.visitTypeInsn(Opcodes.INSTANCEOF, type.getInternalName());
     }
 
-    public void monitorenter()
-    {
+    public void monitorenter() {
         mv.visitInsn(Opcodes.MONITORENTER);
     }
 
-    public void monitorexit()
-    {
+    public void monitorexit() {
         mv.visitInsn(Opcodes.MONITOREXIT);
     }
 
-    public void multianewarray(final String desc, final int dims)
-    {
+    public void multianewarray(final String desc, final int dims) {
         mv.visitMultiANewArrayInsn(desc, dims);
     }
 
-    public void ifnull(final Label label)
-    {
+    public void ifnull(final Label label) {
         mv.visitJumpInsn(Opcodes.IFNULL, label);
     }
 
-    public void ifnonnull(final Label label)
-    {
+    public void ifnonnull(final Label label) {
         mv.visitJumpInsn(Opcodes.IFNONNULL, label);
     }
 
-    public void mark(final Label label)
-    {
+    public void mark(final Label label) {
         mv.visitLabel(label);
     }
 }

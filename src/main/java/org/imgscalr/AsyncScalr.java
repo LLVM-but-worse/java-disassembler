@@ -175,8 +175,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 3.2
  */
 @SuppressWarnings("javadoc")
-public class AsyncScalr
-{
+public class AsyncScalr {
     /**
      * System property name used to set the number of threads the default
      * underlying {@link ExecutorService} will use to process async image
@@ -201,8 +200,7 @@ public class AsyncScalr
     /**
      * Initializer used to verify the THREAD_COUNT system property.
      */
-    static
-    {
+    static {
         if (THREAD_COUNT < 1)
             throw new RuntimeException("System property '" + THREAD_COUNT_PROPERTY_NAME + "' set THREAD_COUNT to " + THREAD_COUNT + ", but THREAD_COUNT must be > 0.");
     }
@@ -229,22 +227,18 @@ public class AsyncScalr
      * @return the current {@link ExecutorService} used by this class to process
      * scale operations.
      */
-    public static ExecutorService getService()
-    {
+    public static ExecutorService getService() {
         return service;
     }
 
     /**
      * @see Scalr#apply(BufferedImage, BufferedImageOp...)
      */
-    public static Future<BufferedImage> apply(final BufferedImage src, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> apply(final BufferedImage src, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.apply(src, ops);
             }
         });
@@ -253,14 +247,11 @@ public class AsyncScalr
     /**
      * @see Scalr#crop(BufferedImage, int, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> crop(final BufferedImage src, final int width, final int height, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> crop(final BufferedImage src, final int width, final int height, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.crop(src, width, height, ops);
             }
         });
@@ -269,14 +260,11 @@ public class AsyncScalr
     /**
      * @see Scalr#crop(BufferedImage, int, int, int, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> crop(final BufferedImage src, final int x, final int y, final int width, final int height, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> crop(final BufferedImage src, final int x, final int y, final int width, final int height, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.crop(src, x, y, width, height, ops);
             }
         });
@@ -285,14 +273,11 @@ public class AsyncScalr
     /**
      * @see Scalr#pad(BufferedImage, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> pad(final BufferedImage src, final int padding, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> pad(final BufferedImage src, final int padding, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.pad(src, padding, ops);
             }
         });
@@ -301,14 +286,11 @@ public class AsyncScalr
     /**
      * @see Scalr#pad(BufferedImage, int, Color, BufferedImageOp...)
      */
-    public static Future<BufferedImage> pad(final BufferedImage src, final int padding, final Color color, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> pad(final BufferedImage src, final int padding, final Color color, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.pad(src, padding, color, ops);
             }
         });
@@ -317,14 +299,11 @@ public class AsyncScalr
     /**
      * @see Scalr#resize(BufferedImage, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, targetSize, ops);
             }
         });
@@ -333,14 +312,11 @@ public class AsyncScalr
     /**
      * @see Scalr#resize(BufferedImage, Method, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, scalingMethod, targetSize, ops);
             }
         });
@@ -349,14 +325,11 @@ public class AsyncScalr
     /**
      * @see Scalr#resize(BufferedImage, Mode, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final Mode resizeMode, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final Mode resizeMode, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, resizeMode, targetSize, ops);
             }
         });
@@ -365,14 +338,11 @@ public class AsyncScalr
     /**
      * @see Scalr#resize(BufferedImage, Method, Mode, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final Mode resizeMode, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final Mode resizeMode, final int targetSize, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, scalingMethod, resizeMode, targetSize, ops);
             }
         });
@@ -381,14 +351,11 @@ public class AsyncScalr
     /**
      * @see Scalr#resize(BufferedImage, int, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, targetWidth, targetHeight, ops);
             }
         });
@@ -397,14 +364,11 @@ public class AsyncScalr
     /**
      * @see Scalr#resize(BufferedImage, Method, int, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final int targetWidth, final int targetHeight, final BufferedImageOp... ops)
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, scalingMethod, targetWidth, targetHeight, ops);
             }
         });
@@ -413,14 +377,11 @@ public class AsyncScalr
     /**
      * @see Scalr#resize(BufferedImage, Mode, int, int, BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final Mode resizeMode, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final Mode resizeMode, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, resizeMode, targetWidth, targetHeight, ops);
             }
         });
@@ -430,14 +391,11 @@ public class AsyncScalr
      * @see Scalr#resize(BufferedImage, Method, Mode, int, int,
      * BufferedImageOp...)
      */
-    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final Mode resizeMode, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> resize(final BufferedImage src, final Method scalingMethod, final Mode resizeMode, final int targetWidth, final int targetHeight, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.resize(src, scalingMethod, resizeMode, targetWidth, targetHeight, ops);
             }
         });
@@ -446,26 +404,21 @@ public class AsyncScalr
     /**
      * @see Scalr#rotate(BufferedImage, Rotation, BufferedImageOp...)
      */
-    public static Future<BufferedImage> rotate(final BufferedImage src, final Rotation rotation, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException
-    {
+    public static Future<BufferedImage> rotate(final BufferedImage src, final Rotation rotation, final BufferedImageOp... ops) throws IllegalArgumentException, ImagingOpException {
         checkService();
 
-        return service.submit(new Callable<BufferedImage>()
-        {
-            public BufferedImage call() throws Exception
-            {
+        return service.submit(new Callable<BufferedImage>() {
+            public BufferedImage call() throws Exception {
                 return Scalr.rotate(src, rotation, ops);
             }
         });
     }
 
-    protected static ExecutorService createService()
-    {
+    protected static ExecutorService createService() {
         return createService(new DefaultThreadFactory());
     }
 
-    protected static ExecutorService createService(ThreadFactory factory) throws IllegalArgumentException
-    {
+    protected static ExecutorService createService(ThreadFactory factory) throws IllegalArgumentException {
         if (factory == null)
             throw new IllegalArgumentException("factory cannot be null");
 
@@ -485,10 +438,8 @@ public class AsyncScalr
      * {@link ThreadFactory} used internally by this class should override the
      * {@link #createService()}.
      */
-    protected static void checkService()
-    {
-        if (service == null || service.isShutdown() || service.isTerminated())
-        {
+    protected static void checkService() {
+        if (service == null || service.isShutdown() || service.isTerminated()) {
             /*
              * If service was shutdown or terminated, assigning a new value will
 			 * free the reference to the instance, allowing it to be GC'ed when
@@ -511,16 +462,14 @@ public class AsyncScalr
      * @author Riyad Kalla (software@thebuzzmedia.com)
      * @since 4.0
      */
-    protected static class DefaultThreadFactory implements ThreadFactory
-    {
+    protected static class DefaultThreadFactory implements ThreadFactory {
         protected static final AtomicInteger poolNumber = new AtomicInteger(1);
 
         protected final ThreadGroup group;
         protected final AtomicInteger threadNumber = new AtomicInteger(1);
         protected final String namePrefix;
 
-        DefaultThreadFactory()
-        {
+        DefaultThreadFactory() {
             SecurityManager manager = System.getSecurityManager();
 
 			/*
@@ -530,7 +479,7 @@ public class AsyncScalr
             group = (manager == null ? Thread.currentThread().getThreadGroup() : manager.getThreadGroup());
 
 			/*
-			 * Define a common name prefix for the threads created by this
+             * Define a common name prefix for the threads created by this
 			 * factory.
 			 */
             namePrefix = "pool-" + poolNumber.getAndIncrement() + "-thread-";
@@ -543,8 +492,7 @@ public class AsyncScalr
          * Thread created by this factory are utilized by the parent
          * {@link ExecutorService} when processing queued up scale operations.
          */
-        public Thread newThread(Runnable r)
-        {
+        public Thread newThread(Runnable r) {
 			/*
 			 * Create a new thread in our specified group with a meaningful
 			 * thread name so it is easy to identify.
@@ -575,16 +523,14 @@ public class AsyncScalr
      * @author Riyad Kalla (software@thebuzzmedia.com)
      * @since 4.0
      */
-    protected static class ServerThreadFactory extends DefaultThreadFactory
-    {
+    protected static class ServerThreadFactory extends DefaultThreadFactory {
         /**
          * Overridden to set <code>daemon</code> property to <code>true</code>
          * and decrease the priority of the new thread to
          * {@link Thread#MIN_PRIORITY} before returning it.
          */
         @Override
-        public Thread newThread(Runnable r)
-        {
+        public Thread newThread(Runnable r) {
             Thread thread = super.newThread(r);
 
             thread.setDaemon(true);

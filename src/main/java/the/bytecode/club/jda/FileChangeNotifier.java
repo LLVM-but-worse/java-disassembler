@@ -8,8 +8,7 @@ import org.objectweb.asm.tree.ClassNode;
  * @author Konloch
  */
 
-public interface FileChangeNotifier
-{
+public interface FileChangeNotifier {
     void openClassFile(String name, String container, ClassNode cn);
 
     void openFile(String name, String container, byte[] contents);

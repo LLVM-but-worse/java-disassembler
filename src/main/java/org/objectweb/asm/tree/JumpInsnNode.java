@@ -39,8 +39,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class JumpInsnNode extends AbstractInsnNode
-{
+public class JumpInsnNode extends AbstractInsnNode {
 
     /**
      * The operand of this instruction. This operand is a label that designates
@@ -59,8 +58,7 @@ public class JumpInsnNode extends AbstractInsnNode
      *               is a label that designates the instruction to which the jump
      *               instruction may jump.
      */
-    public JumpInsnNode(final int opcode, final LabelNode label)
-    {
+    public JumpInsnNode(final int opcode, final LabelNode label) {
         super(opcode);
         this.label = label;
     }
@@ -73,27 +71,23 @@ public class JumpInsnNode extends AbstractInsnNode
      *               IF_ICMPGE, IF_ICMPGT, IF_ICMPLE, IF_ACMPEQ, IF_ACMPNE, GOTO,
      *               JSR, IFNULL or IFNONNULL.
      */
-    public void setOpcode(final int opcode)
-    {
+    public void setOpcode(final int opcode) {
         this.opcode = opcode;
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return JUMP_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitJumpInsn(opcode, label.getLabel());
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new JumpInsnNode(opcode, clone(label, labels)).cloneAnnotations(this);
     }
 }

@@ -7,89 +7,74 @@ import java.util.*;
 /**
  * @author Tyler Sedlar
  */
-public class Digraph<V, E> implements Iterable<V>
-{
+public class Digraph<V, E> implements Iterable<V> {
 
     private final Map<V, Set<E>> graph = new HashMap<>();
 
     @SuppressWarnings("unchecked")
-    public Set<E> edgeAt(int index)
-    {
+    public Set<E> edgeAt(int index) {
         return (Set<E>) graph.values().toArray()[index];
     }
 
-    public int size()
-    {
+    public int size() {
         return graph.size();
     }
 
-    public boolean containsVertex(V vertex)
-    {
+    public boolean containsVertex(V vertex) {
         return graph.containsKey(vertex);
     }
 
-    public boolean containsEdge(V vertex, E edge)
-    {
+    public boolean containsEdge(V vertex, E edge) {
         return graph.containsKey(vertex) && graph.get(vertex).contains(edge);
     }
 
-    public boolean addVertex(V vertex)
-    {
+    public boolean addVertex(V vertex) {
         if (graph.containsKey(vertex))
             return false;
         graph.put(vertex, new HashSet<>());
         return true;
     }
 
-    public void addEdge(V start, E dest)
-    {
+    public void addEdge(V start, E dest) {
         if (!graph.containsKey(start))
             return;
         graph.get(start).add(dest);
     }
 
-    public void removeEdge(V start, E dest)
-    {
+    public void removeEdge(V start, E dest) {
         if (!graph.containsKey(start))
             return;
         graph.get(start).remove(dest);
     }
 
-    public Set<E> edgesFrom(V node)
-    {
+    public Set<E> edgesFrom(V node) {
         return Collections.unmodifiableSet(graph.get(node));
     }
 
-    public void graph(Digraph<V, E> graph)
-    {
+    public void graph(Digraph<V, E> graph) {
         this.graph.putAll(graph.graph);
     }
 
     @Override
-    public final Iterator<V> iterator()
-    {
+    public final Iterator<V> iterator() {
         return graph.keySet().iterator();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         Iterator<V> it = graph.keySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             V v = it.next();
             sb.append(String.format("%s", v));
 
             Set<E> set = graph.get(v);
-            if (set.size() > 0)
-            {
+            if (set.size() > 0) {
                 sb.append(System.lineSeparator());
 
                 Iterator<E> it2 = set.iterator();
-                while (it2.hasNext())
-                {
+                while (it2.hasNext()) {
                     E e = it2.next();
                     sb.append("     > ").append(toString(e));
                     if (it2.hasNext())
@@ -104,37 +89,28 @@ public class Digraph<V, E> implements Iterable<V>
         return sb.toString();
     }
 
-    public String toString(E e)
-    {
+    public String toString(E e) {
         String s = null;
-        if (e instanceof Block)
-        {
+        if (e instanceof Block) {
             s = ((Block) e).headerString();
-        }
-        else
-        {
+        } else {
             s = e.toString();
         }
         return s;
     }
 
-    public String toString(Set<E> set)
-    {
+    public String toString(Set<E> set) {
         Iterator<E> it = set.iterator();
         if (!it.hasNext())
             return "emtpy";
 
         StringBuilder sb = new StringBuilder();
-        for (; ; )
-        {
+        for (; ; ) {
             E e = it.next();
             String s = null;
-            if (e instanceof Block)
-            {
+            if (e instanceof Block) {
                 s = ((Block) e).headerString();
-            }
-            else
-            {
+            } else {
                 s = e.toString();
             }
 
@@ -145,13 +121,11 @@ public class Digraph<V, E> implements Iterable<V>
         }
     }
 
-    public Map<V, Set<E>> graph()
-    {
+    public Map<V, Set<E>> graph() {
         return graph;
     }
 
-    public void flush()
-    {
+    public void flush() {
         graph.clear();
     }
 }

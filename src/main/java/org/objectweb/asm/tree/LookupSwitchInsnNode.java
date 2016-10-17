@@ -43,8 +43,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class LookupSwitchInsnNode extends AbstractInsnNode
-{
+public class LookupSwitchInsnNode extends AbstractInsnNode {
 
     /**
      * Beginning of the default handler block.
@@ -70,42 +69,34 @@ public class LookupSwitchInsnNode extends AbstractInsnNode
      * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is the
      *               beginning of the handler block for the <tt>keys[i]</tt> key.
      */
-    public LookupSwitchInsnNode(final LabelNode dflt, final int[] keys, final LabelNode[] labels)
-    {
+    public LookupSwitchInsnNode(final LabelNode dflt, final int[] keys, final LabelNode[] labels) {
         super(Opcodes.LOOKUPSWITCH);
         this.dflt = dflt;
         this.keys = new ArrayList<>(keys == null ? 0 : keys.length);
         this.labels = new ArrayList<>(labels == null ? 0 : labels.length);
-        if (keys != null)
-        {
-            for (int i = 0; i < keys.length; ++i)
-            {
+        if (keys != null) {
+            for (int i = 0; i < keys.length; ++i) {
                 this.keys.add(keys[i]);
             }
         }
-        if (labels != null)
-        {
+        if (labels != null) {
             this.labels.addAll(Arrays.asList(labels));
         }
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return LOOKUPSWITCH_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         int[] keys = new int[this.keys.size()];
-        for (int i = 0; i < keys.length; ++i)
-        {
+        for (int i = 0; i < keys.length; ++i) {
             keys[i] = this.keys.get(i).intValue();
         }
         Label[] labels = new Label[this.labels.size()];
-        for (int i = 0; i < labels.length; ++i)
-        {
+        for (int i = 0; i < labels.length; ++i) {
             labels[i] = this.labels.get(i).getLabel();
         }
         mv.visitLookupSwitchInsn(dflt.getLabel(), keys, labels);
@@ -113,8 +104,7 @@ public class LookupSwitchInsnNode extends AbstractInsnNode
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         LookupSwitchInsnNode clone = new LookupSwitchInsnNode(clone(dflt, labels), null, clone(this.labels, labels));
         clone.keys.addAll(keys);
         return clone.cloneAnnotations(this);

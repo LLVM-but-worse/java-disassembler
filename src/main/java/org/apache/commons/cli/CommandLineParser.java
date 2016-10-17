@@ -24,8 +24,7 @@ package org.apache.commons.cli;
  *
  * @version $Id: CommandLineParser.java 1443102 2013-02-06 18:12:16Z tn $
  */
-public interface CommandLineParser
-{
+public interface CommandLineParser {
     /**
      * Parse the arguments according to the specified options.
      *

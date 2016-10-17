@@ -34,8 +34,7 @@ package org.objectweb.asm.tree.analysis;
  *
  * @author Eric Bruneton
  */
-public interface Value
-{
+public interface Value {
 
     /**
      * Returns the size of this value in words.

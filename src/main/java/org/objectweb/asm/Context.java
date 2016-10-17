@@ -35,8 +35,7 @@ package org.objectweb.asm;
  *
  * @author Eric Bruneton
  */
-class Context
-{
+class Context {
 
     /**
      * Prototypes of the attributes that must be parsed for this class.

@@ -26,8 +26,7 @@ import java.util.Iterator;
  * @version $Id: AmbiguousOptionException.java 1669814 2015-03-28 18:09:26Z britter $
  * @since 1.3
  */
-public class AmbiguousOptionException extends UnrecognizedOptionException
-{
+public class AmbiguousOptionException extends UnrecognizedOptionException {
     /**
      * This exception {@code serialVersionUID}.
      */
@@ -44,8 +43,7 @@ public class AmbiguousOptionException extends UnrecognizedOptionException
      * @param option          the partial option name
      * @param matchingOptions the options matching the name
      */
-    public AmbiguousOptionException(String option, Collection<String> matchingOptions)
-    {
+    public AmbiguousOptionException(String option, Collection<String> matchingOptions) {
         super(createMessage(option, matchingOptions), option);
         this.matchingOptions = matchingOptions;
     }
@@ -55,8 +53,7 @@ public class AmbiguousOptionException extends UnrecognizedOptionException
      *
      * @return a collection of options matching the name
      */
-    public Collection<String> getMatchingOptions()
-    {
+    public Collection<String> getMatchingOptions() {
         return matchingOptions;
     }
 
@@ -67,20 +64,17 @@ public class AmbiguousOptionException extends UnrecognizedOptionException
      * @param matchingOptions
      * @return
      */
-    private static String createMessage(String option, Collection<String> matchingOptions)
-    {
+    private static String createMessage(String option, Collection<String> matchingOptions) {
         StringBuilder buf = new StringBuilder("Ambiguous option: '");
         buf.append(option);
         buf.append("'  (could be: ");
 
         Iterator<String> it = matchingOptions.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             buf.append("'");
             buf.append(it.next());
             buf.append("'");
-            if (it.hasNext())
-            {
+            if (it.hasNext()) {
                 buf.append(", ");
             }
         }

@@ -39,8 +39,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class MultiANewArrayInsnNode extends AbstractInsnNode
-{
+public class MultiANewArrayInsnNode extends AbstractInsnNode {
 
     /**
      * An array type descriptor (see {@link org.objectweb.asm.Type}).
@@ -58,29 +57,25 @@ public class MultiANewArrayInsnNode extends AbstractInsnNode
      * @param desc an array type descriptor (see {@link org.objectweb.asm.Type}).
      * @param dims number of dimensions of the array to allocate.
      */
-    public MultiANewArrayInsnNode(final String desc, final int dims)
-    {
+    public MultiANewArrayInsnNode(final String desc, final int dims) {
         super(Opcodes.MULTIANEWARRAY);
         this.desc = desc;
         this.dims = dims;
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return MULTIANEWARRAY_INSN;
     }
 
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitMultiANewArrayInsn(desc, dims);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new MultiANewArrayInsnNode(desc, dims).cloneAnnotations(this);
     }
 

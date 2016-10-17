@@ -38,8 +38,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class InsnNode extends AbstractInsnNode
-{
+public class InsnNode extends AbstractInsnNode {
 
     /**
      * Constructs a new {@link InsnNode}.
@@ -60,14 +59,12 @@ public class InsnNode extends AbstractInsnNode
      *               DRETURN, ARETURN, RETURN, ARRAYLENGTH, ATHROW, MONITORENTER,
      *               or MONITOREXIT.
      */
-    public InsnNode(final int opcode)
-    {
+    public InsnNode(final int opcode) {
         super(opcode);
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return INSN;
     }
 
@@ -77,15 +74,13 @@ public class InsnNode extends AbstractInsnNode
      * @param mv a method visitor.
      */
     @Override
-    public void accept(final MethodVisitor mv)
-    {
+    public void accept(final MethodVisitor mv) {
         mv.visitInsn(opcode);
         acceptAnnotations(mv);
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new InsnNode(opcode).cloneAnnotations(this);
     }
 }

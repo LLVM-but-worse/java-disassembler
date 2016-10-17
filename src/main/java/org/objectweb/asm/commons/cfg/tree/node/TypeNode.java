@@ -7,16 +7,13 @@ import org.objectweb.asm.tree.TypeInsnNode;
 /**
  * @author Tyler Sedlar
  */
-public class TypeNode extends AbstractNode
-{
+public class TypeNode extends AbstractNode {
 
-    public TypeNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing)
-    {
+    public TypeNode(NodeTree tree, AbstractInsnNode insn, int collapsed, int producing) {
         super(tree, insn, collapsed, producing);
     }
 
-    public String type()
-    {
+    public String type() {
         return ((TypeInsnNode) insn()).desc;
     }
 }

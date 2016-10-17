@@ -10,27 +10,21 @@ import java.security.Permission;
  * @author Konloch
  */
 
-public class SecurityMan extends SecurityManager
-{
+public class SecurityMan extends SecurityManager {
 
-    public void setBlocking()
-    {
+    public void setBlocking() {
         blocking = true;
     }
 
-    public void stopBlocking()
-    { //slightly safer security system than just a public static boolean being toggled
+    public void stopBlocking() { //slightly safer security system than just a public static boolean being toggled
         String executedClass = Thread.currentThread().getStackTrace()[2].getClassName();
         if (executedClass.equals("CFRDecompiler") ||
                 executedClass.equals("ProcyonDecompiler") ||
                 executedClass.equals("FernFlowerDecompiler") ||
-                executedClass.equals("the.bytecode.club.jda.JDA"))
-        {
+                executedClass.equals("the.bytecode.club.jda.JDA")) {
             blocking = false;
-        }
-        else
-            for (StackTraceElement stackTraceElements : Thread.currentThread().getStackTrace())
-            {
+        } else
+            for (StackTraceElement stackTraceElements : Thread.currentThread().getStackTrace()) {
                 System.out.println(stackTraceElements.getClassName() + " tried to disable security!");
             }
     }
@@ -38,169 +32,136 @@ public class SecurityMan extends SecurityManager
     private boolean blocking = true; //might be insecure due to assholes targeting BCV, however that's highly unlikely.
 
     @Override
-    public void checkExec(String cmd)
-    {
-        String[] whitelist = { "attrib", "python", "pypy", "java" };
+    public void checkExec(String cmd) {
+        String[] whitelist = {"attrib", "python", "pypy", "java"};
         boolean allow = false;
 
-        for (String s : whitelist)
-        {
+        for (String s : whitelist) {
             if (cmd.contains(s))
                 allow = true;
         }
 
-        if (allow && !blocking)
-        {
+        if (allow && !blocking) {
             System.out.println("Allowing exec:" + cmd);
-        }
-        else
+        } else
             throw new SecurityException("JDA is awesome, blocking " + cmd);
     }
 
     @Override
-    public void checkListen(int port)
-    {
+    public void checkListen(int port) {
         throw new SecurityException("JDA is awesome, blocking port " + port + " from listening");
     }
 
     @Override
-    public void checkPermission(Permission perm)
-    { //expand eventually
+    public void checkPermission(Permission perm) { //expand eventually
     }
 
     @Override
-    public void checkPermission(Permission perm, Object context)
-    {//expand eventually
+    public void checkPermission(Permission perm, Object context) {//expand eventually
     }
 
     @Override
-    public void checkAccess(Thread t)
-    {
+    public void checkAccess(Thread t) {
     }
 
     @Override
-    public void checkAccept(String host, int port)
-    {
+    public void checkAccept(String host, int port) {
     }
 
     @Override
-    public void checkAccess(ThreadGroup g)
-    {
+    public void checkAccess(ThreadGroup g) {
     }
 
     @Override
-    public void checkAwtEventQueueAccess()
-    {
+    public void checkAwtEventQueueAccess() {
     }
 
     @Override
-    public void checkConnect(String host, int port)
-    {
+    public void checkConnect(String host, int port) {
     }
 
     @Override
-    public void checkConnect(String host, int port, Object context)
-    {
+    public void checkConnect(String host, int port, Object context) {
     }
 
     @Override
-    public void checkCreateClassLoader()
-    {
+    public void checkCreateClassLoader() {
     }
 
     @Override
-    public void checkDelete(String file)
-    {
+    public void checkDelete(String file) {
     }
 
     @Override
-    public void checkExit(int status)
-    {
+    public void checkExit(int status) {
     }
 
     @Override
-    public void checkLink(String lib)
-    {
+    public void checkLink(String lib) {
     }
 
     @Override
-    public void checkMemberAccess(Class<?> clazz, int which)
-    {
+    public void checkMemberAccess(Class<?> clazz, int which) {
     }
 
     @Override
-    public void checkMulticast(InetAddress maddr)
-    {
+    public void checkMulticast(InetAddress maddr) {
     }
 
     @Override
-    public void checkMulticast(InetAddress maddr, byte ttl)
-    {
+    public void checkMulticast(InetAddress maddr, byte ttl) {
     }
 
     @Override
-    public void checkPackageAccess(String pkg)
-    {
+    public void checkPackageAccess(String pkg) {
     }
 
     @Override
-    public void checkPackageDefinition(String pkg)
-    {
+    public void checkPackageDefinition(String pkg) {
     }
 
     @Override
-    public void checkPrintJobAccess()
-    {
+    public void checkPrintJobAccess() {
     }
 
     @Override
-    public void checkPropertiesAccess()
-    {
+    public void checkPropertiesAccess() {
     }
 
     @Override
-    public void checkPropertyAccess(String key)
-    {
+    public void checkPropertyAccess(String key) {
     }
 
     @Override
-    public void checkRead(FileDescriptor fd)
-    {
+    public void checkRead(FileDescriptor fd) {
     }
 
     @Override
-    public void checkRead(String file)
-    {
+    public void checkRead(String file) {
     }
 
     @Override
-    public void checkRead(String file, Object context)
-    {
+    public void checkRead(String file, Object context) {
     }
 
     @Override
-    public void checkSecurityAccess(String target)
-    {
+    public void checkSecurityAccess(String target) {
     }
 
     @Override
-    public void checkSetFactory()
-    {
+    public void checkSetFactory() {
     }
 
     @Override
-    public void checkSystemClipboardAccess()
-    {
+    public void checkSystemClipboardAccess() {
     }
 
     @Override
-    public void checkWrite(FileDescriptor fd)
-    {
+    public void checkWrite(FileDescriptor fd) {
     }
 
     @Override
-    public void checkWrite(String file)
-    {
+    public void checkWrite(String file) {
     }
 
 }

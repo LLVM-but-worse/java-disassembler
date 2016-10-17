@@ -21,8 +21,7 @@ import java.nio.charset.CharsetEncoder;
  * @author Konloch
  */
 
-public class FileViewer extends Viewer
-{
+public class FileViewer extends Viewer {
 
     private static final long serialVersionUID = 6103372882168257164L;
 
@@ -33,8 +32,7 @@ public class FileViewer extends Viewer
     public BufferedImage image;
     boolean canRefresh = false;
 
-    public void setContents()
-    {
+    public void setContents() {
         String name = this.name.toLowerCase();
         panelArea.setCodeFoldingEnabled(true);
         panelArea.setAntiAliasingEnabled(true);
@@ -43,25 +41,19 @@ public class FileViewer extends Viewer
 
         String contentsS = new String(contents);
 
-        if (!isPureAscii(contentsS))
-        {
+        if (!isPureAscii(contentsS)) {
             if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg") ||
-                    name.endsWith(".gif") || name.endsWith(".tif") || name.endsWith(".bmp"))
-            {
+                    name.endsWith(".gif") || name.endsWith(".tif") || name.endsWith(".bmp")) {
                 canRefresh = true;
-                try
-                {
+                try {
                     image = ImageIO.read(new ByteArrayInputStream(contents)); //gifs fail cause of this
                     JLabel label = new JLabel("", new ImageIcon(image), JLabel.CENTER);
                     panel2.add(label, BorderLayout.CENTER);
                     panel2.addMouseWheelListener(e -> {
                         int notches = e.getWheelRotation();
-                        if (notches < 0)
-                        {
+                        if (notches < 0) {
                             image = Scalr.resize(image, Scalr.Method.SPEED, image.getWidth() + 10, image.getHeight() + 10);
-                        }
-                        else
-                        {
+                        } else {
                             image = Scalr.resize(image, Scalr.Method.SPEED, image.getWidth() - 10, image.getHeight() - 10);
                         }
                         panel2.removeAll();
@@ -70,121 +62,76 @@ public class FileViewer extends Viewer
                         panel2.updateUI();
                     });
                     return;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     new ExceptionUI(e);
                 }
-            }
-            else
-            {
+            } else {
                 // todo: fallback
                 return;
             }
         }
 
-        if (name.endsWith(".xml") || contentsS.startsWith("<?xml") || contentsS.startsWith(("<xml")))
-        {
+        if (name.endsWith(".xml") || contentsS.startsWith("<?xml") || contentsS.startsWith(("<xml"))) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".py") || name.endsWith(".python"))
-        {
+        } else if (name.endsWith(".py") || name.endsWith(".python")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PYTHON);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".rb") || name.endsWith(".ruby"))
-        {
+        } else if (name.endsWith(".rb") || name.endsWith(".ruby")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_RUBY);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".java"))
-        {
+        } else if (name.endsWith(".java")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".html"))
-        {
+        } else if (name.endsWith(".html")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".css"))
-        {
+        } else if (name.endsWith(".css")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSS);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".properties") || name.endsWith(".mf") || name.endsWith(".sf"))
-        {
+        } else if (name.endsWith(".properties") || name.endsWith(".mf") || name.endsWith(".sf")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".php") || contentsS.startsWith("<?php"))
-        {
+        } else if (name.endsWith(".php") || contentsS.startsWith("<?php")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PHP);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".js"))
-        {
+        } else if (name.endsWith(".js")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".bat"))
-        {
+        } else if (name.endsWith(".bat")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".sh"))
-        {
+        } else if (name.endsWith(".sh")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".c"))
-        {
+        } else if (name.endsWith(".c")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_C);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".cpp"))
-        {
+        } else if (name.endsWith(".cpp")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".scala"))
-        {
+        } else if (name.endsWith(".scala")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SCALA);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".clojure"))
-        {
+        } else if (name.endsWith(".clojure")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CLOJURE);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".groovy"))
-        {
+        } else if (name.endsWith(".groovy")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GROOVY);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".lua"))
-        {
+        } else if (name.endsWith(".lua")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_LUA);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".sql"))
-        {
+        } else if (name.endsWith(".sql")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SQL);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".json"))
-        {
+        } else if (name.endsWith(".json")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
             panelArea.setText(contentsS);
-        }
-        else if (name.endsWith(".jsp"))
-        {
+        } else if (name.endsWith(".jsp")) {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSP);
             panelArea.setText(contentsS);
-        }
-        else
-        {
+        } else {
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
             panelArea.setText(contentsS);
         }
@@ -196,13 +143,11 @@ public class FileViewer extends Viewer
 
     static CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder(); // or "ISO-8859-1" for ISO Latin 1
 
-    public static boolean isPureAscii(String v)
-    {
+    public static boolean isPureAscii(String v) {
         return asciiEncoder.canEncode(v);
     }
 
-    public FileViewer(final String name, final String container, final byte[] contents)
-    {
+    public FileViewer(final String name, final String container, final byte[] contents) {
         this.name = name;
         this.container = container;
         this.contents = contents;
@@ -214,21 +159,16 @@ public class FileViewer extends Viewer
         setContents();
     }
 
-    public void refresh(JButton src)
-    {
-        if (!canRefresh)
-        {
+    public void refresh(JButton src) {
+        if (!canRefresh) {
             src.setEnabled(true);
             return;
         }
 
         panel2.removeAll();
-        try
-        {
+        try {
             image = ImageIO.read(new ByteArrayInputStream(contents));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             new ExceptionUI(e);
         }
         JLabel label = new JLabel("", new ImageIcon(image), JLabel.CENTER);

@@ -51,8 +51,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public class FrameNode extends AbstractInsnNode
-{
+public class FrameNode extends AbstractInsnNode {
 
     /**
      * The type of this frame. Must be {@link Opcodes#F_NEW} for expanded
@@ -78,8 +77,7 @@ public class FrameNode extends AbstractInsnNode
      */
     public List<Object> stack;
 
-    private FrameNode()
-    {
+    private FrameNode() {
         super(-1);
     }
 
@@ -102,12 +100,10 @@ public class FrameNode extends AbstractInsnNode
      *               LabelNode objects (for primitive, reference and uninitialized
      *               types respectively - see {@link MethodVisitor}).
      */
-    public FrameNode(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack)
-    {
+    public FrameNode(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack) {
         super(-1);
         this.type = type;
-        switch (type)
-        {
+        switch (type) {
             case Opcodes.F_NEW:
             case Opcodes.F_FULL:
                 this.local = asList(nLocal, local);
@@ -128,8 +124,7 @@ public class FrameNode extends AbstractInsnNode
     }
 
     @Override
-    public int type()
-    {
+    public int type() {
         return FRAME;
     }
 
@@ -139,10 +134,8 @@ public class FrameNode extends AbstractInsnNode
      * @param mv a method visitor.
      */
     @Override
-    public void accept(final MethodVisitor mv)
-    {
-        switch (type)
-        {
+    public void accept(final MethodVisitor mv) {
+        switch (type) {
             case Opcodes.F_NEW:
             case Opcodes.F_FULL:
                 mv.visitFrame(type, local.size(), asArray(local), stack.size(), asArray(stack));
@@ -163,31 +156,24 @@ public class FrameNode extends AbstractInsnNode
     }
 
     @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels)
-    {
+    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         FrameNode clone = new FrameNode();
         clone.type = type;
-        if (local != null)
-        {
+        if (local != null) {
             clone.local = new ArrayList<>();
-            for (int i = 0; i < local.size(); ++i)
-            {
+            for (int i = 0; i < local.size(); ++i) {
                 Object l = local.get(i);
-                if (l instanceof LabelNode)
-                {
+                if (l instanceof LabelNode) {
                     l = labels.get(l);
                 }
                 clone.local.add(l);
             }
         }
-        if (stack != null)
-        {
+        if (stack != null) {
             clone.stack = new ArrayList<>();
-            for (int i = 0; i < stack.size(); ++i)
-            {
+            for (int i = 0; i < stack.size(); ++i) {
                 Object s = stack.get(i);
-                if (s instanceof LabelNode)
-                {
+                if (s instanceof LabelNode) {
                     s = labels.get(s);
                 }
                 clone.stack.add(s);
@@ -198,19 +184,15 @@ public class FrameNode extends AbstractInsnNode
 
     // ------------------------------------------------------------------------
 
-    private static List<Object> asList(final int n, final Object[] o)
-    {
+    private static List<Object> asList(final int n, final Object[] o) {
         return Arrays.asList(o).subList(0, n);
     }
 
-    private static Object[] asArray(final List<Object> l)
-    {
+    private static Object[] asArray(final List<Object> l) {
         Object[] objs = new Object[l.size()];
-        for (int i = 0; i < objs.length; ++i)
-        {
+        for (int i = 0; i < objs.length; ++i) {
             Object o = l.get(i);
-            if (o instanceof LabelNode)
-            {
+            if (o instanceof LabelNode) {
                 o = ((LabelNode) o).getLabel();
             }
             objs[i] = o;

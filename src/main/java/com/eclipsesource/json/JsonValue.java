@@ -57,32 +57,33 @@ import java.io.*;
  * </p>
  */
 @SuppressWarnings("serial") // use default serial UID
-public abstract class JsonValue implements Serializable
-{
+public abstract class JsonValue implements Serializable {
 
     /**
      * Represents the JSON literal <code>true</code>.
      *
      * @deprecated Use <code>Json.TRUE</code> instead
      */
-    @Deprecated public static final JsonValue TRUE = Json.TRUE;
+    @Deprecated
+    public static final JsonValue TRUE = Json.TRUE;
 
     /**
      * Represents the JSON literal <code>false</code>.
      *
      * @deprecated Use <code>Json.FALSE</code> instead
      */
-    @Deprecated public static final JsonValue FALSE = Json.FALSE;
+    @Deprecated
+    public static final JsonValue FALSE = Json.FALSE;
 
     /**
      * Represents the JSON literal <code>null</code>.
      *
      * @deprecated Use <code>Json.NULL</code> instead
      */
-    @Deprecated public static final JsonValue NULL = Json.NULL;
+    @Deprecated
+    public static final JsonValue NULL = Json.NULL;
 
-    JsonValue()
-    {
+    JsonValue() {
         // prevent subclasses outside of this package
     }
 
@@ -101,8 +102,7 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use {@link Json#parse(Reader)} instead
      */
     @Deprecated
-    public static JsonValue readFrom(Reader reader) throws IOException
-    {
+    public static JsonValue readFrom(Reader reader) throws IOException {
         return new JsonParser(reader).parse();
     }
 
@@ -115,14 +115,10 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use {@link Json#parse(String)} instead
      */
     @Deprecated
-    public static JsonValue readFrom(String text)
-    {
-        try
-        {
+    public static JsonValue readFrom(String text) {
+        try {
             return new JsonParser(text).parse();
-        }
-        catch (IOException exception)
-        {
+        } catch (IOException exception) {
             // JsonParser does not throw IOException for String
             throw new RuntimeException(exception);
         }
@@ -136,8 +132,7 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use <code>Json.value()</code> instead
      */
     @Deprecated
-    public static JsonValue valueOf(int value)
-    {
+    public static JsonValue valueOf(int value) {
         return Json.value(value);
     }
 
@@ -149,8 +144,7 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use <code>Json.value()</code> instead
      */
     @Deprecated
-    public static JsonValue valueOf(long value)
-    {
+    public static JsonValue valueOf(long value) {
         return Json.value(value);
     }
 
@@ -162,8 +156,7 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use <code>Json.value()</code> instead
      */
     @Deprecated
-    public static JsonValue valueOf(float value)
-    {
+    public static JsonValue valueOf(float value) {
         return Json.value(value);
     }
 
@@ -175,8 +168,7 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use <code>Json.value()</code> instead
      */
     @Deprecated
-    public static JsonValue valueOf(double value)
-    {
+    public static JsonValue valueOf(double value) {
         return Json.value(value);
     }
 
@@ -188,8 +180,7 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use <code>Json.value()</code> instead
      */
     @Deprecated
-    public static JsonValue valueOf(String string)
-    {
+    public static JsonValue valueOf(String string) {
         return Json.value(string);
     }
 
@@ -201,8 +192,7 @@ public abstract class JsonValue implements Serializable
      * @deprecated Use <code>Json.value()</code> instead
      */
     @Deprecated
-    public static JsonValue valueOf(boolean value)
-    {
+    public static JsonValue valueOf(boolean value) {
         return Json.value(value);
     }
 
@@ -212,8 +202,7 @@ public abstract class JsonValue implements Serializable
      *
      * @return <code>true</code> if this value is an instance of JsonObject
      */
-    public boolean isObject()
-    {
+    public boolean isObject() {
         return false;
     }
 
@@ -223,8 +212,7 @@ public abstract class JsonValue implements Serializable
      *
      * @return <code>true</code> if this value is an instance of JsonArray
      */
-    public boolean isArray()
-    {
+    public boolean isArray() {
         return false;
     }
 
@@ -233,8 +221,7 @@ public abstract class JsonValue implements Serializable
      *
      * @return <code>true</code> if this value represents a JSON number
      */
-    public boolean isNumber()
-    {
+    public boolean isNumber() {
         return false;
     }
 
@@ -243,8 +230,7 @@ public abstract class JsonValue implements Serializable
      *
      * @return <code>true</code> if this value represents a JSON string
      */
-    public boolean isString()
-    {
+    public boolean isString() {
         return false;
     }
 
@@ -254,8 +240,7 @@ public abstract class JsonValue implements Serializable
      * @return <code>true</code> if this value represents either the JSON literal <code>true</code> or
      * <code>false</code>
      */
-    public boolean isBoolean()
-    {
+    public boolean isBoolean() {
         return false;
     }
 
@@ -264,8 +249,7 @@ public abstract class JsonValue implements Serializable
      *
      * @return <code>true</code> if this value represents the JSON literal <code>true</code>
      */
-    public boolean isTrue()
-    {
+    public boolean isTrue() {
         return false;
     }
 
@@ -274,8 +258,7 @@ public abstract class JsonValue implements Serializable
      *
      * @return <code>true</code> if this value represents the JSON literal <code>false</code>
      */
-    public boolean isFalse()
-    {
+    public boolean isFalse() {
         return false;
     }
 
@@ -284,8 +267,7 @@ public abstract class JsonValue implements Serializable
      *
      * @return <code>true</code> if this value represents the JSON literal <code>null</code>
      */
-    public boolean isNull()
-    {
+    public boolean isNull() {
         return false;
     }
 
@@ -296,8 +278,7 @@ public abstract class JsonValue implements Serializable
      * @return a JSONObject for this value
      * @throws UnsupportedOperationException if this value is not a JSON object
      */
-    public JsonObject asObject()
-    {
+    public JsonObject asObject() {
         throw new UnsupportedOperationException("Not an object: " + toString());
     }
 
@@ -308,8 +289,7 @@ public abstract class JsonValue implements Serializable
      * @return a JSONArray for this value
      * @throws UnsupportedOperationException if this value is not a JSON array
      */
-    public JsonArray asArray()
-    {
+    public JsonArray asArray() {
         throw new UnsupportedOperationException("Not an array: " + toString());
     }
 
@@ -326,8 +306,7 @@ public abstract class JsonValue implements Serializable
      * @throws UnsupportedOperationException if this value is not a JSON number
      * @throws NumberFormatException         if this JSON number can not be interpreted as <code>int</code> value
      */
-    public int asInt()
-    {
+    public int asInt() {
         throw new UnsupportedOperationException("Not a number: " + toString());
     }
 
@@ -344,8 +323,7 @@ public abstract class JsonValue implements Serializable
      * @throws UnsupportedOperationException if this value is not a JSON number
      * @throws NumberFormatException         if this JSON number can not be interpreted as <code>long</code> value
      */
-    public long asLong()
-    {
+    public long asLong() {
         throw new UnsupportedOperationException("Not a number: " + toString());
     }
 
@@ -360,8 +338,7 @@ public abstract class JsonValue implements Serializable
      * @return this value as <code>float</code>
      * @throws UnsupportedOperationException if this value is not a JSON number
      */
-    public float asFloat()
-    {
+    public float asFloat() {
         throw new UnsupportedOperationException("Not a number: " + toString());
     }
 
@@ -376,8 +353,7 @@ public abstract class JsonValue implements Serializable
      * @return this value as <code>double</code>
      * @throws UnsupportedOperationException if this value is not a JSON number
      */
-    public double asDouble()
-    {
+    public double asDouble() {
         throw new UnsupportedOperationException("Not a number: " + toString());
     }
 
@@ -388,8 +364,7 @@ public abstract class JsonValue implements Serializable
      * @return the string represented by this value
      * @throws UnsupportedOperationException if this value is not a JSON string
      */
-    public String asString()
-    {
+    public String asString() {
         throw new UnsupportedOperationException("Not a string: " + toString());
     }
 
@@ -400,8 +375,7 @@ public abstract class JsonValue implements Serializable
      * @return this value as <code>boolean</code>
      * @throws UnsupportedOperationException if this value is neither <code>true</code> or <code>false</code>
      */
-    public boolean asBoolean()
-    {
+    public boolean asBoolean() {
         throw new UnsupportedOperationException("Not a boolean: " + toString());
     }
 
@@ -415,8 +389,7 @@ public abstract class JsonValue implements Serializable
      * @param writer the writer to write this value to
      * @throws IOException if an I/O error occurs in the writer
      */
-    public void writeTo(Writer writer) throws IOException
-    {
+    public void writeTo(Writer writer) throws IOException {
         writeTo(writer, WriterConfig.MINIMAL);
     }
 
@@ -430,14 +403,11 @@ public abstract class JsonValue implements Serializable
      * @param config a configuration that controls the formatting or <code>null</code> for the minimal form
      * @throws IOException if an I/O error occurs in the writer
      */
-    public void writeTo(Writer writer, WriterConfig config) throws IOException
-    {
-        if (writer == null)
-        {
+    public void writeTo(Writer writer, WriterConfig config) throws IOException {
+        if (writer == null) {
             throw new NullPointerException("writer is null");
         }
-        if (config == null)
-        {
+        if (config == null) {
             throw new NullPointerException("config is null");
         }
         WritingBuffer buffer = new WritingBuffer(writer, 128);
@@ -453,8 +423,7 @@ public abstract class JsonValue implements Serializable
      * @return a JSON string that represents this value
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toString(WriterConfig.MINIMAL);
     }
 
@@ -464,15 +433,11 @@ public abstract class JsonValue implements Serializable
      * @param config a configuration that controls the formatting or <code>null</code> for the minimal form
      * @return a JSON string that represents this value
      */
-    public String toString(WriterConfig config)
-    {
+    public String toString(WriterConfig config) {
         StringWriter writer = new StringWriter();
-        try
-        {
+        try {
             writeTo(writer, config);
-        }
-        catch (IOException exception)
-        {
+        } catch (IOException exception) {
             // StringWriter does not throw IOExceptions
             throw new RuntimeException(exception);
         }
@@ -492,14 +457,12 @@ public abstract class JsonValue implements Serializable
      * @return true if this object is the same as the object argument; false otherwise
      */
     @Override
-    public boolean equals(Object object)
-    {
+    public boolean equals(Object object) {
         return super.equals(object);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return super.hashCode();
     }
 

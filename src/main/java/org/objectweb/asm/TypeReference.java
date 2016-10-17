@@ -39,8 +39,7 @@ package org.objectweb.asm;
  *
  * @author Eric Bruneton
  */
-public class TypeReference
-{
+public class TypeReference {
 
     /**
      * The sort of type references that target a type parameter of a generic
@@ -186,8 +185,7 @@ public class TypeReference
      *                visit method related to type annotations, like
      *                visitTypeAnnotation.
      */
-    public TypeReference(int typeRef)
-    {
+    public TypeReference(int typeRef) {
         this.value = typeRef;
     }
 
@@ -203,8 +201,7 @@ public class TypeReference
      *             {@link #METHOD_REFERENCE METHOD_REFERENCE}.
      * @return a type reference of the given sort.
      */
-    public static TypeReference newTypeReference(int sort)
-    {
+    public static TypeReference newTypeReference(int sort) {
         return new TypeReference(sort << 24);
     }
 
@@ -216,8 +213,7 @@ public class TypeReference
      * @param paramIndex the type parameter index.
      * @return a reference to the given generic class or method type parameter.
      */
-    public static TypeReference newTypeParameterReference(int sort, int paramIndex)
-    {
+    public static TypeReference newTypeParameterReference(int sort, int paramIndex) {
         return new TypeReference((sort << 24) | (paramIndex << 16));
     }
 
@@ -232,8 +228,7 @@ public class TypeReference
      * @return a reference to the given generic class or method type parameter
      * bound.
      */
-    public static TypeReference newTypeParameterBoundReference(int sort, int paramIndex, int boundIndex)
-    {
+    public static TypeReference newTypeParameterBoundReference(int sort, int paramIndex, int boundIndex) {
         return new TypeReference((sort << 24) | (paramIndex << 16) | (boundIndex << 8));
     }
 
@@ -245,8 +240,7 @@ public class TypeReference
      *                 class, or -1 to reference the super class of the class.
      * @return a reference to the given super type of a class.
      */
-    public static TypeReference newSuperTypeReference(int itfIndex)
-    {
+    public static TypeReference newSuperTypeReference(int itfIndex) {
         itfIndex &= 0xFFFF;
         return new TypeReference((CLASS_EXTENDS << 24) | (itfIndex << 8));
     }
@@ -257,8 +251,7 @@ public class TypeReference
      * @param paramIndex the formal parameter index.
      * @return a reference to the type of the given method formal parameter.
      */
-    public static TypeReference newFormalParameterReference(int paramIndex)
-    {
+    public static TypeReference newFormalParameterReference(int paramIndex) {
         return new TypeReference((METHOD_FORMAL_PARAMETER << 24) | (paramIndex << 16));
     }
 
@@ -269,8 +262,7 @@ public class TypeReference
      * @param exceptionIndex the index of an exception in a 'throws' clause of a method.
      * @return a reference to the type of the given exception.
      */
-    public static TypeReference newExceptionReference(int exceptionIndex)
-    {
+    public static TypeReference newExceptionReference(int exceptionIndex) {
         return new TypeReference((THROWS << 24) | (exceptionIndex << 8));
     }
 
@@ -282,8 +274,7 @@ public class TypeReference
      *                           are visited with visitTryCatchBlock).
      * @return a reference to the type of the given exception.
      */
-    public static TypeReference newTryCatchReference(int tryCatchBlockIndex)
-    {
+    public static TypeReference newTryCatchReference(int tryCatchBlockIndex) {
         return new TypeReference((EXCEPTION_PARAMETER << 24) | (tryCatchBlockIndex << 8));
     }
 
@@ -303,8 +294,7 @@ public class TypeReference
      * @param argIndex the type argument index.
      * @return a reference to the type of the given type argument.
      */
-    public static TypeReference newTypeArgumentReference(int sort, int argIndex)
-    {
+    public static TypeReference newTypeArgumentReference(int sort, int argIndex) {
         return new TypeReference((sort << 24) | argIndex);
     }
 
@@ -334,8 +324,7 @@ public class TypeReference
      * {@link #METHOD_REFERENCE_TYPE_ARGUMENT
      * METHOD_REFERENCE_TYPE_ARGUMENT}.
      */
-    public int getSort()
-    {
+    public int getSort() {
         return value >>> 24;
     }
 
@@ -349,8 +338,7 @@ public class TypeReference
      *
      * @return a type parameter index.
      */
-    public int getTypeParameterIndex()
-    {
+    public int getTypeParameterIndex() {
         return (value & 0x00FF0000) >> 16;
     }
 
@@ -363,8 +351,7 @@ public class TypeReference
      *
      * @return a type parameter bound index.
      */
-    public int getTypeParameterBoundIndex()
-    {
+    public int getTypeParameterBoundIndex() {
         return (value & 0x0000FF00) >> 8;
     }
 
@@ -377,8 +364,7 @@ public class TypeReference
      * or -1 if this type reference references the type of the super
      * class.
      */
-    public int getSuperTypeIndex()
-    {
+    public int getSuperTypeIndex() {
         return (short) ((value & 0x00FFFF00) >> 8);
     }
 
@@ -389,8 +375,7 @@ public class TypeReference
      *
      * @return a formal parameter index.
      */
-    public int getFormalParameterIndex()
-    {
+    public int getFormalParameterIndex() {
         return (value & 0x00FF0000) >> 16;
     }
 
@@ -401,8 +386,7 @@ public class TypeReference
      *
      * @return the index of an exception in the 'throws' clause of a method.
      */
-    public int getExceptionIndex()
-    {
+    public int getExceptionIndex() {
         return (value & 0x00FFFF00) >> 8;
     }
 
@@ -414,8 +398,7 @@ public class TypeReference
      *
      * @return the index of an exception in the 'throws' clause of a method.
      */
-    public int getTryCatchBlockIndex()
-    {
+    public int getTryCatchBlockIndex() {
         return (value & 0x00FFFF00) >> 8;
     }
 
@@ -431,8 +414,7 @@ public class TypeReference
      *
      * @return a type parameter index.
      */
-    public int getTypeArgumentIndex()
-    {
+    public int getTypeArgumentIndex() {
         return value & 0xFF;
     }
 
@@ -442,8 +424,7 @@ public class TypeReference
      *
      * @return the int encoded value of this type reference.
      */
-    public int getValue()
-    {
+    public int getValue() {
         return value;
     }
 }

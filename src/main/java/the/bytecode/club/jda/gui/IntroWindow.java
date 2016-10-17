@@ -8,13 +8,11 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.io.IOException;
 
-public class IntroWindow extends JFrame
-{
+public class IntroWindow extends JFrame {
     private static final long serialVersionUID = -8230501978224923296L;
     private JEditorPane editorPane;
 
-    public IntroWindow()
-    {
+    public IntroWindow() {
         this.setIconImages(Resources.iconList);
         setSize(new Dimension(800, 800));
         setType(Type.UTILITY);
@@ -31,12 +29,9 @@ public class IntroWindow extends JFrame
         editorPane.setEditorKit(new HTMLEditorKit());
         editorPane.setContentType("text/html");
         editorPane.setEditable(false);
-        try
-        {
+        try {
             editorPane.setText(IOUtils.toString(Resources.class.getResourceAsStream("/intro.html"), "UTF-8"));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.err.println("Couldn't load intro html:");
             e.printStackTrace();
         }
@@ -44,8 +39,7 @@ public class IntroWindow extends JFrame
     }
 
     @Override
-    public void setVisible(boolean b)
-    {
+    public void setVisible(boolean b) {
         super.setVisible(b);
     }
 }

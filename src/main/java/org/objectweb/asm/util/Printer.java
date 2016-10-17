@@ -40,8 +40,7 @@ import java.util.List;
  *
  * @author Eric Bruneton
  */
-public abstract class Printer
-{
+public abstract class Printer {
 
     /**
      * The names of the Java Virtual Machine opcodes.
@@ -61,15 +60,13 @@ public abstract class Printer
      */
     public static final String[] HANDLE_TAG;
 
-    static
-    {
+    static {
         String s = "NOP,ACONST_NULL,ICONST_M1,ICONST_0,ICONST_1,ICONST_2," + "ICONST_3,ICONST_4,ICONST_5,LCONST_0,LCONST_1,FCONST_0," + "FCONST_1,FCONST_2,DCONST_0,DCONST_1,BIPUSH,SIPUSH,LDC,,," + "ILOAD,LLOAD,FLOAD,DLOAD,ALOAD,,,,,,,,,,,,,,,,,,,,,IALOAD," + "LALOAD,FALOAD,DALOAD,AALOAD,BALOAD,CALOAD,SALOAD,ISTORE," + "LSTORE,FSTORE,DSTORE,ASTORE,,,,,,,,,,,,,,,,,,,,,IASTORE," + "LASTORE,FASTORE,DASTORE,AASTORE,BASTORE,CASTORE,SASTORE,POP," + "POP2,DUP,DUP_X1,DUP_X2,DUP2,DUP2_X1,DUP2_X2,SWAP,IADD,LADD," + "FADD,DADD,ISUB,LSUB,FSUB,DSUB,IMUL,LMUL,FMUL,DMUL,IDIV,LDIV," + "FDIV,DDIV,IREM,LREM,FREM,DREM,INEG,LNEG,FNEG,DNEG,ISHL,LSHL," + "ISHR,LSHR,IUSHR,LUSHR,IAND,LAND,IOR,LOR,IXOR,LXOR,IINC,I2L," + "I2F,I2D,L2I,L2F,L2D,F2I,F2L,F2D,D2I,D2L,D2F,I2B,I2C,I2S,LCMP," + "FCMPL,FCMPG,DCMPL,DCMPG,IFEQ,IFNE,IFLT,IFGE,IFGT,IFLE," + "IF_ICMPEQ,IF_ICMPNE,IF_ICMPLT,IF_ICMPGE,IF_ICMPGT,IF_ICMPLE," + "IF_ACMPEQ,IF_ACMPNE,GOTO,JSR,RET,TABLESWITCH,LOOKUPSWITCH," + "IRETURN,LRETURN,FRETURN,DRETURN,ARETURN,RETURN,GETSTATIC," + "PUTSTATIC,GETFIELD,PUTFIELD,INVOKEVIRTUAL,INVOKESPECIAL," + "INVOKESTATIC,INVOKEINTERFACE,INVOKEDYNAMIC,NEW,NEWARRAY," + "ANEWARRAY,ARRAYLENGTH,ATHROW,CHECKCAST,INSTANCEOF," + "MONITORENTER,MONITOREXIT,,MULTIANEWARRAY,IFNULL,IFNONNULL,";
         OPCODES = new String[200];
         int i = 0;
         int j = 0;
         int l;
-        while ((l = s.indexOf(',', j)) > 0)
-        {
+        while ((l = s.indexOf(',', j)) > 0) {
             OPCODES[i++] = j + 1 == l ? null : s.substring(j, l);
             j = l + 1;
         }
@@ -78,8 +75,7 @@ public abstract class Printer
         TYPES = new String[12];
         j = 0;
         i = 4;
-        while ((l = s.indexOf(',', j)) > 0)
-        {
+        while ((l = s.indexOf(',', j)) > 0) {
             TYPES[i++] = s.substring(j, l);
             j = l + 1;
         }
@@ -88,8 +84,7 @@ public abstract class Printer
         HANDLE_TAG = new String[10];
         j = 0;
         i = 1;
-        while ((l = s.indexOf(',', j)) > 0)
-        {
+        while ((l = s.indexOf(',', j)) > 0) {
             HANDLE_TAG[i++] = s.substring(j, l);
             j = l + 1;
         }
@@ -123,8 +118,7 @@ public abstract class Printer
     /**
      * Constructs a new {@link Printer}.
      */
-    protected Printer(final int api)
-    {
+    protected Printer(final int api) {
         this.api = api;
         this.buf = new StringBuffer();
         this.text = new ArrayList<>();
@@ -156,8 +150,7 @@ public abstract class Printer
      * Class type annotation. See
      * {@link org.objectweb.asm.ClassVisitor#visitTypeAnnotation}.
      */
-    public Printer visitClassTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public Printer visitClassTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         throw new RuntimeException("Must be overriden");
     }
 
@@ -234,8 +227,7 @@ public abstract class Printer
      * Field type annotation. See
      * {@link org.objectweb.asm.FieldVisitor#visitTypeAnnotation}.
      */
-    public Printer visitFieldTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public Printer visitFieldTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         throw new RuntimeException("Must be overriden");
     }
 
@@ -258,8 +250,7 @@ public abstract class Printer
      * Method parameter. See
      * {@link org.objectweb.asm.MethodVisitor#visitParameter(String, int)}.
      */
-    public void visitParameter(String name, int access)
-    {
+    public void visitParameter(String name, int access) {
         throw new RuntimeException("Must be overriden");
     }
 
@@ -279,8 +270,7 @@ public abstract class Printer
      * Method type annotation. See
      * {@link org.objectweb.asm.MethodVisitor#visitTypeAnnotation}.
      */
-    public Printer visitMethodTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public Printer visitMethodTypeAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         throw new RuntimeException("Must be overriden");
     }
 
@@ -342,10 +332,8 @@ public abstract class Printer
      * {@link org.objectweb.asm.MethodVisitor#visitMethodInsn}.
      */
     @Deprecated
-    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc)
-    {
-        if (api >= Opcodes.ASM5)
-        {
+    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc) {
+        if (api >= Opcodes.ASM5) {
             boolean itf = opcode == Opcodes.INVOKEINTERFACE;
             visitMethodInsn(opcode, owner, name, desc, itf);
             return;
@@ -357,12 +345,9 @@ public abstract class Printer
      * Method instruction. See
      * {@link org.objectweb.asm.MethodVisitor#visitMethodInsn}.
      */
-    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc, final boolean itf)
-    {
-        if (api < Opcodes.ASM5)
-        {
-            if (itf != (opcode == Opcodes.INVOKEINTERFACE))
-            {
+    public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc, final boolean itf) {
+        if (api < Opcodes.ASM5) {
+            if (itf != (opcode == Opcodes.INVOKEINTERFACE)) {
                 throw new IllegalArgumentException("INVOKESPECIAL/STATIC on interfaces require ASM 5");
             }
             visitMethodInsn(opcode, owner, name, desc);
@@ -422,8 +407,7 @@ public abstract class Printer
      * Instruction type annotation. See
      * {@link org.objectweb.asm.MethodVisitor#visitInsnAnnotation}.
      */
-    public Printer visitInsnAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public Printer visitInsnAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         throw new RuntimeException("Must be overriden");
     }
 
@@ -437,8 +421,7 @@ public abstract class Printer
      * Try catch block type annotation. See
      * {@link org.objectweb.asm.MethodVisitor#visitTryCatchAnnotation}.
      */
-    public Printer visitTryCatchAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible)
-    {
+    public Printer visitTryCatchAnnotation(final int typeRef, final TypePath typePath, final String desc, final boolean visible) {
         throw new RuntimeException("Must be overriden");
     }
 
@@ -452,8 +435,7 @@ public abstract class Printer
      * Local variable type annotation. See
      * {@link org.objectweb.asm.MethodVisitor#visitTryCatchAnnotation}.
      */
-    public Printer visitLocalVariableAnnotation(final int typeRef, final TypePath typePath, final Label[] start, final Label[] end, final int[] index, final String desc, final boolean visible)
-    {
+    public Printer visitLocalVariableAnnotation(final int typeRef, final TypePath typePath, final Label[] start, final Label[] end, final int[] index, final String desc, final boolean visible) {
         throw new RuntimeException("Must be overriden");
     }
 
@@ -479,8 +461,7 @@ public abstract class Printer
      *
      * @return the text constructed by this visitor.
      */
-    public List<Object> getText()
-    {
+    public List<Object> getText() {
         return text;
     }
 
@@ -489,8 +470,7 @@ public abstract class Printer
      *
      * @param pw the print writer to be used.
      */
-    public void print(final PrintWriter pw)
-    {
+    public void print(final PrintWriter pw) {
         printList(pw, text);
     }
 
@@ -500,47 +480,29 @@ public abstract class Printer
      * @param buf the buffer where the string must be added.
      * @param s   the string to be added.
      */
-    public static void appendString(final StringBuffer buf, final String s)
-    {
+    public static void appendString(final StringBuffer buf, final String s) {
         buf.append('\"');
-        for (int i = 0; i < s.length(); ++i)
-        {
+        for (int i = 0; i < s.length(); ++i) {
             char c = s.charAt(i);
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 buf.append("\\n");
-            }
-            else if (c == '\r')
-            {
+            } else if (c == '\r') {
                 buf.append("\\r");
-            }
-            else if (c == '\\')
-            {
+            } else if (c == '\\') {
                 buf.append("\\\\");
-            }
-            else if (c == '"')
-            {
+            } else if (c == '"') {
                 buf.append("\\\"");
-            }
-            else if (c < 0x20 || c > 0x7f)
-            {
+            } else if (c < 0x20 || c > 0x7f) {
                 buf.append("\\u");
-                if (c < 0x10)
-                {
+                if (c < 0x10) {
                     buf.append("000");
-                }
-                else if (c < 0x100)
-                {
+                } else if (c < 0x100) {
                     buf.append("00");
-                }
-                else if (c < 0x1000)
-                {
+                } else if (c < 0x1000) {
                     buf.append('0');
                 }
                 buf.append(Integer.toString(c, 16));
-            }
-            else
-            {
+            } else {
                 buf.append(c);
             }
         }
@@ -554,17 +516,12 @@ public abstract class Printer
      * @param l  a string tree, i.e., a string list that can contain other
      *           string lists, and so on recursively.
      */
-    static void printList(final PrintWriter pw, final List<?> l)
-    {
-        for (int i = 0; i < l.size(); ++i)
-        {
+    static void printList(final PrintWriter pw, final List<?> l) {
+        for (int i = 0; i < l.size(); ++i) {
             Object o = l.get(i);
-            if (o instanceof List)
-            {
+            if (o instanceof List) {
                 printList(pw, (List<?>) o);
-            }
-            else
-            {
+            } else {
                 pw.print(o.toString());
             }
         }

@@ -41,8 +41,7 @@ import java.util.Map;
  *
  * @author Eric Bruneton
  */
-public abstract class AbstractInsnNode
-{
+public abstract class AbstractInsnNode {
 
     public MethodNode method;
     /**
@@ -176,14 +175,12 @@ public abstract class AbstractInsnNode
      *
      * @param opcode the opcode of the instruction to be constructed.
      */
-    protected AbstractInsnNode(final int opcode)
-    {
+    protected AbstractInsnNode(final int opcode) {
         this.opcode = opcode;
         this.index = -1;
     }
 
-    public void setOpcode(int op)
-    {
+    public void setOpcode(int op) {
         opcode = op;
     }
 
@@ -192,8 +189,7 @@ public abstract class AbstractInsnNode
      *
      * @return the opcode of this instruction.
      */
-    public int opcode()
-    {
+    public int opcode() {
         return opcode;
     }
 
@@ -212,8 +208,7 @@ public abstract class AbstractInsnNode
      * @return the previous instruction in the list to which this instruction
      * belongs, if any. May be <tt>null</tt>.
      */
-    public AbstractInsnNode getPrevious()
-    {
+    public AbstractInsnNode getPrevious() {
         return prev;
     }
 
@@ -224,8 +219,7 @@ public abstract class AbstractInsnNode
      * @return the next instruction in the list to which this instruction
      * belongs, if any. May be <tt>null</tt>.
      */
-    public AbstractInsnNode getNext()
-    {
+    public AbstractInsnNode getNext() {
         return next;
     }
 
@@ -241,17 +235,14 @@ public abstract class AbstractInsnNode
      *
      * @param mv a method visitor.
      */
-    protected final void acceptAnnotations(final MethodVisitor mv)
-    {
+    protected final void acceptAnnotations(final MethodVisitor mv) {
         int n = visibleTypeAnnotations == null ? 0 : visibleTypeAnnotations.size();
-        for (int i = 0; i < n; ++i)
-        {
+        for (int i = 0; i < n; ++i) {
             TypeAnnotationNode an = visibleTypeAnnotations.get(i);
             an.accept(mv.visitInsnAnnotation(an.typeRef, an.typePath, an.desc, true));
         }
         n = invisibleTypeAnnotations == null ? 0 : invisibleTypeAnnotations.size();
-        for (int i = 0; i < n; ++i)
-        {
+        for (int i = 0; i < n; ++i) {
             TypeAnnotationNode an = invisibleTypeAnnotations.get(i);
             an.accept(mv.visitInsnAnnotation(an.typeRef, an.typePath, an.desc, false));
         }
@@ -273,8 +264,7 @@ public abstract class AbstractInsnNode
      * @param map   a map from LabelNodes to cloned LabelNodes.
      * @return the clone of the given label.
      */
-    static LabelNode clone(final LabelNode label, final Map<LabelNode, LabelNode> map)
-    {
+    static LabelNode clone(final LabelNode label, final Map<LabelNode, LabelNode> map) {
         return map.get(label);
     }
 
@@ -285,11 +275,9 @@ public abstract class AbstractInsnNode
      * @param map    a map from LabelNodes to cloned LabelNodes.
      * @return the clones of the given labels.
      */
-    static LabelNode[] clone(final List<LabelNode> labels, final Map<LabelNode, LabelNode> map)
-    {
+    static LabelNode[] clone(final List<LabelNode> labels, final Map<LabelNode, LabelNode> map) {
         LabelNode[] clones = new LabelNode[labels.size()];
-        for (int i = 0; i < clones.length; ++i)
-        {
+        for (int i = 0; i < clones.length; ++i) {
             clones[i] = map.get(labels.get(i));
         }
         return clones;
@@ -301,24 +289,19 @@ public abstract class AbstractInsnNode
      * @param insn the source instruction.
      * @return this instruction.
      */
-    protected final AbstractInsnNode cloneAnnotations(final AbstractInsnNode insn)
-    {
-        if (insn.visibleTypeAnnotations != null)
-        {
+    protected final AbstractInsnNode cloneAnnotations(final AbstractInsnNode insn) {
+        if (insn.visibleTypeAnnotations != null) {
             this.visibleTypeAnnotations = new ArrayList<>();
-            for (int i = 0; i < insn.visibleTypeAnnotations.size(); ++i)
-            {
+            for (int i = 0; i < insn.visibleTypeAnnotations.size(); ++i) {
                 TypeAnnotationNode src = insn.visibleTypeAnnotations.get(i);
                 TypeAnnotationNode ann = new TypeAnnotationNode(src.typeRef, src.typePath, src.desc);
                 src.accept(ann);
                 this.visibleTypeAnnotations.add(ann);
             }
         }
-        if (insn.invisibleTypeAnnotations != null)
-        {
+        if (insn.invisibleTypeAnnotations != null) {
             this.invisibleTypeAnnotations = new ArrayList<>();
-            for (int i = 0; i < insn.invisibleTypeAnnotations.size(); ++i)
-            {
+            for (int i = 0; i < insn.invisibleTypeAnnotations.size(); ++i) {
                 TypeAnnotationNode src = insn.invisibleTypeAnnotations.get(i);
                 TypeAnnotationNode ann = new TypeAnnotationNode(src.typeRef, src.typePath, src.desc);
                 src.accept(ann);

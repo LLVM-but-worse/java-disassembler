@@ -45,13 +45,11 @@ import java.util.List;
  * @param <V> type of the Value used for the analysis.
  * @author Eric Bruneton
  */
-public abstract class Interpreter<V extends Value>
-{
+public abstract class Interpreter<V extends Value> {
 
     protected final int api;
 
-    protected Interpreter(final int api)
-    {
+    protected Interpreter(final int api) {
         this.api = api;
     }
 
