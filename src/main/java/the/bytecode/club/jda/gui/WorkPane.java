@@ -87,7 +87,7 @@ public class WorkPane extends JDAWindow implements ActionListener
 
     }
 
-    public static Dimension defaultDimension = new Dimension(-FileNavigationPane.defaultDimension.width, -1);
+    public static Dimension defaultDimension = new Dimension(-FileNavigationPane.defaultDimension.width, -35);
     public static Point defaultPosition = new Point(FileNavigationPane.defaultDimension.width, 0);
     @Override
     public Dimension getDefaultSize()
