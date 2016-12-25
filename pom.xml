@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.jetbrains.java.decompiler</groupId>
             <artifactId>fernflower</artifactId>
-            <version>2016</version>
+            <version>a7654eb8c9c1c7541218242c898c8ebd39d4aa6d</version>
         </dependency>
         <dependency>
             <groupId>com.strobel.decompiler</groupId>
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>org.benf</groupId>
             <artifactId>cfr</artifactId>
-            <version>0.115</version>
+            <version>0.119</version>
         </dependency>
     </dependencies>
 </project>
