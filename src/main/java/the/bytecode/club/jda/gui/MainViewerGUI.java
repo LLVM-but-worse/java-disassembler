@@ -67,8 +67,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
     public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
     public JMenu mnRecentFiles = new JMenu("Recent Files");
-    public JSpinner fontSpinner = new JSpinner();
     private JMenuItem spinnerMenu = new JMenuItem("");
+    public FontOptionsDialog fontOptionsDialog = new FontOptionsDialog();
 
     public MainViewerGUI() {
         initializeWindows();
@@ -158,7 +158,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         final JCheckBox mnShowContainer = new JCheckBox("Show Containing File's Name");
         final JCheckBox mnSnapToEdges = new JCheckBox("Snap Windows to Edges");
         final JMenuItem mntmSetOptionalLibrary = new JMenuItem("Set Optional Library Folder");
-        final JMenu mnFontSize = new JMenu("Font Size");
+        final JMenuItem mntmFontSettings = new JMenuItem("Font...");
 
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
@@ -292,11 +292,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         menuBar.add(spinnerMenu);
 
-        fontSpinner.setPreferredSize(new Dimension(42, 20));
-        fontSpinner.setSize(new Dimension(42, 20));
-        fontSpinner.setModel(new SpinnerNumberModel(12, 1, null, 1));
-        viewMenu.add(mnFontSize);
-        mnFontSize.add(fontSpinner);
+        mntmFontSettings.addActionListener(e -> fontOptionsDialog.display());
+        viewMenu.add(mntmFontSettings);
 
         mnShowContainer.setSelected(Settings.SHOW_CONTAINER_NAME.getBool());
         mnShowContainer.addItemListener(e -> {

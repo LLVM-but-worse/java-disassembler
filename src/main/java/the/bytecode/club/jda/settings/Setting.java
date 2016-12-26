@@ -6,21 +6,31 @@ package the.bytecode.club.jda.settings;
  * @author Konloch
  */
 public class Setting {
-    private String key;
+    public final String node;
+    public final String key;
     private String value;
 
     public Setting(String key, String value) {
+        this("settings", key, value);
+    }
+
+    public Setting(String node, String key, String value) {
+        this.node = node;
         this.key = key;
         this.value = value;
-        Settings.ALL_SETTINGS.put(this.key, this);
+        Settings.ALL_SETTINGS.add(this);
     }
 
     public String get() {
-        return this.value;
+        return value;
     }
 
     public boolean getBool() {
-        return Boolean.parseBoolean(this.value);
+        return Boolean.parseBoolean(value);
+    }
+
+    public int getInt() {
+        return Integer.parseInt(value);
     }
 
     public void set(Object value) {
