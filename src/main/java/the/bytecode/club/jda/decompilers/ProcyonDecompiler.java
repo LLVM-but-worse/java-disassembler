@@ -14,10 +14,7 @@ import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 
 import java.io.*;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipException;
@@ -46,13 +43,13 @@ public class ProcyonDecompiler extends Decompiler {
     public DecompilerSettings getDecompilerSettings() {
         CommandLineOptions options = new CommandLineOptions();
         JCommander jCommander = new JCommander(options);
-        String[] args = new String[Settings.values().length * 2];
-        int index = 0;
-        for (the.bytecode.club.jda.settings.DecompilerSettings.Setting setting : Settings.values()) {
-            args[index++] = "--" + setting.getParam();
-            args[index++] = String.valueOf(getSettings().isSelected(setting));
-        }
-        jCommander.parse(args);
+        List<String> args = new ArrayList<>();
+        for (the.bytecode.club.jda.settings.DecompilerSettings.Setting setting : Settings.values())
+            if (getSettings().isSelected(setting))
+                args.add("--" + setting.getParam());
+        String[] argsArr = new String[args.size()];
+        args.toArray(argsArr);
+        jCommander.parse(argsArr);
         DecompilerSettings settings = new DecompilerSettings();
         settings.setFlattenSwitchBlocks(options.getFlattenSwitchBlocks());
         settings.setForceExplicitImports(!options.getCollapseImports());
