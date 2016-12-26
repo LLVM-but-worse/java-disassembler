@@ -25,9 +25,9 @@ import java.util.jar.Manifest;
  * @author WaterWolf
  */
 
-public class FernFlowerDecompiler extends Decompiler {
+public class FernflowerDecompiler extends Decompiler {
 
-    public FernFlowerDecompiler() {
+    public FernflowerDecompiler() {
         for (Settings setting : Settings.values()) {
             settings.registerSetting(setting);
         }
@@ -35,7 +35,7 @@ public class FernFlowerDecompiler extends Decompiler {
 
     @Override
     public String getName() {
-        return "FernFlower";
+        return "Fernflower";
     }
 
     @Override

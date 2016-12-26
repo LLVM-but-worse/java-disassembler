@@ -4,7 +4,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.decompilers.Decompilers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,14 +241,14 @@ public class MethodNodeDecompiler {
     }
 
     static boolean createComments() {
-        return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS);
+        return Decompilers.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS);
     }
 
     static boolean createLabelBrackets() {
-        return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS);
+        return Decompilers.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS);
     }
 
     static boolean createDescriptors() {
-        return Decompiler.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.SHOW_METHOD_DESCRIPTORS);
+        return Decompilers.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.SHOW_METHOD_DESCRIPTORS);
     }
 }

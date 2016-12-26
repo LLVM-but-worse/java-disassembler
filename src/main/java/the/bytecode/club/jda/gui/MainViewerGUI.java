@@ -4,10 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.*;
 import the.bytecode.club.jda.api.ExceptionUI;
-import the.bytecode.club.jda.decompilers.CFRDecompiler;
-import the.bytecode.club.jda.decompilers.Decompiler;
-import the.bytecode.club.jda.decompilers.FernFlowerDecompiler;
-import the.bytecode.club.jda.decompilers.ProcyonDecompiler;
+import the.bytecode.club.jda.decompilers.*;
 import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
 import the.bytecode.club.jda.settings.DecompilerSettings;
 import the.bytecode.club.jda.settings.IPersistentWindow;
@@ -250,28 +247,28 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         settingsMenu.add(new JSeparator());
 
         JMenu cfrSettingsMenu = new JMenu("CFR");
-        DecompilerSettings cfrSettings = Decompiler.CFR.getSettings();
+        DecompilerSettings cfrSettings = Decompilers.CFR.getSettings();
         for (CFRDecompiler.Settings setting : CFRDecompiler.Settings.values()) {
             cfrSettingsMenu.add(cfrSettings.getMenuItem(setting));
         }
         settingsMenu.add(cfrSettingsMenu);
 
         JMenu fernflowerSettingMenu = new JMenu("FernFlower");
-        DecompilerSettings fernflowerSettings = Decompiler.FERNFLOWER.getSettings();
-        for (FernFlowerDecompiler.Settings setting : FernFlowerDecompiler.Settings.values()) {
+        DecompilerSettings fernflowerSettings = Decompilers.FERNFLOWER.getSettings();
+        for (FernflowerDecompiler.Settings setting : FernflowerDecompiler.Settings.values()) {
             fernflowerSettingMenu.add(fernflowerSettings.getMenuItem(setting));
         }
         settingsMenu.add(fernflowerSettingMenu);
 
         JMenu procyonSettingsMenu = new JMenu("Procyon");
-        DecompilerSettings procyonSettings = Decompiler.PROCYON.getSettings();
+        DecompilerSettings procyonSettings = Decompilers.PROCYON.getSettings();
         for (ProcyonDecompiler.Settings setting : ProcyonDecompiler.Settings.values()) {
             procyonSettingsMenu.add(procyonSettings.getMenuItem(setting));
         }
         settingsMenu.add(procyonSettingsMenu);
 
         JMenu bytecodeSettingsMenu = new JMenu("Bytecode Decompiler");
-        DecompilerSettings bytecodeSettings = Decompiler.BYTECODE.getSettings();
+        DecompilerSettings bytecodeSettings = Decompilers.BYTECODE.getSettings();
         for (ClassNodeDecompiler.Settings setting : ClassNodeDecompiler.Settings.values()) {
             bytecodeSettingsMenu.add(bytecodeSettings.getMenuItem(setting));
         }
@@ -312,8 +309,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         });
         viewMenu.add(mnShowContainer);
 
-        panelGroup1.setSelected(allDecompilersRev.get(panelGroup1).get(Decompiler.FERNFLOWER).getModel(), true);
-        panelGroup2.setSelected(allDecompilersRev.get(panelGroup2).get(Decompiler.BYTECODE).getModel(), true);
+        panelGroup1.setSelected(allDecompilersRev.get(panelGroup1).get(Decompilers.FERNFLOWER).getModel(), true);
+        panelGroup2.setSelected(allDecompilersRev.get(panelGroup2).get(Decompilers.BYTECODE).getModel(), true);
         panelGroup3.setSelected(allDecompilersRev.get(panelGroup3).get(null).getModel(), true);
     }
 
@@ -374,44 +371,43 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         dialog.setVisible(true);
     }
 
-    private JMenu generateDecompilerMenu(Decompiler decompiler, int panelId) {
-        ButtonGroup group = allPanes.get(panelId);
-        JMenu menu = new JMenu(decompiler.getName());
-        JRadioButtonMenuItem java = new JRadioButtonMenuItem("Java");
-        java.addActionListener(listener);
-        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
-        JCheckBoxMenuItem editable = new JCheckBoxMenuItem("Editable");
-        JSeparator separator = new JSeparator();
-        menu.add(java);
-        group.add(java);
-        allDecompilers.get(group).put(java, decompiler);
-        allDecompilersRev.get(group).put(decompiler, java);
-        menu.add(separator);
-        menu.add(editable);
-        editButtons.get(group).put(decompiler, editable);
-        return menu;
-    }
+//    private JMenu generateDecompilerMenu(Decompiler decompiler, int panelId) {
+//        ButtonGroup group = allPanes.get(panelId);
+//        JMenu menu = new JMenu(decompiler.getName());
+//        JRadioButtonMenuItem java = new JRadioButtonMenuItem("Java");
+//        java.addActionListener(listener);
+//        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
+//        JCheckBoxMenuItem editable = new JCheckBoxMenuItem("Editable");
+//        JSeparator separator = new JSeparator();
+//        menu.add(java);
+//        group.add(java);
+//        allDecompilers.get(group).put(java, decompiler);
+//        allDecompilersRev.get(group).put(decompiler, java);
+//        menu.add(separator);
+//        menu.add(editable);
+//        editButtons.get(group).put(decompiler, editable);
+//        return menu;
+//    }
 
     private JMenu generatePane(int id) {
         JMenu menu = new JMenu("Pane " + (id + 1));
-        JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
-        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
         ButtonGroup group = allPanes.get(id);
 
-        group.add(none);
-        group.add(bytecode);
+        JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
         allDecompilers.get(group).put(none, null);
         allDecompilersRev.get(group).put(null, none);
-        allDecompilers.get(group).put(bytecode, Decompiler.BYTECODE);
-        allDecompilersRev.get(group).put(Decompiler.BYTECODE, bytecode);
-
+        group.add(none);
         menu.add(none);
         menu.add(new JSeparator());
-        menu.add(generateDecompilerMenu(Decompiler.PROCYON, id));
-        menu.add(generateDecompilerMenu(Decompiler.CFR, id));
-        menu.add(generateDecompilerMenu(Decompiler.FERNFLOWER, id));
-        menu.add(new JSeparator());
-        menu.add(bytecode);
+
+        for (Decompiler decompiler : Decompilers.getAllDecompilers()) {
+            JRadioButtonMenuItem button = new JRadioButtonMenuItem(decompiler.getName());
+            allDecompilers.get(group).put(button, decompiler);
+            allDecompilersRev.get(group).put(decompiler, button);
+            group.add(button);
+            menu.add(button);
+
+        }
         return menu;
     }
 
@@ -710,7 +706,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                                 try {
                                     ClassNode cn1 = JDA.getClassNode(containerName, s);
                                     byte[] bytes = JDA.getClassBytes(containerName, s);
-                                    String contents = Decompiler.PROCYON.decompileClassNode(cn1, bytes);
+                                    String contents = Decompilers.PROCYON.decompileClassNode(cn1, bytes);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
@@ -727,7 +723,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                                 try {
                                     ClassNode cn1 = JDA.getClassNode(containerName, s);
                                     byte[] bytes = JDA.getClassBytes(containerName, s);
-                                    String contents = Decompiler.CFR.decompileClassNode(cn1, bytes);
+                                    String contents = Decompilers.CFR.decompileClassNode(cn1, bytes);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
@@ -744,7 +740,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                                 try {
                                     ClassNode cn1 = JDA.getClassNode(containerName, s);
                                     byte[] bytes = JDA.getClassBytes(containerName, s);
-                                    String contents = Decompiler.FERNFLOWER.decompileClassNode(cn1, bytes);
+                                    String contents = Decompilers.FERNFLOWER.decompileClassNode(cn1, bytes);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
@@ -830,7 +826,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                             @Override
                             public void run() {
                                 try {
-                                    Decompiler.PROCYON.decompileToZip(path);
+                                    Decompilers.PROCYON.decompileToZip(path);
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
                                     new ExceptionUI(e);
@@ -844,7 +840,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                             @Override
                             public void run() {
                                 try {
-                                    Decompiler.CFR.decompileToZip(path);
+                                    Decompilers.CFR.decompileToZip(path);
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
                                     new ExceptionUI(e);
@@ -858,7 +854,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                             @Override
                             public void run() {
                                 try {
-                                    Decompiler.FERNFLOWER.decompileToZip(path);
+                                    Decompilers.FERNFLOWER.decompileToZip(path);
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
                                     new ExceptionUI(e);

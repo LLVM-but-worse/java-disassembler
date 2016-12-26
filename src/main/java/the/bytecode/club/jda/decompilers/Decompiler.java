@@ -5,15 +5,10 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
-import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
 import the.bytecode.club.jda.settings.DecompilerSettings;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Used to represent all of the decompilers/disassemblers BCV contains.
@@ -22,15 +17,8 @@ import java.util.Map;
  */
 
 public abstract class Decompiler {
-    private static final Map<String, Decompiler> BY_NAME = new HashMap<>();
-
-    public final static Decompiler BYTECODE = new ClassNodeDecompiler();
-    public final static Decompiler FERNFLOWER = new FernFlowerDecompiler();
-    public final static Decompiler PROCYON = new ProcyonDecompiler();
-    public final static Decompiler CFR = new CFRDecompiler();
-
     public Decompiler() {
-        BY_NAME.put(getName().toLowerCase().replace(' ', '-'), this);
+        Decompilers.BY_NAME.add(this);
     }
 
     protected DecompilerSettings settings = new DecompilerSettings(this);
@@ -72,13 +60,5 @@ public abstract class Decompiler {
 
     public static void ensureInitted() {
         // Just to make sure the classes is loaded so all decompilers are loaded
-    }
-
-    public static Decompiler getByName(String name) {
-        return BY_NAME.get(name.toLowerCase().replace(' ', '-'));
-    }
-
-    public static Collection<Decompiler> getAllDecompilers() {
-        return Collections.unmodifiableCollection(BY_NAME.values());
     }
 }

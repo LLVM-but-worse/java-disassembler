@@ -20,7 +20,7 @@ public class SecurityMan extends SecurityManager {
         String executedClass = Thread.currentThread().getStackTrace()[2].getClassName();
         if (executedClass.equals("CFRDecompiler") ||
                 executedClass.equals("ProcyonDecompiler") ||
-                executedClass.equals("FernFlowerDecompiler") ||
+                executedClass.equals("FernflowerDecompiler") ||
                 executedClass.equals("the.bytecode.club.jda.JDA")) {
             blocking = false;
         } else
