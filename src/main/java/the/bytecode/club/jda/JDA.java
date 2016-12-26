@@ -2,7 +2,6 @@ package the.bytecode.club.jda;
 
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.tree.ClassNode;
-import the.bytecode.club.jda.api.ClassNodeLoader;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.gui.FileNavigationPane;
 import the.bytecode.club.jda.gui.MainViewerGUI;
@@ -14,6 +13,9 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -29,21 +31,17 @@ public class JDA {
     public static final String fs = System.getProperty("file.separator");
     public static final String nl = System.getProperty("line.separator");
     public static final File dataDir = new File(System.getProperty("user.home") + fs + ".jda");
-    public static final File filesFile = new File(dataDir, "recentfiles.jda");
+    public static final File pluginsDir = new File(dataDir, "plugins");
+    public static final File recentsFile = new File(dataDir, "recentfiles.jda");
     public static final File settingsFile = new File(dataDir, "settings.jda");
-    @Deprecated
-    public static final File tempDir = new File(dataDir, "jda_temp");
     private static final long start = System.currentTimeMillis();
     /*the rest*/
     public static MainViewerGUI viewer = null;
-    public static ClassNodeLoader loader = new ClassNodeLoader(); // TODO MAKE SECURE BECAUSE THIS IS INSECURE
-    public static SecurityMan sm = new SecurityMan(); // TODO MAKE SECURE BECAUSE THIS IS INSECURE
     public static ArrayList<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
     private static int maxRecentFiles = 25;
     private static List<String> recentFiles = new ArrayList<>();
     public static String lastDirectory = "";
     public static ArrayList<Process> createdProcesses = new ArrayList<>();
-    public static boolean deleteForiegnLibraries = true;
 
     /**
      * Main startup
@@ -57,22 +55,47 @@ public class JDA {
             new ExceptionUI(e);
         }
         try {
-            System.setSecurityManager(sm);
             System.out.println("JDA (BCV Fork) v" + version);
             if (previewCopy)
                 showMessage("WARNING: This is a preview/dev copy, you WON'T be alerted when " + version + " is actually out if you use this." + nl +
                         "Make sure to watch the repo: https://github.com/ecx86/jda for " + version + "'s release");
             getJDADirectory();
-            if (!filesFile.exists() && !filesFile.createNewFile()) {
-                throw new RuntimeException("Could not create recent files file");
-            }
-            recentFiles.addAll(FileUtils.readLines(filesFile, "UTF-8"));
+
+            loadPlugins();
+
             Settings.loadGUI();
+            if (!recentsFile.exists() && !recentsFile.createNewFile())
+                throw new RuntimeException("Could not create recent files file");
+            recentFiles.addAll(FileUtils.readLines(recentsFile, "UTF-8"));
+
             viewer = new MainViewerGUI();
             Boot.boot();
             JDA.boot(args);
         } catch (Exception e) {
             new ExceptionUI(e);
+        }
+    }
+
+    private static void loadPlugins() throws MalformedURLException {
+        if (!pluginsDir.exists())
+            if (!pluginsDir.mkdirs())
+                throw new RuntimeException("Couldn't create plugins directory");
+        else if (!pluginsDir.isDirectory())
+            throw new RuntimeException("Plugins location is not a directory");
+
+        for (File pluginFile : pluginsDir.listFiles()) {
+            if (!pluginFile.getName().endsWith(".jar")) {
+                System.out.println("Skipping non-jar " + pluginFile.getName());
+                continue;
+            }
+
+            try {
+                ClassLoader loader = URLClassLoader.newInstance(new URL[] {pluginFile.toURL()}, JDA.class.getClassLoader());
+                Class.forName("Plugin", true, loader).getConstructor().newInstance();
+            } catch (ReflectiveOperationException e) {
+                System.err.println("Failed to load plugin " + pluginFile.getName());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -90,21 +113,19 @@ public class JDA {
      * Boot after all of the libraries have been loaded
      */
     public static void boot(String[] args) {
-        cleanup();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 for (Process proc : createdProcesses)
                     proc.destroy();
                 try {
-                    FileUtils.writeLines(filesFile, recentFiles);
+                    FileUtils.writeLines(recentsFile, recentFiles);
                 } catch (IOException e) {
                     new ExceptionUI(e);
                 }
                 if (!viewer.isMaximized)
                     viewer.unmaximizedPos = viewer.getLocation();
                 Settings.saveGUI();
-                cleanup();
             }
         });
 
@@ -440,16 +461,6 @@ public class JDA {
             }
     }
 
-    /**
-     * Clears the temp directory
-     */
-    public static void cleanup() {
-        try {
-            FileUtils.cleanDirectory(tempDir);
-        } catch (Exception e) {
-        }
-    }
-
     public static ArrayList<String> createdRandomizedNames = new ArrayList<>();
 
     /**
@@ -501,14 +512,12 @@ public class JDA {
      * @param f file you want hidden
      */
     private static void hideFile(File f) {
-        sm.stopBlocking();
         try {
             // Hide file by running attrib system command (on Windows)
             Runtime.getRuntime().exec("attrib +H " + f.getAbsolutePath());
         } catch (Exception e) {
             new ExceptionUI(e);
         }
-        sm.setBlocking();
     }
 
     private static boolean isCtrlDown(KeyEvent e) {
