@@ -3,7 +3,7 @@ package the.bytecode.club.jda.settings;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.decompilers.Decompilers;
 import the.bytecode.club.jda.gui.JDAWindow;
 import the.bytecode.club.jda.gui.MainViewerGUI;
 
@@ -21,8 +21,8 @@ import java.util.List;
 public class Settings {
     static final List<Setting> ALL_SETTINGS = new ArrayList<>();
 
-    public static final Setting PATH = new Setting("path", "");
     // todo: I should really refactor this
+    public static final Setting PATH = new Setting("path", "");
     public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", "false");
     public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", "false");
     public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", "true");
@@ -35,10 +35,10 @@ public class Settings {
     public static void saveGUI() {
         try {
             JsonObject settings = new JsonObject();
-            Decompiler.CFR.getSettings().saveTo(settings);
-            Decompiler.FERNFLOWER.getSettings().saveTo(settings);
-            Decompiler.PROCYON.getSettings().saveTo(settings);
-            Decompiler.BYTECODE.getSettings().saveTo(settings);
+            Decompilers.CFR.getSettings().saveTo(settings);
+            Decompilers.FERNFLOWER.getSettings().saveTo(settings);
+            Decompilers.PROCYON.getSettings().saveTo(settings);
+            Decompilers.BYTECODE.getSettings().saveTo(settings);
 
 
             for (Setting setting : Settings.ALL_SETTINGS) {
@@ -88,10 +88,10 @@ public class Settings {
     public static void loadGUI() {
         try {
             JsonObject settings = JsonObject.readFrom(new FileReader(JDA.settingsFile));
-            Decompiler.CFR.getSettings().loadFrom(settings);
-            Decompiler.FERNFLOWER.getSettings().loadFrom(settings);
-            Decompiler.PROCYON.getSettings().loadFrom(settings);
-            Decompiler.BYTECODE.getSettings().loadFrom(settings);
+            Decompilers.CFR.getSettings().loadFrom(settings);
+            Decompilers.FERNFLOWER.getSettings().loadFrom(settings);
+            Decompilers.PROCYON.getSettings().loadFrom(settings);
+            Decompilers.BYTECODE.getSettings().loadFrom(settings);
             for (Setting setting : Settings.ALL_SETTINGS) {
                 String nodeId = setting.node;
                 JsonValue nodeValue = settings.get(nodeId);
