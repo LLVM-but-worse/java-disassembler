@@ -11,7 +11,6 @@ import com.strobel.decompiler.PlainTextOutput;
 import com.strobel.decompiler.languages.Languages;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.JarUtils;
 
 import java.io.*;
 import java.util.*;
@@ -124,17 +123,7 @@ public class ProcyonDecompiler extends Decompiler {
 
     @Override
     public void decompileToZip(String zipName) {
-        File tempZip = new File(JDA.tempDir, "temp.jar");
-        if (tempZip.exists())
-            tempZip.delete();
-
-        JarUtils.saveAsJar(JDA.getLoadedBytes(), tempZip.getAbsolutePath());
-
-        try {
-            doSaveJarDecompiled(tempZip, new File(zipName));
-        } catch (Exception e) {
-            handleException(e);
-        }
+        // todo: rewrite
     }
 
     /**
