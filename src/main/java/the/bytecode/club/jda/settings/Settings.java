@@ -1,6 +1,7 @@
 package the.bytecode.club.jda.settings;
 
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.gui.JDAWindow;
@@ -9,8 +10,8 @@ import the.bytecode.club.jda.gui.MainViewerGUI;
 import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Used to handle loading/saving the GUI (options).
@@ -18,7 +19,7 @@ import java.util.Map;
  * @author Konloch
  */
 public class Settings {
-    static final Map<String, Setting> ALL_SETTINGS = new HashMap<>();
+    static final List<Setting> ALL_SETTINGS = new ArrayList<>();
 
     public static final Setting PATH = new Setting("path", "");
     // todo: I should really refactor this
@@ -27,6 +28,10 @@ public class Settings {
     public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", "true");
     public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", "false");
 
+    public static final Setting FONT_SIZE = new Setting("font", "fontsize", "12");
+    public static final Setting FONT_FAMILY = new Setting("font", "fontfamily", Font.MONOSPACED);
+    public static final Setting FONT_OPTIONS = new Setting("font", "fontoptions", String.valueOf(Font.PLAIN));
+
     public static void saveGUI() {
         try {
             JsonObject settings = new JsonObject();
@@ -34,14 +39,11 @@ public class Settings {
             Decompiler.FERNFLOWER.getSettings().saveTo(settings);
             Decompiler.PROCYON.getSettings().saveTo(settings);
             Decompiler.BYTECODE.getSettings().saveTo(settings);
-            if (settings.get("settings") == null) {
-                settings.add("settings", new JsonObject());
-            }
-            JsonObject rootSettings = settings.get("settings").asObject();
-            for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet()) {
-                if (setting.getValue().get() != null) {
-                    rootSettings.add(setting.getKey(), setting.getValue().get());
-                }
+
+
+            for (Setting setting : Settings.ALL_SETTINGS) {
+                String nodeId = setting.node;
+                getNode(settings, setting.node).add(setting.key, setting.get());
             }
 
             if (settings.get("windows") == null)
@@ -57,6 +59,15 @@ public class Settings {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static JsonObject getNode(JsonObject parent, String nodeId) {
+        final JsonValue nodeValue = parent.get(nodeId);
+        if (nodeValue != null)
+            return nodeValue.asObject();
+        final JsonObject node = new JsonObject();
+        parent.add(nodeId, node);
+        return node;
     }
 
     public static void saveFrame(JsonObject windowsSection, IPersistentWindow f) {
@@ -81,12 +92,12 @@ public class Settings {
             Decompiler.FERNFLOWER.getSettings().loadFrom(settings);
             Decompiler.PROCYON.getSettings().loadFrom(settings);
             Decompiler.BYTECODE.getSettings().loadFrom(settings);
-            if (settings.get("settings") != null) {
-                JsonObject rootSettings = settings.get("settings").asObject();
-                for (Map.Entry<String, Setting> setting : Settings.ALL_SETTINGS.entrySet()) {
-                    if (rootSettings.get(setting.getKey()) != null) {
-                        setting.getValue().set(rootSettings.get(setting.getKey()).asString());
-                    }
+            for (Setting setting : Settings.ALL_SETTINGS) {
+                String nodeId = setting.node;
+                JsonValue nodeValue = settings.get(nodeId);
+                if (nodeValue != null) {
+                    if ((nodeValue = nodeValue.asObject().get(setting.key)) != null)
+                        setting.set(nodeValue.asString());
                 }
             }
         } catch (Exception e) {

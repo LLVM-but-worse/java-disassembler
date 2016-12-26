@@ -77,6 +77,11 @@
             <version>1.9</version>
         </dependency>
         <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout-swing</artifactId>
+            <version>5.0</version>
+        </dependency>
+        <dependency>
             <groupId>eu.bibl</groupId>
             <artifactId>byteanalysis</artifactId>
             <version>1.0</version>
