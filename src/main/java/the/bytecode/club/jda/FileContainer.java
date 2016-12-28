@@ -28,7 +28,7 @@ public class FileContainer {
 
     public ClassNode getClassNode(String name) {
         if (!classes.containsKey(name)) {
-            byte[] bytes = files.get(name + ".class");
+            byte[] bytes = files.get(name);
             if (bytes != null) {
                 ClassReader reader = new ClassReader(bytes);
                 ClassNode classNode = new ClassNode();

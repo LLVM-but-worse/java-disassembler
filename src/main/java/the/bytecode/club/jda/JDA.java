@@ -164,8 +164,9 @@ public class JDA {
      */
     public static ClassNode getClassNode(String containerName, String name) {
         for (FileContainer container : files) {
-            if (container.name.equals(containerName) && container.getData().containsKey(name + ".class")) {
-                return container.getClassNode(name);
+            String classFileName = name + ".class";
+            if (container.name.equals(containerName) && container.getData().containsKey(classFileName)) {
+                return container.getClassNode(classFileName);
             }
         }
         return null;
@@ -233,7 +234,7 @@ public class JDA {
             for (String s : container.files.keySet()) {
                 if (!s.endsWith(".class"))
                     continue;
-                ClassNode loaded = container.getClassNode(s.substring(0, s.length() - 6));
+                ClassNode loaded = container.getClassNode(s);
                 if (loaded != null) {
                     a.add(loaded);
                 }
