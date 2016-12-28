@@ -26,7 +26,7 @@ import java.util.zip.ZipOutputStream;
  * @author DeathMarine
  */
 
-public class ProcyonDecompiler extends Decompiler {
+public final class ProcyonDecompiler extends Decompiler {
 
     public ProcyonDecompiler() {
         for (Settings setting : Settings.values()) {

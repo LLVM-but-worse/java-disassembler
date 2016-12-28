@@ -1,13 +1,12 @@
-package the.bytecode.club.jda;
+package the.bytecode.club.jda.api;
 
 import java.io.*;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 public class PluginLoader {
-    public static void tryLoadPlugin(File pluginFile) throws MalformedURLException {
+    public static Plugin tryLoadPlugin(File pluginFile) throws MalformedURLException {
         String pluginFileName = pluginFile.getName();
         try {
             ClassLoader loader = new URLClassLoader(new URL[] { pluginFile.toURI().toURL() }) {
@@ -22,21 +21,21 @@ public class PluginLoader {
             InputStream metaInfStream = loader.getResourceAsStream("\0JDA-hack:META-INF/MANIFEST.MF");
             if (metaInfStream == null) {
                 System.out.println("Invalid plugin " + pluginFileName + ": no manifest");
-                return;
+                return null;
             }
 
             String mainClass = parseManifest(metaInfStream);
             if (mainClass == null) {
                 System.out.println("Invalid plugin " + pluginFileName + ": unable to parse manifest");
-                return;
+                return null;
             }
 
-            Class<?> clazz = Class.forName(mainClass, true, loader);
-            Method mainMethod = clazz.getMethod("main", String[].class);
-            mainMethod.invoke(null, (Object) new String[0]);
+            Class<? extends Plugin> clazz = Class.forName(mainClass, true, loader).asSubclass(Plugin.class);
+            return clazz.getConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
             System.err.println("Failed to load plugin " + pluginFileName);
             e.printStackTrace();
+            return null;
         }
     }
 

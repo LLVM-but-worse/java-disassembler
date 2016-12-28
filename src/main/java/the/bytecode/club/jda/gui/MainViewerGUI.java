@@ -139,6 +139,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         unmaximizedPos = getLocation();
 
         this.setLocationRelativeTo(null);
+
+        JDA.onGUILoad();
     }
 
     private void initializeMenubar() {
