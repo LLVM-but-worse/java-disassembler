@@ -5,6 +5,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.api.ExceptionUI;
+import the.bytecode.club.jda.api.Plugin;
+import the.bytecode.club.jda.api.PluginLoader;
 import the.bytecode.club.jda.gui.FileNavigationPane;
 import the.bytecode.club.jda.gui.MainViewerGUI;
 import the.bytecode.club.jda.settings.Settings;
@@ -37,11 +39,12 @@ public class JDA {
     private static final long start = System.currentTimeMillis();
     /*the rest*/
     public static MainViewerGUI viewer = null;
-    public static ArrayList<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
+    public static List<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
     private static int maxRecentFiles = 25;
     private static List<String> recentFiles = new ArrayList<>();
     public static String lastDirectory = "";
-    public static ArrayList<Process> createdProcesses = new ArrayList<>();
+    public static List<Process> createdProcesses = new ArrayList<>();
+    public static List<Plugin> plugins = new ArrayList<>();
 
     /**
      * Main startup
@@ -88,39 +91,27 @@ public class JDA {
                 System.out.println("Skipping non-jar " + pluginFile.getName());
                 continue;
             }
-            PluginLoader.tryLoadPlugin(pluginFile);
+            Plugin pluginInstance = PluginLoader.tryLoadPlugin(pluginFile);
+            if (pluginInstance != null)
+                plugins.add(pluginInstance);
         }
     }
 
+    public static void onGUILoad() {
+        plugins.forEach(Plugin::onGUILoad);
+    }
+
+    // todo: rewrite
     /**
      * The version checker thread
      */
-    private static final Thread versionChecker = new Thread() {
-        // todo: rewrite
-        @Override
-        public void run() {
-        }
-    };
+    private static final Thread versionChecker = new Thread(() -> {});
 
     /**
      * Boot after all of the libraries have been loaded
      */
     public static void boot(String[] args) {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                for (Process proc : createdProcesses)
-                    proc.destroy();
-                try {
-                    FileUtils.writeLines(recentsFile, recentFiles);
-                } catch (IOException e) {
-                    new ExceptionUI(e);
-                }
-                if (!viewer.isMaximized)
-                    viewer.unmaximizedPos = viewer.getLocation();
-                Settings.saveGUI();
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(JDA::onExit));
 
         resetRecentFilesMenu();
 
@@ -137,6 +128,21 @@ public class JDA {
             for (String s : args) {
                 openFiles(new File[]{new File(s)}, true);
             }
+    }
+
+    private static void onExit() {
+        plugins.forEach(Plugin::onExit);
+
+        for (Process proc : createdProcesses)
+            proc.destroy();
+        try {
+            FileUtils.writeLines(recentsFile, recentFiles);
+        } catch (IOException e) {
+            new ExceptionUI(e);
+        }
+        if (!viewer.isMaximized)
+            viewer.unmaximizedPos = viewer.getLocation();
+        Settings.saveGUI();
     }
 
     /**

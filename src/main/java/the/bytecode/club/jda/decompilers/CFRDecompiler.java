@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Konloch
  */
-public class CFRDecompiler extends Decompiler {
+public final class CFRDecompiler extends Decompiler {
 
     public CFRDecompiler() {
         for (Settings setting : Settings.values()) {

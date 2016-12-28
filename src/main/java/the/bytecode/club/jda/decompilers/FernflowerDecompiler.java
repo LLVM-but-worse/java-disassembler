@@ -26,7 +26,7 @@ import java.util.jar.Manifest;
  * @author WaterWolf
  */
 
-public class FernflowerDecompiler extends Decompiler {
+public final class FernflowerDecompiler extends Decompiler {
 
     public FernflowerDecompiler() {
         for (Settings setting : Settings.values()) {
