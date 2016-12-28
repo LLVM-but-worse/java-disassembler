@@ -4,7 +4,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.decompilers.Decompilers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,11 +15,13 @@ import java.util.List;
  */
 
 public class MethodNodeDecompiler {
+    private final ClassNodeDecompiler parent;
     protected final PrefixedStringBuilder sb;
     protected final MethodNode mn;
     protected final ClassNode cn;
 
-    public MethodNodeDecompiler(PrefixedStringBuilder sb, MethodNode mn, ClassNode cn) {
+    public MethodNodeDecompiler(ClassNodeDecompiler parent, PrefixedStringBuilder sb, MethodNode mn, ClassNode cn) {
+        this.parent = parent;
         this.sb = sb;
         this.mn = mn;
         this.cn = cn;
@@ -175,7 +176,7 @@ public class MethodNodeDecompiler {
     }
 
     protected InstructionPrinter getInstructionPrinter(MethodNode m, TypeAndName[] args) {
-        return new InstructionPrinter(m, args);
+        return new InstructionPrinter(this, m, args);
     }
 
     protected static void addAttrList(List<?> list, String name, PrefixedStringBuilder sb, InstructionPrinter insnPrinter) {
@@ -253,15 +254,15 @@ public class MethodNodeDecompiler {
         return sb.toString();
     }
 
-    static boolean createComments() {
-        return Decompilers.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS);
+    boolean createComments() {
+        return parent.getSettings().isSelected(ClassNodeDecompiler.Settings.DEBUG_HELPERS);
     }
 
-    static boolean createLabelBrackets() {
-        return Decompilers.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS);
+    boolean createLabelBrackets() {
+        return parent.getSettings().isSelected(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS);
     }
 
-    static boolean createDescriptors() {
-        return Decompilers.BYTECODE.getSettings().isSelected(ClassNodeDecompiler.Settings.SHOW_METHOD_DESCRIPTORS);
+    boolean createDescriptors() {
+        return parent.getSettings().isSelected(ClassNodeDecompiler.Settings.SHOW_METHOD_DESCRIPTORS);
     }
 }

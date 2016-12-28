@@ -16,30 +16,34 @@ public class DecompilerSettings {
         this.decompiler = decompiler;
     }
 
-    private Map<Setting, JCheckBoxMenuItem> menuItems = new HashMap<>();
-    private List<Setting> registrationOrder = new ArrayList<>();
+    private Map<SettingsEntry, JCheckBoxMenuItem> menuItems = new HashMap<>();
+    private List<SettingsEntry> settingsEntries = new ArrayList<>();
 
-    public void registerSetting(Setting setting) {
-        if (!menuItems.containsKey(setting)) {
-            registrationOrder.add(setting);
-            JCheckBoxMenuItem item = new JCheckBoxMenuItem(setting.getText());
-            if (setting.isDefaultOn()) {
+    public void registerSetting(SettingsEntry entry) {
+        if (!menuItems.containsKey(entry)) {
+            settingsEntries.add(entry);
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(entry.getText());
+            if (entry.isDefaultOn()) {
                 item.setSelected(true);
             }
-            menuItems.put(setting, item);
+            menuItems.put(entry, item);
         }
     }
 
-    public boolean isSelected(Setting setting) {
-        return menuItems.get(setting).isSelected();
+    public boolean isSelected(SettingsEntry entry) {
+        return menuItems.get(entry).isSelected();
     }
 
-    public JCheckBoxMenuItem getMenuItem(Setting setting) {
-        return menuItems.get(setting);
+    public JCheckBoxMenuItem getMenuItem(SettingsEntry entry) {
+        return menuItems.get(entry);
     }
 
     public int size() {
-        return registrationOrder.size();
+        return settingsEntries.size();
+    }
+
+    public List<SettingsEntry> getEntries() {
+        return settingsEntries;
     }
 
     public void loadFrom(JsonObject rootSettings) {
@@ -47,7 +51,7 @@ public class DecompilerSettings {
             JsonObject decompilerSection = rootSettings.get("decompilers").asObject();
             if (decompilerSection.get(decompiler.getName()) != null) {
                 JsonObject thisDecompiler = decompilerSection.get(decompiler.getName()).asObject();
-                for (Map.Entry<Setting, JCheckBoxMenuItem> entry : menuItems.entrySet()) {
+                for (Map.Entry<SettingsEntry, JCheckBoxMenuItem> entry : menuItems.entrySet()) {
                     if (thisDecompiler.get(entry.getKey().getParam()) != null) {
                         entry.getValue().setSelected(thisDecompiler.get(entry.getKey().getParam()).asBoolean());
                     }
@@ -65,12 +69,12 @@ public class DecompilerSettings {
             decompilerSection.add(decompiler.getName(), new JsonObject());
         }
         JsonObject thisDecompiler = decompilerSection.get(decompiler.getName()).asObject();
-        for (Map.Entry<Setting, JCheckBoxMenuItem> entry : menuItems.entrySet()) {
+        for (Map.Entry<SettingsEntry, JCheckBoxMenuItem> entry : menuItems.entrySet()) {
             thisDecompiler.add(entry.getKey().getParam(), entry.getValue().isSelected());
         }
     }
 
-    public interface Setting {
+    public interface SettingsEntry {
         String getText();
 
         String getParam();

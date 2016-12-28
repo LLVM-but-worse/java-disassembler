@@ -75,22 +75,23 @@ public class ClassNodeDecompiler extends Decompiler {
                 sb.append(JDA.nl);
         }
 
-        for (InnerClassNode innerClassNode : cn.innerClasses) {
-            String innerClassName = innerClassNode.name;
-            if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
-                decompiledClasses.add(innerClassName);
-                ClassNode cn1 = JDA.getClassNode(containerName, innerClassName);
-                if (cn1 != null) {
-                    sb.appendPrefix("     ");
-                    sb.append(JDA.nl + JDA.nl);
-                    sb = decompile(sb, decompiledClasses, containerName, cn1);
-                    sb.trimPrefix(5);
-                    sb.append(JDA.nl);
-                } else {
-                    unableToDecompile.add(innerClassName);
+        if (getSettings().isSelected(Settings.DECOMPILE_INNER_CLASSES))
+            for (InnerClassNode innerClassNode : cn.innerClasses) {
+                String innerClassName = innerClassNode.name;
+                if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
+                    decompiledClasses.add(innerClassName);
+                    ClassNode cn1 = JDA.getClassNode(containerName, innerClassName);
+                    if (cn1 != null) {
+                        sb.appendPrefix("     ");
+                        sb.append(JDA.nl + JDA.nl);
+                        sb = decompile(sb, decompiledClasses, containerName, cn1);
+                        sb.trimPrefix(5);
+                        sb.append(JDA.nl);
+                    } else {
+                        unableToDecompile.add(innerClassName);
+                    }
                 }
             }
-        }
 
         if (!unableToDecompile.isEmpty()) {
             sb.append("// The following inner classes couldn't be decompiled: ");
@@ -112,7 +113,7 @@ public class ClassNodeDecompiler extends Decompiler {
     }
 
     protected MethodNodeDecompiler getMethodNodeDecompiler(PrefixedStringBuilder sb, ClassNode cn, Iterator<MethodNode> it) {
-        return new MethodNodeDecompiler(sb, it.next(), cn);
+        return new MethodNodeDecompiler(this, sb, it.next(), cn);
     }
 
     public static String getAccessString(int access) {
@@ -155,10 +156,11 @@ public class ClassNodeDecompiler extends Decompiler {
     public void decompileToZip(String zipName) {
     }
 
-    public enum Settings implements DecompilerSettings.Setting {
+    public enum Settings implements DecompilerSettings.SettingsEntry {
         DEBUG_HELPERS("debug-helpers", "Debug Helpers", true),
         APPEND_BRACKETS_TO_LABELS("append-brackets-to-labels", "Append Brackets to Labels", true),
-        SHOW_METHOD_DESCRIPTORS("show-method-descriptors", "Show Method Descriptors", true);
+        SHOW_METHOD_DESCRIPTORS("show-method-descriptors", "Show Method Descriptors", true),
+        DECOMPILE_INNER_CLASSES("decompile-inner-classes", "Decompile Inner Classes", true);
 
         private String name;
         private String param;

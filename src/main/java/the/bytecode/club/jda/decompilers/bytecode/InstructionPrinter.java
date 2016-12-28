@@ -13,14 +13,12 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-import static the.bytecode.club.jda.decompilers.bytecode.MethodNodeDecompiler.createComments;
-import static the.bytecode.club.jda.decompilers.bytecode.MethodNodeDecompiler.createLabelBrackets;
-
 /**
  * @author Konloch
  * @author Bibl
  */
 public class InstructionPrinter {
+    private final MethodNodeDecompiler parent;
 
     /**
      * The MethodNode to print
@@ -35,7 +33,8 @@ public class InstructionPrinter {
     protected List<AbstractInsnNode> matchedInsns;
     protected Map<LabelNode, Integer> labels;
 
-    public InstructionPrinter(MethodNode m, TypeAndName[] args) {
+    public InstructionPrinter(MethodNodeDecompiler parent, MethodNode m, TypeAndName[] args) {
+        this.parent = parent;
         this.args = args;
         mNode = m;
         labels = new HashMap<>();
@@ -44,7 +43,8 @@ public class InstructionPrinter {
         match = false;
     }
 
-    public InstructionPrinter(MethodNode m, InstructionPattern pattern, TypeAndName[] args) {
+    public InstructionPrinter(MethodNodeDecompiler parent, MethodNode m, InstructionPattern pattern, TypeAndName[] args) {
+        this.parent = parent;
         this.args = args;
         mNode = m;
         labels = new HashMap<>();
@@ -86,12 +86,12 @@ public class InstructionPrinter {
             } else if (ain instanceof LineNumberNode) {
                 line = printLineNumberNode((LineNumberNode) ain, it);
             } else if (ain instanceof LabelNode) {
-                if (firstLabel && createLabelBrackets())
+                if (firstLabel && parent.createLabelBrackets())
                     info.add("}");
 
                 line = printLabelnode((LabelNode) ain);
 
-                if (createLabelBrackets()) {
+                if (parent.createLabelBrackets()) {
                     if (!firstLabel)
                         firstLabel = true;
                     line += " {";
@@ -121,7 +121,7 @@ public class InstructionPrinter {
                 info.add(line);
             }
         }
-        if (firstLabel && createLabelBrackets())
+        if (firstLabel && parent.createLabelBrackets())
             info.add("}");
         return info;
     }
@@ -130,7 +130,7 @@ public class InstructionPrinter {
         StringBuilder sb = new StringBuilder();
         sb.append(nameOpcode(vin.opcode()));
         sb.append(vin.var);
-        if (createComments()) {
+        if (parent.createComments()) {
             if (vin.var == 0 && !Modifier.isStatic(mNode.access)) {
                 sb.append(" // Reference to self");
             } else {
