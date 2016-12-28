@@ -34,13 +34,12 @@ public class PaneUpdaterThread extends Thread {
 
     public void run() {
         try {
-            final byte[] b = JDA.getClassBytes(viewer.container, viewer.cn.name + ".class");
             RSyntaxTextArea panelArea = new RSyntaxTextArea();
             panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
             panelArea.setCodeFoldingEnabled(true);
             panelArea.setAntiAliasingEnabled(true);
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
-            String decompileResult = decompiler.decompileClassNode(viewer.cn, b);
+            String decompileResult = decompiler.decompileClassNode(viewer.container, viewer.cn);
             panelArea.setText(stripUndisplayableChars(decompileResult));
             panelArea.setCaretPosition(0);
             panelArea.setEditable(viewer.isPaneEditable(paneId));

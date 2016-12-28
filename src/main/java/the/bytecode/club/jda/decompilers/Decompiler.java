@@ -1,7 +1,5 @@
 package the.bytecode.club.jda.decompilers;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
@@ -23,7 +21,7 @@ public abstract class Decompiler {
 
     protected DecompilerSettings settings = new DecompilerSettings(this);
 
-    public abstract String decompileClassNode(ClassNode cn, byte[] b);
+    public abstract String decompileClassNode(String containerName, ClassNode cn);
 
     public abstract void decompileToZip(String zipName);
 
@@ -47,15 +45,6 @@ public abstract class Decompiler {
 
     protected void handleException(Exception e) {
         new ExceptionUI(e);
-    }
-
-    protected byte[] fixBytes(byte[] in) {
-        ClassReader reader = new ClassReader(in);
-        ClassNode node = new ClassNode();
-        reader.accept(node, ClassReader.EXPAND_FRAMES);
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        node.accept(writer);
-        return writer.toByteArray();
     }
 
     public static void ensureInitted() {

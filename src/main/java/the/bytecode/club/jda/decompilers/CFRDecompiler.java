@@ -53,12 +53,13 @@ public class CFRDecompiler extends Decompiler {
     }
 
     @Override
-    public String decompileClassNode(ClassNode cn, byte[] b) {
+    public String decompileClassNode(String containerName, ClassNode cn) {
         try {
+            byte[] bytes = JDA.getClassBytes(containerName, cn);
             Options options = new GetOptParser().parse(generateMainMethod(), OptionsImpl.getFactory());
             ClassFileSourceImpl classFileSource = new ClassFileSourceImpl(options);
             DCCommonState dcCommonState = new DCCommonState(options, classFileSource);
-            return doClass(dcCommonState, b);
+            return doClass(dcCommonState, bytes);
         } catch (Exception e) {
             return parseException(e);
         }

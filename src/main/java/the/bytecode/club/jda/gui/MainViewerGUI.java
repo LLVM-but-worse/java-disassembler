@@ -644,7 +644,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         Thread t = new Thread() {
             public void run() {
-                final String s = workPane.getCurrentViewer().name;
+                final String fileName = workPane.getCurrentViewer().name;
 
                 JFileChooser fc = new JFileChooser();
                 fc.setFileFilter(new FileFilter() {
@@ -704,9 +704,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                             @Override
                             public void run() {
                                 try {
-                                    ClassNode cn1 = JDA.getClassNode(containerName, s);
-                                    byte[] bytes = JDA.getClassBytes(containerName, s);
-                                    String contents = Decompilers.PROCYON.decompileClassNode(cn1, bytes);
+                                    ClassNode cn1 = JDA.getClassNode(containerName, fileName);
+                                    String contents = Decompilers.PROCYON.decompileClassNode(containerName, cn1);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
@@ -721,9 +720,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                             @Override
                             public void run() {
                                 try {
-                                    ClassNode cn1 = JDA.getClassNode(containerName, s);
-                                    byte[] bytes = JDA.getClassBytes(containerName, s);
-                                    String contents = Decompilers.CFR.decompileClassNode(cn1, bytes);
+                                    ClassNode cn1 = JDA.getClassNode(containerName, fileName);
+                                    String contents = Decompilers.CFR.decompileClassNode(containerName, cn1);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
@@ -738,9 +736,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                             @Override
                             public void run() {
                                 try {
-                                    ClassNode cn1 = JDA.getClassNode(containerName, s);
-                                    byte[] bytes = JDA.getClassBytes(containerName, s);
-                                    String contents = Decompilers.FERNFLOWER.decompileClassNode(cn1, bytes);
+                                    ClassNode cn1 = JDA.getClassNode(containerName, fileName);
+                                    String contents = Decompilers.FERNFLOWER.decompileClassNode(containerName, cn1);
                                     FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
                                     JDA.viewer.setIcon(false);
                                 } catch (Exception e) {
