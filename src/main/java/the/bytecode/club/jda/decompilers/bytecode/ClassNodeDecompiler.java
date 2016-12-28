@@ -5,7 +5,6 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import the.bytecode.club.jda.FileContainer;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.settings.DecompilerSettings;
@@ -32,18 +31,7 @@ public class ClassNodeDecompiler extends Decompiler {
         return "Bytecode";
     }
 
-    public String decompileClassNode(ClassNode cn, byte[] b) {
-        String containerName = null;
-        for (FileContainer container : JDA.files) {
-            String name = cn.name + ".class";
-            if (container.getData().containsKey(name)) {
-                if (container.getClassNode(name) == cn)
-                    containerName = container.name;
-            }
-        }
-        if (containerName == null)
-            System.out.println("Warning: Unable to locate container for class " + cn.name + "!");
-
+    public String decompileClassNode(String containerName, ClassNode cn) {
         return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
     }
 
@@ -87,8 +75,7 @@ public class ClassNodeDecompiler extends Decompiler {
                 sb.append(JDA.nl);
         }
 
-        for (Object o : cn.innerClasses) {
-            InnerClassNode innerClassNode = (InnerClassNode) o;
+        for (InnerClassNode innerClassNode : cn.innerClasses) {
             String innerClassName = innerClassNode.name;
             if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
                 decompiledClasses.add(innerClassName);

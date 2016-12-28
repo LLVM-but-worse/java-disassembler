@@ -6,6 +6,7 @@ import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InnerClassNode;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 import the.bytecode.club.jda.settings.DecompilerSettings;
@@ -39,21 +40,20 @@ public class FernflowerDecompiler extends Decompiler {
     }
 
     @Override
-    public String decompileClassNode(final ClassNode cn, byte[] b) {
+    public String decompileClassNode(String containerName, final ClassNode cn) {
         try {
-            if (cn.version < 49) {
-                b = fixBytes(b);
-            }
-            final byte[] bytesToUse = b;
-
             Map<String, Object> options = main(generateMainMethod());
 
             final AtomicReference<String> result = new AtomicReference<>();
             result.set(null);
 
-            BaseDecompiler baseDecompiler = new BaseDecompiler((s, s1) -> {
-                byte[] clone = new byte[bytesToUse.length];
-                System.arraycopy(bytesToUse, 0, clone, 0, bytesToUse.length);
+            BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
+                System.out.println(externalPath + " " + internalPath);
+                System.out.println(new File(externalPath).getName());
+                ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractClassName(new File(externalPath).getName()));
+                byte[] bytes = JDA.getClassBytes(containerName, requestedCn);
+                byte[] clone = new byte[bytes.length];
+                System.arraycopy(bytes, 0, clone, 0, bytes.length);
                 return clone;
             }, new IResultSaver() {
                 @Override
@@ -67,8 +67,8 @@ public class FernflowerDecompiler extends Decompiler {
                 }
 
                 @Override
-                public void saveClassFile(String s, String s1, String s2, String s3, int[] ints) {
-                    result.set(s3);
+                public void saveClassFile(String s, String s1, String s2, String decompilation, int[] ints) {
+                    result.set(decompilation);
                 }
 
                 @Override
@@ -97,6 +97,8 @@ public class FernflowerDecompiler extends Decompiler {
             }, options, new PrintStreamLogger(System.out));
 
             baseDecompiler.addSpace(new File(cn.name + ".class"), true);
+            for (InnerClassNode innerCn : cn.innerClasses)
+                baseDecompiler.addSpace(new File(innerCn.name + ".class"), true);
             baseDecompiler.decompileContext();
             while (true) {
                 if (result.get() != null) {

@@ -75,12 +75,9 @@ public class ProcyonDecompiler extends Decompiler {
     }
 
     @Override
-    public String decompileClassNode(final ClassNode cn, byte[] b) {
+    public String decompileClassNode(String containerName, final ClassNode cn) {
         try {
-            if (cn.version < 49) {
-                b = fixBytes(b);
-            }
-            final byte[] bytesToUse = b;
+            byte[] bytes = JDA.getClassBytes(containerName, cn);
             final Map<String, byte[]> loadedClasses = JDA.getLoadedBytes();
             DecompilerSettings settings = getDecompilerSettings();
             MetadataSystem metadataSystem = new MetadataSystem(new ITypeLoader() {
@@ -89,7 +86,7 @@ public class ProcyonDecompiler extends Decompiler {
                 @Override
                 public boolean tryLoadType(String s, Buffer buffer) {
                     if (s.equals(cn.name)) {
-                        buffer.putByteArray(bytesToUse, 0, bytesToUse.length);
+                        buffer.putByteArray(bytes, 0, bytes.length);
                         buffer.position(0);
                         return true;
                     } else {

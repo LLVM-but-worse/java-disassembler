@@ -1,6 +1,8 @@
 package the.bytecode.club.jda;
 
 import org.apache.commons.io.FileUtils;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.gui.FileNavigationPane;
@@ -172,13 +174,37 @@ public class JDA {
         return null;
     }
 
-    public static byte[] getClassBytes(String containerName, String name) {
+    public static byte[] getFileBytes(String containerName, String name) {
         for (FileContainer container : files) {
             if (container.name.equals(containerName) && container.getData().containsKey(name)) {
                 return container.getData().get(name);
             }
         }
         return null;
+    }
+
+    public static byte[] getClassBytes(String containerName, ClassNode cn) {
+        byte[] bytes = getFileBytes(containerName, getClassfileName(cn));
+        if (cn.version < 49)
+            bytes = fixBytes(bytes);
+        return bytes;
+    }
+
+    public static String getClassfileName(ClassNode cn) {
+        return cn.name + ".class";
+    }
+
+    public static String extractClassName(String fileName) {
+        return fileName.substring(0, fileName.length() - 6);
+    }
+
+    protected static byte[] fixBytes(byte[] in) {
+        ClassReader reader = new ClassReader(in);
+        ClassNode node = new ClassNode();
+        reader.accept(node, ClassReader.EXPAND_FRAMES);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        node.accept(writer);
+        return writer.toByteArray();
     }
 
     /**
@@ -329,7 +355,7 @@ public class JDA {
                                             final ClassNode cn = JarUtils.getNode(bytes);
 
                                             FileContainer container = new FileContainer(f);
-                                            container.files.put(cn.name + ".class", bytes);
+                                            container.files.put(getClassfileName(cn), bytes);
                                             container.add(cn);
                                             JDA.files.add(container);
                                         } else {
