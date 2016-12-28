@@ -43,9 +43,9 @@ public class ProcyonDecompiler extends Decompiler {
         CommandLineOptions options = new CommandLineOptions();
         JCommander jCommander = new JCommander(options);
         List<String> args = new ArrayList<>();
-        for (the.bytecode.club.jda.settings.DecompilerSettings.Setting setting : Settings.values())
-            if (getSettings().isSelected(setting))
-                args.add("--" + setting.getParam());
+        for (the.bytecode.club.jda.settings.DecompilerSettings.SettingsEntry entry : Settings.values())
+            if (getSettings().isSelected(entry))
+                args.add("--" + entry.getParam());
         String[] argsArr = new String[args.size()];
         args.toArray(argsArr);
         jCommander.parse(argsArr);
@@ -195,7 +195,7 @@ public class ProcyonDecompiler extends Decompiler {
         }
     }
 
-    public enum Settings implements the.bytecode.club.jda.settings.DecompilerSettings.Setting {
+    public enum Settings implements the.bytecode.club.jda.settings.DecompilerSettings.SettingsEntry {
         SHOW_DEBUG_LINE_NUMBERS("debug-line-numbers", "Show Debug Line Numbers"),
         SIMPLIFY_MEMBER_REFERENCES("simplify-member-references", "Simplify Member References"),
         MERGE_VARIABLES("merge-variables", "Merge Variables"),

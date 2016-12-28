@@ -4,8 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.*;
 import the.bytecode.club.jda.api.ExceptionUI;
-import the.bytecode.club.jda.decompilers.*;
-import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
+import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.decompilers.Decompilers;
 import the.bytecode.club.jda.settings.DecompilerSettings;
 import the.bytecode.club.jda.settings.IPersistentWindow;
 import the.bytecode.club.jda.settings.Settings;
@@ -246,33 +246,14 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         settingsMenu.add(new JSeparator());
 
-        JMenu cfrSettingsMenu = new JMenu("CFR");
-        DecompilerSettings cfrSettings = Decompilers.CFR.getSettings();
-        for (CFRDecompiler.Settings setting : CFRDecompiler.Settings.values()) {
-            cfrSettingsMenu.add(cfrSettings.getMenuItem(setting));
+        for (Decompiler decompiler : Decompilers.getAllDecompilers()) {
+            JMenu decompilerSettingsMenu = new JMenu(decompiler.getName());
+            DecompilerSettings decompilerSettings = decompiler.getSettings();
+            for (DecompilerSettings.SettingsEntry entry : decompilerSettings.getEntries()) {
+                decompilerSettingsMenu.add(decompilerSettings.getMenuItem(entry));
+            }
+            settingsMenu.add(decompilerSettingsMenu);
         }
-        settingsMenu.add(cfrSettingsMenu);
-
-        JMenu fernflowerSettingMenu = new JMenu("FernFlower");
-        DecompilerSettings fernflowerSettings = Decompilers.FERNFLOWER.getSettings();
-        for (FernflowerDecompiler.Settings setting : FernflowerDecompiler.Settings.values()) {
-            fernflowerSettingMenu.add(fernflowerSettings.getMenuItem(setting));
-        }
-        settingsMenu.add(fernflowerSettingMenu);
-
-        JMenu procyonSettingsMenu = new JMenu("Procyon");
-        DecompilerSettings procyonSettings = Decompilers.PROCYON.getSettings();
-        for (ProcyonDecompiler.Settings setting : ProcyonDecompiler.Settings.values()) {
-            procyonSettingsMenu.add(procyonSettings.getMenuItem(setting));
-        }
-        settingsMenu.add(procyonSettingsMenu);
-
-        JMenu bytecodeSettingsMenu = new JMenu("Bytecode Decompiler");
-        DecompilerSettings bytecodeSettings = Decompilers.BYTECODE.getSettings();
-        for (ClassNodeDecompiler.Settings setting : ClassNodeDecompiler.Settings.values()) {
-            bytecodeSettingsMenu.add(bytecodeSettings.getMenuItem(setting));
-        }
-        settingsMenu.add(bytecodeSettingsMenu);
 
         menuBar.add(settingsMenu);
 

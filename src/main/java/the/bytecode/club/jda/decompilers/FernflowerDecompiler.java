@@ -48,8 +48,6 @@ public class FernflowerDecompiler extends Decompiler {
             result.set(null);
 
             BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
-                System.out.println(externalPath + " " + internalPath);
-                System.out.println(new File(externalPath).getName());
                 ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractClassName(new File(externalPath).getName()));
                 byte[] bytes = JDA.getClassBytes(containerName, requestedCn);
                 byte[] clone = new byte[bytes.length];
@@ -162,7 +160,7 @@ public class FernflowerDecompiler extends Decompiler {
         return result;
     }
 
-    public enum Settings implements DecompilerSettings.Setting {
+    public enum Settings implements DecompilerSettings.SettingsEntry {
         HIDE_BRIDGE_METHODS("rbr", "Hide Bridge Methods", true),
         HIDE_SYNTHETIC_CLASS_MEMBERS("rsy", "Hide Synthetic Class Members"),
         DECOMPILE_INNER_CLASSES("din", "Decompile Inner Classes", true),

@@ -3,6 +3,7 @@ package the.bytecode.club.jda.settings;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import the.bytecode.club.jda.JDA;
+import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.decompilers.Decompilers;
 import the.bytecode.club.jda.gui.JDAWindow;
 import the.bytecode.club.jda.gui.MainViewerGUI;
@@ -35,11 +36,8 @@ public class Settings {
     public static void saveGUI() {
         try {
             JsonObject settings = new JsonObject();
-            Decompilers.CFR.getSettings().saveTo(settings);
-            Decompilers.FERNFLOWER.getSettings().saveTo(settings);
-            Decompilers.PROCYON.getSettings().saveTo(settings);
-            Decompilers.BYTECODE.getSettings().saveTo(settings);
-
+            for (Decompiler decompiler : Decompilers.getAllDecompilers())
+                decompiler.getSettings().saveTo(settings);
 
             for (Setting setting : Settings.ALL_SETTINGS) {
                 String nodeId = setting.node;
@@ -88,10 +86,8 @@ public class Settings {
     public static void loadGUI() {
         try {
             JsonObject settings = JsonObject.readFrom(new FileReader(JDA.settingsFile));
-            Decompilers.CFR.getSettings().loadFrom(settings);
-            Decompilers.FERNFLOWER.getSettings().loadFrom(settings);
-            Decompilers.PROCYON.getSettings().loadFrom(settings);
-            Decompilers.BYTECODE.getSettings().loadFrom(settings);
+            for (Decompiler decompiler : Decompilers.getAllDecompilers())
+                decompiler.getSettings().loadFrom(settings);
             for (Setting setting : Settings.ALL_SETTINGS) {
                 String nodeId = setting.node;
                 JsonValue nodeValue = settings.get(nodeId);

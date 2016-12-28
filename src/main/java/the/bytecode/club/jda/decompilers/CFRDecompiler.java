@@ -191,7 +191,7 @@ public class CFRDecompiler extends Decompiler {
         }
     }
 
-    public enum Settings implements DecompilerSettings.Setting {
+    public enum Settings implements DecompilerSettings.SettingsEntry {
         DECODE_ENUM_SWITCH("decodeenumswitch", "Decode Enum Switch", true),
         SUGAR_ENUMS("sugarenums", "SugarEnums", true),
         DECODE_STRING_SWITCH("decodestringswitch", "Decode String Switch", true),
