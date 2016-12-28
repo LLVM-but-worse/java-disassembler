@@ -41,6 +41,8 @@ public class ClassNodeDecompiler extends Decompiler {
                     containerName = container.name;
             }
         }
+        if (containerName == null)
+            System.out.println("Warning: Unable to locate container for class " + cn.name + "!");
 
         return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
     }
