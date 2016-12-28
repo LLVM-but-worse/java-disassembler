@@ -2,13 +2,13 @@ package the.bytecode.club.jda.decompilers;
 
 import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Decompilers {
-    static final List<Decompiler> BY_NAME = new ArrayList<>();
+    static final Map<String, Decompiler> BY_NAME = new HashMap<>();
 
     public final static Decompiler PROCYON = new ProcyonDecompiler();
     public final static Decompiler CFR = new CFRDecompiler();
@@ -17,6 +17,6 @@ public class Decompilers {
 
 
     public static Collection<Decompiler> getAllDecompilers() {
-        return Collections.unmodifiableCollection(BY_NAME);
+        return Collections.unmodifiableCollection(BY_NAME.values());
     }
 }
