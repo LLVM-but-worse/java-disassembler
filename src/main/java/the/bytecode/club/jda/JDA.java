@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -90,14 +88,7 @@ public class JDA {
                 System.out.println("Skipping non-jar " + pluginFile.getName());
                 continue;
             }
-
-            try {
-                ClassLoader loader = URLClassLoader.newInstance(new URL[] {pluginFile.toURL()}, JDA.class.getClassLoader());
-                Class.forName("Plugin", true, loader).getConstructor().newInstance();
-            } catch (ReflectiveOperationException e) {
-                System.err.println("Failed to load plugin " + pluginFile.getName());
-                e.printStackTrace();
-            }
+            PluginLoader.tryLoadPlugin(pluginFile);
         }
     }
 
