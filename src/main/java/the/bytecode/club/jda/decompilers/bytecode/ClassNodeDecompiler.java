@@ -45,7 +45,7 @@ public class ClassNodeDecompiler extends Decompiler {
         return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
     }
 
-    protected static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, String containerName, ClassNode cn) {
+    protected PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, String containerName, ClassNode cn) {
         ArrayList<String> unableToDecompile = new ArrayList<>();
         decompiledClasses.add(cn.name);
         sb.append(getAccessString(cn.access));
@@ -73,14 +73,14 @@ public class ClassNodeDecompiler extends Decompiler {
 
         for (Iterator<FieldNode> it = cn.fields.iterator(); it.hasNext(); ) {
             sb.append("     ");
-            FieldNodeDecompiler.decompile(sb, it.next());
+            getFieldNodeDecompiler(sb, it).decompile();
             sb.append(JDA.nl);
             if (!it.hasNext())
                 sb.append(JDA.nl);
         }
 
         for (Iterator<MethodNode> it = cn.methods.iterator(); it.hasNext(); ) {
-            MethodNodeDecompiler.decompile(sb, it.next(), cn);
+            getMethodNodeDecompiler(sb, cn, it).decompile();
             if (it.hasNext())
                 sb.append(JDA.nl);
         }
@@ -116,6 +116,14 @@ public class ClassNodeDecompiler extends Decompiler {
         // System.out.println("Wrote end for " + cn.name +
         // " with prefix length: " + sb.prefix.length());
         return sb;
+    }
+
+    protected FieldNodeDecompiler getFieldNodeDecompiler(PrefixedStringBuilder sb, Iterator<FieldNode> it) {
+        return new FieldNodeDecompiler(sb, it.next());
+    }
+
+    protected MethodNodeDecompiler getMethodNodeDecompiler(PrefixedStringBuilder sb, ClassNode cn, Iterator<MethodNode> it) {
+        return new MethodNodeDecompiler(sb, it.next(), cn);
     }
 
     public static String getAccessString(int access) {

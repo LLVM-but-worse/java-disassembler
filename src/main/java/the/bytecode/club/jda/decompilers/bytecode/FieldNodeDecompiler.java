@@ -13,8 +13,15 @@ import java.util.List;
  */
 
 public class FieldNodeDecompiler {
+    protected final PrefixedStringBuilder sb;
+    protected final FieldNode f;
 
-    public static PrefixedStringBuilder decompile(PrefixedStringBuilder sb, FieldNode f) {
+    public FieldNodeDecompiler(PrefixedStringBuilder sb, FieldNode f) {
+        this.sb = sb;
+        this.f = f;
+    }
+
+    public PrefixedStringBuilder decompile() {
         String s = getAccessString(f.access);
         sb.append(s);
         if (s.length() > 0)
