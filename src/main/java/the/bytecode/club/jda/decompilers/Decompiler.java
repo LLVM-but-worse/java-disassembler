@@ -16,7 +16,7 @@ import java.io.StringWriter;
 
 public abstract class Decompiler {
     public Decompiler() {
-        Decompilers.BY_NAME.add(this);
+        Decompilers.BY_NAME.put(getName(), this);
     }
 
     protected DecompilerSettings settings = new DecompilerSettings(this);
