@@ -4,11 +4,11 @@ import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Decompilers {
-    static final Map<String, Decompiler> BY_NAME = new HashMap<>();
+    static final Map<String, Decompiler> BY_NAME = new LinkedHashMap<>();
 
     public final static Decompiler PROCYON = new ProcyonDecompiler();
     public final static Decompiler CFR = new CFRDecompiler();
