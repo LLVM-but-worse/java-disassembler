@@ -27,7 +27,6 @@ import java.util.jar.Manifest;
  */
 
 public final class FernflowerDecompiler extends Decompiler {
-
     public FernflowerDecompiler() {
         for (Settings setting : Settings.values()) {
             settings.registerSetting(setting);
@@ -48,7 +47,11 @@ public final class FernflowerDecompiler extends Decompiler {
             result.set(null);
 
             BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
-                ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractClassName(new File(externalPath).getName()));
+                ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractProxyClassName(externalPath));
+                if (requestedCn == null) {
+                    System.err.println("Couldn't load " + externalPath);
+                    return new byte[0];
+                }
                 byte[] bytes = JDA.getClassBytes(containerName, requestedCn);
                 byte[] clone = new byte[bytes.length];
                 System.arraycopy(bytes, 0, clone, 0, bytes.length);
@@ -94,9 +97,9 @@ public final class FernflowerDecompiler extends Decompiler {
                 }
             }, options, new PrintStreamLogger(System.out));
 
-            baseDecompiler.addSpace(new File(cn.name + ".class"), true);
+            baseDecompiler.addSpace(JDA.getClassFileProxy(cn), true);
             for (InnerClassNode innerCn : cn.innerClasses)
-                baseDecompiler.addSpace(new File(innerCn.name + ".class"), true);
+                baseDecompiler.addSpace(JDA.getClassFileProxy(innerCn), true);
             baseDecompiler.decompileContext();
             while (true) {
                 if (result.get() != null) {

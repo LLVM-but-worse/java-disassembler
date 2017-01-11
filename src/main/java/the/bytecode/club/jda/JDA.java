@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InnerClassNode;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.api.Plugin;
 import the.bytecode.club.jda.api.PluginLoader;
@@ -168,7 +169,18 @@ public class JDA {
                 return container.getClassNode(classFileName);
             }
         }
+
         return null;
+    }
+
+    public static final String HACK_PREFIX = "\0JDA-hack";
+
+    public static File getClassFileProxy(ClassNode cn) {
+        return new File('/' + HACK_PREFIX, cn.name + ".class");
+    }
+
+    public static File getClassFileProxy(InnerClassNode cn) {
+        return new File('/' + HACK_PREFIX, cn.name + ".class");
     }
 
     public static byte[] getFileBytes(String containerName, String name) {
@@ -191,8 +203,12 @@ public class JDA {
         return cn.name + ".class";
     }
 
+    public static String extractProxyClassName(String fileName) {
+        return extractClassName(fileName.substring(fileName.indexOf(HACK_PREFIX) + HACK_PREFIX.length() + 1));
+    }
+
     public static String extractClassName(String fileName) {
-        return fileName.substring(0, fileName.length() - 6);
+        return fileName.replace(File.separator, "/").substring(0, fileName.length() - 6);
     }
 
     protected static byte[] fixBytes(byte[] in) {

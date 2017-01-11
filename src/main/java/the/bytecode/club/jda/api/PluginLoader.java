@@ -1,5 +1,7 @@
 package the.bytecode.club.jda.api;
 
+import the.bytecode.club.jda.JDA;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,7 +20,7 @@ public class PluginLoader {
                 }
             };
 
-            InputStream metaInfStream = loader.getResourceAsStream("\0JDA-hack:META-INF/MANIFEST.MF");
+            InputStream metaInfStream = loader.getResourceAsStream(JDA.HACK_PREFIX + ":META-INF/MANIFEST.MF");
             if (metaInfStream == null) {
                 System.out.println("Invalid plugin " + pluginFileName + ": no manifest");
                 return null;
