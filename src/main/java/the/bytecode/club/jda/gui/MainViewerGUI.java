@@ -1,6 +1,5 @@
 package the.bytecode.club.jda.gui;
 
-import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.*;
 import the.bytecode.club.jda.api.ExceptionUI;
@@ -191,16 +190,21 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         JMenuItem mntmSaveAsZip = new JMenuItem("Save As Zip..");
         mntmSaveAsZip.setActionCommand("");
         mntmSaveAsZip.addActionListener(arg0 -> saveAsZip());
+        mntmSaveAsZip.setEnabled(false);
 
         mntmSaveAsRunnableJar.addActionListener(e -> saveAsRunnableJar());
+        mntmSaveAsRunnableJar.setEnabled(false);
         fileMenu.add(mntmSaveAsRunnableJar);
 
         fileMenu.add(mntmSaveAsZip);
 
         mntmDecompileSaveOpenedClasses.addActionListener(arg0 -> decompileSaveOpenedClasses());
+        mntmDecompileSaveOpenedClasses.setEnabled(false);
         fileMenu.add(mntmDecompileSaveOpenedClasses);
 
         mntmDecompileSaveAllClasses.addActionListener(arg0 -> decompileSaveAllClasses());
+        mntmDecompileSaveAllClasses.setEnabled(false);
+        mntmDecompileSaveOpenedClasses.setEnabled(false);
         fileMenu.add(mntmDecompileSaveAllClasses);
 
         fileMenu.add(new JSeparator());
@@ -507,62 +511,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-        Thread t = new Thread() {
-            public void run() {
-                JFileChooser fc = new JFileChooser();
-                fc.setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(File f) {
-                        return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("zip");
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Zip Archives";
-                    }
-                });
-                fc.setFileHidingEnabled(false);
-                fc.setAcceptAllFileFilterUsed(false);
-                int returnVal = fc.showSaveDialog(MainViewerGUI.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-                    if (!file.getAbsolutePath().endsWith(".zip"))
-                        file = new File(file.getAbsolutePath() + ".zip");
-
-                    if (file.exists()) {
-                        JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
-                        Object[] options = new String[]{"Yes", "No"};
-                        pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
-                        dialog.setVisible(true);
-                        Object obj = pane.getValue();
-                        int result = -1;
-                        for (int k = 0; k < options.length; k++)
-                            if (options[k].equals(obj))
-                                result = k;
-
-                        if (result == 0) {
-                            file.delete();
-                        } else {
-                            return;
-                        }
-                    }
-
-                    final File file2 = file;
-
-                    JDA.viewer.setIcon(true);
-                    Thread t = new Thread() {
-                        @Override
-                        public void run() {
-                            JarUtils.saveAsJar(JDA.getLoadedBytes(), file2.getAbsolutePath());
-                            JDA.viewer.setIcon(false);
-                        }
-                    };
-                    t.start();
-                }
-            }
-        };
-        t.start();
+        (new Thread(() -> {
+        })).start();
     }
 
     private void saveAsRunnableJar() {
@@ -570,53 +520,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-        Thread t = new Thread() {
-            public void run() {
-                JFileChooser fc = new JFileChooser();
-                fc.setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(File f) {
-                        return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("zip");
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Zip Archives";
-                    }
-                });
-                fc.setFileHidingEnabled(false);
-                fc.setAcceptAllFileFilterUsed(false);
-                int returnVal = fc.showSaveDialog(MainViewerGUI.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-                    String path = file.getAbsolutePath();
-                    if (!path.endsWith(".jar"))
-                        path = path + ".jar";
-
-                    if (new File(path).exists()) {
-                        JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
-                        Object[] options = new String[]{"Yes", "No"};
-                        pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
-                        dialog.setVisible(true);
-                        Object obj = pane.getValue();
-                        int result = -1;
-                        for (int k = 0; k < options.length; k++)
-                            if (options[k].equals(obj))
-                                result = k;
-
-                        if (result == 0) {
-                            file.delete();
-                        } else {
-                            return;
-                        }
-                    }
-
-                    new ExportJar(path).setVisible(true);
-                }
-            }
-        };
-        t.start();
+        (new Thread(() -> {
+        })).start();
     }
 
     private void decompileSaveOpenedClasses() {
@@ -624,119 +529,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-
-        Thread t = new Thread() {
-            public void run() {
-                final String fileName = workPane.getCurrentViewer().name;
-
-                JFileChooser fc = new JFileChooser();
-                fc.setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(File f) {
-                        return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("java");
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Java Source Files";
-                    }
-                });
-                fc.setFileHidingEnabled(false);
-                fc.setAcceptAllFileFilterUsed(false);
-                int returnVal = fc.showSaveDialog(MainViewerGUI.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-
-                    JDA.viewer.setIcon(true);
-                    final String path = MiscUtils.append(file, ".java");    // cheap hax cause
-                    // string is final
-
-                    if (new File(path).exists()) {
-                        JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
-                        Object[] options = new String[]{"Yes", "No"};
-                        pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
-                        dialog.setVisible(true);
-                        Object obj = pane.getValue();
-                        int result = -1;
-                        for (int k = 0; k < options.length; k++)
-                            if (options[k].equals(obj))
-                                result = k;
-
-                        if (result == 0) {
-                            file.delete();
-                        } else {
-                            return;
-                        }
-                    }
-
-                    JOptionPane pane = new JOptionPane("What decompiler will you use?");
-                    Object[] options = new String[]{"Procyon", "CFR", "Fernflower", "Cancel"};
-                    pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Select Decompiler");
-                    dialog.setVisible(true);
-                    Object obj = pane.getValue();
-                    int result = -1;
-                    for (int k = 0; k < options.length; k++)
-                        if (options[k].equals(obj))
-                            result = k;
-                    final String containerName = JDA.files.get(0).name;
-
-                    if (result == 0) {
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    ClassNode cn1 = JDA.getClassNode(containerName, fileName);
-                                    String contents = Decompilers.PROCYON.decompileClassNode(containerName, cn1);
-                                    FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
-                                    JDA.viewer.setIcon(false);
-                                } catch (Exception e) {
-                                    new ExceptionUI(e);
-                                }
-                            }
-                        };
-                        t.start();
-                    }
-                    if (result == 1) {
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    ClassNode cn1 = JDA.getClassNode(containerName, fileName);
-                                    String contents = Decompilers.CFR.decompileClassNode(containerName, cn1);
-                                    FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
-                                    JDA.viewer.setIcon(false);
-                                } catch (Exception e) {
-                                    new ExceptionUI(e);
-                                }
-                            }
-                        };
-                        t.start();
-                    }
-                    if (result == 2) {
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    ClassNode cn1 = JDA.getClassNode(containerName, fileName);
-                                    String contents = Decompilers.FERNFLOWER.decompileClassNode(containerName, cn1);
-                                    FileUtils.writeStringToFile(new File(path), contents, "UTF-8");
-                                    JDA.viewer.setIcon(false);
-                                } catch (Exception e) {
-                                    new ExceptionUI(e);
-                                }
-                            }
-                        };
-                        t.start();
-                    }
-                    if (result == 4) {
-                        JDA.viewer.setIcon(false);
-                    }
-                }
-            }
-        };
-        t.start();
+        (new Thread(() -> {
+        })).start();
     }
 
     private void decompileSaveAllClasses() {
@@ -744,111 +538,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-
-        Thread t = new Thread() {
-            public void run() {
-                JFileChooser fc = new JFileChooser();
-                fc.setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(File f) {
-                        return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("zip");
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Zip Archives";
-                    }
-                });
-                fc.setFileHidingEnabled(false);
-                fc.setAcceptAllFileFilterUsed(false);
-                int returnVal = fc.showSaveDialog(MainViewerGUI.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-                    if (!file.getAbsolutePath().endsWith(".zip"))
-                        file = new File(file.getAbsolutePath() + ".zip");
-
-                    if (file.exists()) {
-                        JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
-                        Object[] options = new String[]{"Yes", "No"};
-                        pane.setOptions(options);
-                        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
-                        dialog.setVisible(true);
-                        Object obj = pane.getValue();
-                        int result = -1;
-                        for (int k = 0; k < options.length; k++)
-                            if (options[k].equals(obj))
-                                result = k;
-
-                        if (result == 0) {
-                            file.delete();
-                        } else {
-                            return;
-                        }
-                    }
-
-                    JDA.viewer.setIcon(true);
-                    final String path = MiscUtils.append(file, ".zip");    // cheap hax cause
-                    // string is final
-
-                    JOptionPane pane = new JOptionPane("What decompiler will you use?");
-                    Object[] options = new String[]{"Procyon", "CFR", "Fernflower", "Cancel"};
-                    pane.setOptions(options);
-                    JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Select Decompiler");
-                    dialog.setVisible(true);
-                    Object obj = pane.getValue();
-                    int result = -1;
-                    for (int k = 0; k < options.length; k++)
-                        if (options[k].equals(obj))
-                            result = k;
-
-                    if (result == 0) {
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Decompilers.PROCYON.decompileToZip(path);
-                                    JDA.viewer.setIcon(false);
-                                } catch (Exception e) {
-                                    new ExceptionUI(e);
-                                }
-                            }
-                        };
-                        t.start();
-                    }
-                    if (result == 1) {
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Decompilers.CFR.decompileToZip(path);
-                                    JDA.viewer.setIcon(false);
-                                } catch (Exception e) {
-                                    new ExceptionUI(e);
-                                }
-                            }
-                        };
-                        t.start();
-                    }
-                    if (result == 2) {
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Decompilers.FERNFLOWER.decompileToZip(path);
-                                    JDA.viewer.setIcon(false);
-                                } catch (Exception e) {
-                                    new ExceptionUI(e);
-                                }
-                            }
-                        };
-                        t.start();
-                    } else {
-                        JDA.viewer.setIcon(false);
-                    }
-                }
-            }
-        };
-        t.start();
+        (new Thread(() -> {
+        })).start();
     }
 
     private void exitPrompt() {
