@@ -155,6 +155,21 @@ public class JDA {
         return viewer.workPane.getCurrentViewer().cn;
     }
 
+    public static FileContainer findContainer(String containerName, String fileName) {
+        boolean checkContainer = !containerName.endsWith(".class");
+        System.out.println("Loading " + containerName + "$" + fileName);
+        for (FileContainer container : files) {
+            if (checkContainer && !container.name.equals(containerName))
+                continue;
+            if (container.getData().containsKey(fileName)) {
+                System.out.println("Found it");
+                return container;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Returns the ClassNode by the specified name
      *
@@ -163,14 +178,27 @@ public class JDA {
      * @return the ClassNode instance
      */
     public static ClassNode getClassNode(String containerName, String name) {
-        for (FileContainer container : files) {
-            String classFileName = name + ".class";
-            if (container.name.equals(containerName) && container.getData().containsKey(classFileName)) {
-                return container.getClassNode(classFileName);
-            }
-        }
+        String classFileName = name + ".class";
+        FileContainer container = findContainer(containerName, classFileName);
+        if (container != null)
+            return container.getClassNode(classFileName);
+        else
+            return null;
+    }
 
-        return null;
+    public static byte[] getFileBytes(String containerName, String name) {
+        FileContainer container = findContainer(containerName, name);
+        if (container != null)
+            return container.getData().get(name);
+        else
+            return null;
+    }
+
+    public static byte[] getClassBytes(String containerName, ClassNode cn) {
+        byte[] bytes = getFileBytes(containerName, getClassfileName(cn));
+        if (cn.version < 49)
+            bytes = fixBytes(bytes);
+        return bytes;
     }
 
     public static final String HACK_PREFIX = "\0JDA-hack";
@@ -181,22 +209,6 @@ public class JDA {
 
     public static File getClassFileProxy(InnerClassNode cn) {
         return new File('/' + HACK_PREFIX, cn.name + ".class");
-    }
-
-    public static byte[] getFileBytes(String containerName, String name) {
-        for (FileContainer container : files) {
-            if (container.name.equals(containerName) && container.getData().containsKey(name)) {
-                return container.getData().get(name);
-            }
-        }
-        return null;
-    }
-
-    public static byte[] getClassBytes(String containerName, ClassNode cn) {
-        byte[] bytes = getFileBytes(containerName, getClassfileName(cn));
-        if (cn.version < 49)
-            bytes = fixBytes(bytes);
-        return bytes;
     }
 
     public static String getClassfileName(ClassNode cn) {
