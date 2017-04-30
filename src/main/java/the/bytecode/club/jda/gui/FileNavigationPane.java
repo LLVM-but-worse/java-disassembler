@@ -31,8 +31,6 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
 
     FileChangeNotifier fcn;
     JCheckBox exact = new JCheckBox("Match case");
-    JButton open = new JButton("Expand");
-    JButton collapse = new JButton("Collapse");
 
     FileNode treeRoot = new FileNode("Loaded Files:");
     FileTree tree = new FileTree(treeRoot);
@@ -113,29 +111,14 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         quickSearch.setForeground(Color.gray);
         setMinimumSize(new Dimension(200, 50));
 
-        this.open.addActionListener(e -> {
-            if (tree.getSelectionPaths() != null) {
-                for (TreePath path : tree.getSelectionPaths()) {
-                    treeDfs(path, tree::expandPath);
-                    tree.expandPath(path);
-                }
-            }
-        });
-
-        this.collapse.addActionListener(e -> {
-            if (tree.getSelectionPaths() != null) {
-                for (TreePath path : tree.getSelectionPaths()) {
-                    treeDfs(path, tree::collapsePath);
-                }
-            }
-        });
-
         this.tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 openPath(tree.getPathForLocation(e.getX(), e.getY()));
             }
         });
+        tree.setComponentPopupMenu(new TreeContextMenu());
+        tree.setInheritsPopupMenu(true);
 
         this.tree.addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent e) {
@@ -186,8 +169,6 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         JPanel p3 = new JPanel(new BorderLayout());
         p3.add(exact, BorderLayout.WEST);
         JPanel p4 = new JPanel(new BorderLayout());
-        p4.add(open, BorderLayout.EAST);
-        p4.add(collapse, BorderLayout.WEST);
         p3.add(p4, BorderLayout.EAST);
         p2.add(p3, BorderLayout.SOUTH);
 
@@ -279,18 +260,21 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
     }
 
     @SuppressWarnings("rawtypes")
-    private void treeDfs(final TreePath parent, Consumer<TreePath> onPreOrder) {
-        onPreOrder.accept(parent);
+    private void treeDfs(final TreePath parent, Consumer<TreePath> onPreOrder, Consumer<TreePath> onPostOrder) {
+        if (onPreOrder != null)
+            onPreOrder.accept(parent);
 
-        // Traverse children
         final TreeNode node = (TreeNode) parent.getLastPathComponent();
         if (node.getChildCount() >= 0) {
             for (final Enumeration e = node.children(); e.hasMoreElements(); ) {
                 final TreeNode n = (TreeNode) e.nextElement();
                 final TreePath path = parent.pathByAddingChild(n);
-                treeDfs(path, onPreOrder);
+                treeDfs(path, onPreOrder, onPostOrder);
             }
         }
+
+        if (onPostOrder != null)
+            onPostOrder.accept(parent);
     }
 
     public class FileTree extends JTree {
@@ -518,4 +502,29 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         }
     }
 
+    private class TreeContextMenu extends JPopupMenu {
+        JMenuItem expandAll, collapseAll;
+
+        public TreeContextMenu(){
+            add(expandAll = new JMenuItem("Expand All"));
+            add(collapseAll = new JMenuItem("Collapse All"));
+
+            expandAll.addActionListener(e -> {
+                if (tree.getSelectionPaths() != null) {
+                    for (TreePath path : tree.getSelectionPaths()) {
+                        treeDfs(path, tree::expandPath, null);
+                        tree.expandPath(path);
+                    }
+                }
+            });
+
+            collapseAll.addActionListener(e -> {
+                if (tree.getSelectionPaths() != null) {
+                    for (TreePath path : tree.getSelectionPaths()) {
+                        treeDfs(path, null, tree::collapsePath);
+                    }
+                }
+            });
+        }
+    }
 }
