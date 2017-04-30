@@ -1,16 +1,20 @@
-package the.bytecode.club.jda.gui;
+package the.bytecode.club.jda.gui.navigation;
 
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.*;
+import the.bytecode.club.jda.gui.JDAWindow;
+import the.bytecode.club.jda.gui.MainViewerGUI;
 
 import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -116,7 +120,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
                 openPath(tree.getPathForLocation(e.getX(), e.getY()));
             }
         });
-        tree.setComponentPopupMenu(new TreeContextMenu());
+        tree.setComponentPopupMenu(new TreeContextMenu(this));
         tree.setInheritsPopupMenu(true);
 
         this.tree.addKeyListener(new KeyListener() {
@@ -219,9 +223,8 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
             for (FileContainer container : JDA.files) {
                 FileNode root = new FileNode(container.name);
                 treeRoot.add(root);
-                ImageRenderer renderer = new ImageRenderer();
+                JDATreeCellRenderer renderer = new JDATreeCellRenderer();
                 tree.setCellRenderer(renderer);
-
 
                 if (!container.files.isEmpty()) {
                     for (final Entry<String, byte[]> entry : container.files.entrySet()) {
@@ -260,7 +263,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
     }
 
     @SuppressWarnings("rawtypes")
-    private void treeDfs(final TreePath parent, Consumer<TreePath> onPreOrder, Consumer<TreePath> onPostOrder) {
+    void treeDfs(final TreePath parent, Consumer<TreePath> onPreOrder, Consumer<TreePath> onPostOrder) {
         if (onPreOrder != null)
             onPreOrder.accept(parent);
 
@@ -416,115 +419,4 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         }
     }
 
-    /**
-     * @author http://stackoverflow.com/questions/14968005
-     * @author Konloch
-     */
-    public class ImageRenderer extends DefaultTreeCellRenderer {
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) { //called every time there is a pane update, I.E. whenever you expand a folder
-
-            Component ret = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-
-            if (value != null && value instanceof FileNode) {
-                FileNode node = (FileNode) value;
-                String name = node.toString();
-
-                if (name.endsWith(".jar")) {
-                    setIcon(Resources.jarIcon);
-                } else if (name.endsWith(".zip")) {
-                    setIcon(Resources.zipIcon);
-                } else if (name.endsWith(".bat")) {
-                    setIcon(Resources.batIcon);
-                } else if (name.endsWith(".sh")) {
-                    setIcon(Resources.shIcon);
-                } else if (name.endsWith(".cs")) {
-                    setIcon(Resources.csharpIcon);
-                } else if (name.endsWith(".c") || name.endsWith(".cpp") || name.endsWith(".h")) {
-                    setIcon(Resources.cplusplusIcon);
-                } else if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".bmp") || name.endsWith(".gif")) {
-                    setIcon(Resources.imageIcon);
-                } else if (name.endsWith(".class")) {
-                    setIcon(Resources.classIcon);
-                } else if (name.endsWith(".java")) {
-                    setIcon(Resources.javaIcon);
-                } else if (name.endsWith(".txt") || name.endsWith(".md")) {
-                    setIcon(Resources.textIcon);
-                } else if (name.equals("decoded resources")) {
-                    setIcon(Resources.decodedIcon);
-                } else if (name.endsWith(".properties") || name.endsWith(".xml") || name.endsWith(".mf") || name.endsWith(".config") || name.endsWith(".cfg")) {
-                    setIcon(Resources.configIcon);
-                } else if (node.getChildCount() <= 0) { //random file
-                    setIcon(Resources.fileIcon);
-                } else { //folder
-                    ArrayList<TreeNode> nodes = new ArrayList<>();
-                    ArrayList<TreeNode> totalNodes = new ArrayList<>();
-
-                    nodes.add(node);
-                    totalNodes.add(node);
-
-                    boolean isJava = false;
-                    boolean finished = false;
-
-                    while (!finished) { //may cause a clusterfuck with huge files
-                        if (nodes.isEmpty())
-                            finished = true;
-                        else {
-                            TreeNode treeNode = nodes.get(0);
-                            nodes.remove(treeNode);
-                            int children = treeNode.getChildCount();
-                            if (children >= 1)
-                                for (int i = 0; i < children; i++) {
-                                    TreeNode child = treeNode.getChildAt(i);
-
-                                    if (!totalNodes.contains(child)) {
-                                        nodes.add(child);
-                                        totalNodes.add(child);
-                                    }
-
-                                    if (child.toString().endsWith(".class"))
-                                        isJava = true;
-                                }
-
-                            if (isJava)
-                                nodes.clear();
-                        }
-                    }
-
-                    if (isJava)
-                        setIcon(Resources.packagesIcon);
-                    else {
-                        setIcon(Resources.folderIcon);
-                    }
-                }
-            }
-
-            return ret;
-        }
-    }
-
-    private class TreeContextMenu extends JPopupMenu {
-        JMenuItem expandAll, collapseAll;
-
-        public TreeContextMenu(){
-            add(expandAll = new JMenuItem("Expand All"));
-            add(collapseAll = new JMenuItem("Collapse All"));
-
-            expandAll.addActionListener(e -> {
-                if (tree.getSelectionPaths() != null) {
-                    for (TreePath path : tree.getSelectionPaths()) {
-                        treeDfs(path, tree::expandPath, null);
-                        tree.expandPath(path);
-                    }
-                }
-            });
-
-            collapseAll.addActionListener(e -> {
-                if (tree.getSelectionPaths() != null) {
-                    for (TreePath path : tree.getSelectionPaths()) {
-                        treeDfs(path, null, tree::collapsePath);
-                    }
-                }
-            });
-        }
-    }
 }

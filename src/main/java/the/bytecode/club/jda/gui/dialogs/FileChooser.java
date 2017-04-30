@@ -1,4 +1,4 @@
-package the.bytecode.club.jda.gui;
+package the.bytecode.club.jda.gui.dialogs;
 
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;

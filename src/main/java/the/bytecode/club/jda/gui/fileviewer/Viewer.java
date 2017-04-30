@@ -1,4 +1,4 @@
-package the.bytecode.club.jda.gui;
+package the.bytecode.club.jda.gui.fileviewer;
 
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.settings.Settings;
