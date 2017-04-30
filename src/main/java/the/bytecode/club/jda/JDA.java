@@ -156,13 +156,13 @@ public class JDA {
     }
 
     public static FileContainer findContainer(String containerName, String fileName) {
-        boolean checkContainer = !containerName.endsWith(".class");
-        System.out.println("Loading " + containerName + "$" + fileName);
+        boolean isClassFile = containerName.endsWith(".class");
         for (FileContainer container : files) {
-            if (checkContainer && !container.name.equals(containerName))
+            if (!isClassFile && !container.name.equals(containerName))
+                continue;
+            else if (isClassFile && !container.name.endsWith(".class"))
                 continue;
             if (container.getData().containsKey(fileName)) {
-                System.out.println("Found it");
                 return container;
             }
         }
@@ -272,7 +272,7 @@ public class JDA {
         ArrayList<ClassNode> a = new ArrayList<>();
 
         for (FileContainer container : files)
-            for (ClassNode c : container.values())
+            for (ClassNode c : container.getClasses())
                 if (!a.contains(c))
                     a.add(c);
 
@@ -362,7 +362,7 @@ public class JDA {
                                     }
                                 }
                                 container.files = files;
-                                JDA.files.add(container);
+                                addFile(container);
                             } else {
                                 if (fn.endsWith(".jar") || fn.endsWith(".zip")) {
                                     try {
@@ -382,7 +382,7 @@ public class JDA {
                                             FileContainer container = new FileContainer(f);
                                             container.files.put(getClassfileName(cn), bytes);
                                             container.add(cn);
-                                            JDA.files.add(container);
+                                            addFile(container);
                                         } else {
                                             showMessage(fn + ": Header does not start with CAFEBABE, ignoring.");
                                             update = false;
@@ -399,7 +399,7 @@ public class JDA {
 
                                     FileContainer container = new FileContainer(f);
                                     container.files = files;
-                                    JDA.files.add(container);
+                                    addFile(container);
                                 }
                             }
                         }
@@ -417,6 +417,11 @@ public class JDA {
             }
         };
         t.start();
+    }
+
+    public static void addFile(FileContainer fc) {
+        JDA.files.add(fc);
+        plugins.forEach((plugin -> plugin.onAddFile(fc)));
     }
 
     /**

@@ -51,7 +51,7 @@ public class FileContainer {
         classes.put(classNode.name, classNode);
     }
 
-    public Collection<ClassNode> values() {
+    public Collection<ClassNode> getClasses() {
         return classes.values();
     }
 }

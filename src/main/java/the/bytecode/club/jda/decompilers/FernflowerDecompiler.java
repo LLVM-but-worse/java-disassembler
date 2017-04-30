@@ -47,6 +47,7 @@ public final class FernflowerDecompiler extends Decompiler {
             result.set(null);
 
             BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
+//                System.out.println("boi " + externalPath + " " + internalPath);
                 ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractProxyClassName(externalPath));
                 if (requestedCn == null) {
                     System.err.println("Couldn't load " + externalPath);
