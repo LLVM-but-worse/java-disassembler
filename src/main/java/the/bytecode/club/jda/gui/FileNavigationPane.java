@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 /**
  * The file navigation pane.
@@ -29,9 +30,9 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
     private static final String quickSearchText = "Quick file search (no file extension)";
 
     FileChangeNotifier fcn;
-    JCheckBox exact = new JCheckBox("Exact");
-    JButton open = new JButton("+");
-    JButton close = new JButton("-");
+    JCheckBox exact = new JCheckBox("Match case");
+    JButton open = new JButton("Expand");
+    JButton collapse = new JButton("Collapse");
 
     FileNode treeRoot = new FileNode("Loaded Files:");
     FileTree tree = new FileTree(treeRoot);
@@ -113,14 +114,20 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         setMinimumSize(new Dimension(200, 50));
 
         this.open.addActionListener(e -> {
-            final TreeNode root = (TreeNode) tree.getModel().getRoot();
-            expandAll(tree, new TreePath(root), true);
+            if (tree.getSelectionPaths() != null) {
+                for (TreePath path : tree.getSelectionPaths()) {
+                    treeDfs(path, tree::expandPath);
+                    tree.expandPath(path);
+                }
+            }
         });
 
-        this.close.addActionListener(e -> {
-            final TreeNode root = (TreeNode) tree.getModel().getRoot();
-            expandAll(tree, new TreePath(root), false);
-            tree.expandPath(new TreePath(root));
+        this.collapse.addActionListener(e -> {
+            if (tree.getSelectionPaths() != null) {
+                for (TreePath path : tree.getSelectionPaths()) {
+                    treeDfs(path, tree::collapsePath);
+                }
+            }
         });
 
         this.tree.addMouseListener(new MouseAdapter() {
@@ -177,17 +184,15 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         p2.setLayout(new BorderLayout());
         p2.add(quickSearch, BorderLayout.NORTH);
         JPanel p3 = new JPanel(new BorderLayout());
-        exact.setEnabled(false);
         p3.add(exact, BorderLayout.WEST);
         JPanel p4 = new JPanel(new BorderLayout());
         p4.add(open, BorderLayout.EAST);
-        p4.add(close, BorderLayout.WEST);
+        p4.add(collapse, BorderLayout.WEST);
         p3.add(p4, BorderLayout.EAST);
         p2.add(p3, BorderLayout.SOUTH);
 
         getContentPane().add(p2, BorderLayout.SOUTH);
 
-        this.setVisible(true);
         new FileDrop(this, this);
     }
 
@@ -271,26 +276,20 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         } catch (java.util.ConcurrentModificationException e) {
             //ignore, the last file will reset everything
         }
-        // expandAll(tree, true);
     }
 
     @SuppressWarnings("rawtypes")
-    private void expandAll(final JTree tree, final TreePath parent, final boolean expand) {
+    private void treeDfs(final TreePath parent, Consumer<TreePath> onPreOrder) {
+        onPreOrder.accept(parent);
+
         // Traverse children
         final TreeNode node = (TreeNode) parent.getLastPathComponent();
         if (node.getChildCount() >= 0) {
             for (final Enumeration e = node.children(); e.hasMoreElements(); ) {
                 final TreeNode n = (TreeNode) e.nextElement();
                 final TreePath path = parent.pathByAddingChild(n);
-                expandAll(tree, path, expand);
+                treeDfs(path, onPreOrder);
             }
-        }
-
-        // Expansion or collapse must be done bottom-up
-        if (expand) {
-            tree.expandPath(parent);
-        } else {
-            tree.collapsePath(parent);
         }
     }
 
