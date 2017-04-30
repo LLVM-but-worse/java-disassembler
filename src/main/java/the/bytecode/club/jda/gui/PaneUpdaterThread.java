@@ -6,6 +6,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.gui.fileviewer.ClassViewer;
 import the.bytecode.club.jda.settings.Settings;
 
 import javax.swing.*;

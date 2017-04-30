@@ -1,9 +1,13 @@
-package the.bytecode.club.jda.gui;
+package the.bytecode.club.jda.gui.fileviewer;
 
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.FileChangeNotifier;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.Resources;
+import the.bytecode.club.jda.gui.JDAWindow;
+import the.bytecode.club.jda.gui.MainViewerGUI;
+import the.bytecode.club.jda.gui.dialogs.TabbedPane;
+import the.bytecode.club.jda.gui.navigation.FileNavigationPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +24,7 @@ import java.util.HashMap;
  * @author WaterWolf
  */
 
-public class WorkPane extends JDAWindow implements ActionListener {
+public class FileViewerPane extends JDAWindow implements ActionListener {
 
     private static final long serialVersionUID = 6542337997679487946L;
 
@@ -28,13 +32,13 @@ public class WorkPane extends JDAWindow implements ActionListener {
     public JTabbedPane tabs;
 
     JPanel buttonPanel;
-    JButton refreshClass;
+    public JButton refreshClass;
 
     HashMap<String, Integer> workingOn = new HashMap<>();
 
     public static int SyntaxFontHeight = 12;
 
-    public WorkPane(final FileChangeNotifier fcn) {
+    public FileViewerPane(final FileChangeNotifier fcn) {
         super("WorkPanel", "Work Space", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
 
         this.tabs = new JTabbedPane();

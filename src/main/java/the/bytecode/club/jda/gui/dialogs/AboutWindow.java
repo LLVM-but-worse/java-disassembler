@@ -1,6 +1,7 @@
-package the.bytecode.club.jda.gui;
+package the.bytecode.club.jda.gui.dialogs;
 
 import org.apache.commons.io.IOUtils;
+import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.Resources;
 
 import javax.swing.*;
@@ -8,15 +9,20 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.io.IOException;
 
-public class IntroWindow extends JFrame {
+/**
+ * The about frame.
+ *
+ * @author Konloch
+ */
+public class AboutWindow extends JFrame {
     private static final long serialVersionUID = -8230501978224923296L;
     private JEditorPane editorPane;
 
-    public IntroWindow() {
+    public AboutWindow() {
         this.setIconImages(Resources.iconList);
-        setSize(new Dimension(800, 800));
+        setSize(new Dimension(400, 400));
         setType(Type.UTILITY);
-        setTitle("JDA - Help");
+        setTitle("JDA - About");
         getContentPane().setLayout(new CardLayout(0, 0));
         this.setResizable(false);
         this.setLocationRelativeTo(null);
@@ -30,9 +36,12 @@ public class IntroWindow extends JFrame {
         editorPane.setContentType("text/html");
         editorPane.setEditable(false);
         try {
-            editorPane.setText(IOUtils.toString(Resources.class.getResourceAsStream("/intro.html"), "UTF-8"));
+            String text = IOUtils.toString(Resources.class.getResourceAsStream("/about.html"), "UTF-8");
+            text = text.replace("$JDA_VERSION$", JDA.version + (JDA.previewCopy ? " (preview)" : ""));
+            text = text.replace("$JDA_ICON$", Resources.class.getClass().getResource("/icon.png").toString());
+            editorPane.setText(text);
         } catch (IOException e) {
-            System.err.println("Couldn't load intro html:");
+            System.err.println("Couldn't load about html:");
             e.printStackTrace();
         }
         scrollPane.setViewportView(editorPane);

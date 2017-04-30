@@ -8,8 +8,8 @@ import org.objectweb.asm.tree.InnerClassNode;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.api.Plugin;
 import the.bytecode.club.jda.api.PluginLoader;
-import the.bytecode.club.jda.gui.FileNavigationPane;
 import the.bytecode.club.jda.gui.MainViewerGUI;
+import the.bytecode.club.jda.gui.navigation.FileNavigationPane;
 import the.bytecode.club.jda.settings.Settings;
 
 import javax.swing.*;
@@ -152,7 +152,7 @@ public class JDA {
      * @return the currently opened ClassNode
      */
     public static ClassNode getCurrentlyOpenedClassNode() {
-        return viewer.workPane.getCurrentViewer().cn;
+        return viewer.FileViewerPane.getCurrentViewer().cn;
     }
 
     public static FileContainer findContainer(String containerName, String fileName) {
@@ -702,8 +702,8 @@ public class JDA {
             };
             t.start();
         } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e)) {
-            if (viewer.workPane.getCurrentViewer() != null)
-                viewer.workPane.tabs.remove(viewer.workPane.getCurrentViewer());
+            if (viewer.FileViewerPane.getCurrentViewer() != null)
+                viewer.FileViewerPane.tabs.remove(viewer.FileViewerPane.getCurrentViewer());
         }
     }
 }

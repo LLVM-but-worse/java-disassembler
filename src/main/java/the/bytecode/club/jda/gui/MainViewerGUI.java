@@ -5,6 +5,13 @@ import the.bytecode.club.jda.*;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.decompilers.Decompilers;
+import the.bytecode.club.jda.gui.dialogs.AboutWindow;
+import the.bytecode.club.jda.gui.dialogs.FontOptionsDialog;
+import the.bytecode.club.jda.gui.dialogs.IntroWindow;
+import the.bytecode.club.jda.gui.dialogs.TabbedPane;
+import the.bytecode.club.jda.gui.fileviewer.FileViewerPane;
+import the.bytecode.club.jda.gui.fileviewer.Viewer;
+import the.bytecode.club.jda.gui.navigation.FileNavigationPane;
 import the.bytecode.club.jda.settings.DecompilerSettings;
 import the.bytecode.club.jda.settings.IPersistentWindow;
 import the.bytecode.club.jda.settings.Settings;
@@ -44,15 +51,15 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     public JDesktopPane desktop;
     public FileNavigationPane navigator;
-    public WorkPane workPane;
+    public FileViewerPane FileViewerPane;
     public static ArrayList<JDAWindow> windows = new ArrayList<>();
     private final ActionListener listener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent arg0) {
             if (Settings.REFRESH_ON_VIEW_CHANGE.getBool()) {
-                if (workPane.getCurrentViewer() == null)
+                if (FileViewerPane.getCurrentViewer() == null)
                     return;
-                workPane.refreshClass.doClick();
+                FileViewerPane.refreshClass.doClick();
             }
         }
     };
@@ -281,7 +288,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         mnShowContainer.setSelected(Settings.SHOW_CONTAINER_NAME.getBool());
         mnShowContainer.addItemListener(e -> {
-            JTabbedPane tabs = workPane.tabs;
+            JTabbedPane tabs = FileViewerPane.tabs;
             Component[] components = tabs.getComponents();
             for (int i = 0; i < components.length; i++) {
                 Component c = components[i];
@@ -289,7 +296,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                     ((Viewer) c).updateName();
                     int idx = tabs.indexOfComponent(c);
                     tabs.setTabComponentAt(idx, new TabbedPane(c.getName(), tabs));
-                    workPane.tabs.setTitleAt(idx, c.getName());
+                    FileViewerPane.tabs.setTitleAt(idx, c.getName());
                 }
             }
             Settings.SHOW_CONTAINER_NAME.set(mnShowContainer.isSelected());
@@ -310,17 +317,17 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     private void initializeWindows() {
         navigator = new FileNavigationPane(this);
-        workPane = new WorkPane(this);
+        FileViewerPane = new FileViewerPane(this);
 
         desktop = new JDesktopPane();
         setContentPane(desktop);
         desktop.add(navigator);
-        desktop.add(workPane);
+        desktop.add(FileViewerPane);
         desktop.setDesktopManager(new WorkspaceDesktopManager());
         desktop.setBackground(COLOR_DESKTOP_BACKGROUND);
 
         windows.add(navigator);
-        windows.add(workPane);
+        windows.add(FileViewerPane);
     }
 
     public void resetWindows() {
@@ -400,7 +407,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     public void closeResources() {
         navigator.resetWorkspace();
-        workPane.resetWorkspace();
+        FileViewerPane.resetWorkspace();
     }
 
     public void setIcon(final boolean busy) {
@@ -435,7 +442,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     public void refreshView() {
-        workPane.refreshClass.doClick();
+        FileViewerPane.refreshClass.doClick();
     }
 
     public void reloadResources() {
@@ -525,7 +532,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     private void decompileSaveOpenedClasses() {
-        if (workPane.getCurrentViewer() == null) {
+        if (FileViewerPane.getCurrentViewer() == null) {
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }

@@ -1,9 +1,10 @@
-package the.bytecode.club.jda.gui;
+package the.bytecode.club.jda.gui.fileviewer;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.gui.PaneUpdaterThread;
 
 import javax.swing.*;
 import java.awt.*;
