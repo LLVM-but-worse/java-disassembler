@@ -27,10 +27,10 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("serial")
 public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
-    private static final String quickSearchText = "Quick file search (no file extension)";
+    private static final String quickSearchText = "File search";
 
     FileChangeNotifier fcn;
-    JCheckBox exact = new JCheckBox("Match case");
+    JCheckBox matchCase = new JCheckBox("Match case");
 
     FileNode treeRoot = new FileNode("Loaded Files:");
     FileTree tree = new FileTree(treeRoot);
@@ -42,58 +42,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
             if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
                 final String qt = quickSearch.getText();
                 quickSearch.setText("");
-
-
-                String[] path = null;
-
-                if (qt.contains(".")) {
-                    path = qt.split("\\.");
-                    String[] path2 = new String[path.length];
-                    for (int i = 0; i < path.length; i++) {
-                        path2[i] = path[i];
-                        if (i + 2 == path.length) {
-                            path2[i + 1] = "." + path[i + 1];
-                        }
-                    }
-                } else {
-                    path = new String[]{qt};
-                }
-
-                FileNode curNode = treeRoot;
-                if (exact.isSelected()) {
-                    // TODO
-                } else {
-                    @SuppressWarnings("unchecked")
-                    Enumeration<FileNode> enums = curNode.depthFirstEnumeration();
-                    while (enums != null && enums.hasMoreElements()) {
-
-                        FileNode node = enums.nextElement();
-                        if (node.isLeaf()) {
-                            if (((String) (node.getUserObject())).contains(path[path.length - 1])) {
-                                TreeNode pathArray[] = node.getPath();
-                                int k = 0;
-                                StringBuilder fullPath = new StringBuilder();
-                                while (pathArray != null && k < pathArray.length) {
-                                    FileNode n = (FileNode) pathArray[k];
-                                    String s = (String) (n.getUserObject());
-                                    fullPath.append(s);
-                                    if (k++ != pathArray.length - 1) {
-                                        fullPath.append(".");
-                                    }
-                                }
-                                String fullPathString = fullPath.toString();
-                                if (!fullPathString.equals("null") && fullPathString.contains(qt)) {
-                                    System.out.println("Found! " + node);
-                                    final TreePath pathn = new TreePath(node.getPath());
-                                    tree.setSelectionPath(pathn.getParentPath());
-                                    tree.setSelectionPath(pathn);
-                                    tree.makeVisible(pathn);
-                                    tree.scrollPathToVisible(pathn);
-                                }
-                            }
-                        }
-                    }
-                }
+                quickSearch(qt);
             } else if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 tree.grabFocus();
             }
@@ -101,6 +50,56 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
             JDA.checkHotKey(ke);
         }
     };
+
+    private void quickSearch(String qt) {
+        if (!matchCase.isSelected())
+            qt = qt.toLowerCase();
+        String[] path = qt.split("\\.");
+        String searchFilename = path[path.length - 1];
+
+        FileNode curNode = treeRoot;
+        @SuppressWarnings("unchecked")
+        Enumeration<FileNode> enums = curNode.depthFirstEnumeration();
+        while (enums != null && enums.hasMoreElements()) {
+            FileNode node = enums.nextElement();
+            if (!node.isLeaf()) {
+                continue;
+            }
+
+            // Check filename
+            String leafFilename = (String) (node.getUserObject());
+            if (!matchCase.isSelected())
+                leafFilename = leafFilename.toLowerCase();
+            if (!leafFilename.contains(searchFilename)) {
+                continue;
+            }
+
+            // Check for path match
+            TreeNode pathArray[] = node.getPath();
+            int k = 0;
+            StringBuilder fullPath = new StringBuilder();
+            while (pathArray != null && k < pathArray.length) {
+                FileNode n = (FileNode) pathArray[k];
+                String s = (String) (n.getUserObject());
+                fullPath.append(s);
+                if (k++ != pathArray.length - 1) {
+                    fullPath.append(".");
+                }
+            }
+            String fullPathString = fullPath.toString();
+            if (!matchCase.isSelected())
+                fullPathString = fullPathString.toLowerCase();
+
+            if (fullPathString.contains(qt)) { // Match found
+                final TreePath pathn = new TreePath(node.getPath());
+                tree.setSelectionPath(pathn.getParentPath());
+                tree.setSelectionPath(pathn);
+                tree.makeVisible(pathn);
+                tree.scrollPathToVisible(pathn);
+                break;
+            }
+        }
+    }
 
     public FileNavigationPane(final FileChangeNotifier fcn) {
         super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
@@ -167,7 +166,8 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         p2.setLayout(new BorderLayout());
         p2.add(quickSearch, BorderLayout.NORTH);
         JPanel p3 = new JPanel(new BorderLayout());
-        p3.add(exact, BorderLayout.WEST);
+        matchCase.setSelected(true);
+        p3.add(matchCase, BorderLayout.WEST);
         JPanel p4 = new JPanel(new BorderLayout());
         p3.add(p4, BorderLayout.EAST);
         p2.add(p3, BorderLayout.SOUTH);
