@@ -41,7 +41,7 @@ public final class FernflowerDecompiler extends Decompiler {
     @Override
     public String decompileClassNode(String containerName, final ClassNode cn) {
         try {
-            Map<String, Object> options = main(generateMainMethod());
+            Map<String, Object> options = generateFernflowerArgs();
 
             final AtomicReference<String> result = new AtomicReference<>();
             result.set(null);
@@ -120,7 +120,7 @@ public final class FernflowerDecompiler extends Decompiler {
             Path tempJar = Files.createTempFile("fernflower_input", ".jar");
             File output = new File(zipName);
             JarUtils.saveAsJar(JDA.getLoadedBytes(), tempJar.toAbsolutePath().toString());
-            ConsoleDecompiler decompiler = new ConsoleDecompiler(outputDir.toFile(), main(generateMainMethod()));
+            ConsoleDecompiler decompiler = new ConsoleDecompiler(outputDir.toFile(), generateFernflowerArgs());
             decompiler.addSpace(tempJar.toFile(), true);
             decompiler.decompileContext();
             Files.move(outputDir.toFile().listFiles()[0].toPath(), output.toPath());
@@ -131,87 +131,72 @@ public final class FernflowerDecompiler extends Decompiler {
         }
     }
 
-    public Map<String, Object> main(String[] args) {
-        HashMap mapOptions = new HashMap();
-        boolean isOption = true;
-
-        for (int destination = 0; destination < args.length - 1; ++destination) {
-            String logger = args[destination];
-            if (isOption && logger.length() > 5 && logger.charAt(0) == 45 && logger.charAt(4) == 61) {
-                String decompiler = logger.substring(5);
-                if ("true".equalsIgnoreCase(decompiler)) {
-                    decompiler = "1";
-                } else if ("false".equalsIgnoreCase(decompiler)) {
-                    decompiler = "0";
-                }
-
-                mapOptions.put(logger.substring(1, 4), decompiler);
-            } else {
-                isOption = false;
-            }
-        }
-
-        return mapOptions;
-    }
-
-    private String[] generateMainMethod() {
-        String[] result = new String[getSettings().size()];
-        int index = 0;
+    private Map<String, Object> generateFernflowerArgs() {
+        Map<String, Object> options = new HashMap<>();
         for (Settings setting : Settings.values()) {
-            result[index++] = String.format("-%s=%s", setting.getParam(),
-                    getSettings().isSelected(setting) ? "1" : "0");
+            options.put(setting.getParam(), getSettings().getValue(setting));
         }
-        return result;
+        return options;
     }
 
     public enum Settings implements DecompilerSettings.SettingsEntry {
-        HIDE_BRIDGE_METHODS("rbr", "Hide Bridge Methods", true),
-        HIDE_SYNTHETIC_CLASS_MEMBERS("rsy", "Hide Synthetic Class Members"),
-        DECOMPILE_INNER_CLASSES("din", "Decompile Inner Classes", true),
-        COLLAPSE_14_CLASS_REFERENCES("dc4", "Collapse 1.4 Class References", true),
-        DECOMPILE_ASSERTIONS("das", "Decompile Assertions", true),
-        HIDE_EMPTY_SUPER_INVOCATION("hes", "Hide Empty Super Invocation", true),
-        HIDE_EMPTY_DEFAULT_CONSTRUCTOR("hec", "Hide Empty Default Constructor", true),
-        DECOMPILE_GENERIC_SIGNATURES("dgs", "Decompile Generic Signatures"),
-        ASSUME_RETURN_NOT_THROWING_EXCEPTIONS("ner", "Assume return not throwing exceptions", true),
-        DECOMPILE_ENUMS("den", "Decompile enumerations", true),
-        REMOVE_GETCLASS("rgn", "Remove getClass()", true),
-        OUTPUT_NUMBERIC_LITERALS("lit", "Output numeric literals 'as-is'"),
-        ENCODE_UNICODE("asc", "Encode non-ASCII as unicode escapes"),
-        INT_1_AS_BOOLEAN_TRUE("bto", "Assume int 1 is boolean true", true),
-        ALLOW_NOT_SET_SYNTHETIC("nns", "Allow not set synthetic attribute", true),
-        NAMELESS_TYPES_AS_OBJECT("uto", "Consider nameless types as java.lang.Object", true),
-        RECOVER_VARIABLE_NAMES("udv", "Recover variable names", true),
-        REMOVE_EMPTY_EXCEPTIONS("rer", "Remove empty exceptions", true),
-        DEINLINE_FINALLY("fdi", "De-inline finally", true),
-        RENAME_AMBIGIOUS_MEMBERS("ren", "Rename ambigious members"),
-        REMOVE_INTELLIJ_NOTNULL("inn", "Remove IntelliJ @NotNull", true),
-        DECOMPILE_LAMBDA_TO_ANONYMOUS("lac", "Decompile lambdas to anonymous classes");
+        HIDE_BRIDGE_METHODS("rbr", "Hide Bridge Methods", "true"),
+        HIDE_SYNTHETIC_CLASS_MEMBERS("rsy", "Hide Synthetic Class Members", "false"),
+        DECOMPILE_INNER_CLASSES("din", "Decompile Inner Classes", "true"),
+        COLLAPSE_14_CLASS_REFERENCES("dc4", "Collapse 1.4 Class References", "true"),
+        DECOMPILE_ASSERTIONS("das", "Decompile Assertions", "true"),
+        HIDE_EMPTY_SUPER_INVOCATION("hes", "Hide Empty Super Invocation", "true"),
+        HIDE_EMPTY_DEFAULT_CONSTRUCTOR("hec", "Hide Empty Default Constructor", "true"),
+        DECOMPILE_GENERIC_SIGNATURES("dgs", "Decompile Generic Signatures", "false"),
+        ASSUME_RETURN_NOT_THROWING_EXCEPTIONS("ner", "Assume return not throwing exceptions", "true"),
+        DECOMPILE_ENUMS("den", "Decompile enumerations", "true"),
+        REMOVE_GETCLASS("rgn", "Remove getClass()", "true"),
+        OUTPUT_NUMBERIC_LITERALS("lit", "Output numeric literals 'as-is'", "false"),
+        ENCODE_UNICODE("asc", "Encode non-ASCII as unicode escapes", "true"),
+        INT_1_AS_BOOLEAN_TRUE("bto", "Assume int 1 is boolean true", "true"),
+        ALLOW_NOT_SET_SYNTHETIC("nns", "Allow not set synthetic attribute", "true"),
+        NAMELESS_TYPES_AS_OBJECT("uto", "Consider nameless types as java.lang.Object", "true"),
+        RECOVER_VARIABLE_NAMES("udv", "Recover variable names", "true"),
+        REMOVE_EMPTY_EXCEPTIONS("rer", "Remove empty exceptions", "true"),
+        DEINLINE_FINALLY("fdi", "De-inline finally", "true"),
+        TIME_LIMIT("mpm", "Maximum processing time", "0", SettingType.INT), // this is a numeric setting!
+        RENAME_AMBIGIOUS_MEMBERS("ren", "Rename ambigious members", "false"),
+        // urc: IIDentifierRenamer
+        REMOVE_INTELLIJ_NOTNULL("inn", "Remove IntelliJ @NotNull", "true"),
+        DECOMPILE_LAMBDA_TO_ANONYMOUS("lac", "Decompile lambdas to anonymous classes", "false"),
+//        NEWLINE_TYPE("nls", "Newline character"); // this is an optional argument!
+        INDENTATION("ind", "Indentation string", "    ", SettingType.STRING);
 
-        private String name;
-        private String param;
-        private boolean on;
+        private final String name;
+        private final String param;
+        private final String defaultValue;
+        private final SettingType type;
 
-        Settings(String param, String name) {
-            this(param, name, false);
+        Settings(String param, String name, String defaultValue) {
+            this(param, name, defaultValue, SettingType.BOOLEAN);
         }
 
-        Settings(String param, String name, boolean on) {
+        Settings(String param, String name, String defaultValue, SettingType type) {
             this.name = name;
             this.param = param;
-            this.on = on;
+            this.defaultValue = defaultValue;
+            this.type = type;
         }
 
         public String getText() {
             return name;
         }
 
-        public boolean isDefaultOn() {
-            return on;
-        }
-
         public String getParam() {
             return param;
+        }
+
+        public String getDefaultValue() {
+            return defaultValue;
+        }
+
+        public SettingType getType() {
+            return type;
         }
     }
 }

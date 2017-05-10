@@ -12,7 +12,6 @@ import the.bytecode.club.jda.gui.dialogs.TabbedPane;
 import the.bytecode.club.jda.gui.fileviewer.FileViewerPane;
 import the.bytecode.club.jda.gui.fileviewer.Viewer;
 import the.bytecode.club.jda.gui.navigation.FileNavigationPane;
-import the.bytecode.club.jda.settings.DecompilerSettings;
 import the.bytecode.club.jda.settings.IPersistentWindow;
 import the.bytecode.club.jda.settings.Settings;
 
@@ -260,12 +259,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         settingsMenu.add(new JSeparator());
 
         for (Decompiler decompiler : Decompilers.getAllDecompilers()) {
-            JMenu decompilerSettingsMenu = new JMenu(decompiler.getName());
-            DecompilerSettings decompilerSettings = decompiler.getSettings();
-            for (DecompilerSettings.SettingsEntry entry : decompilerSettings.getEntries()) {
-                decompilerSettingsMenu.add(decompilerSettings.getMenuItem(entry));
-            }
-            settingsMenu.add(decompilerSettingsMenu);
+            JMenuItem settingsButton = new JMenuItem(decompiler.getName());
+            settingsButton.addActionListener(e -> decompiler.getSettings().displayDialog());
+            settingsMenu.add(settingsButton);
         }
 
         menuBar.add(settingsMenu);
