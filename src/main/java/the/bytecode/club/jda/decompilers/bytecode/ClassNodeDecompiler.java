@@ -75,7 +75,7 @@ public class ClassNodeDecompiler extends Decompiler {
                 sb.append(JDA.nl);
         }
 
-        if (getSettings().isSelected(Settings.DECOMPILE_INNER_CLASSES))
+        if (getSettings().getBoolean(Settings.DECOMPILE_INNER_CLASSES))
             for (InnerClassNode innerClassNode : cn.innerClasses) {
                 String innerClassName = innerClassNode.name;
                 if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
@@ -156,6 +156,7 @@ public class ClassNodeDecompiler extends Decompiler {
     public void decompileToZip(String zipName) {
     }
 
+    // TODO: Refactor!
     public enum Settings implements DecompilerSettings.SettingsEntry {
         DEBUG_HELPERS("debug-helpers", "Debug Helpers", true),
         APPEND_BRACKETS_TO_LABELS("append-brackets-to-labels", "Append Brackets to Labels", true),
@@ -186,6 +187,14 @@ public class ClassNodeDecompiler extends Decompiler {
 
         public String getParam() {
             return param;
+        }
+
+        public String getDefaultValue() {
+            return String.valueOf(on);
+        }
+
+        public SettingType getType() {
+            return SettingType.BOOLEAN;
         }
     }
 }

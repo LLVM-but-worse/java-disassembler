@@ -103,7 +103,7 @@ public final class CFRDecompiler extends Decompiler {
         int index = 1;
         for (Settings setting : Settings.values()) {
             result[index++] = "--" + setting.getParam();
-            result[index++] = String.valueOf(getSettings().isSelected(setting));
+            result[index++] = String.valueOf(getSettings().getBoolean(setting));
         }
         return result;
     }
@@ -191,6 +191,7 @@ public final class CFRDecompiler extends Decompiler {
         }
     }
 
+    // TODO: Rewrite!
     public enum Settings implements DecompilerSettings.SettingsEntry {
         DECODE_ENUM_SWITCH("decodeenumswitch", "Decode Enum Switch", true),
         SUGAR_ENUMS("sugarenums", "SugarEnums", true),
@@ -254,12 +255,16 @@ public final class CFRDecompiler extends Decompiler {
             return name;
         }
 
-        public boolean isDefaultOn() {
-            return on;
-        }
-
         public String getParam() {
             return param;
+        }
+
+        public String getDefaultValue() {
+            return String.valueOf(on);
+        }
+
+        public SettingType getType() {
+            return SettingType.BOOLEAN;
         }
     }
 }
