@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.decompilers.Decompiler;
-import the.bytecode.club.jda.settings.DecompilerSettings;
+import the.bytecode.club.jda.settings.DecompilerSettings.SettingsEntry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,9 +21,6 @@ import java.util.List;
 public class ClassNodeDecompiler extends Decompiler {
 
     public ClassNodeDecompiler() {
-        for (Settings setting : Settings.values()) {
-            settings.registerSetting(setting);
-        }
     }
 
     @Override
@@ -75,7 +72,7 @@ public class ClassNodeDecompiler extends Decompiler {
                 sb.append(JDA.nl);
         }
 
-        if (getSettings().getBoolean(Settings.DECOMPILE_INNER_CLASSES))
+        if (DECOMPILE_INNER_CLASSES.getBool())
             for (InnerClassNode innerClassNode : cn.innerClasses) {
                 String innerClassName = innerClassNode.name;
                 if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
@@ -156,45 +153,19 @@ public class ClassNodeDecompiler extends Decompiler {
     public void decompileToZip(String zipName) {
     }
 
+    private static List<SettingsEntry> settings = new ArrayList<>();
+
+    static SettingsEntry DEBUG_HELPERS = new SettingsEntry("debug-helpers", "Debug Helpers", "true");
+    static SettingsEntry APPEND_BRACKETS_TO_LABELS = new SettingsEntry("append-brackets-to-labels", "Append Brackets to Labels", "true");
+    static SettingsEntry SHOW_METHOD_DESCRIPTORS = new SettingsEntry("show-method-descriptors", "Show Method Descriptors", "true");
+    static SettingsEntry DECOMPILE_INNER_CLASSES = new SettingsEntry("decompile-inner-classes", "Decompile Inner Classes", "true");
+
     // TODO: Refactor!
-    public enum Settings implements DecompilerSettings.SettingsEntry {
-        DEBUG_HELPERS("debug-helpers", "Debug Helpers", true),
-        APPEND_BRACKETS_TO_LABELS("append-brackets-to-labels", "Append Brackets to Labels", true),
-        SHOW_METHOD_DESCRIPTORS("show-method-descriptors", "Show Method Descriptors", true),
-        DECOMPILE_INNER_CLASSES("decompile-inner-classes", "Decompile Inner Classes", true);
-
-        private String name;
-        private String param;
-        private boolean on;
-
-        Settings(String param, String name) {
-            this(param, name, false);
-        }
-
-        Settings(String param, String name, boolean on) {
-            this.name = name;
-            this.param = param;
-            this.on = on;
-        }
-
-        public String getText() {
-            return name;
-        }
-
-        public boolean isDefaultOn() {
-            return on;
-        }
-
-        public String getParam() {
-            return param;
-        }
-
-        public String getDefaultValue() {
-            return String.valueOf(on);
-        }
-
-        public SettingType getType() {
-            return SettingType.BOOLEAN;
-        }
+    static
+    {
+        settings.add(DEBUG_HELPERS);
+        settings.add(APPEND_BRACKETS_TO_LABELS);
+        settings.add(SHOW_METHOD_DESCRIPTORS);
+        settings.add(DECOMPILE_INNER_CLASSES);
     }
 }

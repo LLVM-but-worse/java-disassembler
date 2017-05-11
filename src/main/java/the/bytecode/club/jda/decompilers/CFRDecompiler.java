@@ -22,6 +22,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
 import the.bytecode.club.jda.settings.DecompilerSettings;
+import the.bytecode.club.jda.settings.Setting;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,9 +38,9 @@ import java.util.List;
 public final class CFRDecompiler extends Decompiler {
 
     public CFRDecompiler() {
-        for (Settings setting : Settings.values()) {
-            settings.registerSetting(setting);
-        }
+//        for (Settings setting : Settings.values()) {
+//            settings.registerSetting(setting);
+//        }
     }
 
     @Override
@@ -98,14 +99,15 @@ public final class CFRDecompiler extends Decompiler {
     }
 
     public String[] generateMainMethod() {
-        String[] result = new String[getSettings().size() * 2 + 1];
-        result[0] = "bytecodeviewer";
-        int index = 1;
-        for (Settings setting : Settings.values()) {
-            result[index++] = "--" + setting.getParam();
-            result[index++] = String.valueOf(getSettings().getBoolean(setting));
-        }
-        return result;
+//        String[] result = new String[getSettings().size() * 2 + 1];
+//        result[0] = "bytecodeviewer";
+//        int index = 1;
+//        for (Settings setting : Settings.values()) {
+//            result[index++] = "--" + setting.getParam();
+//            result[index++] = String.valueOf(getSettings().getBoolean(setting));
+//        }
+//        return result;
+        return new String[0];
     }
 
     public static String doClass(DCCommonState dcCommonState, byte[] content1) throws Exception {
@@ -192,51 +194,52 @@ public final class CFRDecompiler extends Decompiler {
     }
 
     // TODO: Rewrite!
-    public enum Settings implements DecompilerSettings.SettingsEntry {
-        DECODE_ENUM_SWITCH("decodeenumswitch", "Decode Enum Switch", true),
-        SUGAR_ENUMS("sugarenums", "SugarEnums", true),
-        DECODE_STRING_SWITCH("decodestringswitch", "Decode String Switch", true),
-        ARRAYITER("arrayiter", "Arrayiter", true),
-        COLLECTIONITER("collectioniter", "Collectioniter", true),
-        INNER_CLASSES("innerclasses", "Inner Classes", true),
-        REMOVE_BOILER_PLATE("removeboilerplate", "Remove Boiler Plate", true),
-        REMOVE_INNER_CLASS_SYNTHETICS("removeinnerclasssynthetics", "Remove Inner Class Synthetics", true),
-        DECODE_LAMBDAS("decodelambdas", "Decode Lambdas", true),
-        HIDE_BRIDGE_METHODS("hidebridgemethods", "Hide Bridge Methods", true),
-        LIFT_CONSTRUCTOR_INIT("liftconstructorinit", "Lift Constructor Init", true),
-        REMOVE_DEAD_METHODS("removedeadmethods", "Remove Dead Methods", true),
-        REMOVE_BAD_GENERICS("removebadgenerics", "Remove Bad Generics", true),
-        SUGAR_ASSERTS("sugarasserts", "Sugar Asserts", true),
-        SUGAR_BOXING("sugarboxing", "Sugar Boxing", true),
-        SHOW_VERSION("showversion", "Show Version", true),
-        DECODE_FINALLY("decodefinally", "Decode Finally", true),
-        TIDY_MONITORS("tidymonitors", "Tidy Monitors", true),
-        LENIENT("lenient", "Lenient"),
-        DUMP_CLASS_PATH("dumpclasspath", "Dump Classpath"),
-        COMMENTS("comments", "Comments", true),
-        FORCE_TOP_SORT("forcetopsort", "Force Top Sort", true),
-        FORCE_TOP_SORT_AGGRESSIVE("forcetopsortaggress", "Force Top Sort Aggressive", true),
-        STRINGBUFFER("stringbuffer", "StringBuffer"),
-        STRINGBUILDER("stringbuilder", "StringBuilder", true),
-        SILENT("silent", "Silent", true),
-        RECOVER("recover", "Recover", true),
-        ECLIPSE("eclipse", "Eclipse", true),
-        OVERRIDE("override", "Override", true),
-        SHOW_INFERRABLE("showinferrable", "Show Inferrable", true),
-        FORCE_AGGRESSIVE_EXCEPTION_AGG("aexagg", "Force Aggressive Exception Aggregation", true),
-        FORCE_COND_PROPAGATE("forcecondpropagate", "Force Conditional Propogation", true),
-        HIDE_UTF("hideutf", "Hide UTF", true),
-        HIDE_LONG_STRINGS("hidelongstrings", "Hide Long Strings"),
-        COMMENT_MONITORS("commentmonitors", "Comment Monitors"),
-        ALLOW_CORRECTING("allowcorrecting", "Allow Correcting", true),
-        LABELLED_BLOCKS("labelledblocks", "Labelled Blocks", true),
-        J14_CLASS_OBJ("j14classobj", "Java 1.4 Class Objects"),
-        HIDE_LANG_IMPORTS("hidelangimports", "Hide Lang Imports", true),
-        RECOVER_TYPE_CLASH("recovertypeclash", "Recover Type Clash", true),
-        RECOVER_TYPE_HINTS("recovertypehints", "Recover Type Hints", true),
-        FORCE_RETURNING_IFS("forcereturningifs", "Force Returning Ifs", true),
-        FOR_LOOP_AGG_CAPTURE("forloopaggcapture", "For Loop Aggressive Capture", true);
-
+    public enum Settings {
+        ;
+//        DECODE_ENUM_SWITCH("decodeenumswitch", "Decode Enum Switch", true),
+//        SUGAR_ENUMS("sugarenums", "SugarEnums", true),
+//        DECODE_STRING_SWITCH("decodestringswitch", "Decode String Switch", true),
+//        ARRAYITER("arrayiter", "Arrayiter", true),
+//        COLLECTIONITER("collectioniter", "Collectioniter", true),
+//        INNER_CLASSES("innerclasses", "Inner Classes", true),
+//        REMOVE_BOILER_PLATE("removeboilerplate", "Remove Boiler Plate", true),
+//        REMOVE_INNER_CLASS_SYNTHETICS("removeinnerclasssynthetics", "Remove Inner Class Synthetics", true),
+//        DECODE_LAMBDAS("decodelambdas", "Decode Lambdas", true),
+//        HIDE_BRIDGE_METHODS("hidebridgemethods", "Hide Bridge Methods", true),
+//        LIFT_CONSTRUCTOR_INIT("liftconstructorinit", "Lift Constructor Init", true),
+//        REMOVE_DEAD_METHODS("removedeadmethods", "Remove Dead Methods", true),
+//        REMOVE_BAD_GENERICS("removebadgenerics", "Remove Bad Generics", true),
+//        SUGAR_ASSERTS("sugarasserts", "Sugar Asserts", true),
+//        SUGAR_BOXING("sugarboxing", "Sugar Boxing", true),
+//        SHOW_VERSION("showversion", "Show Version", true),
+//        DECODE_FINALLY("decodefinally", "Decode Finally", true),
+//        TIDY_MONITORS("tidymonitors", "Tidy Monitors", true),
+//        LENIENT("lenient", "Lenient"),
+//        DUMP_CLASS_PATH("dumpclasspath", "Dump Classpath"),
+//        COMMENTS("comments", "Comments", true),
+//        FORCE_TOP_SORT("forcetopsort", "Force Top Sort", true),
+//        FORCE_TOP_SORT_AGGRESSIVE("forcetopsortaggress", "Force Top Sort Aggressive", true),
+//        STRINGBUFFER("stringbuffer", "StringBuffer"),
+//        STRINGBUILDER("stringbuilder", "StringBuilder", true),
+//        SILENT("silent", "Silent", true),
+//        RECOVER("recover", "Recover", true),
+//        ECLIPSE("eclipse", "Eclipse", true),
+//        OVERRIDE("override", "Override", true),
+//        SHOW_INFERRABLE("showinferrable", "Show Inferrable", true),
+//        FORCE_AGGRESSIVE_EXCEPTION_AGG("aexagg", "Force Aggressive Exception Aggregation", true),
+//        FORCE_COND_PROPAGATE("forcecondpropagate", "Force Conditional Propogation", true),
+//        HIDE_UTF("hideutf", "Hide UTF", true),
+//        HIDE_LONG_STRINGS("hidelongstrings", "Hide Long Strings"),
+//        COMMENT_MONITORS("commentmonitors", "Comment Monitors"),
+//        ALLOW_CORRECTING("allowcorrecting", "Allow Correcting", true),
+//        LABELLED_BLOCKS("labelledblocks", "Labelled Blocks", true),
+//        J14_CLASS_OBJ("j14classobj", "Java 1.4 Class Objects"),
+//        HIDE_LANG_IMPORTS("hidelangimports", "Hide Lang Imports", true),
+//        RECOVER_TYPE_CLASH("recovertypeclash", "Recover Type Clash", true),
+//        RECOVER_TYPE_HINTS("recovertypehints", "Recover Type Hints", true),
+//        FORCE_RETURNING_IFS("forcereturningifs", "Force Returning Ifs", true),
+//        FOR_LOOP_AGG_CAPTURE("forloopaggcapture", "For Loop Aggressive Capture", true);
+//
         private String name;
         private String param;
         private boolean on;
@@ -263,8 +266,8 @@ public final class CFRDecompiler extends Decompiler {
             return String.valueOf(on);
         }
 
-        public SettingType getType() {
-            return SettingType.BOOLEAN;
+        public Setting.SettingType getType() {
+            return Setting.SettingType.BOOLEAN;
         }
     }
 }

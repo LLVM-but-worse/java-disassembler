@@ -30,8 +30,21 @@ public class Settings {
     public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", "false");
 
     public static final Setting FONT_SIZE = new Setting("font", "fontsize", "12");
-    public static final Setting FONT_FAMILY = new Setting("font", "fontfamily", Font.MONOSPACED);
+    public static final Setting FONT_FAMILY = new Setting("font", "fontfamily", Font.MONOSPACED); // TODO: Doesn't save properly.
     public static final Setting FONT_OPTIONS = new Setting("font", "fontoptions", String.valueOf(Font.PLAIN));
+
+    static
+    {
+        ALL_SETTINGS.add(PATH);
+        ALL_SETTINGS.add(SHOW_CONTAINER_NAME);
+        ALL_SETTINGS.add(SNAP_TO_EDGES);
+        ALL_SETTINGS.add(DO_UPDATE_CHECK);
+        ALL_SETTINGS.add(REFRESH_ON_VIEW_CHANGE);
+
+        ALL_SETTINGS.add(FONT_SIZE);
+        ALL_SETTINGS.add(FONT_FAMILY);
+        ALL_SETTINGS.add(FONT_OPTIONS);
+    }
 
     public static void saveGUI() {
         try {
@@ -40,7 +53,6 @@ public class Settings {
                 decompiler.getSettings().saveTo(settings);
 
             for (Setting setting : Settings.ALL_SETTINGS) {
-                String nodeId = setting.node;
                 getNode(settings, setting.node).add(setting.key, setting.get());
             }
 
