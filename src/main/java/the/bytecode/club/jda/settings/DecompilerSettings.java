@@ -29,16 +29,17 @@ public class DecompilerSettings {
     }
 
     public void registerSetting(SettingsEntry entry) {
+        System.out.println("register");
         JComponent item;
         switch(entry.getType()) {
             case BOOLEAN:
                 JCheckBox checkbox = new JCheckBox();
-                checkbox.setSelected(Boolean.parseBoolean(entry.getDefaultValue()));
+                checkbox.setSelected(Boolean.parseBoolean(entry.key));
                 booleanSettings.put(entry, checkbox);
                 item = checkbox;
                 break;
             case STRING:
-                JTextArea textArea = new JTextArea(entry.getDefaultValue());
+                JTextArea textArea = new JTextArea(entry.key);
                 textArea.setMaximumSize(new Dimension(42, textArea.getMaximumSize().height));
                 stringSettings.put(entry, textArea);
                 item = textArea;
@@ -46,7 +47,7 @@ public class DecompilerSettings {
             case INT:
                 JSpinner spinner = new JSpinner();
                 spinner.setPreferredSize(new Dimension(42, 20));
-                spinner.setModel(new SpinnerNumberModel(Integer.parseInt(entry.getDefaultValue()), 0, null, 1));
+                spinner.setModel(new SpinnerNumberModel(Integer.parseInt(entry.key), 0, null, 1));
                 intSettings.put(entry, spinner);
                 item = spinner;
                 break;
@@ -55,65 +56,31 @@ public class DecompilerSettings {
         }
 
         dialog.add(item, "align right");
-        dialog.add(new JLabel(entry.getText()), "wrap");
-    }
-
-    public boolean getBoolean(SettingsEntry entry) {
-        if (entry.getType() != SettingsEntry.SettingType.BOOLEAN)
-            throw new IllegalArgumentException("Setting is not a boolean");
-        return booleanSettings.get(entry).isSelected();
-    }
-
-    public String getString(SettingsEntry entry) {
-        if (entry.getType() != SettingsEntry.SettingType.STRING)
-            throw new IllegalArgumentException("Setting is not a string");
-        return stringSettings.get(entry).getText();
-    }
-
-    public int getInt(SettingsEntry entry) {
-        if (entry.getType() != SettingsEntry.SettingType.INT)
-            throw new IllegalArgumentException("Setting is not a int");
-        return (int) intSettings.get(entry).getValue();
-    }
-
-    public Object getValue(SettingsEntry setting) {
-        switch(setting.getType()) {
-            case BOOLEAN:
-                return getBoolean(setting);
-            case STRING:
-                return getString(setting);
-            case INT:
-                return getInt(setting);
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    public int size() {
-        return booleanSettings.size() + stringSettings.size() + intSettings.size();
+        dialog.add(new JLabel(entry.key), "wrap");
     }
 
     public void loadFrom(JsonObject rootSettings) {
+        System.out.println("load");
         if (rootSettings.get("decompilers") != null) {
             JsonObject decompilerSection = rootSettings.get("decompilers").asObject();
             if (decompilerSection.get(decompiler.getName()) != null) {
                 JsonObject thisDecompiler = decompilerSection.get(decompiler.getName()).asObject();
 
                 for (Map.Entry<SettingsEntry, JCheckBox> entry : booleanSettings.entrySet()) {
-                    if (thisDecompiler.get(entry.getKey().getParam()) != null) {
-                        entry.getValue().setSelected(thisDecompiler.get(entry.getKey().getParam()).asBoolean());
+                    if (thisDecompiler.get(entry.getKey().param) != null) {
+                        entry.getValue().setSelected(thisDecompiler.get(entry.getKey().param).asBoolean());
                     }
                 }
 
                 for (Map.Entry<SettingsEntry, JTextArea> entry : stringSettings.entrySet()) {
-                    if (thisDecompiler.get(entry.getKey().getParam()) != null) {
-                        entry.getValue().setText(thisDecompiler.get(entry.getKey().getParam()).asString());
+                    if (thisDecompiler.get(entry.getKey().param) != null) {
+                        entry.getValue().setText(thisDecompiler.get(entry.getKey().param).asString());
                     }
                 }
 
                 for (Map.Entry<SettingsEntry, JSpinner> entry : intSettings.entrySet()) {
-                    if (thisDecompiler.get(entry.getKey().getParam()) != null) {
-                        entry.getValue().setValue(thisDecompiler.get(entry.getKey().getParam()).asInt());
+                    if (thisDecompiler.get(entry.getKey().param) != null) {
+                        entry.getValue().setValue(thisDecompiler.get(entry.getKey().param).asInt());
                     }
                 }
             }
@@ -130,28 +97,27 @@ public class DecompilerSettings {
         }
         JsonObject thisDecompiler = decompilerSection.get(decompiler.getName()).asObject();
         for (Map.Entry<SettingsEntry, JCheckBox> entry : booleanSettings.entrySet()) {
-            thisDecompiler.add(entry.getKey().getParam(), entry.getValue().isSelected());
+            thisDecompiler.add(entry.getKey().param, entry.getValue().isSelected());
         }
         for (Map.Entry<SettingsEntry, JTextArea> entry : stringSettings.entrySet()) {
-            thisDecompiler.add(entry.getKey().getParam(), entry.getValue().getText());
+            thisDecompiler.add(entry.getKey().param, entry.getValue().getText());
         }
         for (Map.Entry<SettingsEntry, JSpinner> entry : intSettings.entrySet()) {
-            thisDecompiler.add(entry.getKey().getParam(), (Integer)entry.getValue().getValue());
+            thisDecompiler.add(entry.getKey().param, (Integer)entry.getValue().getValue());
         }
     }
 
     // TODO: Refactor to have a default entry class for each type of entry, etc.
-    public interface SettingsEntry {
-        String getText();
+    public static class SettingsEntry extends Setting {
+        public final String param;
 
-        String getParam();
+        public SettingsEntry(String param, String key, String value, SettingType type) {
+            super("todo lmao", key, value, type);
+            this.param = param;
+        }
 
-        String getDefaultValue();
-
-        SettingType getType();
-
-        enum SettingType {
-            BOOLEAN, STRING, INT, OPTIONS
+        public SettingsEntry(String param, String key, String value) {
+            this(param, key, value, SettingType.BOOLEAN);
         }
     }
 }

@@ -255,14 +255,14 @@ public class MethodNodeDecompiler {
     }
 
     boolean createComments() {
-        return parent.getSettings().getBoolean(ClassNodeDecompiler.Settings.DEBUG_HELPERS);
+        return ClassNodeDecompiler.DEBUG_HELPERS.getBool();
     }
 
     boolean createLabelBrackets() {
-        return parent.getSettings().getBoolean(ClassNodeDecompiler.Settings.APPEND_BRACKETS_TO_LABELS);
+        return ClassNodeDecompiler.APPEND_BRACKETS_TO_LABELS.getBool();
     }
 
     boolean createDescriptors() {
-        return parent.getSettings().getBoolean(ClassNodeDecompiler.Settings.SHOW_METHOD_DESCRIPTORS);
+        return ClassNodeDecompiler.SHOW_METHOD_DESCRIPTORS.getBool();
     }
 }

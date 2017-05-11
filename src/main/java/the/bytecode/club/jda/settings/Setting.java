@@ -1,36 +1,36 @@
 package the.bytecode.club.jda.settings;
 
-/**
- * Used to handle loading/saving the GUI (options).
- *
- * @author Konloch
- */
 public class Setting {
-    public final String node;
+    public final String node; //TODO: convert to JSON node or something
     public final String key;
-    private String value;
+    public final SettingType type;
+    private Object value;
 
     public Setting(String key, String value) {
-        this("settings", key, value);
+        this("settings", key, value, SettingType.STRING);
     }
 
-    public Setting(String node, String key, String value) {
+    public Setting(String node, String key, Object value) {
+        this(node, key, value, SettingType.STRING);
+    }
+
+    public Setting(String node, String key, Object value, SettingType type) {
         this.node = node;
         this.key = key;
         this.value = value;
-        Settings.ALL_SETTINGS.add(this);
+        this.type = type;
     }
 
     public String get() {
-        return value;
+        return value.toString();
     }
 
     public boolean getBool() {
-        return Boolean.parseBoolean(value);
+        return Boolean.parseBoolean(get());
     }
 
     public int getInt() {
-        return Integer.parseInt(value);
+        return Integer.parseInt(get());
     }
 
     public void set(Object value) {
@@ -38,6 +38,14 @@ public class Setting {
     }
 
     public boolean isEmpty() {
-        return this.value == null || this.value.isEmpty();
+        return this.value == null || this.value.toString().isEmpty();
+    }
+
+    SettingType getType() {
+        return type;
+    }
+
+    public enum SettingType {
+        BOOLEAN, STRING, INT, OPTIONS
     }
 }
