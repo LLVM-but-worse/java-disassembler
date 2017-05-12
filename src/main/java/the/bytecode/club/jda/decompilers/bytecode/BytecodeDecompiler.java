@@ -18,9 +18,9 @@ import java.util.List;
  * @author Bibl
  */
 
-public class ClassNodeDecompiler extends Decompiler {
+public class BytecodeDecompiler extends Decompiler {
 
-    public ClassNodeDecompiler() {
+    public BytecodeDecompiler() {
         settings.registerSetting(new SettingsEntry("debug-helpers", "Debug Helpers", true));
         settings.registerSetting(new SettingsEntry("append-brackets-to-labels", "Append Brackets to Labels", true));
         settings.registerSetting(new SettingsEntry("show-method-descriptors", "Show Method Descriptors", true));

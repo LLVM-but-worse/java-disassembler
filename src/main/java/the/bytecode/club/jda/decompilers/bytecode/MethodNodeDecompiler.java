@@ -15,12 +15,12 @@ import java.util.List;
  */
 
 public class MethodNodeDecompiler {
-    private final ClassNodeDecompiler parent;
+    private final BytecodeDecompiler parent;
     protected final PrefixedStringBuilder sb;
     protected final MethodNode mn;
     protected final ClassNode cn;
 
-    public MethodNodeDecompiler(ClassNodeDecompiler parent, PrefixedStringBuilder sb, MethodNode mn, ClassNode cn) {
+    public MethodNodeDecompiler(BytecodeDecompiler parent, PrefixedStringBuilder sb, MethodNode mn, ClassNode cn) {
         this.parent = parent;
         this.sb = sb;
         this.mn = mn;

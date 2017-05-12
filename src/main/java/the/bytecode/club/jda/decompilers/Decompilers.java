@@ -1,6 +1,6 @@
 package the.bytecode.club.jda.decompilers;
 
-import the.bytecode.club.jda.decompilers.bytecode.ClassNodeDecompiler;
+import the.bytecode.club.jda.decompilers.bytecode.BytecodeDecompiler;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +13,7 @@ public class Decompilers {
     public final static Decompiler PROCYON = new FernflowerDecompiler(); //TODo
     public final static Decompiler CFR = new CFRDecompiler();
     public final static Decompiler FERNFLOWER = new FernflowerDecompiler();
-    public final static Decompiler BYTECODE = new ClassNodeDecompiler();
+    public final static Decompiler BYTECODE = new BytecodeDecompiler();
 
 
     public static Collection<Decompiler> getAllDecompilers() {
