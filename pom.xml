@@ -114,7 +114,7 @@
         <dependency>
             <groupId>org.benf</groupId>
             <artifactId>cfr</artifactId>
-            <version>0.119</version>
+            <version>0.121</version>
         </dependency>
     </dependencies>
 </project>
