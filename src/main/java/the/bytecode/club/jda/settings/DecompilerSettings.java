@@ -11,8 +11,8 @@ import java.util.*;
 public class DecompilerSettings {
     private final Decompiler decompiler;
 
-    private final JScrollPane dialog;
-    private final JPanel dialogPane;
+    private final JScrollPane dialogPane;
+    private final JPanel dialog;
 
     /**
      * Stores all of the individual settings. Should not be modified after initialization.
@@ -25,20 +25,20 @@ public class DecompilerSettings {
 
     public DecompilerSettings(Decompiler decompiler) {
         this.decompiler = decompiler;
-        dialogPane = new JPanel();
-        dialogPane.setLayout(new MigLayout("gap rel 0", "grow"));
-        dialog = new JScrollPane(dialogPane);
-        dialog.setBorder(BorderFactory.createEmptyBorder());
-        dialog.setPreferredSize(new Dimension(400, 375));
+        dialog = new JPanel();
+        dialog.setLayout(new MigLayout("gap rel 0", "grow"));
+        dialogPane = new JScrollPane(dialog);
+        dialogPane.setBorder(BorderFactory.createEmptyBorder());
+        dialogPane.setPreferredSize(new Dimension(400, 375));
     }
 
     public void displayDialog() {
-        Dimension oldSize = dialog.getPreferredSize();
-        if (oldSize.height > dialogPane.getPreferredSize().height)
-            dialog.setPreferredSize(new Dimension(oldSize.width, dialogPane.getPreferredSize().height));
-        if (oldSize.width > dialogPane.getPreferredSize().width)
-            dialog.setPreferredSize(new Dimension(dialogPane.getPreferredSize().width + 50, oldSize.height));
-        if (JOptionPane.showConfirmDialog(null, dialog, decompiler.getName() + " Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
+        Dimension oldSize = dialogPane.getPreferredSize();
+        if (oldSize.height > dialog.getPreferredSize().height)
+            dialogPane.setPreferredSize(new Dimension(oldSize.width, dialog.getPreferredSize().height));
+        if (oldSize.width > dialog.getPreferredSize().width)
+            dialogPane.setPreferredSize(new Dimension(dialog.getPreferredSize().width + 50, dialogPane.getPreferredSize().height));
+        if (JOptionPane.showConfirmDialog(null, dialogPane, decompiler.getName() + " Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
             for (Map.Entry<SettingsEntry, JCheckBox> entry : booleanSettings.entrySet()) {
                 entry.getKey().set(entry.getValue().isSelected());
             }
@@ -51,7 +51,7 @@ public class DecompilerSettings {
                 entry.getKey().set(entry.getValue().getValue());
             }
         }
-        dialog.setPreferredSize(oldSize);
+        dialogPane.setPreferredSize(oldSize);
     }
 
     public SettingsEntry getEntry(String key) {
@@ -93,8 +93,8 @@ public class DecompilerSettings {
                 throw new IllegalArgumentException();
         }
 
-        dialogPane.add(item, "align right");
-        dialogPane.add(new JLabel(entry.name), "wrap");
+        dialog.add(item, "align right");
+        dialog.add(new JLabel(entry.name), "wrap");
     }
 
     public void loadFrom(JsonObject rootSettings) {
