@@ -6,10 +6,7 @@ import the.bytecode.club.jda.decompilers.Decompiler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DecompilerSettings {
     private final Decompiler decompiler;
@@ -20,7 +17,7 @@ public class DecompilerSettings {
     /**
      * Stores all of the individual settings. Should not be modified after initialization.
      */
-    private final Map<String, SettingsEntry> entries = new HashMap<>();
+    private final Map<String, SettingsEntry> entries = new LinkedHashMap<>();
 
     private Map<SettingsEntry, JCheckBox> booleanSettings = new HashMap<>();
     private Map<SettingsEntry, JTextArea> stringSettings = new HashMap<>();
