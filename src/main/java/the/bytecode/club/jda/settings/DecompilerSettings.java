@@ -31,7 +31,17 @@ public class DecompilerSettings {
 
     public void displayDialog() {
         if (JOptionPane.showConfirmDialog(null, dialog, decompiler.getName() + " Settings", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            // TODO: ACTUALLY SET THE SETTING
+            for (Map.Entry<SettingsEntry, JCheckBox> entry : booleanSettings.entrySet()) {
+                entry.getKey().set(entry.getValue().isSelected());
+            }
+
+            for (Map.Entry<SettingsEntry, JTextArea> entry : stringSettings.entrySet()) {
+                entry.getKey().set(entry.getValue().getText());
+            }
+
+            for (Map.Entry<SettingsEntry, JSpinner> entry : intSettings.entrySet()) {
+                entry.getKey().set(entry.getValue().getValue());
+            }
         }
     }
 
