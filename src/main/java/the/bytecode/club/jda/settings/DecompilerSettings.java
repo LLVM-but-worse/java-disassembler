@@ -140,7 +140,7 @@ public class DecompilerSettings {
         public final String param;
 
         public SettingsEntry(String param, String key, Object value, SettingType type) {
-            super("todo lmao", key, value, type);
+            super(null, key, value, type);
             this.param = param;
         }
 
