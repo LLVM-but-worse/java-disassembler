@@ -21,6 +21,10 @@ import java.util.List;
 public class ClassNodeDecompiler extends Decompiler {
 
     public ClassNodeDecompiler() {
+        settings.registerSetting(new SettingsEntry("debug-helpers", "Debug Helpers", true));
+        settings.registerSetting(new SettingsEntry("append-brackets-to-labels", "Append Brackets to Labels", true));
+        settings.registerSetting(new SettingsEntry("show-method-descriptors", "Show Method Descriptors", true));
+        settings.registerSetting(new SettingsEntry("decompile-inner-classes", "Decompile Inner Classes", true));
     }
 
     @Override
@@ -72,7 +76,7 @@ public class ClassNodeDecompiler extends Decompiler {
                 sb.append(JDA.nl);
         }
 
-        if (DECOMPILE_INNER_CLASSES.getBool())
+        if (settings.getEntry("Decompile Inner Classes").getBool())
             for (InnerClassNode innerClassNode : cn.innerClasses) {
                 String innerClassName = innerClassNode.name;
                 if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
@@ -151,21 +155,6 @@ public class ClassNodeDecompiler extends Decompiler {
 
     @Override
     public void decompileToZip(String zipName) {
-    }
-
-    private static List<SettingsEntry> settings = new ArrayList<>();
-
-    static SettingsEntry DEBUG_HELPERS = new SettingsEntry("debug-helpers", "Debug Helpers", "true");
-    static SettingsEntry APPEND_BRACKETS_TO_LABELS = new SettingsEntry("append-brackets-to-labels", "Append Brackets to Labels", "true");
-    static SettingsEntry SHOW_METHOD_DESCRIPTORS = new SettingsEntry("show-method-descriptors", "Show Method Descriptors", "true");
-    static SettingsEntry DECOMPILE_INNER_CLASSES = new SettingsEntry("decompile-inner-classes", "Decompile Inner Classes", "true");
-
-    // TODO: Refactor!
-    static
-    {
-        settings.add(DEBUG_HELPERS);
-        settings.add(APPEND_BRACKETS_TO_LABELS);
-        settings.add(SHOW_METHOD_DESCRIPTORS);
-        settings.add(DECOMPILE_INNER_CLASSES);
+        throw new UnsupportedOperationException();
     }
 }
