@@ -1,0 +1,6 @@
+[submodule "libs/byte-engineer"]
+	path = libs/byte-engineer
+	url = https://bitbucket.org/0xJAVA/byte-engineer.git
+[submodule "libs/fernflower"]
+	path = libs/fernflower
+	url = https://github.com/fesh0r/fernflower
