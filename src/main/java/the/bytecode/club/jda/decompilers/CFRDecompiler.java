@@ -145,7 +145,7 @@ public final class CFRDecompiler extends Decompiler {
         result[0] = "bytecodeviewer";
         int index = 1;
         for (SettingsEntry setting : entries) {
-            result[index++] = "--" + setting.param;
+            result[index++] = "--" + setting.key;
             result[index++] = String.valueOf(setting.getBool());
         }
         return result;

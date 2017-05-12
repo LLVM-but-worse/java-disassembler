@@ -158,7 +158,7 @@ public final class FernflowerDecompiler extends Decompiler {
     private Map<String, Object> generateFernflowerArgs() {
         Map<String, Object> options = new HashMap<>();
         for (SettingsEntry setting : settings.getEntries()) {
-            options.put(setting.param, setting.get());
+            options.put(setting.key, setting.get());
         }
         return options;
     }
