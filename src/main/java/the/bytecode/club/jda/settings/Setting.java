@@ -4,27 +4,27 @@ import static the.bytecode.club.jda.settings.Setting.SettingType.*;
 
 public class Setting {
     public final String node; //TODO: convert to JSON node or something
-    public final String key;
+    public final String name;
     public final SettingType type;
     private Object value;
 
-    public Setting(String node, String key, Object value, SettingType type) {
+    public Setting(String node, String name, Object value, SettingType type) {
         this.node = node;
-        this.key = key;
+        this.name = name;
         this.value = value;
         this.type = type;
     }
 
-    public Setting(String node, String key, Object value) {
-        this(node, key, value, STRING);
+    public Setting(String node, String name, Object value) {
+        this(node, name, value, STRING);
     }
 
-    public Setting(String key, Object value, SettingType type) {
-        this("settings", key, value, type);
+    public Setting(String name, Object value, SettingType type) {
+        this("settings", name, value, type);
     }
 
-    public Setting(String key, String value) {
-        this(key, (Object)value, STRING);
+    public Setting(String name, String value) {
+        this(name, (Object)value, STRING);
     }
 
     public String get() {

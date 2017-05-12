@@ -66,7 +66,7 @@ public class DecompilerSettings {
     }
 
     public void registerSetting(SettingsEntry entry) {
-        entries.put(entry.param, entry);
+        entries.put(entry.key, entry);
 
         JComponent item;
         switch(entry.getType()) {
@@ -94,7 +94,7 @@ public class DecompilerSettings {
         }
 
         dialogPane.add(item, "align right");
-        dialogPane.add(new JLabel(entry.key), "wrap");
+        dialogPane.add(new JLabel(entry.name), "wrap");
     }
 
     public void loadFrom(JsonObject rootSettings) {
@@ -104,20 +104,20 @@ public class DecompilerSettings {
                 JsonObject thisDecompiler = decompilerSection.get(decompiler.getName()).asObject();
 
                 for (Map.Entry<SettingsEntry, JCheckBox> entry : booleanSettings.entrySet()) {
-                    if (thisDecompiler.get(entry.getKey().param) != null) {
-                        entry.getValue().setSelected(thisDecompiler.get(entry.getKey().param).asBoolean());
+                    if (thisDecompiler.get(entry.getKey().key) != null) {
+                        entry.getValue().setSelected(thisDecompiler.get(entry.getKey().key).asBoolean());
                     }
                 }
 
                 for (Map.Entry<SettingsEntry, JTextArea> entry : stringSettings.entrySet()) {
-                    if (thisDecompiler.get(entry.getKey().param) != null) {
-                        entry.getValue().setText(thisDecompiler.get(entry.getKey().param).asString());
+                    if (thisDecompiler.get(entry.getKey().key) != null) {
+                        entry.getValue().setText(thisDecompiler.get(entry.getKey().key).asString());
                     }
                 }
 
                 for (Map.Entry<SettingsEntry, JSpinner> entry : intSettings.entrySet()) {
-                    if (thisDecompiler.get(entry.getKey().param) != null) {
-                        entry.getValue().setValue(thisDecompiler.get(entry.getKey().param).asInt());
+                    if (thisDecompiler.get(entry.getKey().key) != null) {
+                        entry.getValue().setValue(thisDecompiler.get(entry.getKey().key).asInt());
                     }
                 }
             }
@@ -134,27 +134,27 @@ public class DecompilerSettings {
         }
         JsonObject thisDecompiler = decompilerSection.get(decompiler.getName()).asObject();
         for (Map.Entry<SettingsEntry, JCheckBox> entry : booleanSettings.entrySet()) {
-            thisDecompiler.add(entry.getKey().param, entry.getValue().isSelected());
+            thisDecompiler.add(entry.getKey().key, entry.getValue().isSelected());
         }
         for (Map.Entry<SettingsEntry, JTextArea> entry : stringSettings.entrySet()) {
-            thisDecompiler.add(entry.getKey().param, entry.getValue().getText());
+            thisDecompiler.add(entry.getKey().key, entry.getValue().getText());
         }
         for (Map.Entry<SettingsEntry, JSpinner> entry : intSettings.entrySet()) {
-            thisDecompiler.add(entry.getKey().param, (Integer)entry.getValue().getValue());
+            thisDecompiler.add(entry.getKey().key, (Integer)entry.getValue().getValue());
         }
     }
 
     // TODO: Refactor to have a default entry class for each type of entry, etc.
     public static class SettingsEntry extends Setting {
-        public final String param;
+        public final String key;
 
-        public SettingsEntry(String param, String key, Object value, SettingType type) {
-            super(null, key, value, type);
-            this.param = param;
+        public SettingsEntry(String key, String name, Object value, SettingType type) {
+            super(null, name, value, type);
+            this.key = key;
         }
 
-        public SettingsEntry(String param, String key, Object value) {
-            this(param, key, value, SettingType.BOOLEAN);
+        public SettingsEntry(String key, String name, Object value) {
+            this(key, name, value, SettingType.BOOLEAN);
         }
     }
 }

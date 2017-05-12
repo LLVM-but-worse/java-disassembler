@@ -55,7 +55,7 @@ public class Settings {
                 decompiler.getSettings().saveTo(settings);
 
             for (Setting setting : Settings.ALL_SETTINGS) {
-                getNode(settings, setting.node).add(setting.key, setting.get());
+                getNode(settings, setting.node).add(setting.name, setting.get());
             }
 
             if (settings.get("windows") == null)
@@ -106,7 +106,7 @@ public class Settings {
                 String nodeId = setting.node;
                 JsonValue nodeValue = settings.get(nodeId);
                 if (nodeValue != null) {
-                    if ((nodeValue = nodeValue.asObject().get(setting.key)) != null)
+                    if ((nodeValue = nodeValue.asObject().get(setting.name)) != null)
                         setting.set(nodeValue.asString());
                 }
             }
