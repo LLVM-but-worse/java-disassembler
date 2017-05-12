@@ -46,22 +46,21 @@ public final class ProcyonDecompiler extends Decompiler {
     }
 
     public DecompilerSettings getDecompilerSettings() {
-        System.out.println(settings.getEntry("Do not escape non-ASCII characters").getBool());
         DecompilerSettings procyonSettings = new DecompilerSettings();
-        procyonSettings.setFlattenSwitchBlocks(settings.getEntry("Flatten switch blocks").getBool());
-        procyonSettings.setForceExplicitImports(!settings.getEntry("Use wildcard imports").getBool());
-        procyonSettings.setForceExplicitTypeArguments(settings.getEntry("Explicit type arguments").getBool());
-        procyonSettings.setRetainRedundantCasts(settings.getEntry("Retain redundant casts").getBool());
-        procyonSettings.setShowSyntheticMembers(settings.getEntry("Show synthetic members").getBool());
-        procyonSettings.setExcludeNestedTypes(settings.getEntry("Exclude nested types").getBool());
+        procyonSettings.setFlattenSwitchBlocks(settings.getEntry("fsb").getBool());
+        procyonSettings.setForceExplicitImports(!settings.getEntry("ci").getBool());
+        procyonSettings.setForceExplicitTypeArguments(settings.getEntry("ei").getBool());
+        procyonSettings.setRetainRedundantCasts(settings.getEntry("ec").getBool());
+        procyonSettings.setShowSyntheticMembers(settings.getEntry("ss").getBool());
+        procyonSettings.setExcludeNestedTypes(settings.getEntry("ent").getBool());
 //        procyonSettings.setOutputDirectory(options.getOutputDirectory());
-        procyonSettings.setIncludeLineNumbersInBytecode(settings.getEntry("Show LVT comments").getBool());
-        procyonSettings.setRetainPointlessSwitches(settings.getEntry("Retain pointless switches").getBool());
-        procyonSettings.setUnicodeOutputEnabled(settings.getEntry("Do not escape non-ASCII characters").getBool());
-        procyonSettings.setMergeVariables(settings.getEntry("Merge variables aggressively").getBool());
-        procyonSettings.setShowDebugLineNumbers(settings.getEntry("Show LVT comments").getBool());
-        procyonSettings.setSimplifyMemberReferences(settings.getEntry("Simplify member references").getBool());
-        procyonSettings.setDisableForEachTransforms(settings.getEntry("Disable 'for each'").getBool());
+        procyonSettings.setIncludeLineNumbersInBytecode(settings.getEntry("dl").getBool());
+        procyonSettings.setRetainPointlessSwitches(settings.getEntry("ps").getBool());
+        procyonSettings.setUnicodeOutputEnabled(settings.getEntry("unicode").getBool());
+        procyonSettings.setMergeVariables(settings.getEntry("mv").getBool());
+        procyonSettings.setShowDebugLineNumbers(settings.getEntry("dl").getBool());
+        procyonSettings.setSimplifyMemberReferences(settings.getEntry("sm").getBool());
+        procyonSettings.setDisableForEachTransforms(settings.getEntry("disable-foreach").getBool());
         procyonSettings.setTypeLoader(new InputTypeLoader());
 //        procyonSettings.setLanguage(Languages.bytecode());
 //        procyonSettings.setLanguage(settings.getEntry("Unoptimized AST").getBool() ? Languages.bytecodeAstUnoptimized() : Languages.bytecodeAst());
