@@ -48,7 +48,7 @@ public final class FernflowerDecompiler extends Decompiler {
         settings.registerSetting(new SettingsEntry("udv", "Recover variable names", true));
         settings.registerSetting(new SettingsEntry("rer", "Remove empty exceptions", true));
         settings.registerSetting(new SettingsEntry("fdi", "De-inline finally", true));
-        settings.registerSetting(new SettingsEntry("mpm", "Maximum processing time", "0", Setting.SettingType.INT)); // this is a numeric setting!
+        settings.registerSetting(new SettingsEntry("mpm", "Maximum processing time", 0, Setting.SettingType.INT)); // this is a numeric setting!
         settings.registerSetting(new SettingsEntry("ren", "Rename ambigious members", false));
         // urc: IIDentifierRenamer
         settings.registerSetting(new SettingsEntry("inn", "Remove IntelliJ @NotNull", true));

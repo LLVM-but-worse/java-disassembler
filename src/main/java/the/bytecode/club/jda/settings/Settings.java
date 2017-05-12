@@ -14,6 +14,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static the.bytecode.club.jda.settings.Setting.SettingType.*;
+
 /**
  * Used to handle loading/saving the GUI (options).
  *
@@ -24,14 +26,14 @@ public class Settings {
 
     // todo: I should really refactor this
     public static final Setting PATH = new Setting("path", "");
-    public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", "false");
-    public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", "false");
-    public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", "true");
-    public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", "false");
+    public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", false, BOOLEAN);
+    public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", false, BOOLEAN);
+    public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", true, BOOLEAN);
+    public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", false, BOOLEAN);
 
-    public static final Setting FONT_SIZE = new Setting("font", "fontsize", "12");
-    public static final Setting FONT_FAMILY = new Setting("font", "fontfamily", Font.MONOSPACED); // TODO: Doesn't save properly.
-    public static final Setting FONT_OPTIONS = new Setting("font", "fontoptions", String.valueOf(Font.PLAIN));
+    public static final Setting FONT_SIZE = new Setting("font", "fontsize", 12, INT);
+    public static final Setting FONT_FAMILY = new Setting("font", "fontfamily", Font.MONOSPACED);
+    public static final Setting FONT_OPTIONS = new Setting("font", "fontoptions", Font.PLAIN, INT);
 
     static
     {
