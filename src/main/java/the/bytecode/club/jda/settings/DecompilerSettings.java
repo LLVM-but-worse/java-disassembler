@@ -13,7 +13,9 @@ import java.util.Set;
 
 public class DecompilerSettings {
     private final Decompiler decompiler;
-    private final JPanel dialog;
+
+    private final JScrollPane dialog;
+    private final JPanel dialogPane;
 
     /**
      * Stores all of the individual settings. Should not be modified after initialization.
@@ -26,11 +28,20 @@ public class DecompilerSettings {
 
     public DecompilerSettings(Decompiler decompiler) {
         this.decompiler = decompiler;
-        this.dialog = new JPanel(new MigLayout("gap rel 0", "grow"));
+        dialogPane = new JPanel();
+        dialogPane.setLayout(new MigLayout("gap rel 0", "grow"));
+        dialog = new JScrollPane(dialogPane);
+        dialog.setBorder(BorderFactory.createEmptyBorder());
+        dialog.setPreferredSize(new Dimension(400, 375));
     }
 
     public void displayDialog() {
-        if (JOptionPane.showConfirmDialog(null, dialog, decompiler.getName() + " Settings", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+        Dimension oldSize = dialog.getPreferredSize();
+        if (oldSize.height > dialogPane.getPreferredSize().height)
+            dialog.setPreferredSize(new Dimension(oldSize.width, dialogPane.getPreferredSize().height));
+        if (oldSize.width > dialogPane.getPreferredSize().width)
+            dialog.setPreferredSize(new Dimension(dialogPane.getPreferredSize().width + 50, oldSize.height));
+        if (JOptionPane.showConfirmDialog(null, dialog, decompiler.getName() + " Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
             for (Map.Entry<SettingsEntry, JCheckBox> entry : booleanSettings.entrySet()) {
                 entry.getKey().set(entry.getValue().isSelected());
             }
@@ -43,6 +54,7 @@ public class DecompilerSettings {
                 entry.getKey().set(entry.getValue().getValue());
             }
         }
+        dialog.setPreferredSize(oldSize);
     }
 
     public SettingsEntry getEntry(String key) {
@@ -84,8 +96,8 @@ public class DecompilerSettings {
                 throw new IllegalArgumentException();
         }
 
-        dialog.add(item, "align right");
-        dialog.add(new JLabel(entry.key), "wrap");
+        dialogPane.add(item, "align right");
+        dialogPane.add(new JLabel(entry.key), "wrap");
     }
 
     public void loadFrom(JsonObject rootSettings) {
