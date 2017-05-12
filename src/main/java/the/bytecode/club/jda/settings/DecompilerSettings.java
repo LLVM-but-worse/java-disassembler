@@ -7,11 +7,18 @@ import the.bytecode.club.jda.decompilers.Decompiler;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class DecompilerSettings {
     private final Decompiler decompiler;
     private final JPanel dialog;
+
+    /**
+     * Stores all of the individual settings. Should not be modified after initialization.
+     */
+    private final Map<String, SettingsEntry> entries = new HashMap<>();
 
     private Map<SettingsEntry, JCheckBox> booleanSettings = new HashMap<>();
     private Map<SettingsEntry, JTextArea> stringSettings = new HashMap<>();
@@ -24,22 +31,34 @@ public class DecompilerSettings {
 
     public void displayDialog() {
         if (JOptionPane.showConfirmDialog(null, dialog, decompiler.getName() + " Settings", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            // todo: cancel handling
+            // TODO: ACTUALLY SET THE SETTING
         }
     }
 
+    public SettingsEntry getEntry(String key) {
+        return entries.get(key);
+    }
+
+    /**
+     * @return a copy of the settings entries.
+     */
+    public Set<SettingsEntry> getEntries() {
+        return new HashSet<>(entries.values());
+    }
+
     public void registerSetting(SettingsEntry entry) {
-        System.out.println("register");
+        entries.put(entry.key, entry);
+
         JComponent item;
         switch(entry.getType()) {
             case BOOLEAN:
                 JCheckBox checkbox = new JCheckBox();
-                checkbox.setSelected(Boolean.parseBoolean(entry.key));
+                checkbox.setSelected(entry.getBool());
                 booleanSettings.put(entry, checkbox);
                 item = checkbox;
                 break;
             case STRING:
-                JTextArea textArea = new JTextArea(entry.key);
+                JTextArea textArea = new JTextArea(entry.get());
                 textArea.setMaximumSize(new Dimension(42, textArea.getMaximumSize().height));
                 stringSettings.put(entry, textArea);
                 item = textArea;
@@ -47,7 +66,7 @@ public class DecompilerSettings {
             case INT:
                 JSpinner spinner = new JSpinner();
                 spinner.setPreferredSize(new Dimension(42, 20));
-                spinner.setModel(new SpinnerNumberModel(Integer.parseInt(entry.key), 0, null, 1));
+                spinner.setModel(new SpinnerNumberModel(entry.getInt(), 0, null, 1));
                 intSettings.put(entry, spinner);
                 item = spinner;
                 break;
@@ -60,7 +79,6 @@ public class DecompilerSettings {
     }
 
     public void loadFrom(JsonObject rootSettings) {
-        System.out.println("load");
         if (rootSettings.get("decompilers") != null) {
             JsonObject decompilerSection = rootSettings.get("decompilers").asObject();
             if (decompilerSection.get(decompiler.getName()) != null) {
@@ -111,12 +129,12 @@ public class DecompilerSettings {
     public static class SettingsEntry extends Setting {
         public final String param;
 
-        public SettingsEntry(String param, String key, String value, SettingType type) {
+        public SettingsEntry(String param, String key, Object value, SettingType type) {
             super("todo lmao", key, value, type);
             this.param = param;
         }
 
-        public SettingsEntry(String param, String key, String value) {
+        public SettingsEntry(String param, String key, Object value) {
             this(param, key, value, SettingType.BOOLEAN);
         }
     }
