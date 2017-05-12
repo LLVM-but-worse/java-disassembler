@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 /**
  * CFR Java Wrapper
@@ -139,15 +140,15 @@ public final class CFRDecompiler extends Decompiler {
     }
 
     public String[] generateMainMethod() {
-//        String[] result = new String[getSettings().size() * 2 + 1];
-//        result[0] = "bytecodeviewer";
-//        int index = 1;
-//        for (Settings setting : Settings.values()) {
-//            result[index++] = "--" + setting.getParam();
-//            result[index++] = String.valueOf(getSettings().getBoolean(setting));
-//        }
-//        return result;
-        return new String[0];
+        Set<SettingsEntry> entries = settings.getEntries();
+        String[] result = new String[entries.size() * 2 + 1];
+        result[0] = "bytecodeviewer";
+        int index = 1;
+        for (SettingsEntry setting : entries) {
+            result[index++] = "--" + setting.param;
+            result[index++] = String.valueOf(setting.getBool());
+        }
+        return result;
     }
 
     public static String doClass(DCCommonState dcCommonState, byte[] content1) throws Exception {
