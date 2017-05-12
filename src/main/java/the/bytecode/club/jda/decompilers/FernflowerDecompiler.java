@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InnerClassNode;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
-import the.bytecode.club.jda.settings.DecompilerSettings.SettingsEntry;
+import the.bytecode.club.jda.settings.JDADecompilerSettings.SettingsEntry;
 import the.bytecode.club.jda.settings.Setting;
 
 import java.io.File;
@@ -27,7 +27,7 @@ import java.util.jar.Manifest;
  * @author WaterWolf
  */
 
-public final class FernflowerDecompiler extends Decompiler {
+public final class FernflowerDecompiler extends JDADecompiler {
     public FernflowerDecompiler() {
         settings.registerSetting(new SettingsEntry("rbr", "Hide Bridge Methods", true));
         settings.registerSetting(new SettingsEntry("rsy", "Hide Synthetic Class Members", false));

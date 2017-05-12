@@ -21,8 +21,8 @@ import org.objectweb.asm.tree.ClassNode;
 import org.zeroturnaround.zip.ZipUtil;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.JarUtils;
-import the.bytecode.club.jda.settings.DecompilerSettings;
-import the.bytecode.club.jda.settings.DecompilerSettings.SettingsEntry;
+import the.bytecode.club.jda.settings.JDADecompilerSettings;
+import the.bytecode.club.jda.settings.JDADecompilerSettings.SettingsEntry;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.Set;
  *
  * @author Konloch
  */
-public final class CFRDecompiler extends Decompiler {
+public final class CFRDecompiler extends JDADecompiler {
 
     public CFRDecompiler() {
         settings.registerSetting(new SettingsEntry("decodeenumswitch", "Decode Enum Switch", true));
@@ -85,7 +85,7 @@ public final class CFRDecompiler extends Decompiler {
     }
 
     @Override
-    public DecompilerSettings getSettings() {
+    public JDADecompilerSettings getSettings() {
         return settings;
     }
 

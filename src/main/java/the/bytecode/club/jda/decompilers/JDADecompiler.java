@@ -3,7 +3,7 @@ package the.bytecode.club.jda.decompilers;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
-import the.bytecode.club.jda.settings.DecompilerSettings;
+import the.bytecode.club.jda.settings.JDADecompilerSettings;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -14,12 +14,8 @@ import java.io.StringWriter;
  * @author Konloch
  */
 
-public abstract class Decompiler {
-    public Decompiler() {
-        Decompilers.BY_NAME.put(getName(), this);
-    }
-
-    protected DecompilerSettings settings = new DecompilerSettings(this);
+public abstract class JDADecompiler {
+    protected JDADecompilerSettings settings = new JDADecompilerSettings(this);
 
     public abstract String decompileClassNode(String containerName, ClassNode cn);
 
@@ -27,7 +23,7 @@ public abstract class Decompiler {
 
     public abstract String getName();
 
-    public DecompilerSettings getSettings() {
+    public JDADecompilerSettings getSettings() {
         return settings;
     }
 

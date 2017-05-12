@@ -3,8 +3,8 @@ package the.bytecode.club.jda.settings;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.decompilers.Decompilers;
+import the.bytecode.club.jda.decompilers.JDADecompiler;
 import the.bytecode.club.jda.gui.JDAWindow;
 import the.bytecode.club.jda.gui.MainViewerGUI;
 
@@ -14,7 +14,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static the.bytecode.club.jda.settings.Setting.SettingType.*;
+import static the.bytecode.club.jda.settings.Setting.SettingType.BOOLEAN;
+import static the.bytecode.club.jda.settings.Setting.SettingType.INT;
 
 /**
  * Used to handle loading/saving the GUI (options).
@@ -51,7 +52,7 @@ public class Settings {
     public static void saveGUI() {
         try {
             JsonObject settings = new JsonObject();
-            for (Decompiler decompiler : Decompilers.getAllDecompilers())
+            for (JDADecompiler decompiler : Decompilers.getAllDecompilers())
                 decompiler.getSettings().saveTo(settings);
 
             for (Setting setting : Settings.ALL_SETTINGS) {
@@ -100,7 +101,7 @@ public class Settings {
     public static void loadGUI() {
         try {
             JsonObject settings = JsonObject.readFrom(new FileReader(JDA.settingsFile));
-            for (Decompiler decompiler : Decompilers.getAllDecompilers())
+            for (JDADecompiler decompiler : Decompilers.getAllDecompilers())
                 decompiler.getSettings().loadFrom(settings);
             for (Setting setting : Settings.ALL_SETTINGS) {
                 String nodeId = setting.node;

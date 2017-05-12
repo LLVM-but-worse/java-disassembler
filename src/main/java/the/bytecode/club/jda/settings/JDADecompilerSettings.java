@@ -2,14 +2,14 @@ package the.bytecode.club.jda.settings;
 
 import com.eclipsesource.json.JsonObject;
 import net.miginfocom.swing.MigLayout;
-import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.decompilers.JDADecompiler;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-public class DecompilerSettings {
-    private final Decompiler decompiler;
+public class JDADecompilerSettings {
+    private final JDADecompiler decompiler;
 
     private final JScrollPane dialogPane;
     private final JPanel dialog;
@@ -23,7 +23,7 @@ public class DecompilerSettings {
     private Map<SettingsEntry, JTextArea> stringSettings = new HashMap<>();
     private Map<SettingsEntry, JSpinner> intSettings = new HashMap<>();
 
-    public DecompilerSettings(Decompiler decompiler) {
+    public JDADecompilerSettings(JDADecompiler decompiler) {
         this.decompiler = decompiler;
         dialog = new JPanel();
         dialog.setLayout(new MigLayout("gap rel 0", "grow"));

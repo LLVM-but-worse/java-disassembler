@@ -3,8 +3,8 @@ package the.bytecode.club.jda.gui;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.*;
 import the.bytecode.club.jda.api.ExceptionUI;
-import the.bytecode.club.jda.decompilers.Decompiler;
 import the.bytecode.club.jda.decompilers.Decompilers;
+import the.bytecode.club.jda.decompilers.JDADecompiler;
 import the.bytecode.club.jda.gui.dialogs.AboutWindow;
 import the.bytecode.club.jda.gui.dialogs.FontOptionsDialog;
 import the.bytecode.club.jda.gui.dialogs.IntroWindow;
@@ -65,9 +65,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public AboutWindow aboutWindow = new AboutWindow();
     public IntroWindow introWindow = new IntroWindow();
     public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
-    public Map<ButtonGroup, Map<JRadioButtonMenuItem, Decompiler>> allDecompilers = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
-    public Map<ButtonGroup, Map<Decompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
+    public Map<ButtonGroup, Map<JRadioButtonMenuItem, JDADecompiler>> allDecompilers = new HashMap<>();
+    public Map<ButtonGroup, Map<JDADecompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
+    public Map<ButtonGroup, Map<JDADecompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     private JMenuItem spinnerMenu = new JMenuItem("");
     public FontOptionsDialog fontOptionsDialog = new FontOptionsDialog();
@@ -75,7 +75,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public MainViewerGUI() {
         initializeWindows();
 
-        Decompiler.ensureInitted();
+        JDADecompiler.ensureInitted();
         allDecompilers.put(panelGroup1, new HashMap<>());
         allDecompilers.put(panelGroup2, new HashMap<>());
         allDecompilers.put(panelGroup3, new HashMap<>());
@@ -258,7 +258,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         settingsMenu.add(new JSeparator());
 
-        for (Decompiler decompiler : Decompilers.getAllDecompilers()) {
+        for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
             JMenuItem settingsButton = new JMenuItem(decompiler.getName());
             settingsButton.addActionListener(e -> decompiler.getSettings().displayDialog());
             settingsMenu.add(settingsButton);
@@ -361,24 +361,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         dialog.setVisible(true);
     }
 
-//    private JMenu generateDecompilerMenu(Decompiler decompiler, int panelId) {
-//        ButtonGroup group = allPanes.get(panelId);
-//        JMenu menu = new JMenu(decompiler.getName());
-//        JRadioButtonMenuItem java = new JRadioButtonMenuItem("Java");
-//        java.addActionListener(listener);
-//        JRadioButtonMenuItem bytecode = new JRadioButtonMenuItem("Bytecode");
-//        JCheckBoxMenuItem editable = new JCheckBoxMenuItem("Editable");
-//        JSeparator separator = new JSeparator();
-//        menu.add(java);
-//        group.add(java);
-//        allDecompilers.get(group).put(java, decompiler);
-//        allDecompilersRev.get(group).put(decompiler, java);
-//        menu.add(separator);
-//        menu.add(editable);
-//        editButtons.get(group).put(decompiler, editable);
-//        return menu;
-//    }
-
     private JMenu generatePane(int id) {
         JMenu menu = new JMenu("Pane " + (id + 1));
         ButtonGroup group = allPanes.get(id);
@@ -390,7 +372,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         menu.add(none);
         menu.add(new JSeparator());
 
-        for (Decompiler decompiler : Decompilers.getAllDecompilers()) {
+        for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
             JRadioButtonMenuItem button = new JRadioButtonMenuItem(decompiler.getName());
             allDecompilers.get(group).put(button, decompiler);
             allDecompilersRev.get(group).put(decompiler, button);
