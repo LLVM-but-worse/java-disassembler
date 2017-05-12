@@ -3,7 +3,7 @@ package the.bytecode.club.jda.gui.fileviewer;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.decompilers.JDADecompiler;
 import the.bytecode.club.jda.gui.PaneUpdaterThread;
 
 import javax.swing.*;
@@ -31,7 +31,7 @@ public class ClassViewer extends Viewer {
     public void setPanes() {
         for (int i = 0; i < JDA.viewer.allPanes.size(); i++) {
             ButtonGroup group = JDA.viewer.allPanes.get(i);
-            for (Map.Entry<JRadioButtonMenuItem, Decompiler> entry : JDA.viewer.allDecompilers.get(group).entrySet()) {
+            for (Map.Entry<JRadioButtonMenuItem, JDADecompiler> entry : JDA.viewer.allDecompilers.get(group).entrySet()) {
                 if (group.isSelected(entry.getKey().getModel())) {
                     decompilers.set(i, entry.getValue());
                 }
@@ -42,14 +42,14 @@ public class ClassViewer extends Viewer {
     public boolean isPaneEditable(int pane) {
         setPanes();
         ButtonGroup buttonGroup = JDA.viewer.allPanes.get(pane);
-        Decompiler selected = decompilers.get(pane);
+        JDADecompiler selected = decompilers.get(pane);
         if (buttonGroup != null && JDA.viewer.editButtons.get(buttonGroup) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected).isSelected()) {
             return true;
         }
         return false;
     }
 
-    public void updatePane(int pane, RSyntaxTextArea text, Decompiler decompiler) {
+    public void updatePane(int pane, RSyntaxTextArea text, JDADecompiler decompiler) {
         javas.set(pane, text);
         SearchPanel search = new SearchPanel(text);
         searches.set(pane, search);
@@ -93,7 +93,7 @@ public class ClassViewer extends Viewer {
     JSplitPane sp;
     JSplitPane sp2;
     // todo: fix this dumb hack
-    public List<Decompiler> decompilers = Arrays.asList(null, null, null);
+    public List<JDADecompiler> decompilers = Arrays.asList(null, null, null);
     public List<JPanel> panels = Arrays.asList(new JPanel(new BorderLayout()), new JPanel(new BorderLayout()), new JPanel(new BorderLayout()));
     public List<RSyntaxTextArea> javas = Arrays.asList(null, null, null);
     public List<SearchPanel> searches = Arrays.asList(null, null, null);

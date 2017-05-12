@@ -6,8 +6,8 @@ import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.decompilers.Decompiler;
-import the.bytecode.club.jda.settings.DecompilerSettings.SettingsEntry;
+import the.bytecode.club.jda.decompilers.JDADecompiler;
+import the.bytecode.club.jda.settings.JDADecompilerSettings.SettingsEntry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +18,7 @@ import java.util.List;
  * @author Bibl
  */
 
-public class BytecodeDecompiler extends Decompiler {
+public class BytecodeDecompiler extends JDADecompiler {
 
     public BytecodeDecompiler() {
         settings.registerSetting(new SettingsEntry("debug-helpers", "Debug Helpers", true));

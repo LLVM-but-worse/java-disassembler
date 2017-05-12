@@ -8,15 +8,23 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Decompilers {
-    static final Map<String, Decompiler> BY_NAME = new LinkedHashMap<>();
+    static final Map<String, JDADecompiler> BY_NAME = new LinkedHashMap<>();
 
-    public final static Decompiler PROCYON = new ProcyonDecompiler();
-    public final static Decompiler CFR = new CFRDecompiler();
-    public final static Decompiler FERNFLOWER = new FernflowerDecompiler();
-    public final static Decompiler BYTECODE = new BytecodeDecompiler();
+    public final static JDADecompiler PROCYON = new ProcyonDecompiler();
+    public final static JDADecompiler CFR = new CFRDecompiler();
+    public final static JDADecompiler FERNFLOWER = new FernflowerDecompiler();
+    public final static JDADecompiler BYTECODE = new BytecodeDecompiler();
 
 
-    public static Collection<Decompiler> getAllDecompilers() {
+    public static Collection<JDADecompiler> getAllDecompilers() {
         return Collections.unmodifiableCollection(BY_NAME.values());
+    }
+
+    static
+    {
+        Decompilers.BY_NAME.put(PROCYON.getName(), PROCYON);
+        Decompilers.BY_NAME.put(CFR.getName(), CFR);
+        Decompilers.BY_NAME.put(FERNFLOWER.getName(), FERNFLOWER);
+        Decompilers.BY_NAME.put(BYTECODE.getName(), BYTECODE);
     }
 }

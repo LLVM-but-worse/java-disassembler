@@ -7,10 +7,10 @@ import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.settings.DecompilerSettings.SettingsEntry;
+import the.bytecode.club.jda.settings.JDADecompilerSettings.SettingsEntry;
 
-import java.io.*;
-import java.util.*;
+import java.io.StringWriter;
+import java.util.Map;
 
 /**
  * Procyon Java Decompiler Wrapper
@@ -19,7 +19,7 @@ import java.util.*;
  * @author DeathMarine
  */
 
-public final class ProcyonDecompiler extends Decompiler {
+public final class ProcyonDecompiler extends JDADecompiler {
 
     public ProcyonDecompiler() {
         // output modes: Bytecode AST, raw bytecode, Java

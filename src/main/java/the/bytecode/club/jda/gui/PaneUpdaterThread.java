@@ -5,7 +5,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
-import the.bytecode.club.jda.decompilers.Decompiler;
+import the.bytecode.club.jda.decompilers.JDADecompiler;
 import the.bytecode.club.jda.gui.fileviewer.ClassViewer;
 import the.bytecode.club.jda.settings.Settings;
 
@@ -19,13 +19,13 @@ import java.awt.*;
  */
 public class PaneUpdaterThread extends Thread {
 
-    private Decompiler decompiler;
+    private JDADecompiler decompiler;
     private int paneId;
     private JPanel target;
     private ClassViewer viewer;
     private JButton button;
 
-    public PaneUpdaterThread(ClassViewer viewer, Decompiler decompiler, int paneId, JPanel target, JButton button) {
+    public PaneUpdaterThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, JButton button) {
         this.decompiler = decompiler;
         this.paneId = paneId;
         this.target = target;
