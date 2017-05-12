@@ -66,7 +66,7 @@ public class DecompilerSettings {
     }
 
     public void registerSetting(SettingsEntry entry) {
-        entries.put(entry.key, entry);
+        entries.put(entry.param, entry);
 
         JComponent item;
         switch(entry.getType()) {

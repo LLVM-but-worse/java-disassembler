@@ -76,7 +76,7 @@ public class BytecodeDecompiler extends Decompiler {
                 sb.append(JDA.nl);
         }
 
-        if (settings.getEntry("Decompile Inner Classes").getBool())
+        if (settings.getEntry("decompile-inner-classes").getBool())
             for (InnerClassNode innerClassNode : cn.innerClasses) {
                 String innerClassName = innerClassNode.name;
                 if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
