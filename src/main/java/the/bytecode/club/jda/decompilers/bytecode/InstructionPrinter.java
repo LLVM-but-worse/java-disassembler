@@ -1,6 +1,5 @@
 package the.bytecode.club.jda.decompilers.bytecode;
 
-import eu.bibl.banalysis.asm.desc.OpcodeInfo;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
@@ -28,7 +27,6 @@ public class InstructionPrinter {
 
     protected int[] pattern;
     protected boolean match;
-    protected InstructionSearcher searcher;
 
     protected List<AbstractInsnNode> matchedInsns;
     protected Map<LabelNode, Integer> labels;
@@ -41,20 +39,6 @@ public class InstructionPrinter {
         // matchedInsns = new ArrayList<AbstractInsnNode>(); // ingnored because
         // match = false
         match = false;
-    }
-
-    public InstructionPrinter(MethodNodeDecompiler parent, MethodNode m, InstructionPattern pattern, TypeAndName[] args) {
-        this.parent = parent;
-        this.args = args;
-        mNode = m;
-        labels = new HashMap<>();
-        searcher = new InstructionSearcher(m.instructions, pattern);
-        match = searcher.search();
-        if (match) {
-            for (AbstractInsnNode[] ains : searcher.getMatches()) {
-                Collections.addAll(matchedInsns, ains);
-            }
-        }
     }
 
     /**
