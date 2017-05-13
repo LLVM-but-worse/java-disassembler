@@ -67,6 +67,7 @@ public class ExceptionUI extends JFrame {
                 JDA.nl + JDA.nl + sw.toString());
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     private void setup(String e, String author) {
@@ -83,6 +84,7 @@ public class ExceptionUI extends JFrame {
         System.err.println(e);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
 }
