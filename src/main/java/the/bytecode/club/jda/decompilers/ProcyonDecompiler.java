@@ -114,6 +114,7 @@ public final class ProcyonDecompiler extends JDADecompiler {
     @Override
     public void decompileToZip(String zipName) {
         // todo: rewrite
+        throw new UnsupportedOperationException();
     }
 }
 
