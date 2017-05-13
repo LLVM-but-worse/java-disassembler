@@ -20,7 +20,7 @@ public class AboutWindow extends JFrame {
 
     public AboutWindow() {
         this.setIconImages(Resources.iconList);
-        setSize(new Dimension(400, 400));
+        setSize(new Dimension(400, 410));
         setType(Type.UTILITY);
         setTitle("JDA - About");
         getContentPane().setLayout(new CardLayout(0, 0));
