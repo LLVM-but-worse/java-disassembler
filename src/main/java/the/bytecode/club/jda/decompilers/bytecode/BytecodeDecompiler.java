@@ -21,10 +21,11 @@ import java.util.List;
 public class BytecodeDecompiler extends JDADecompiler {
 
     public BytecodeDecompiler() {
-        settings.registerSetting(new SettingsEntry("debug-helpers", "Debug Helpers", true));
-        settings.registerSetting(new SettingsEntry("append-brackets-to-labels", "Append Brackets to Labels", true));
-        settings.registerSetting(new SettingsEntry("show-method-descriptors", "Show Method Descriptors", true));
-        settings.registerSetting(new SettingsEntry("decompile-inner-classes", "Decompile Inner Classes", true));
+        settings.registerSetting(new SettingsEntry("debug-helpers", "Debug helpers", true));
+        settings.registerSetting(new SettingsEntry("append-brackets-to-labels", "Append brackets to labels", true));
+        settings.registerSetting(new SettingsEntry("show-method-descriptors", "Show method descriptors", true));
+        settings.registerSetting(new SettingsEntry("decompile-inner-classes", "Decompile inner classes", true));
+        settings.registerSetting(new SettingsEntry("append-handler-comments", "Append handler comments", true));
     }
 
     @Override

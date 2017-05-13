@@ -29,6 +29,7 @@ public class InstructionPrinter {
     protected boolean match;
 
     protected List<AbstractInsnNode> matchedInsns;
+    protected List<Integer>[] handlers;
     protected Map<LabelNode, Integer> labels;
 
     public InstructionPrinter(MethodNodeDecompiler parent, MethodNode m, TypeAndName[] args) {
@@ -39,6 +40,36 @@ public class InstructionPrinter {
         // matchedInsns = new ArrayList<AbstractInsnNode>(); // ingnored because
         // match = false
         match = false;
+
+        buildHandlerLabelCache();
+    }
+
+    private void buildHandlerLabelCache() {
+        // enumerate labels
+        for(Iterator<AbstractInsnNode> it = mNode.instructions.iterator(); it.hasNext(); ) {
+            AbstractInsnNode ain = it.next();
+            if (ain instanceof LabelNode)
+                resolveLabel((LabelNode) ain);
+        }
+
+        // init handlers array
+        handlers = new List[labels.size()];
+        for (int i = 0 ; i < handlers.length; i++)
+            handlers[i] = new ArrayList<>();
+
+        // ok, now for the main attraction
+        for (TryCatchBlockNode tc : mNode.tryCatchBlocks) {
+            int startIdx = mNode.instructions.indexOf(tc.start);
+            int endIdx = mNode.instructions.indexOf(tc.end);
+
+            for (int i = startIdx; i < endIdx; i++) {
+                AbstractInsnNode ain = mNode.instructions.get(i);
+                if (ain instanceof LabelNode) {
+                    int label = labels.get(ain); // label number
+                    handlers[label - 1].add(labels.get(tc.handler));
+                }
+            }
+        }
     }
 
     /**
@@ -79,6 +110,18 @@ public class InstructionPrinter {
                     if (!firstLabel)
                         firstLabel = true;
                     line += " {";
+                }
+
+                if (parent.appendHandlerComments()) {
+                    List<Integer> handlerLabels = handlers[labels.get(ain) - 1];
+                    if (handlerLabels.size() > 0) {
+                        StringBuilder sb = new StringBuilder(line);
+                        sb.append(" // Handlers: ");
+                        for (int handler : handlerLabels) {
+                            sb.append("L").append(handler).append(" ");
+                        }
+                        line = sb.toString();
+                    }
                 }
             } else if (ain instanceof TypeInsnNode) {
                 line = printTypeInsnNode((TypeInsnNode) ain);
