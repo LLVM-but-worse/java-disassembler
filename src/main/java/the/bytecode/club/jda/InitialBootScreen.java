@@ -53,7 +53,7 @@ public class InitialBootScreen extends JFrame {
         JEditorPane editorPane = new JEditorPane();
         editorPane.setEditorKit(new HTMLEditorKit());
         editorPane.setEditable(false);
-        editorPane.setText(IOUtils.toString(Resources.class.getResourceAsStream("/intro.html"), "UTF-8"));
+        editorPane.setText(IOUtils.toString(Resources.class.getResourceAsStream("/html/intro.html"), "UTF-8"));
 
         scrollPane.setViewportView(editorPane);
 
