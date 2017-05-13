@@ -4,3 +4,6 @@
 [submodule "libs/fernflower"]
 	path = libs/fernflower
 	url = https://github.com/fesh0r/fernflower
+[submodule "libs/RSyntaxTextArea"]
+	path = libs/RSyntaxTextArea
+	url = git@github.com:LLVM-but-worse/RSyntaxTextArea.git

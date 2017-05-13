@@ -55,6 +55,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
@@ -96,6 +97,7 @@
                         <configuration>
                             <sources>
                                 <source>${project.basedir}/libs/fernflower/src</source>
+                                <source>${project.basedir}/libs/RSyntaxTextArea/src/main/java</source>
                                 ...
                             </sources>
                         </configuration>
@@ -103,6 +105,14 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/libs/RSyntaxTextArea/src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
     <dependencies>
