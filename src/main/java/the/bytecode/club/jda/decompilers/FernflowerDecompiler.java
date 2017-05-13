@@ -73,7 +73,6 @@ public final class FernflowerDecompiler extends JDADecompiler {
             result.set(null);
 
             BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
-//                System.out.println("boi " + externalPath + " " + internalPath);
                 ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractProxyClassName(externalPath));
                 if (requestedCn == null) {
                     System.err.println("Couldn't load " + externalPath);
@@ -95,8 +94,9 @@ public final class FernflowerDecompiler extends JDADecompiler {
                 }
 
                 @Override
-                public void saveClassFile(String s, String s1, String s2, String decompilation, int[] ints) {
-                    result.set(decompilation);
+                public void saveClassFile(String filename, String className, String entryName, String decompilation, int[] ints) {
+                    if (className.equals(cn.name))
+                        result.set(decompilation);
                 }
 
                 @Override
@@ -160,7 +160,10 @@ public final class FernflowerDecompiler extends JDADecompiler {
     private Map<String, Object> generateFernflowerArgs() {
         Map<String, Object> options = new HashMap<>();
         for (SettingsEntry setting : settings.getEntries()) {
-            options.put(setting.key, setting.getString());
+            Object value = setting.get();
+            if (value instanceof Boolean)
+                value = (Boolean) value? "1" : "0";
+            options.put(setting.key, value);
         }
         return options;
     }
