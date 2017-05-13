@@ -56,7 +56,7 @@ public class Settings {
                 decompiler.getSettings().saveTo(settings);
 
             for (Setting setting : Settings.ALL_SETTINGS) {
-                getNode(settings, setting.node).add(setting.name, setting.get());
+                getNode(settings, setting.node).add(setting.name, setting.getString());
             }
 
             if (settings.get("windows") == null)

@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
+import org.jetbrains.java.decompiler.main.extern.IBytecodeProvider;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InnerClassNode;
@@ -13,6 +14,7 @@ import the.bytecode.club.jda.settings.JDADecompilerSettings.SettingsEntry;
 import the.bytecode.club.jda.settings.Setting;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -158,7 +160,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
     private Map<String, Object> generateFernflowerArgs() {
         Map<String, Object> options = new HashMap<>();
         for (SettingsEntry setting : settings.getEntries()) {
-            options.put(setting.key, setting.get());
+            options.put(setting.key, setting.getString());
         }
         return options;
     }

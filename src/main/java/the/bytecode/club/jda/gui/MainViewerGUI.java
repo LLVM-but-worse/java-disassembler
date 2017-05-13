@@ -346,7 +346,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     public void setOptionalLibrary() {
         final JTextField text = new JTextField();
-        text.setText(Settings.PATH.get());
+        text.setText(Settings.PATH.getString());
         final JDialog dialog = new JDialog();
         dialog.setModal(true);
         dialog.add(text);
