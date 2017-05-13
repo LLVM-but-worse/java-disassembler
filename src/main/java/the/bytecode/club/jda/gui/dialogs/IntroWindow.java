@@ -30,7 +30,7 @@ public class IntroWindow extends JFrame {
         editorPane.setContentType("text/html");
         editorPane.setEditable(false);
         try {
-            editorPane.setText(IOUtils.toString(Resources.class.getResourceAsStream("/html/intro.html"), "UTF-8"));
+            editorPane.setText(IOUtils.toString(Resources.class.getResourceAsStream("/the/bytecode/club/jda/html/intro.html"), "UTF-8"));
         } catch (IOException e) {
             System.err.println("Couldn't load intro html:");
             e.printStackTrace();
