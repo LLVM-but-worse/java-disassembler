@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
-import org.jetbrains.java.decompiler.main.extern.IBytecodeProvider;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InnerClassNode;
@@ -14,13 +13,14 @@ import the.bytecode.club.jda.settings.JDADecompilerSettings.SettingsEntry;
 import the.bytecode.club.jda.settings.Setting;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.Manifest;
+
+import static org.jetbrains.java.decompiler.main.extern.IFernflowerPreferences.*;
 
 /**
  * A FernFlower wrapper with all the options (except 2)
@@ -31,32 +31,32 @@ import java.util.jar.Manifest;
 
 public final class FernflowerDecompiler extends JDADecompiler {
     public FernflowerDecompiler() {
-        settings.registerSetting(new SettingsEntry("rbr", "Hide Bridge Methods", true));
-        settings.registerSetting(new SettingsEntry("rsy", "Hide Synthetic Class Members", false));
-        settings.registerSetting(new SettingsEntry("din", "Decompile Inner Classes", true));
-        settings.registerSetting(new SettingsEntry("dc4", "Collapse 1.4 Class References", true));
-        settings.registerSetting(new SettingsEntry("das", "Decompile Assertions", true));
-        settings.registerSetting(new SettingsEntry("hes", "Hide Empty Super Invocation", true));
-        settings.registerSetting(new SettingsEntry("hec", "Hide Empty Default Constructor", true));
-        settings.registerSetting(new SettingsEntry("dgs", "Decompile Generic Signatures", false));
-        settings.registerSetting(new SettingsEntry("ner", "Assume return not throwing exceptions", true));
-        settings.registerSetting(new SettingsEntry("den", "Decompile enumerations", true));
-        settings.registerSetting(new SettingsEntry("rgn", "Remove getClass = new SettingsEntry()", true));
-        settings.registerSetting(new SettingsEntry("lit", "Output numeric literals 'as-is'", false));
-        settings.registerSetting(new SettingsEntry("asc", "Encode non-ASCII as unicode escapes", true));
-        settings.registerSetting(new SettingsEntry("bto", "Assume int 1 is boolean true", true));
-        settings.registerSetting(new SettingsEntry("nns", "Allow not set synthetic attribute", true));
-        settings.registerSetting(new SettingsEntry("uto", "Consider nameless types as java.lang.Object", true));
-        settings.registerSetting(new SettingsEntry("udv", "Recover variable names", true));
-        settings.registerSetting(new SettingsEntry("rer", "Remove empty exceptions", true));
-        settings.registerSetting(new SettingsEntry("fdi", "De-inline finally", true));
-        settings.registerSetting(new SettingsEntry("mpm", "Maximum processing time", 0, Setting.SettingType.INT)); // this is a numeric setting!
-        settings.registerSetting(new SettingsEntry("ren", "Rename ambigious members", false));
-        // urc: IIDentifierRenamer
-        settings.registerSetting(new SettingsEntry("inn", "Remove IntelliJ @NotNull", true));
-        settings.registerSetting(new SettingsEntry("lac", "Decompile lambdas to anonymous classes", false));
-        // settings.registerSetting(new SettingsEntry("nls", "Newline character")); // this is an optional argument!
-        settings.registerSetting(new SettingsEntry("ind", "Indentation string", "    ", Setting.SettingType.STRING));
+        settings.registerSetting(new SettingsEntry(REMOVE_BRIDGE, "Hide Bridge Methods", false));
+        settings.registerSetting(new SettingsEntry(REMOVE_SYNTHETIC, "Hide Synthetic Class Members", false));
+        settings.registerSetting(new SettingsEntry(DECOMPILE_INNER, "Decompile Inner Classes", true));
+        settings.registerSetting(new SettingsEntry(DECOMPILE_CLASS_1_4, "Collapse 1.4 Class References", true));
+        settings.registerSetting(new SettingsEntry(DECOMPILE_ASSERTIONS, "Decompile Assertions", true));
+        settings.registerSetting(new SettingsEntry(HIDE_EMPTY_SUPER, "Hide Empty Super Invocation", true));
+        settings.registerSetting(new SettingsEntry(HIDE_DEFAULT_CONSTRUCTOR, "Hide Empty Default Constructor", true));
+        settings.registerSetting(new SettingsEntry(DECOMPILE_GENERIC_SIGNATURES, "Decompile Generic Signatures", false));
+        settings.registerSetting(new SettingsEntry(NO_EXCEPTIONS_RETURN, "Assume return not throwing exceptions", true));
+        settings.registerSetting(new SettingsEntry(DECOMPILE_ENUM, "Decompile enumerations", true));
+        settings.registerSetting(new SettingsEntry(REMOVE_GET_CLASS_NEW, "Remove getClass()", true));
+        settings.registerSetting(new SettingsEntry(LITERALS_AS_IS, "Output numeric literals 'as-is'", false));
+        settings.registerSetting(new SettingsEntry(BOOLEAN_TRUE_ONE, "Assume int 1 is boolean true", true));
+        settings.registerSetting(new SettingsEntry(ASCII_STRING_CHARACTERS, "Encode non-ASCII as unicode escapes", true));
+        settings.registerSetting(new SettingsEntry(SYNTHETIC_NOT_SET, "Allow not set synthetic attribute", true));
+        settings.registerSetting(new SettingsEntry(UNDEFINED_PARAM_TYPE_OBJECT, "Consider nameless types as java.lang.Object", true));
+        settings.registerSetting(new SettingsEntry(USE_DEBUG_VAR_NAMES, "Recover variable names", true));
+        settings.registerSetting(new SettingsEntry(REMOVE_EMPTY_RANGES, "Remove empty exceptions", true));
+        settings.registerSetting(new SettingsEntry(FINALLY_DEINLINE, "De-inline finally", true));
+        settings.registerSetting(new SettingsEntry(IDEA_NOT_NULL_ANNOTATION, "Remove IntelliJ @NotNull", true));
+        settings.registerSetting(new SettingsEntry(LAMBDA_TO_ANONYMOUS_CLASS, "Decompile lambdas to anonymous classes", false));
+        settings.registerSetting(new SettingsEntry(MAX_PROCESSING_METHOD, "Maximum processing time", 0, Setting.SettingType.INT));
+        settings.registerSetting(new SettingsEntry(RENAME_ENTITIES, "Rename ambigious members", false));
+        // USER_RENAMER_CLASS IIDentifierRenamer
+        // settings.registerSetting(new SettingsEntry(NEW_LINE_SEPARATOR, "Newline character")); // this is an optional argument!
+        settings.registerSetting(new SettingsEntry(INDENT_STRING, "Indentation string", "    ", Setting.SettingType.STRING));
     }
 
     @Override
