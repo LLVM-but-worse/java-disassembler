@@ -1,33 +1,20 @@
 package the.bytecode.club.jda.decompilers;
 
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
-import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InnerClassNode;
 import the.bytecode.club.jda.JDA;
-import the.bytecode.club.jda.JarUtils;
 import the.bytecode.club.jda.settings.JDADecompilerSettings.SettingsEntry;
 import the.bytecode.club.jda.settings.Setting;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.Manifest;
 
 import static org.jetbrains.java.decompiler.main.extern.IFernflowerPreferences.*;
-
-/**
- * A FernFlower wrapper with all the options (except 2)
- *
- * @author Konloch
- * @author WaterWolf
- */
 
 public final class FernflowerDecompiler extends JDADecompiler {
     public FernflowerDecompiler() {
@@ -76,12 +63,9 @@ public final class FernflowerDecompiler extends JDADecompiler {
                 ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractProxyClassName(externalPath));
                 if (requestedCn == null) {
                     System.err.println("Couldn't load " + externalPath);
-                    return new byte[0];
+                    throw new IOException(containerName + "$" + cn + " is missing");
                 }
-                byte[] bytes = JDA.getClassBytes(containerName, requestedCn);
-                byte[] clone = new byte[bytes.length];
-                System.arraycopy(bytes, 0, clone, 0, bytes.length);
-                return clone;
+                return JDA.getClassBytes(containerName, requestedCn);
             }, new IResultSaver() {
                 @Override
                 public void saveFolder(String s) {
@@ -124,15 +108,23 @@ public final class FernflowerDecompiler extends JDADecompiler {
                 }
             }, options, new PrintStreamLogger(System.out));
 
-            baseDecompiler.addSpace(JDA.getClassFileProxy(cn), true);
-            for (InnerClassNode innerCn : cn.innerClasses)
-                baseDecompiler.addSpace(JDA.getClassFileProxy(innerCn), true);
-            baseDecompiler.decompileContext();
-            while (true) {
-                if (result.get() != null) {
-                    break;
+            // DFS for inner classes
+            Set<ClassNode> visited = new HashSet<>(); // necessary apparently...
+            ArrayDeque<ClassNode> fifo = new ArrayDeque<>();
+            fifo.add(cn);
+            while (!fifo.isEmpty()) {
+                ClassNode curCn = fifo.pop();
+                visited.add(curCn);
+                baseDecompiler.addSpace(JDA.getClassFileProxy(curCn), true);
+                for (InnerClassNode innerClass : curCn.innerClasses) {
+                    ClassNode innerCn = JDA.getClassNode(containerName, innerClass.name);
+                    if (innerCn != null && !visited.contains(innerCn)) {
+                        fifo.add(innerCn);
+                    }
                 }
             }
+
+            baseDecompiler.decompileContext();
             return result.get();
         } catch (Exception e) {
             return parseException(e);
@@ -141,20 +133,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
 
     @Override
     public void decompileToZip(String zipName) {
-        try {
-            Path outputDir = Files.createTempDirectory("fernflower_output");
-            Path tempJar = Files.createTempFile("fernflower_input", ".jar");
-            File output = new File(zipName);
-            JarUtils.saveAsJar(JDA.getLoadedBytes(), tempJar.toAbsolutePath().toString());
-            ConsoleDecompiler decompiler = new ConsoleDecompiler(outputDir.toFile(), generateFernflowerArgs());
-            decompiler.addSpace(tempJar.toFile(), true);
-            decompiler.decompileContext();
-            Files.move(outputDir.toFile().listFiles()[0].toPath(), output.toPath());
-            Files.delete(tempJar);
-            FileUtils.deleteDirectory(outputDir.toFile());
-        } catch (Exception e) {
-            handleException(e);
-        }
+        throw new UnsupportedOperationException();
     }
 
     private Map<String, Object> generateFernflowerArgs() {
