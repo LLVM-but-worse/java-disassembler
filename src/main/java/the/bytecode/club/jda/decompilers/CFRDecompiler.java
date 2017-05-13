@@ -161,6 +161,7 @@ public final class CFRDecompiler extends JDADecompiler {
         try {
             var24 = dcCommonState.getClassFile(var24.getClassType());
         } catch (CannotLoadClassException var18) {
+            var18.printStackTrace();
         }
 
         if (options.getOption(OptionsImpl.DECOMPILE_INNER_CLASSES)) {

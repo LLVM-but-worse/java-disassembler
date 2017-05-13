@@ -265,4 +265,8 @@ public class MethodNodeDecompiler {
     boolean createDescriptors() {
         return parent.getSettings().getEntry("show-method-descriptors").getBool();
     }
+
+    boolean appendHandlerComments() {
+        return parent.getSettings().getEntry("append-handler-comments").getBool();
+    }
 }
