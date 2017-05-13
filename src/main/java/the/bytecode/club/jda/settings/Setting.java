@@ -27,8 +27,12 @@ public class Setting {
         this(name, (Object)value, STRING);
     }
 
-    public String get() {
+    public String getString() {
         return value.toString();
+    }
+
+    public Object get() {
+        return value;
     }
 
     public boolean getBool() {

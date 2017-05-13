@@ -19,7 +19,7 @@ public class FileChooser {
 
     public void run() {
         File currentFile = new File(
-                target.get() == null || target.get().isEmpty() ? System.getProperty("user.home") : target.get());
+                target.getString() == null || target.getString().isEmpty() ? System.getProperty("user.home") : target.getString());
         JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileFilter() {
             @Override

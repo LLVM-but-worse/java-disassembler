@@ -45,7 +45,7 @@ public class PaneUpdaterThread extends Thread {
             panelArea.setCaretPosition(0);
             panelArea.setEditable(viewer.isPaneEditable(paneId));
             scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
-            panelArea.setFont(new Font(Settings.FONT_FAMILY.get(), Settings.FONT_OPTIONS.getInt(), Settings.FONT_SIZE.getInt()));
+            panelArea.setFont(new Font(Settings.FONT_FAMILY.getString(), Settings.FONT_OPTIONS.getInt(), Settings.FONT_SIZE.getInt()));
 
             SwingUtilities.invokeLater(() -> target.add(scrollPane));
             viewer.updatePane(paneId, panelArea, decompiler);

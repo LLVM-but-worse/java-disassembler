@@ -77,7 +77,7 @@ public class JDADecompilerSettings {
                 item = checkbox;
                 break;
             case STRING:
-                JTextArea textArea = new JTextArea(entry.get());
+                JTextArea textArea = new JTextArea(entry.getString());
                 textArea.setMaximumSize(new Dimension(42, textArea.getMaximumSize().height));
                 stringSettings.put(entry, textArea);
                 item = textArea;

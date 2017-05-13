@@ -20,7 +20,7 @@ public class FontOptionsDialog {
         String[] array = ge.getAvailableFontFamilyNames();
         dialog.add(fontBox = new JComboBox<>(array), "span, wrap");
         fontBox.setEditable(true);
-        fontBox.setSelectedItem(Settings.FONT_FAMILY.get());
+        fontBox.setSelectedItem(Settings.FONT_FAMILY.getString());
 
         dialog.add(new JLabel("Font Size:"));
         dialog.add(sizeSpinner = new JSpinner());
