@@ -29,7 +29,7 @@ public class Settings {
     public static final Setting PATH = new Setting("path", "");
     public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", false, BOOLEAN);
     public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", false, BOOLEAN);
-    public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", true, BOOLEAN);
+    public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", false, BOOLEAN);
     public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", false, BOOLEAN);
 
     public static final Setting FONT_SIZE = new Setting("font", "fontsize", 12, INT);
