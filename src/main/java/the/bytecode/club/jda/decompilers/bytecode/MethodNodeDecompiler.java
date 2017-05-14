@@ -259,7 +259,7 @@ public class MethodNodeDecompiler {
     }
 
     boolean createLabelBrackets() {
-        return parent.getSettings().getEntry("append-brackets-to-labels").getBool();
+        return true;
     }
 
     boolean createDescriptors() {
