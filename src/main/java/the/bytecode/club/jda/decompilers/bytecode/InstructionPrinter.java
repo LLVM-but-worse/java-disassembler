@@ -104,7 +104,7 @@ public class InstructionPrinter {
                 if (firstLabel && parent.createLabelBrackets())
                     info.add("}");
 
-                line = printLabelnode((LabelNode) ain);
+                line = printLabelnode((LabelNode) ain) + ":";
 
                 if (parent.createLabelBrackets()) {
                     if (!firstLabel)
@@ -156,6 +156,7 @@ public class InstructionPrinter {
     protected String printVarInsnNode(VarInsnNode vin, ListIterator<?> it) {
         StringBuilder sb = new StringBuilder();
         sb.append(nameOpcode(vin.opcode()));
+        sb.append(" ");
         sb.append(vin.var);
         if (parent.createComments()) {
             if (vin.var == 0 && !Modifier.isStatic(mNode.access)) {

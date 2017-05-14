@@ -1,6 +1,8 @@
 package the.bytecode.club.jda;
 
 import org.apache.commons.io.FileUtils;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
@@ -8,6 +10,7 @@ import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.api.Plugin;
 import the.bytecode.club.jda.api.PluginLoader;
 import the.bytecode.club.jda.gui.MainViewerGUI;
+import the.bytecode.club.jda.gui.fileviewer.BytecodeTokenizer;
 import the.bytecode.club.jda.gui.navigation.FileNavigationPane;
 import the.bytecode.club.jda.settings.Settings;
 
@@ -98,6 +101,9 @@ public class JDA {
     }
 
     public static void onGUILoad() {
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
+        atmf.putMapping(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE, "the.bytecode.club.jda.gui.fileviewer.BytecodeTokenizer");
+
         plugins.forEach(Plugin::onGUILoad);
     }
 
