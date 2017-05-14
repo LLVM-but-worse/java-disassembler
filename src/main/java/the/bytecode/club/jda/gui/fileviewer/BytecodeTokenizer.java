@@ -1540,7 +1540,7 @@ public class BytecodeTokenizer extends AbstractJFlexCTokenMaker {
 
   /** this buffer contains the current text to be matched and is
       the source of the yytext() string */
-  private char zzBuffer[];
+  private char zzBuffer[] = new char[ZZ_BUFFERSIZE];
 
   /** the textposition at the last accepting state */
   private int zzMarkedPos;
@@ -1588,6 +1588,7 @@ public class BytecodeTokenizer extends AbstractJFlexCTokenMaker {
 
   /* user code: */
     public static final String SYNTAX_STYLE_BYTECODE = "text/bytecode";
+    public static final int TOKENTYPE_LABEL = TokenTypes.PREPROCESSOR;
 
 	/**
 	 * Constructor.  This must be here because JFlex does not generate a
@@ -2070,7 +2071,7 @@ public class BytecodeTokenizer extends AbstractJFlexCTokenMaker {
             }
           case 57: break;
           case 20: 
-            { addToken(Token.PREPROCESSOR);
+            { addToken(TOKENTYPE_LABEL);
             }
           case 58: break;
           case 21: 
@@ -2098,7 +2099,7 @@ public class BytecodeTokenizer extends AbstractJFlexCTokenMaker {
             }
           case 64: break;
           case 27: 
-            { int temp=zzStartRead; addToken(start,zzStartRead-1, Token.COMMENT_EOL); addToken(temp,zzMarkedPos-1, Token.PREPROCESSOR); start = zzMarkedPos;
+            { int temp=zzStartRead; addToken(start,zzStartRead-1, Token.COMMENT_EOL); addToken(temp,zzMarkedPos-1, TOKENTYPE_LABEL); start = zzMarkedPos;
             }
           case 65: break;
           case 28: 
