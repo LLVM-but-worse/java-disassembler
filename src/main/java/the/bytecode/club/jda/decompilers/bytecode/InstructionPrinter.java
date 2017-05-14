@@ -105,6 +105,7 @@ public class InstructionPrinter {
                     info.add("}");
 
                 line = printLabelnode((LabelNode) ain) + ":";
+                int labelId = resolveLabel((LabelNode) ain);
 
                 if (parent.createLabelBrackets()) {
                     if (!firstLabel)
@@ -112,16 +113,19 @@ public class InstructionPrinter {
                     line += " {";
                 }
 
-                if (parent.appendHandlerComments()) {
-                    List<Integer> handlerLabels = handlers[labels.get(ain) - 1];
-                    if (handlerLabels.size() > 0) {
-                        StringBuilder sb = new StringBuilder(line);
-                        sb.append(" // Handlers: ");
-                        for (int handler : handlerLabels) {
-                            sb.append("L").append(handler).append(" ");
-                        }
-                        line = sb.toString();
-                    }
+                StringBuilder comment = new StringBuilder();
+                List<Integer> handlerLabels = handlers[labels.get(ain) - 1];
+                if (parent.appendHandlerComments() && handlerLabels.size() > 0) {
+                    comment.append("Handlers: ");
+                }
+                for (int handler : handlerLabels) {
+                    if (parent.appendHandlerComments())
+                        comment.append("L").append(handler).append(" ");
+                    if (handler == labelId && parent.createComments())
+                        comment.insert(0, "Finally block" + (parent.appendHandlerComments() ? ", " : ""));
+                }
+                if (comment.length() > 0) {
+                    line += " // " + comment;
                 }
             } else if (ain instanceof TypeInsnNode) {
                 line = printTypeInsnNode((TypeInsnNode) ain);
