@@ -72,16 +72,25 @@ public class BytecodeSyntaxArea extends RSyntaxTextArea {
         }
     }
 
+    private boolean isMethodFold(Fold f) {
+        if (f.getParent() == null)
+            return false;
+        Fold parent = f.getParent();
+        for (Token t = getTokenListForLine(parent.getStartLine()); t != null; t = t.getNextToken()) {
+            if (t.getType() == TokenTypes.RESERVED_WORD && t.getLexeme().equals("class"))
+                return true;
+        }
+        return false;
+    }
+
     private Fold getMethodFold(Token token) {
         return parentFoldCache.computeIfAbsent(token, t -> {
             FoldManager foldManager = getFoldManager();
-            Fold rootFold = foldManager.getFold(0);
             Fold curFold = foldManager.getDeepestFoldContaining(t.getOffset());
             while (curFold != null) {
-                Fold parentFold = curFold.getParent();
-                if (parentFold == rootFold)
+                if (isMethodFold(curFold))
                     return curFold;
-                curFold = parentFold;
+                curFold = curFold.getParent();
             }
             throw new IllegalArgumentException("Token is not parented in top-level (class def) fold");
         });
