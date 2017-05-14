@@ -1,0 +1,423 @@
+package club.bytecode.the.jda.gui.navigation;
+
+import club.bytecode.the.jda.*;
+import club.bytecode.the.jda.gui.JDAWindow;
+import club.bytecode.the.jda.gui.MainViewerGUI;
+import org.objectweb.asm.tree.ClassNode;
+import club.bytecode.the.jda.*;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+
+/**
+ * The file navigation pane.
+ *
+ * @author Konloch
+ * @author WaterWolf
+ * @author afffsdd
+ */
+
+@SuppressWarnings("serial")
+public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
+    private static final String quickSearchText = "File search";
+
+    FileChangeNotifier fcn;
+    JCheckBox matchCase = new JCheckBox("Match case");
+
+    FileNode treeRoot = new FileNode("Loaded Files:");
+    FileTree tree = new FileTree(treeRoot);
+    final JTextField quickSearch = new JTextField(quickSearchText);
+
+    public transient KeyAdapter search = new KeyAdapter() {
+        @Override
+        public void keyPressed(final KeyEvent ke) {
+            if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                final String qt = quickSearch.getText();
+                quickSearch.setText("");
+                quickSearch(qt);
+            } else if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                tree.grabFocus();
+            }
+
+            JDA.checkHotKey(ke);
+        }
+    };
+
+    private void quickSearch(String qt) {
+        if (!matchCase.isSelected())
+            qt = qt.toLowerCase();
+        String[] path = qt.split("\\.");
+        String searchFilename = path[path.length - 1];
+
+        FileNode curNode = treeRoot;
+        @SuppressWarnings("unchecked")
+        Enumeration<FileNode> enums = curNode.depthFirstEnumeration();
+        while (enums != null && enums.hasMoreElements()) {
+            FileNode node = enums.nextElement();
+            if (!node.isLeaf()) {
+                continue;
+            }
+
+            // Check filename
+            String leafFilename = (String) (node.getUserObject());
+            if (!matchCase.isSelected())
+                leafFilename = leafFilename.toLowerCase();
+            if (!leafFilename.contains(searchFilename)) {
+                continue;
+            }
+
+            // Check for path match
+            TreeNode pathArray[] = node.getPath();
+            int k = 0;
+            StringBuilder fullPath = new StringBuilder();
+            while (pathArray != null && k < pathArray.length) {
+                FileNode n = (FileNode) pathArray[k];
+                String s = (String) (n.getUserObject());
+                fullPath.append(s);
+                if (k++ != pathArray.length - 1) {
+                    fullPath.append(".");
+                }
+            }
+            String fullPathString = fullPath.toString();
+            if (!matchCase.isSelected())
+                fullPathString = fullPathString.toLowerCase();
+
+            if (fullPathString.contains(qt)) { // Match found
+                final TreePath pathn = new TreePath(node.getPath());
+                tree.setSelectionPath(pathn.getParentPath());
+                tree.setSelectionPath(pathn);
+                tree.makeVisible(pathn);
+                tree.scrollPathToVisible(pathn);
+                break;
+            }
+        }
+    }
+
+    public FileNavigationPane(final FileChangeNotifier fcn) {
+        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
+
+        this.fcn = fcn;
+        tree.setRootVisible(false);
+        tree.setShowsRootHandles(true);
+        quickSearch.setForeground(Color.gray);
+        setMinimumSize(new Dimension(200, 50));
+
+        this.tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                openPath(tree.getPathForLocation(e.getX(), e.getY()));
+            }
+        });
+        tree.setComponentPopupMenu(new TreeContextMenu(this));
+        tree.setInheritsPopupMenu(true);
+
+        this.tree.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent e) {
+            }
+
+            public void keyPressed(KeyEvent e) {
+                JDA.checkHotKey(e);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent arg0) {
+                if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (arg0.getSource() instanceof FileTree) {
+                        FileTree tree = (FileTree) arg0.getSource();
+                        openPath(tree.getSelectionPath());
+                    }
+                } else if (arg0.getKeyCode() == KeyEvent.VK_F && arg0.isControlDown()) {
+                    quickSearch.grabFocus();
+                }
+            }
+        });
+
+        quickSearch.addKeyListener(search);
+        quickSearch.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(final FocusEvent arg0) {
+                if (quickSearch.getText().equals(quickSearchText)) {
+                    quickSearch.setText(null);
+                    quickSearch.setForeground(Color.black);
+                }
+            }
+
+            @Override
+            public void focusLost(final FocusEvent arg0) {
+                if (quickSearch.getText().isEmpty()) {
+                    quickSearch.setText(quickSearchText);
+                    quickSearch.setForeground(Color.gray);
+                }
+            }
+        });
+
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(new JScrollPane(tree), BorderLayout.CENTER);
+
+        JPanel p2 = new JPanel();
+        p2.setLayout(new BorderLayout());
+        p2.add(quickSearch, BorderLayout.NORTH);
+        JPanel p3 = new JPanel(new BorderLayout());
+        matchCase.setSelected(true);
+        p3.add(matchCase, BorderLayout.WEST);
+        JPanel p4 = new JPanel(new BorderLayout());
+        p3.add(p4, BorderLayout.EAST);
+        p2.add(p3, BorderLayout.SOUTH);
+
+        getContentPane().add(p2, BorderLayout.SOUTH);
+
+        new FileDrop(this, this);
+    }
+
+    @Override
+    public void openClassFile(String name, String container, ClassNode cn) {
+    }
+
+    @Override
+    public void openFile(String name, String container, byte[] contents) {
+    }
+
+    public static Dimension defaultDimension = new Dimension(350, -35);
+    public static Point defaultPosition = new Point(0, 0);
+
+    @Override
+    public Dimension getDefaultSize() {
+        return defaultDimension;
+    }
+
+    @Override
+    public Point getDefaultPosition() {
+        return defaultPosition;
+    }
+
+    public void openClassFileToWorkSpace(final String name, final String container, final ClassNode node) {
+        fcn.openClassFile(name, container, node);
+    }
+
+    public void openFileToWorkSpace(String name, final String container, byte[] contents) {
+        fcn.openFile(name, container, contents);
+    }
+
+    @Override
+    public void filesDropped(final File[] files) {
+        if (files.length < 1)
+            return;
+        JDA.openFiles(files, true);
+    }
+
+    public void updateTree() {
+        try {
+            treeRoot.removeAllChildren();
+            for (FileContainer container : JDA.files) {
+                FileNode root = new FileNode(container.name);
+                treeRoot.add(root);
+                JDATreeCellRenderer renderer = new JDATreeCellRenderer();
+                tree.setCellRenderer(renderer);
+
+                if (!container.files.isEmpty()) {
+                    for (final Entry<String, byte[]> entry : container.files.entrySet()) {
+                        String name = entry.getKey();
+                        final String[] spl = name.split("/");
+                        if (spl.length < 2) {
+                            root.add(new FileNode(name));
+                        } else {
+                            FileNode parent = root;
+                            for (final String s : spl) {
+                                FileNode child = null;
+                                for (int i = 0; i < parent.getChildCount(); i++) {
+                                    if (((FileNode) parent.getChildAt(i)).getUserObject().equals(s)) {
+                                        child = (FileNode) parent.getChildAt(i);
+                                        break;
+                                    }
+                                }
+                                if (child == null) {
+                                    child = new FileNode(s);
+                                    parent.add(child);
+                                }
+                                parent = child;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            treeRoot.sort();
+            tree.expandPath(new TreePath(tree.getModel().getRoot()));
+            tree.updateUI();
+        } catch (java.util.ConcurrentModificationException e) {
+            //ignore, the last file will reset everything
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    void treeDfs(final TreePath parent, Consumer<TreePath> onPreOrder, Consumer<TreePath> onPostOrder) {
+        if (onPreOrder != null)
+            onPreOrder.accept(parent);
+
+        final TreeNode node = (TreeNode) parent.getLastPathComponent();
+        if (node.getChildCount() >= 0) {
+            for (final Enumeration e = node.children(); e.hasMoreElements(); ) {
+                final TreeNode n = (TreeNode) e.nextElement();
+                final TreePath path = parent.pathByAddingChild(n);
+                treeDfs(path, onPreOrder, onPostOrder);
+            }
+        }
+
+        if (onPostOrder != null)
+            onPostOrder.accept(parent);
+    }
+
+    public class FileTree extends JTree {
+        private static final long serialVersionUID = -2355167326094772096L;
+        DefaultMutableTreeNode treeRoot;
+
+        public FileTree(final DefaultMutableTreeNode treeRoot) {
+            super(treeRoot);
+            this.treeRoot = treeRoot;
+        }
+
+        StringMetrics m = null;
+
+        @Override
+        public void paint(final Graphics g) {
+            try {
+                super.paint(g);
+                if (m == null) {
+                    m = new StringMetrics((Graphics2D) g);
+                }
+                if (treeRoot.getChildCount() < 1) {
+                    g.setColor(new Color(0, 0, 0, 100));
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                    g.setColor(Color.white);
+                    String s = "Drag class/jar/zip here";
+                    g.drawString(s, ((int) ((getWidth() / 2) - (m.getWidth(s) / 2))), getHeight() / 2);
+                }
+            } catch (java.lang.InternalError | java.lang.NullPointerException e) {
+
+            }
+        }
+    }
+
+    public class FileNode extends DefaultMutableTreeNode {
+
+        private static final long serialVersionUID = -8817777566176729571L;
+
+        public FileNode(final Object o) {
+            super(o);
+        }
+
+        @Override
+        public void insert(final MutableTreeNode newChild, final int childIndex) {
+            super.insert(newChild, childIndex);
+        }
+
+        public void sort() {
+            recursiveSort(this);
+        }
+
+        @SuppressWarnings("unchecked")
+        private void recursiveSort(final FileNode node) {
+            Collections.sort(node.children, nodeComparator);
+            for (FileNode nextNode : (Iterable<FileNode>) node.children) {
+                if (nextNode.getChildCount() > 0) {
+                    recursiveSort(nextNode);
+                }
+            }
+        }
+
+        protected Comparator<FileNode> nodeComparator = (a, b) ->
+        {
+            // Ensure nodes with children are always on top
+            final boolean aEmpty = a.getChildCount() > 0;
+            final boolean bEmpty = b.getChildCount() > 0;
+            if (aEmpty && !bEmpty)
+                return -1;
+            else if (!aEmpty && bEmpty)
+                return 1;
+
+            // Try insensitive first, but if they are the same insensitively do it case sensitively
+            int compare = a.toString().compareToIgnoreCase(b.toString());
+            if (compare != 0)
+                return compare;
+            else
+                return a.toString().compareTo(b.toString());
+        };
+    }
+
+    /**
+     * @author http://stackoverflow.com/a/18450804
+     */
+    class StringMetrics {
+
+        Font font;
+        FontRenderContext context;
+
+        public StringMetrics(Graphics2D g2) {
+
+            font = g2.getFont();
+            context = g2.getFontRenderContext();
+        }
+
+        Rectangle2D getBounds(String message) {
+
+            return font.getStringBounds(message, context);
+        }
+
+        double getWidth(String message) {
+
+            Rectangle2D bounds = getBounds(message);
+            return bounds.getWidth();
+        }
+
+        double getHeight(String message) {
+
+            Rectangle2D bounds = getBounds(message);
+            return bounds.getHeight();
+        }
+
+    }
+
+    public void resetWorkspace() {
+        treeRoot.removeAllChildren();
+        tree.repaint();
+        tree.updateUI();
+    }
+
+    public void openPath(TreePath path) {
+        if (path == null)
+            return;
+        final StringBuilder nameBuffer = new StringBuilder();
+        for (int i = 2; i < path.getPathCount(); i++) {
+            nameBuffer.append(path.getPathComponent(i));
+            if (i < path.getPathCount() - 1) {
+                nameBuffer.append("/");
+            }
+        }
+
+        String name = nameBuffer.toString();
+        String containerName = path.getPathComponent(1).toString();
+        if (name.endsWith(".class")) {
+            final ClassNode cn = JDA.getClassNode(containerName, name.substring(0, name.length() - ".class".length()));
+            if (cn != null) {
+                openClassFileToWorkSpace(nameBuffer.toString(), containerName, cn);
+            }
+        } else {
+            openFileToWorkSpace(nameBuffer.toString(), containerName, JDA.getFileContents(containerName, nameBuffer.toString()));
+        }
+    }
+
+}
