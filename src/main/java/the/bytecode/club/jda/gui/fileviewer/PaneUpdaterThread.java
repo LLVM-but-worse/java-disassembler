@@ -1,4 +1,4 @@
-package the.bytecode.club.jda.gui;
+package the.bytecode.club.jda.gui.fileviewer;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
