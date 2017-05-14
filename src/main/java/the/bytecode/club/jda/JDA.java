@@ -132,7 +132,7 @@ public class JDA {
 
         viewer.calledAfterLoad();
 
-        System.out.println("Start up took " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
+        System.out.println("Start up took " + ((System.currentTimeMillis() - start) / 1000.) + " seconds");
 
         if (args.length >= 1)
             for (String s : args) {
