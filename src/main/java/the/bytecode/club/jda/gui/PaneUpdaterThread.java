@@ -2,11 +2,14 @@ package the.bytecode.club.jda.gui;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.Token;
+import org.fife.ui.rsyntaxtextarea.TokenTypes;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import the.bytecode.club.jda.JDA;
 import the.bytecode.club.jda.api.ExceptionUI;
 import the.bytecode.club.jda.decompilers.JDADecompiler;
 import the.bytecode.club.jda.decompilers.bytecode.BytecodeDecompiler;
+import the.bytecode.club.jda.gui.fileviewer.BytecodeSyntaxArea;
 import the.bytecode.club.jda.gui.fileviewer.BytecodeTokenizer;
 import the.bytecode.club.jda.gui.fileviewer.ClassViewer;
 import the.bytecode.club.jda.settings.Settings;
@@ -37,8 +40,13 @@ public class PaneUpdaterThread extends Thread {
 
     public void run() {
         try {
-            RSyntaxTextArea panelArea = new RSyntaxTextArea();
-            panelArea.setSyntaxEditingStyle(decompiler instanceof BytecodeDecompiler ? BytecodeTokenizer.SYNTAX_STYLE_BYTECODE : SyntaxConstants.SYNTAX_STYLE_JAVA);
+            RSyntaxTextArea panelArea;
+            if (decompiler instanceof BytecodeDecompiler) {
+                panelArea = new BytecodeSyntaxArea();
+            } else {
+                panelArea = new RSyntaxTextArea();
+                panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+            }
             panelArea.setCodeFoldingEnabled(true);
             panelArea.setAntiAliasingEnabled(true);
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);

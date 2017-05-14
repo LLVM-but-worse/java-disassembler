@@ -36,8 +36,6 @@ public class FileViewerPane extends JDAWindow implements ActionListener {
 
     HashMap<String, Integer> workingOn = new HashMap<>();
 
-    public static int SyntaxFontHeight = 12;
-
     public FileViewerPane(final FileChangeNotifier fcn) {
         super("WorkPanel", "Work Space", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
 

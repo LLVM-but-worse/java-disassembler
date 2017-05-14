@@ -231,7 +231,7 @@ AnyCharacterButDoubleQuoteOrBackSlash	= ([^\\\"\n])
 EscapedSourceCharacter				= ("u"{HexDigit}{HexDigit}{HexDigit}{HexDigit})
 Escape							= ("\\"(([btnfr\"'\\])|([0123]{OctalDigit}?{OctalDigit}?)|({OctalDigit}{OctalDigit}?)|{EscapedSourceCharacter}))
 NonSeparator						= ([^\t\f\r\n\ \(\)\{\}\[\]\;\,\.\=\>\<\!\~\?\:\+\-\*\/\&\|\^\%\"\']|"#"|"\\")
-Label			            	= (L({Digit}+)\:?)
+Label			            	= (L({Digit}+))
 IdentifierStart					= ({LetterOrUnderscore}|"$")
 IdentifierPart						= ({IdentifierStart}|{Digit}|("\\"{EscapedSourceCharacter}))
 

@@ -109,7 +109,7 @@ public class InstructionPrinter {
                 if (parent.createLabelBrackets()) {
                     if (!firstLabel)
                         firstLabel = true;
-                    line += " {";
+                    line += " { // http://google.com";
                 }
 
                 if (parent.appendHandlerComments()) {
