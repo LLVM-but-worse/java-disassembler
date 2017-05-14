@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class BytecodeSyntaxArea extends RSyntaxTextArea {
     public Map<Fold, List<Token>> tokenIndex;
+    public final Map<Token, Fold> parentFoldCache;
     public boolean foldsBuilt;
 
     public BytecodeSyntaxArea() {
@@ -23,11 +24,15 @@ public class BytecodeSyntaxArea extends RSyntaxTextArea {
         setLinkGenerator(new BytecodeLinkGenerator());
         addHyperlinkListener(this::processClick);
 
+        parentFoldCache = new HashMap<>();
         foldsBuilt = false;
         getFoldManager().addPropertyChangeListener(evt -> {
-            if (evt.getPropertyName().equals(FoldManager.PROPERTY_FOLDS_UPDATED)
-                    && evt.getNewValue() != null)
-                parseLabels();
+            if (evt.getPropertyName().equals(FoldManager.PROPERTY_FOLDS_UPDATED)) {
+                parentFoldCache.clear();
+                if (evt.getNewValue() != null) {
+                    parseLabels();
+                }
+            }
         });
     }
 
@@ -58,7 +63,7 @@ public class BytecodeSyntaxArea extends RSyntaxTextArea {
                 List<Token> methodTokens = tokenIndex.computeIfAbsent(parent, k -> new ArrayList<>());
                 methodTokens.add(new TokenImpl(t));
                 if (methodTokens.size() != Integer.parseInt(t.getLexeme().substring(1)))
-                    throw new IllegalArgumentException("Invalid token numbering: " + methodTokens.size() + "vs" + Integer.parseInt(t.getLexeme().substring(1)));
+                    throw new IllegalArgumentException("Invalid token numbering: " + methodTokens.size() + " vs " + Integer.parseInt(t.getLexeme().substring(1)));
                 break;
             }
         }
@@ -67,17 +72,19 @@ public class BytecodeSyntaxArea extends RSyntaxTextArea {
         }
     }
 
-    private Fold getMethodFold(Token t) {
-        FoldManager foldManager = getFoldManager();
-        Fold rootFold = foldManager.getFold(0);
-        Fold curFold = foldManager.getDeepestFoldContaining(t.getOffset());
-        while (curFold != null) {
-            Fold parentFold = curFold.getParent();
-            if (parentFold == rootFold)
-                return curFold;
-            curFold = parentFold;
-        }
-        throw new IllegalArgumentException("Token is not parented in top-level (class def) fold");
+    private Fold getMethodFold(Token token) {
+        return parentFoldCache.computeIfAbsent(token, t -> {
+            FoldManager foldManager = getFoldManager();
+            Fold rootFold = foldManager.getFold(0);
+            Fold curFold = foldManager.getDeepestFoldContaining(t.getOffset());
+            while (curFold != null) {
+                Fold parentFold = curFold.getParent();
+                if (parentFold == rootFold)
+                    return curFold;
+                curFold = parentFold;
+            }
+            throw new IllegalArgumentException("Token is not parented in top-level (class def) fold");
+        });
     }
 
     private Token findLabelDefinition(Token label) {
@@ -100,7 +107,7 @@ public class BytecodeSyntaxArea extends RSyntaxTextArea {
                 if (labelDef == null)
                     return null;
                 int caretTarget = labelDef.getOffset();
-                return new SetCaretLinkResult(caretTarget, textArea, offs);
+                return new SetCaretLinkResult(textArea, offs, caretTarget);
             }
             return null;
         }
@@ -111,7 +118,7 @@ public class BytecodeSyntaxArea extends RSyntaxTextArea {
         private final RSyntaxTextArea textArea;
         private final int offs;
 
-        public SetCaretLinkResult(int caretTarget, RSyntaxTextArea textArea, int offs) {
+        public SetCaretLinkResult(RSyntaxTextArea textArea, int offs, int caretTarget) {
             this.caretTarget = caretTarget;
             this.textArea = textArea;
             this.offs = offs;
