@@ -55,6 +55,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 
 %{
     public static final String SYNTAX_STYLE_BYTECODE = "text/bytecode";
+    public static final int TOKENTYPE_LABEL = TokenTypes.PREPROCESSOR;
 
 	/**
 	 * Constructor.  This must be here because JFlex does not generate a
@@ -231,7 +232,7 @@ AnyCharacterButDoubleQuoteOrBackSlash	= ([^\\\"\n])
 EscapedSourceCharacter				= ("u"{HexDigit}{HexDigit}{HexDigit}{HexDigit})
 Escape							= ("\\"(([btnfr\"'\\])|([0123]{OctalDigit}?{OctalDigit}?)|({OctalDigit}{OctalDigit}?)|{EscapedSourceCharacter}))
 NonSeparator						= ([^\t\f\r\n\ \(\)\{\}\[\]\;\,\.\=\>\<\!\~\?\:\+\-\*\/\&\|\^\%\"\']|"#"|"\\")
-Label			            	= (L({Digit}+))
+Label			            	= (L{Digit}+)
 IdentifierStart					= ({LetterOrUnderscore}|"$")
 IdentifierPart						= ({IdentifierStart}|{Digit}|("\\"{EscapedSourceCharacter}))
 
@@ -529,8 +530,9 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
 
 	{LineTerminator}				{ addNullToken(); return firstToken; }
 
+
 	/* Labels. */
-    {Label}						{ addToken(Token.PREPROCESSOR); }
+    {Label}						{ addToken(TOKENTYPE_LABEL); }
 
 	{Identifier}					{ addToken(Token.IDENTIFIER); }
 
@@ -614,7 +616,7 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
 
 <EOL_COMMENT> {
 	[^Lhwf\n]+				{}
-    {Label}					{ int temp=zzStartRead; addToken(start,zzStartRead-1, Token.COMMENT_EOL); addToken(temp,zzMarkedPos-1, Token.PREPROCESSOR); start = zzMarkedPos; }
+    {Label}					{ int temp=zzStartRead; addToken(start,zzStartRead-1, Token.COMMENT_EOL); addToken(temp,zzMarkedPos-1, TOKENTYPE_LABEL); start = zzMarkedPos; }
 	{URL}					{ int temp=zzStartRead; addToken(start,zzStartRead-1, Token.COMMENT_EOL); addHyperlinkToken(temp,zzMarkedPos-1, Token.COMMENT_EOL); start = zzMarkedPos; }
 	[Lhwf]					{}
 	\n						{ addToken(start,zzStartRead-1, Token.COMMENT_EOL); addNullToken(); return firstToken; }
