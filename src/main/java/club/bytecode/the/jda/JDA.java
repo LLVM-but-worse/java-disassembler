@@ -1,7 +1,13 @@
 package club.bytecode.the.jda;
 
+import club.bytecode.the.jda.api.ExceptionUI;
+import club.bytecode.the.jda.api.Plugin;
+import club.bytecode.the.jda.api.PluginLoader;
 import club.bytecode.the.jda.gui.MainViewerGUI;
+import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeTokenizer;
+import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
+import club.bytecode.the.jda.settings.Settings;
 import org.apache.commons.io.FileUtils;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -9,12 +15,6 @@ import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
-import club.bytecode.the.jda.api.ExceptionUI;
-import club.bytecode.the.jda.api.Plugin;
-import club.bytecode.the.jda.api.PluginLoader;
-import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
-import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
-import club.bytecode.the.jda.settings.Settings;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -596,45 +596,7 @@ public class JDA {
      */
     public static void checkHotKey(KeyEvent e) {
         if ((e.getKeyCode() == KeyEvent.VK_O) && isCtrlDown(e)) {
-            JFileChooser fc = new JFileChooser();
-            try {
-                fc.setSelectedFile(new File(JDA.lastDirectory));
-            } catch (Exception e2) {
-
-            }
-            fc.setFileFilter(new FileFilter() {
-                @Override
-                public boolean accept(File f) {
-                    if (f.isDirectory())
-                        return true;
-
-                    String extension = MiscUtils.extension(f.getAbsolutePath());
-                    if (extension != null)
-                        if (extension.equals("jar") || extension.equals("zip") || extension.equals("class"))
-                            return true;
-
-                    return false;
-                }
-
-                @Override
-                public String getDescription() {
-                    return "Class Files or Zip/Jar Archives";
-                }
-            });
-            fc.setFileHidingEnabled(false);
-            fc.setAcceptAllFileFilterUsed(false);
-            int returnVal = fc.showOpenDialog(JDA.viewer);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
-                try {
-                    JDA.viewer.setIcon(true);
-                    JDA.openFiles(new File[]{fc.getSelectedFile()}, true);
-                    JDA.viewer.setIcon(false);
-                } catch (Exception e1) {
-                    new ExceptionUI(e1);
-                }
-            }
+            openFileChooser();
         } else if ((e.getKeyCode() == KeyEvent.VK_N) && isCtrlDown(e)) {
             JDA.resetWorkSpace(true);
         } else if ((e.getKeyCode() == KeyEvent.VK_R) && isCtrlDown(e) && isShiftDown(e)) {
@@ -708,6 +670,51 @@ public class JDA {
         } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e)) {
             if (viewer.FileViewerPane.getCurrentViewer() != null)
                 viewer.FileViewerPane.tabs.remove(viewer.FileViewerPane.getCurrentViewer());
+        }
+    }
+
+    public static void openFileChooser() {
+        JFileChooser fc = new JFileChooser();
+        try {
+            File f = new File(JDA.lastDirectory);
+            if (f.exists())
+                fc.setSelectedFile(f);
+        } catch (Exception e2) {
+
+        }
+        fc.setFileFilter(new JavaFileFilter());
+        fc.setFileHidingEnabled(false);
+        fc.setAcceptAllFileFilterUsed(false);
+        int returnVal = fc.showOpenDialog(JDA.viewer);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
+            try {
+                JDA.viewer.setIcon(true);
+                JDA.openFiles(new File[]{fc.getSelectedFile()}, true);
+                JDA.viewer.setIcon(false);
+            } catch (Exception e1) {
+                new ExceptionUI(e1);
+            }
+        }
+    }
+
+    public static class JavaFileFilter extends FileFilter {
+        @Override
+        public boolean accept(File f) {
+            if (f.isDirectory())
+                return true;
+
+            String extension = MiscUtils.extension(f.getAbsolutePath());
+            if (extension.equals("jar") || extension.equals("zip") || extension.equals("class"))
+                return true;
+
+            return false;
+        }
+
+        @Override
+        public String getDescription() {
+            return "Class Files or Zip/Jar Archives";
         }
     }
 }
