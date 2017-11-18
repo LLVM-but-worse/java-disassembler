@@ -1,13 +1,14 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
-import org.objectweb.asm.tree.ClassNode;
 import club.bytecode.the.jda.FileChangeNotifier;
+import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.Resources;
 import club.bytecode.the.jda.gui.JDAWindow;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.dialogs.TabbedPane;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
+import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,7 +98,7 @@ public class FileViewerPane extends JDAWindow implements ActionListener {
 
     int tabCount = 0;
 
-    public void addWorkingFile(final String name, String container, final ClassNode cn) {
+    public void addWorkingFile(final String name, FileContainer container, final ClassNode cn) {
         String key = container + "$" + name;
         if (!workingOn.containsKey(key)) {
             final JPanel tabComp = new ClassViewer(name, container, cn);
@@ -111,7 +112,7 @@ public class FileViewerPane extends JDAWindow implements ActionListener {
         }
     }
 
-    public void addFile(final String name, String container, byte[] contents) {
+    public void addFile(final String name, FileContainer container, byte[] contents) {
         if (contents == null) //a directory
             return;
 
@@ -129,12 +130,12 @@ public class FileViewerPane extends JDAWindow implements ActionListener {
     }
 
     @Override
-    public void openClassFile(final String name, String container, final ClassNode cn) {
+    public void openClassFile(final String name, FileContainer container, final ClassNode cn) {
         addWorkingFile(name, container, cn);
     }
 
     @Override
-    public void openFile(final String name, String container, byte[] content) {
+    public void openFile(final String name, FileContainer container, byte[] content) {
         addFile(name, container, content);
     }
 

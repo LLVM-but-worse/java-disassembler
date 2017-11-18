@@ -1,13 +1,14 @@
 package club.bytecode.the.jda.decompilers;
 
+import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.*;
 import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import org.objectweb.asm.tree.ClassNode;
-import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 
 import java.io.StringWriter;
 import java.util.Map;
@@ -68,7 +69,7 @@ public final class ProcyonDecompiler extends JDADecompiler {
     }
 
     @Override
-    public String decompileClassNode(String containerName, final ClassNode cn) {
+    public String decompileClassNode(FileContainer container, final ClassNode cn) {
         try {
             byte[] bytes = JDA.getClassBytes(containerName, cn);
             final Map<String, byte[]> loadedClasses = JDA.getLoadedBytes();

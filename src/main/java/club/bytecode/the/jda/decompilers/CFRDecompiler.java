@@ -1,6 +1,10 @@
 package club.bytecode.the.jda.decompilers;
 
+import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.JarUtils;
+import club.bytecode.the.jda.settings.JDADecompilerSettings;
+import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import org.apache.commons.io.FileUtils;
 import org.benf.cfr.reader.bytecode.analysis.types.JavaTypeInstance;
 import org.benf.cfr.reader.entities.ClassFile;
@@ -20,9 +24,6 @@ import org.benf.cfr.reader.util.getopt.OptionsImpl;
 import org.benf.cfr.reader.util.output.*;
 import org.objectweb.asm.tree.ClassNode;
 import org.zeroturnaround.zip.ZipUtil;
-import club.bytecode.the.jda.JarUtils;
-import club.bytecode.the.jda.settings.JDADecompilerSettings;
-import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,7 +96,7 @@ public final class CFRDecompiler extends JDADecompiler {
     }
 
     @Override
-    public String decompileClassNode(String containerName, ClassNode cn) {
+    public String decompileClassNode(FileContainer container, ClassNode cn) {
         try {
             byte[] bytes = JDA.getClassBytes(containerName, cn);
             Options options = new GetOptParser().parse(generateMainMethod(), OptionsImpl.getFactory());

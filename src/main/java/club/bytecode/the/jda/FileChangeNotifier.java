@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.ClassNode;
  */
 
 public interface FileChangeNotifier {
-    void openClassFile(String name, String container, ClassNode cn);
+    void openClassFile(String name, FileContainer container, ClassNode cn);
 
-    void openFile(String name, String container, byte[] contents);
+    void openFile(String name, FileContainer container, byte[] contents);
 }

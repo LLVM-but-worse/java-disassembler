@@ -17,7 +17,7 @@ import java.util.Map;
 public class FileContainer {
     public FileContainer(File f) {
         this.file = f;
-        this.name = f.getName();
+        this.name = f.getAbsolutePath();
     }
 
     public File file;

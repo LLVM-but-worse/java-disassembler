@@ -1,13 +1,14 @@
 package club.bytecode.the.jda.decompilers.bytecode;
 
+import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
+import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,11 +33,11 @@ public class BytecodeDecompiler extends JDADecompiler {
         return "Bytecode";
     }
 
-    public String decompileClassNode(String containerName, ClassNode cn) {
+    public String decompileClassNode(FileContainer container, ClassNode cn) {
         return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
     }
 
-    protected PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, String containerName, ClassNode cn) {
+    protected PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, FileContainer container, ClassNode cn) {
         ArrayList<String> unableToDecompile = new ArrayList<>();
         decompiledClasses.add(cn.name);
         sb.append(getAccessString(cn.access));
