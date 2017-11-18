@@ -2,13 +2,11 @@ package club.bytecode.the.jda.gui.fileviewer;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.settings.Settings;
-import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 
 public abstract class Viewer extends JPanel {
-
-    public ClassNode cn;
+    protected String pathInContainer; // path within the container
     public String name;
     public FileContainer container;
 
