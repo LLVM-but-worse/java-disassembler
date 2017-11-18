@@ -1,23 +1,23 @@
 package club.bytecode.the.jda.gui;
 
-import club.bytecode.the.jda.*;
+import club.bytecode.the.jda.FileChangeNotifier;
+import club.bytecode.the.jda.FileContainer;
+import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.Resources;
+import club.bytecode.the.jda.decompilers.Decompilers;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.gui.dialogs.AboutWindow;
-import club.bytecode.the.jda.gui.fileviewer.FileViewerPane;
-import club.bytecode.the.jda.settings.IPersistentWindow;
-import org.objectweb.asm.tree.ClassNode;
-import club.bytecode.the.*;
-import club.bytecode.the.jda.api.ExceptionUI;
-import club.bytecode.the.jda.decompilers.Decompilers;
 import club.bytecode.the.jda.gui.dialogs.FontOptionsDialog;
 import club.bytecode.the.jda.gui.dialogs.IntroWindow;
 import club.bytecode.the.jda.gui.dialogs.TabbedPane;
+import club.bytecode.the.jda.gui.fileviewer.FileViewerPane;
 import club.bytecode.the.jda.gui.fileviewer.Viewer;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
+import club.bytecode.the.jda.settings.IPersistentWindow;
 import club.bytecode.the.jda.settings.Settings;
+import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyVetoException;
@@ -178,7 +178,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         menuBar.add(fileMenu);
 
         JMenuItem mntmLoadJar = new JMenuItem("Add..");
-        mntmLoadJar.addActionListener(e -> addFile());
+        mntmLoadJar.addActionListener(e -> JDA.openFileChooser());
         fileMenu.add(mntmLoadJar);
 
         fileMenu.add(new JSeparator());
@@ -445,50 +445,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             JDA.openFiles(reopen.toArray(new File[reopen.size()]), false);
 
             refreshView();
-        }
-    }
-
-    private void addFile() {
-        JFileChooser fc = new JFileChooser();
-        try {
-            File f = new File(JDA.lastDirectory);
-            if (f.exists())
-                fc.setSelectedFile(f);
-        } catch (Exception e2) {
-
-        }
-        fc.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                if (f.isDirectory())
-                    return true;
-
-                String extension = MiscUtils.extension(f.getAbsolutePath());
-                if (extension != null)
-                    if (extension.equals("jar") || extension.equals("zip") || extension.equals("class"))
-                        return true;
-
-                return false;
-            }
-
-            @Override
-            public String getDescription() {
-                return "Class Files or Zip/Jar Archives";
-            }
-        });
-        fc.setFileHidingEnabled(false);
-        fc.setAcceptAllFileFilterUsed(false);
-        int returnVal = fc.showOpenDialog(JDA.viewer);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
-            try {
-                JDA.viewer.setIcon(true);
-                JDA.openFiles(new File[]{fc.getSelectedFile()}, true);
-                JDA.viewer.setIcon(false);
-            } catch (Exception e1) {
-                new ExceptionUI(e1);
-            }
         }
     }
 
