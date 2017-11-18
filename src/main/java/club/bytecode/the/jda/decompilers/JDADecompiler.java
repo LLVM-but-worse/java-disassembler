@@ -1,9 +1,10 @@
 package club.bytecode.the.jda.decompilers;
 
-import org.objectweb.asm.tree.ClassNode;
+import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.settings.JDADecompilerSettings;
+import org.objectweb.asm.tree.ClassNode;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,7 +18,7 @@ import java.io.StringWriter;
 public abstract class JDADecompiler {
     protected JDADecompilerSettings settings = new JDADecompilerSettings(this);
 
-    public abstract String decompileClassNode(String containerName, ClassNode cn);
+    public abstract String decompileClassNode(FileContainer container, ClassNode cn);
 
     public abstract void decompileToZip(String zipName);
 

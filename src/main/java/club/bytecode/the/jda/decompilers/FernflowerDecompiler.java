@@ -1,13 +1,14 @@
 package club.bytecode.the.jda.decompilers;
 
+import club.bytecode.the.jda.FileContainer;
+import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
+import club.bytecode.the.jda.settings.Setting;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InnerClassNode;
-import club.bytecode.the.jda.JDA;
-import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
-import club.bytecode.the.jda.settings.Setting;
 
 import java.io.IOException;
 import java.util.*;
@@ -52,7 +53,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
     }
 
     @Override
-    public String decompileClassNode(String containerName, final ClassNode cn) {
+    public String decompileClassNode(FileContainer container, final ClassNode cn) {
         try {
             Map<String, Object> options = generateFernflowerArgs();
 

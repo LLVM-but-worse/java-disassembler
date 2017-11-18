@@ -1,8 +1,9 @@
 package club.bytecode.the.jda.gui;
 
+import club.bytecode.the.jda.FileChangeNotifier;
+import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.settings.IPersistentWindow;
 import org.objectweb.asm.tree.ClassNode;
-import club.bytecode.the.jda.FileChangeNotifier;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,10 +88,10 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
     }
 
     @Override
-    public abstract void openClassFile(final String name, String container, final ClassNode cn);
+    public abstract void openClassFile(final String name, FileContainer container, final ClassNode cn);
 
     @Override
-    public abstract void openFile(final String name, String container, byte[] contents);
+    public abstract void openFile(final String name, FileContainer container, byte[] contents);
 
     protected static Dimension defaultDimensions;
     protected static Point defaultPosition;

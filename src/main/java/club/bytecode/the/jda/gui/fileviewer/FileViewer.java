@@ -1,5 +1,6 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
+import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.api.ExceptionUI;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -147,7 +148,7 @@ public class FileViewer extends Viewer {
         return asciiEncoder.canEncode(v);
     }
 
-    public FileViewer(final String name, final String container, final byte[] contents) {
+    public FileViewer(final String name, final FileContainer container, final byte[] contents) {
         this.name = name;
         this.container = container;
         this.contents = contents;

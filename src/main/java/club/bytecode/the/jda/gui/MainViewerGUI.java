@@ -409,13 +409,13 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     @Override
-    public void openClassFile(final String name, String container, final ClassNode cn) {
+    public void openClassFile(final String name, FileContainer container, final ClassNode cn) {
         for (final JDAWindow vc : windows)
             vc.openClassFile(name, container, cn);
     }
 
     @Override
-    public void openFile(final String name, String container, byte[] content) {
+    public void openFile(final String name, FileContainer container, byte[] content) {
         for (final JDAWindow vc : windows)
             vc.openFile(name, container, content);
     }

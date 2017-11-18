@@ -25,10 +25,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JDA {
     /*per version*/
@@ -163,47 +160,17 @@ public class JDA {
         return viewer.FileViewerPane.getCurrentViewer().cn;
     }
 
-    public static FileContainer findContainer(String containerName, String fileName) {
-        boolean isClassFile = containerName.endsWith(".class");
-        for (FileContainer container : files) {
-            if (!isClassFile && !container.name.equals(containerName))
-                continue;
-            else if (isClassFile && !container.name.endsWith(".class"))
-                continue;
-            if (container.getData().containsKey(fileName)) {
-                return container;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the ClassNode by the specified name
-     *
-     * @param containerName name of the FileContainer that this class is in
-     * @param name          the class name
-     * @return the ClassNode instance
-     */
-    public static ClassNode getClassNode(String containerName, String name) {
-        String classFileName = name + ".class";
-        FileContainer container = findContainer(containerName, classFileName);
-        if (container != null)
-            return container.getClassNode(classFileName);
-        else
-            return null;
-    }
-
-    public static byte[] getFileBytes(String containerName, String name) {
-        FileContainer container = findContainer(containerName, name);
+    public static byte[] getFileBytes(FileContainer container, String name) {
         if (container != null)
             return container.getData().get(name);
         else
             return null;
     }
 
-    public static byte[] getClassBytes(String containerName, ClassNode cn) {
-        byte[] bytes = getFileBytes(containerName, getClassfileName(cn));
+    public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
+        byte[] bytes = getFileBytes(container, getClassfileName(cn));
+        if (bytes == null)
+            return null;
         if (cn.version < 49)
             bytes = fixBytes(bytes); // this is inefficient!
         return bytes;
@@ -234,24 +201,6 @@ public class JDA {
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         node.accept(writer);
         return writer.toByteArray();
-    }
-
-    /**
-     * Grabs the file contents of the loaded resources.
-     *
-     * @param name the file name
-     * @return the file contents as a byte[]
-     */
-    public static byte[] getFileContents(String containerName, String name) {
-        for (FileContainer container : files) {
-            if (container.name.equals(containerName)) {
-                HashMap<String, byte[]> files = container.files;
-                if (files.containsKey(name))
-                    return files.get(name);
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -324,103 +273,93 @@ public class JDA {
         JDA.viewer.setIcon(true);
         update = true;
 
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    for (final File f : files) {
-                        final String fn = f.getName();
-                        if (!f.exists()) {
-                            update = false;
-                            showMessage("The file " + f.getAbsolutePath() + " could not be found.");
-                        } else {
-                            if (f.isDirectory()) {
-                                FileContainer container = new FileContainer(f);
-                                HashMap<String, byte[]> files = new HashMap<>();
-                                boolean finished = false;
-                                ArrayList<File> totalFiles = new ArrayList<>();
-                                totalFiles.add(f);
-                                String dir = f.getAbsolutePath();//f.getAbsolutePath().substring(0, f.getAbsolutePath().length()-f.getName().length());
+        (new Thread(() -> {
+            try {
+                for (final File fileToOpen : files) {
+                    final String fn = fileToOpen.getName();
+                    if (!fileToOpen.exists()) {
+                        update = false;
+                        showMessage("The file " + fileToOpen.getAbsolutePath() + " could not be found.");
+                    } else if (fileToOpen.isDirectory()) {
+                        FileContainer container = new FileContainer(fileToOpen);
+                        HashMap<String, byte[]> openedFiles = new HashMap<>();
+                        Set<File> totalFiles = new HashSet<>();
+                        Deque<File> queue = new ArrayDeque<>();
+                        queue.add(fileToOpen);
+                        String dir = fileToOpen.getAbsolutePath();//f.getAbsolutePath().substring(0, f.getAbsolutePath().length()-f.getName().length());
 
-                                while (!finished) {
-                                    boolean added = false;
-                                    for (int i = 0; i < totalFiles.size(); i++) {
-                                        File child = totalFiles.get(i);
-                                        if (child.listFiles() != null)
-                                            for (File rocket : child.listFiles())
-                                                if (!totalFiles.contains(rocket)) {
-                                                    totalFiles.add(rocket);
-                                                    added = true;
-                                                }
+                        while (!queue.isEmpty()) {
+                            File file = queue.remove();
+                            if (!totalFiles.add(file))
+                                continue;
+                            if (file.listFiles() != null) { // is directory
+                                for (File child : file.listFiles()) {
+                                    if (!totalFiles.contains(child)) {
+                                        queue.add(child);
                                     }
-
-                                    if (!added) {
-                                        for (File child : totalFiles)
-                                            if (child.isFile()) {
-                                                String fileName = child.getAbsolutePath().substring(dir.length() + 1, child.getAbsolutePath().length()).replaceAll("\\\\", "\\/");
-
-
-                                                files.put(fileName, Files.readAllBytes(Paths.get(child.getAbsolutePath())));
-                                            }
-                                        finished = true;
-                                    }
-                                }
-                                container.files = files;
-                                addFile(container);
-                            } else {
-                                if (fn.endsWith(".jar") || fn.endsWith(".zip")) {
-                                    try {
-                                        JarUtils.put(f);
-                                    } catch (final Exception e) {
-                                        new ExceptionUI(e);
-                                        update = false;
-                                    }
-
-                                } else if (fn.endsWith(".class")) {
-                                    try {
-                                        byte[] bytes = JarUtils.getBytes(new FileInputStream(f));
-                                        String cafebabe = String.format("%02X%02X%02X%02X", bytes[0], bytes[1], bytes[2], bytes[3]);
-                                        if (cafebabe.toLowerCase().equals("cafebabe")) {
-                                            final ClassNode cn = JarUtils.getNode(bytes);
-
-                                            FileContainer container = new FileContainer(f);
-                                            container.files.put(getClassfileName(cn), bytes);
-                                            container.add(cn);
-                                            addFile(container);
-                                        } else {
-                                            showMessage(fn + ": Header does not start with CAFEBABE, ignoring.");
-                                            update = false;
-                                        }
-                                    } catch (final Exception e) {
-                                        new ExceptionUI(e);
-                                        update = false;
-                                    }
-                                } else {
-                                    HashMap<String, byte[]> files = new HashMap<>();
-                                    byte[] bytes = JarUtils.getBytes(new FileInputStream(f));
-                                    files.put(f.getName(), bytes);
-
-
-                                    FileContainer container = new FileContainer(f);
-                                    container.files = files;
-                                    addFile(container);
                                 }
                             }
                         }
-                    }
-                } catch (final Exception e) {
-                    new ExceptionUI(e);
-                } finally {
-                    JDA.viewer.setIcon(false);
-                    if (update)
-                        try {
-                            MainViewerGUI.getComponent(FileNavigationPane.class).updateTree();
-                        } catch (java.lang.NullPointerException e) {
+
+                        for (File file : totalFiles) {
+                            if (file.isFile()) {
+                                String fileName = file.getAbsolutePath().substring(dir.length() + 1, file.getAbsolutePath().length()).replaceAll("\\\\", "\\/");
+                                openedFiles.put(fileName, Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+                            }
                         }
+
+                        container.files = openedFiles;
+                        addFile(container);
+                    } else if (fn.endsWith(".jar") || fn.endsWith(".zip")) {
+                        try {
+                            JarUtils.put(fileToOpen);
+                        } catch (final Exception e) {
+                            new ExceptionUI(e);
+                            update = false;
+                        }
+                    } else if (fn.endsWith(".class")) {
+                        try {
+                            byte[] bytes = JarUtils.getBytes(new FileInputStream(fileToOpen));
+                            String cafebabe = String.format("%02X%02X%02X%02X", bytes[0], bytes[1], bytes[2], bytes[3]);
+                            if (cafebabe.toLowerCase().equals("cafebabe")) {
+                                final ClassNode cn = JarUtils.getNode(bytes);
+
+                                FileContainer container = new FileContainer(fileToOpen);
+                                container.files.put(getClassfileName(cn), bytes);
+                                container.add(cn);
+                                addFile(container);
+                            } else {
+                                showMessage(fn + ": Header does not start with CAFEBABE, ignoring.");
+                                update = false;
+                            }
+                        } catch (final Exception e) {
+                            new ExceptionUI(e);
+                            update = false;
+                        }
+                    } else {
+                        HashMap<String, byte[]> files1 = new HashMap<>();
+                        byte[] bytes = JarUtils.getBytes(new FileInputStream(fileToOpen));
+                        files1.put(fileToOpen.getName(), bytes);
+
+
+                        FileContainer container = new FileContainer(fileToOpen);
+                        container.files = files1;
+                        addFile(container);
+                    }
+                }
+            } catch (final Exception e) {
+                new ExceptionUI(e);
+            } finally {
+                JDA.viewer.setIcon(false);
+                if (update) {
+                    try {
+                        MainViewerGUI.getComponent(FileNavigationPane.class).updateTree();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        };
-        t.start();
+        })).start();
     }
 
     public static void addFile(FileContainer fc) {
@@ -680,7 +619,7 @@ public class JDA {
             if (f.exists())
                 fc.setSelectedFile(f);
         } catch (Exception e2) {
-
+            e2.printStackTrace();
         }
         fc.setFileFilter(new JavaFileFilter());
         fc.setFileHidingEnabled(false);
