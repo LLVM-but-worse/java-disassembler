@@ -225,7 +225,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         if (parent == null)
             parent = treeRoot;
 
-        FileNode root = new FileNode(container);
+        FileNode root = new FileNode(container, isJava(container));
         parent.add(root);
         JDATreeCellRenderer renderer = new JDATreeCellRenderer();
         tree.setCellRenderer(renderer);
@@ -234,10 +234,10 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
             for (final Entry<String, byte[]> entry : container.files.entrySet()) {
                 String name = entry.getKey();
                 final String[] spl = name.split("/");
+                FileNode parentNode = root;
                 if (spl.length <= 1) {
-                    root.add(new FileNode(name));
+                    root.add(new FileNode(name, parentNode.isJava));
                 } else {
-                    FileNode parentNode = root;
                     for (final String s : spl) {
                         FileNode child = null;
                         for (int i = 0; i < parentNode.getChildCount(); i++) {
@@ -247,7 +247,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
                             }
                         }
                         if (child == null) {
-                            child = new FileNode(s);
+                            child = new FileNode(s, parentNode.isJava);
                             parentNode.add(child);
                         }
                         parentNode = child;
@@ -261,6 +261,10 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         tree.updateUI();
 
         return root;
+    }
+
+    private boolean isJava(FileContainer container) {
+        return container.name.endsWith(".java") || container.name.endsWith(".jar") || container.name.endsWith(".class");
     }
 
     @SuppressWarnings("rawtypes")
@@ -314,12 +318,17 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
 
     public class FileNode extends DefaultMutableTreeNode {
 
-        public final boolean isJava = false;
+        public final boolean isJava;
 
         private static final long serialVersionUID = -8817777566176729571L;
 
-        public FileNode(final Object o) {
+        public FileNode(final Object o, boolean isJava) {
             super(o);
+            this.isJava = isJava;
+        }
+
+        public FileNode(final Object o) {
+            this(o, false);
         }
 
         @Override

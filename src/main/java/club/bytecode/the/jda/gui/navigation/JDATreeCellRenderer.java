@@ -54,35 +54,7 @@ public class JDATreeCellRenderer extends DefaultTreeCellRenderer {
                 nodes.add(node);
                 totalNodes.add(node);
 
-                boolean isJava = false;
-                boolean finished = false;
-
-                while (!finished) { //may cause a clusterfuck with huge files
-                    if (nodes.isEmpty())
-                        finished = true;
-                    else {
-                        TreeNode treeNode = nodes.get(0);
-                        nodes.remove(treeNode);
-                        int children = treeNode.getChildCount();
-                        if (children >= 1)
-                            for (int i = 0; i < children; i++) {
-                                TreeNode child = treeNode.getChildAt(i);
-
-                                if (!totalNodes.contains(child)) {
-                                    nodes.add(child);
-                                    totalNodes.add(child);
-                                }
-
-                                if (child.toString().endsWith(".class"))
-                                    isJava = true;
-                            }
-
-                        if (isJava)
-                            nodes.clear();
-                    }
-                }
-
-                if (isJava)
+                if (node.isJava)
                     setIcon(Resources.packagesIcon);
                 else {
                     setIcon(Resources.folderIcon);
