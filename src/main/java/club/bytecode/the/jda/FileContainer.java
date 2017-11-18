@@ -52,7 +52,7 @@ public class FileContainer {
         return "";
     }
 
-    public Map<String, byte[]> getData() {
+    public Map<String, byte[]> getFiles() {
         return files;
     }
 
