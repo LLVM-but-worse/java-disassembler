@@ -154,7 +154,7 @@ public class JDA {
 
     public static byte[] getFileBytes(FileContainer container, String name) {
         if (container != null)
-            return container.getData().get(name);
+            return container.getFiles().get(name);
         else
             return null;
     }
@@ -244,12 +244,10 @@ public class JDA {
     public static Map<String, byte[]> getLoadedBytes() {
         Map<String, byte[]> data = new HashMap<>();
         for (FileContainer container : files) {
-            data.putAll(container.getData());
+            data.putAll(container.getFiles());
         }
         return data;
     }
-
-    private static boolean update = true;
 
     /**
      * Opens a file, optional if it should append to the recent files menu
@@ -258,33 +256,40 @@ public class JDA {
      * @param recentFiles if it should append to the recent files menu
      */
     public static void openFiles(final File[] files, boolean recentFiles) {
+        openFiles(files, recentFiles, null);
+    }
+
+    public static void openFiles(final File[] files, boolean recentFiles, FileNavigationPane.FileNode parent) {
         if (recentFiles)
             for (File f : files)
                 if (f.exists())
                     JDA.addRecentFile(f);
 
         JDA.viewer.setIcon(true);
-        update = true;
+
+        FileNavigationPane fnp = MainViewerGUI.getComponent(FileNavigationPane.class);
 
         (new Thread(() -> {
             try {
                 for (final File fileToOpen : files) {
                     final String fn = fileToOpen.getName();
                     if (!fileToOpen.exists()) {
-                        update = false;
                         showMessage("The file " + fileToOpen.getAbsolutePath() + " could not be found.");
                     } else if (fileToOpen.isDirectory()) {
-                        openFiles(fileToOpen.listFiles(), false);
+                        FileNavigationPane.FileNode newNode = fnp.addTreeElement(new FileContainer(fileToOpen), parent);
+                        openFiles(fileToOpen.listFiles(), false, newNode);
                     } else if (fn.endsWith(".jar") || fn.endsWith(".zip")) {
                         try {
-                            JarUtils.put(fileToOpen);
+                            FileContainer newContainer = JarUtils.load(fileToOpen);
+                            addFile(newContainer);
+                            fnp.addTreeElement(newContainer, parent);
                         } catch (final Exception e) {
                             new ExceptionUI(e);
-                            update = false;
                         }
                     } else if (fn.endsWith(".class")) {
                         FileContainer container = loadClassfile(fileToOpen, fn);
                         addFile(container);
+                        fnp.addTreeElement(container, parent);
                     } else {
                         HashMap<String, byte[]> files1 = new HashMap<>();
                         byte[] bytes = JarUtils.getBytes(new FileInputStream(fileToOpen));
@@ -292,19 +297,13 @@ public class JDA {
                         FileContainer container = new FileContainer(fileToOpen);
                         container.files = files1;
                         addFile(container);
+                        fnp.addTreeElement(container, parent);
                     }
                 }
             } catch (final Exception e) {
                 new ExceptionUI(e);
             } finally {
                 JDA.viewer.setIcon(false);
-                if (update) {
-                    try {
-                        MainViewerGUI.getComponent(FileNavigationPane.class).updateTree();
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         })).start();
     }
@@ -321,11 +320,9 @@ public class JDA {
                 return container;
             } else {
                 showMessage(fn + ": Header does not start with CAFEBABE, ignoring.");
-                update = false;
             }
         } catch (final Exception e) {
             new ExceptionUI(e);
-            update = false;
         }
         return null;
     }
@@ -575,8 +572,8 @@ public class JDA {
             };
             t.start();
         } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e)) {
-            if (viewer.FileViewerPane.getCurrentViewer() != null)
-                viewer.FileViewerPane.tabs.remove(viewer.FileViewerPane.getCurrentViewer());
+            if (viewer.fileViewerPane.getCurrentViewer() != null)
+                viewer.fileViewerPane.tabs.remove(viewer.fileViewerPane.getCurrentViewer());
         }
     }
 

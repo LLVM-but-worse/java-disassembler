@@ -217,49 +217,50 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         JDA.openFiles(files, true);
     }
 
-    public void updateTree() {
-        try {
-            treeRoot.removeAllChildren();
-            for (FileContainer container : JDA.files) {
-                FileNode root = new FileNode(container);
-                treeRoot.add(root);
-                JDATreeCellRenderer renderer = new JDATreeCellRenderer();
-                tree.setCellRenderer(renderer);
+    /**
+     * Add tree element.
+     * If parent is null, it will be added to the root node.
+     */
+    public FileNode addTreeElement(FileContainer container, FileNode parent) {
+        if (parent == null)
+            parent = treeRoot;
 
-                if (!container.files.isEmpty()) {
-                    for (final Entry<String, byte[]> entry : container.files.entrySet()) {
-                        String name = entry.getKey();
-                        final String[] spl = name.split("/");
-                        if (spl.length < 2) {
-                            root.add(new FileNode(name));
-                        } else {
-                            FileNode parent = root;
-                            for (final String s : spl) {
-                                FileNode child = null;
-                                for (int i = 0; i < parent.getChildCount(); i++) {
-                                    if (((FileNode) parent.getChildAt(i)).getUserObject().equals(s)) {
-                                        child = (FileNode) parent.getChildAt(i);
-                                        break;
-                                    }
-                                }
-                                if (child == null) {
-                                    child = new FileNode(s);
-                                    parent.add(child);
-                                }
-                                parent = child;
+        FileNode root = new FileNode(container);
+        parent.add(root);
+        JDATreeCellRenderer renderer = new JDATreeCellRenderer();
+        tree.setCellRenderer(renderer);
+
+        if (!container.files.isEmpty()) {
+            for (final Entry<String, byte[]> entry : container.files.entrySet()) {
+                String name = entry.getKey();
+                final String[] spl = name.split("/");
+                if (spl.length <= 1) {
+                    root.add(new FileNode(name));
+                } else {
+                    FileNode parentNode = root;
+                    for (final String s : spl) {
+                        FileNode child = null;
+                        for (int i = 0; i < parentNode.getChildCount(); i++) {
+                            if (((FileNode) parentNode.getChildAt(i)).getUserObject().equals(s)) {
+                                child = (FileNode) parentNode.getChildAt(i);
+                                break;
                             }
                         }
+                        if (child == null) {
+                            child = new FileNode(s);
+                            parentNode.add(child);
+                        }
+                        parentNode = child;
                     }
                 }
-
             }
-
-            treeRoot.sort();
-            tree.expandPath(new TreePath(tree.getModel().getRoot()));
-            tree.updateUI();
-        } catch (java.util.ConcurrentModificationException e) {
-            //ignore, the last file will reset everything
         }
+
+        parent.sort();
+        tree.expandPath(new TreePath(tree.getModel().getRoot()));
+        tree.updateUI();
+
+        return root;
     }
 
     @SuppressWarnings("rawtypes")
@@ -312,6 +313,8 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
     }
 
     public class FileNode extends DefaultMutableTreeNode {
+
+        public final boolean isJava = false;
 
         private static final long serialVersionUID = -8817777566176729571L;
 
@@ -399,17 +402,11 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
     public void openPath(TreePath path) {
         if (path == null)
             return;
-        final StringBuilder nameBuffer = new StringBuilder();
-        for (int i = 2; i < path.getPathCount(); i++) {
-            nameBuffer.append(path.getPathComponent(i));
-            if (i < path.getPathCount() - 1) {
-                nameBuffer.append("/");
-            }
-        }
 
         FileContainer container = null;
-        for (int i = path.getPathCount() - 1; i > 0; i--) {
-            Object o = ((FileNode) path.getPathComponent(1)).getUserObject();
+        int containerLevel;
+        for (containerLevel = path.getPathCount() - 1; containerLevel > 0; containerLevel--) {
+            Object o = ((FileNode) path.getPathComponent(containerLevel)).getUserObject();
             if (o != null && o instanceof FileContainer) {
                 container = (FileContainer) o;
                 break;
@@ -418,6 +415,14 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         if (container == null) {
             System.err.println(path);
             throw new IllegalStateException("Path isn't parented to a container?");
+        }
+
+        final StringBuilder nameBuffer = new StringBuilder();
+        for (int i = containerLevel + 1; i < path.getPathCount(); i++) {
+            nameBuffer.append(path.getPathComponent(i));
+            if (i < path.getPathCount() - 1) {
+                nameBuffer.append("/");
+            }
         }
 
         String name = nameBuffer.toString();

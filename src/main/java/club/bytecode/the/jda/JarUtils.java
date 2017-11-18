@@ -22,15 +22,7 @@ import java.util.zip.ZipInputStream;
  */
 
 public class JarUtils {
-
-    /**
-     * Loads the classes and resources from the input jar file
-     *
-     * @param jarFile   the input jar file
-     * @param clazzList the existing map of loaded classes
-     * @throws IOException
-     */
-    public static void put(final File jarFile) throws IOException {
+    public static FileContainer load(final File jarFile) throws IOException {
         FileContainer container = new FileContainer(jarFile);
         HashMap<String, byte[]> files = new HashMap<>();
 
@@ -56,8 +48,7 @@ public class JarUtils {
         }
         jis.close();
         container.files = files;
-        JDA.files.add(container);
-
+        return container;
     }
 
 

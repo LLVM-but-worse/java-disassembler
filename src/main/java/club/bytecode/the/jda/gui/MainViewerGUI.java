@@ -51,18 +51,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     public JDesktopPane desktop;
     public FileNavigationPane navigator;
-    public club.bytecode.the.jda.gui.fileviewer.FileViewerPane FileViewerPane;
+    public FileViewerPane fileViewerPane;
     public static ArrayList<JDAWindow> windows = new ArrayList<>();
-    private final ActionListener listener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent arg0) {
-            if (Settings.REFRESH_ON_VIEW_CHANGE.getBool()) {
-                if (FileViewerPane.getCurrentViewer() == null)
-                    return;
-                FileViewerPane.refreshClass.doClick();
-            }
-        }
-    };
+
     public AboutWindow aboutWindow = new AboutWindow();
     public IntroWindow introWindow = new IntroWindow();
     public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
@@ -285,7 +276,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         mnShowContainer.setSelected(Settings.SHOW_CONTAINER_NAME.getBool());
         mnShowContainer.addItemListener(e -> {
-            JTabbedPane tabs = FileViewerPane.tabs;
+            JTabbedPane tabs = fileViewerPane.tabs;
             Component[] components = tabs.getComponents();
             for (int i = 0; i < components.length; i++) {
                 Component c = components[i];
@@ -293,7 +284,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                     ((Viewer) c).updateName();
                     int idx = tabs.indexOfComponent(c);
                     tabs.setTabComponentAt(idx, new TabbedPane(c.getName(), tabs));
-                    FileViewerPane.tabs.setTitleAt(idx, c.getName());
+                    fileViewerPane.tabs.setTitleAt(idx, c.getName());
                 }
             }
             Settings.SHOW_CONTAINER_NAME.set(mnShowContainer.isSelected());
@@ -314,17 +305,17 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     private void initializeWindows() {
         navigator = new FileNavigationPane(this);
-        FileViewerPane = new FileViewerPane(this);
+        fileViewerPane = new FileViewerPane(this);
 
         desktop = new JDesktopPane();
         setContentPane(desktop);
         desktop.add(navigator);
-        desktop.add(FileViewerPane);
+        desktop.add(fileViewerPane);
         desktop.setDesktopManager(new WorkspaceDesktopManager());
         desktop.setBackground(COLOR_DESKTOP_BACKGROUND);
 
         windows.add(navigator);
-        windows.add(FileViewerPane);
+        windows.add(fileViewerPane);
     }
 
     public void resetWindows() {
@@ -386,7 +377,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     public void closeResources() {
         navigator.resetWorkspace();
-        FileViewerPane.resetWorkspace();
+        fileViewerPane.resetWorkspace();
     }
 
     public void setIcon(final boolean busy) {
@@ -421,7 +412,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     public void refreshView() {
-        FileViewerPane.refreshClass.doClick();
+        fileViewerPane.refreshClass.doClick();
     }
 
     public void reloadResources() {
@@ -467,7 +458,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     private void decompileSaveOpenedClasses() {
-        if (FileViewerPane.getCurrentViewer() == null) {
+        if (fileViewerPane.getCurrentViewer() == null) {
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
