@@ -221,7 +221,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         try {
             treeRoot.removeAllChildren();
             for (FileContainer container : JDA.files) {
-                FileNode root = new FileNode(container.name);
+                FileNode root = new FileNode(container);
                 treeRoot.add(root);
                 JDATreeCellRenderer renderer = new JDATreeCellRenderer();
                 tree.setCellRenderer(renderer);
@@ -407,15 +407,27 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
             }
         }
 
+        FileContainer container = null;
+        for (int i = path.getPathCount() - 1; i > 0; i--) {
+            Object o = ((FileNode) path.getPathComponent(1)).getUserObject();
+            if (o != null && o instanceof FileContainer) {
+                container = (FileContainer) o;
+                break;
+            }
+        }
+        if (container == null) {
+            System.err.println(path);
+            throw new IllegalStateException("Path isn't parented to a container?");
+        }
+
         String name = nameBuffer.toString();
-        String containerName = path.getPathComponent(1).toString();
         if (name.endsWith(".class")) {
-            final ClassNode cn = JDA.getClassNode(containerName, name);
+            final ClassNode cn = container.loadClass(name);
             if (cn != null) {
-                openClassFileToWorkSpace(nameBuffer.toString(), containerName, cn);
+                openClassFileToWorkSpace(nameBuffer.toString(), container, cn);
             }
         } else {
-            openFileToWorkSpace(nameBuffer.toString(), containerName, JDA.getFileBytes(containerName, nameBuffer.toString()));
+            openFileToWorkSpace(nameBuffer.toString(), container, JDA.getFileBytes(container, nameBuffer.toString()));
         }
     }
 

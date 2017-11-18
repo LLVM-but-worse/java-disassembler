@@ -34,7 +34,7 @@ public class BytecodeDecompiler extends JDADecompiler {
     }
 
     public String decompileClassNode(FileContainer container, ClassNode cn) {
-        return decompile(new PrefixedStringBuilder(), new ArrayList<>(), containerName, cn).toString();
+        return decompile(new PrefixedStringBuilder(), new ArrayList<>(), container, cn).toString();
     }
 
     protected PrefixedStringBuilder decompile(PrefixedStringBuilder sb, ArrayList<String> decompiledClasses, FileContainer container, ClassNode cn) {
@@ -82,11 +82,11 @@ public class BytecodeDecompiler extends JDADecompiler {
                 String innerClassName = innerClassNode.name;
                 if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
                     decompiledClasses.add(innerClassName);
-                    ClassNode cn1 = JDA.getClassNode(containerName, innerClassName);
+                    ClassNode cn1 = container.getClassNode(innerClassName);
                     if (cn1 != null) {
                         sb.appendPrefix("     ");
                         sb.append(JDA.nl + JDA.nl);
-                        sb = decompile(sb, decompiledClasses, containerName, cn1);
+                        sb = decompile(sb, decompiledClasses, container, cn1);
                         sb.trimPrefix(5);
                         sb.append(JDA.nl);
                     } else {

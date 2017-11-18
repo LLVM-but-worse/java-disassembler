@@ -20,23 +20,36 @@ public class FileContainer {
         this.name = f.getAbsolutePath();
     }
 
-    public File file;
-    public String name;
+    public final File file;
+    public final String name;
 
     public HashMap<String, byte[]> files = new HashMap<>();
     private Map<String, ClassNode> classes = new HashMap<>();
 
     public ClassNode getClassNode(String name) {
-        if (!classes.containsKey(name)) {
-            byte[] bytes = files.get(name);
-            if (bytes != null) {
-                ClassReader reader = new ClassReader(bytes);
-                ClassNode classNode = new ClassNode();
-                reader.accept(classNode, ClassReader.EXPAND_FRAMES);
-                classes.put(name, classNode);
-            }
-        }
+        if (classes.containsKey(name))
+            return classes.get(name);
+        ClassNode cn = loadClass(findClassfile(name));
+        if (cn != null)
+            classes.put(name, cn);
         return classes.get(name);
+    }
+
+    public ClassNode loadClass(String name) {
+        byte[] bytes = files.get(name);
+        if (bytes == null)
+            return null;
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode classNode = new ClassNode();
+        reader.accept(classNode, ClassReader.EXPAND_FRAMES);
+        return classNode;
+    }
+
+    public String findClassfile(String className) {
+        String candidate = className + ".class";
+        if (files.containsKey(candidate))
+            return candidate;
+        return "";
     }
 
     public Map<String, byte[]> getData() {
@@ -53,5 +66,10 @@ public class FileContainer {
 
     public Collection<ClassNode> getClasses() {
         return classes.values();
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

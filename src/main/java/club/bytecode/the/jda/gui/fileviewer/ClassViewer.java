@@ -25,6 +25,7 @@ import java.util.Map;
  */
 
 public class ClassViewer extends Viewer {
+    public ClassNode cn;
     private static final long serialVersionUID = -8650495368920680024L;
     private List<Thread> decompileThreads = new ArrayList<>();
 

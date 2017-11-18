@@ -61,12 +61,12 @@ public final class FernflowerDecompiler extends JDADecompiler {
             result.set(null);
 
             BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
-                ClassNode requestedCn = JDA.getClassNode(containerName, JDA.extractProxyClassName(externalPath));
+                ClassNode requestedCn = container.getClassNode(JDA.extractProxyClassName(externalPath));
                 if (requestedCn == null) {
                     System.err.println("Couldn't load " + externalPath);
-                    throw new IOException(containerName + "$" + cn + " is missing");
+                    throw new IOException(container + "$" + cn + " is missing");
                 }
-                return JDA.getClassBytes(containerName, requestedCn);
+                return JDA.getClassBytes(container, requestedCn);
             }, new IResultSaver() {
                 @Override
                 public void saveFolder(String s) {
@@ -118,7 +118,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
                 visited.add(curCn);
                 baseDecompiler.addSpace(JDA.getClassFileProxy(curCn), true);
                 for (InnerClassNode innerClass : curCn.innerClasses) {
-                    ClassNode innerCn = JDA.getClassNode(containerName, innerClass.name);
+                    ClassNode innerCn = container.getClassNode(innerClass.name);
                     if (innerCn != null && !visited.contains(innerCn)) {
                         fifo.add(innerCn);
                     }
