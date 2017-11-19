@@ -230,7 +230,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         JDATreeCellRenderer renderer = new JDATreeCellRenderer();
         tree.setCellRenderer(renderer);
 
-        if (!container.files.isEmpty()) {
+        if (container.files.size() > 1) {
             for (final Entry<String, byte[]> entry : container.files.entrySet()) {
                 String name = entry.getKey();
                 final String[] spl = name.split("/");
@@ -432,6 +432,11 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
             if (i < path.getPathCount() - 1) {
                 nameBuffer.append("/");
             }
+        }
+
+        // single-file thang
+        if (container.files.size() == 1 && nameBuffer.length() == 0) {
+            nameBuffer.append(container.files.keySet().iterator().next());
         }
 
         String name = nameBuffer.toString();
