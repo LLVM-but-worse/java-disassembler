@@ -264,7 +264,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         mntmIntro.addActionListener(arg0 -> introWindow.setVisible(true));
         helpMenu.add(mntmIntro);
 
-        mntmUpdateCheck.setSelected(Settings.DO_UPDATE_CHECK.getBool());
+        mntmUpdateCheck.setSelected(false);
+        mntmUpdateCheck.setEnabled(false);
         mntmUpdateCheck.addActionListener(e -> Settings.DO_UPDATE_CHECK.set(mntmUpdateCheck.isSelected()));
         helpMenu.add(mntmUpdateCheck);
         menuBar.add(helpMenu);
