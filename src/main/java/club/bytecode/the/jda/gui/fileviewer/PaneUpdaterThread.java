@@ -4,10 +4,10 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.decompilers.bytecode.BytecodeDecompiler;
+import club.bytecode.the.jda.settings.Settings;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import club.bytecode.the.jda.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class PaneUpdaterThread extends Thread {
     private int paneId;
     private JPanel target;
     private ClassViewer viewer;
-    private JButton button;
+    private JButton button; // this needs to be refactored into something event-based, not a stupid hack like this! 
 
     public PaneUpdaterThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, JButton button) {
         this.decompiler = decompiler;
@@ -45,7 +45,7 @@ public class PaneUpdaterThread extends Thread {
             panelArea.setCodeFoldingEnabled(true);
             panelArea.setAntiAliasingEnabled(true);
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
-            String decompileResult = decompiler.decompileClassNode(viewer.container, viewer.cn);
+            String decompileResult = decompiler.decompileClassNode(viewer.getFile().container, viewer.cn);
             panelArea.setText(stripUndisplayableChars(decompileResult));
             panelArea.setCaretPosition(0);
             panelArea.setEditable(viewer.isPaneEditable(paneId));

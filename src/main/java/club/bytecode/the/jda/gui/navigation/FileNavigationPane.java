@@ -3,6 +3,7 @@ package club.bytecode.the.jda.gui.navigation;
 import club.bytecode.the.jda.*;
 import club.bytecode.the.jda.gui.JDAWindow;
 import club.bytecode.the.jda.gui.MainViewerGUI;
+import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
@@ -182,11 +183,11 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
     }
 
     @Override
-    public void openClassFile(String name, FileContainer container, ClassNode cn) {
+    public void openClassFile(ViewerFile file, ClassNode cn) {
     }
 
     @Override
-    public void openFile(String name, FileContainer container, byte[] contents) {
+    public void openFile(ViewerFile file, byte[] contents) {
     }
 
     public static Dimension defaultDimension = new Dimension(350, -35);
@@ -202,12 +203,12 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         return defaultPosition;
     }
 
-    public void openClassFileToWorkSpace(final String name, final FileContainer container, final ClassNode node) {
-        fcn.openClassFile(name, container, node);
+    public void openClassFileToWorkSpace(ViewerFile file, final ClassNode node) {
+        fcn.openClassFile(file, node);
     }
 
-    public void openFileToWorkSpace(String name, final FileContainer container, byte[] contents) {
-        fcn.openFile(name, container, contents);
+    public void openFileToWorkSpace(ViewerFile file, byte[] contents) {
+        fcn.openFile(file, contents);
     }
 
     @Override
@@ -440,13 +441,14 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         }
 
         String name = nameBuffer.toString();
+        ViewerFile file = new ViewerFile(container, nameBuffer.toString());
         if (name.endsWith(".class")) {
             final ClassNode cn = container.loadClass(name);
             if (cn != null) {
-                openClassFileToWorkSpace(nameBuffer.toString(), container, cn);
+                openClassFileToWorkSpace(file, cn);
             }
         } else {
-            openFileToWorkSpace(nameBuffer.toString(), container, JDA.getFileBytes(container, nameBuffer.toString()));
+            openFileToWorkSpace(file, JDA.getFileBytes(file));
         }
     }
 

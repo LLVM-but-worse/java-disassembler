@@ -6,6 +6,7 @@ import club.bytecode.the.jda.api.PluginLoader;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeTokenizer;
+import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.Settings;
 import org.apache.commons.io.FileUtils;
@@ -152,15 +153,15 @@ public class JDA {
         Settings.saveGUI();
     }
 
-    public static byte[] getFileBytes(FileContainer container, String name) {
-        if (container != null)
-            return container.getFiles().get(name);
+    public static byte[] getFileBytes(ViewerFile file) {
+        if (file.container != null)
+            return file.container.getFiles().get(file.name);
         else
             return null;
     }
 
     public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
-        byte[] bytes = getFileBytes(container, container.findClassfile(cn.name));
+        byte[] bytes = getFileBytes(new ViewerFile(container, container.findClassfile(cn.name)));
         if (bytes == null)
             return null;
         if (cn.version < 49)

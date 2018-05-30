@@ -1,6 +1,5 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
-import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.api.ExceptionUI;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -34,7 +33,7 @@ public class FileViewer extends Viewer {
     boolean canRefresh = false;
 
     public void setContents() {
-        String name = this.name.toLowerCase();
+        String name = getFile().name.toLowerCase();
         panelArea.setCodeFoldingEnabled(true);
         panelArea.setAntiAliasingEnabled(true);
         RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
@@ -148,9 +147,8 @@ public class FileViewer extends Viewer {
         return asciiEncoder.canEncode(v);
     }
 
-    public FileViewer(final String name, final FileContainer container, final byte[] contents) {
-        this.name = name;
-        this.container = container;
+    public FileViewer(ViewerFile file, final byte[] contents) {
+        super(file);
         this.contents = contents;
         updateName();
         this.setLayout(new BorderLayout());
@@ -160,6 +158,7 @@ public class FileViewer extends Viewer {
         setContents();
     }
 
+    @Override
     public void refresh(JButton src) {
         if (!canRefresh) {
             src.setEnabled(true);

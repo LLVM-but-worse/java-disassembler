@@ -1,5 +1,6 @@
 package club.bytecode.the.jda;
 
+import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import org.objectweb.asm.tree.ClassNode;
 
 /**
@@ -9,7 +10,7 @@ import org.objectweb.asm.tree.ClassNode;
  */
 
 public interface FileChangeNotifier {
-    void openClassFile(String name, FileContainer container, ClassNode cn);
+    void openClassFile(ViewerFile file, ClassNode cn);
 
-    void openFile(String name, FileContainer container, byte[] contents);
+    void openFile(ViewerFile file, byte[] contents);
 }
