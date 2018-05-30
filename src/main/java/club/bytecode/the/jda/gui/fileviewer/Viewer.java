@@ -1,6 +1,7 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
 import club.bytecode.the.jda.settings.Settings;
+import com.strobel.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -25,5 +26,5 @@ public abstract class Viewer extends JPanel {
         this.setName(getFile().name + (Settings.SHOW_CONTAINER_NAME.getBool() ? "(" + getFile().container + ")" : ""));
     }
 
-    public abstract void refresh(JButton button);
+    public abstract void refresh(@Nullable JButton button);
 }

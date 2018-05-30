@@ -55,9 +55,9 @@ public class FileViewerPane extends JDAWindow {
             if (tabComp != null) {
                 assert(tabComp instanceof Viewer);
                 Viewer viewer = (Viewer) tabComp;
-                JDA.viewer.setIcon(true);
+                JDA.setBusy(true);
                 viewer.refresh(refreshClass);
-                JDA.viewer.setIcon(false);
+                JDA.setBusy(false);
             }
         })).start());
 
@@ -136,8 +136,13 @@ public class FileViewerPane extends JDAWindow {
         return (Viewer) tabs.getSelectedComponent();
     }
     
-    public Viewer[] getLoadedViewers() {
-        return (Viewer[]) tabs.getComponents();
+    public List<Viewer> getLoadedViewers() {
+        ArrayList<Viewer> result = new ArrayList<>();
+        for (Component c : tabs.getComponents()) {
+            if (c instanceof Viewer)
+                result.add((Viewer) c);
+        }
+        return result;
     }
 
     /**

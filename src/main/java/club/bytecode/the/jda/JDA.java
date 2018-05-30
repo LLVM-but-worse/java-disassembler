@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JDA {
     /*per version*/
@@ -49,6 +50,7 @@ public class JDA {
     public static String lastDirectory = "";
     public static List<Process> createdProcesses = new ArrayList<>();
     public static List<Plugin> plugins = new ArrayList<>();
+    private static AtomicInteger jobCount = new AtomicInteger(0);
 
     /**
      * Main startup
@@ -151,6 +153,34 @@ public class JDA {
         if (!viewer.isMaximized)
             viewer.unmaximizedPos = viewer.getLocation();
         Settings.saveGUI();
+    }
+    
+    /**
+     * Waits for all busy-setting tasks to complete.
+     */
+    public static void waitForTasks() {
+        while (jobCount.get() > 0) {
+            try {
+                Thread.sleep(10L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Sets the busy state, and toggles the spinner icon
+     * Make sure to call me OUTSIDE of your worker thread for busy=true!
+     * Then, you must call again busy=false once your worker thread finishes!
+     * @param busy whether a background task is running
+     */
+    public static void setBusy(boolean busy) {
+        if (busy)
+            jobCount.incrementAndGet();
+        else
+            jobCount.decrementAndGet();
+        assert (jobCount.get() >= 0);
+        viewer.setIcon(busy);
     }
 
     public static byte[] getFileBytes(ViewerFile file) {
@@ -261,12 +291,12 @@ public class JDA {
     }
 
     public static void openFiles(final File[] files, boolean recentFiles, FileNavigationPane.FileNode parent) {
+        JDA.setBusy(true);
+        
         if (recentFiles)
             for (File f : files)
                 if (f.exists())
                     JDA.addRecentFile(f);
-
-        JDA.viewer.setIcon(true);
 
         FileNavigationPane fnp = MainViewerGUI.getComponent(FileNavigationPane.class);
 
@@ -304,7 +334,7 @@ public class JDA {
             } catch (final Exception e) {
                 new ExceptionUI(e);
             } finally {
-                JDA.viewer.setIcon(false);
+                JDA.setBusy(false);
             }
         })).start();
     }
@@ -559,12 +589,12 @@ public class JDA {
 
                         final File file2 = file;
 
-                        JDA.viewer.setIcon(true);
+                        JDA.setBusy(true);
                         Thread t = new Thread() {
                             @Override
                             public void run() {
                                 JarUtils.saveAsJar(JDA.getLoadedBytes(), file2.getAbsolutePath());
-                                JDA.viewer.setIcon(false);
+                                JDA.setBusy(false);
                             }
                         };
                         t.start();
@@ -595,9 +625,9 @@ public class JDA {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
             try {
-                JDA.viewer.setIcon(true);
+                JDA.setBusy(true);
                 JDA.openFiles(new File[]{fc.getSelectedFile()}, true);
-                JDA.viewer.setIcon(false);
+                JDA.setBusy(false);
             } catch (Exception e1) {
                 new ExceptionUI(e1);
             }
