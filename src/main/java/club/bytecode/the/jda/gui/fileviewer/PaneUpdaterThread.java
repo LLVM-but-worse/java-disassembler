@@ -4,10 +4,11 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.decompilers.bytecode.BytecodeDecompiler;
+import club.bytecode.the.jda.settings.Settings;
+import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import club.bytecode.the.jda.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,14 +24,15 @@ public class PaneUpdaterThread extends Thread {
     private int paneId;
     private JPanel target;
     private ClassViewer viewer;
-    private JButton button;
+    @Nullable private JButton button; // this needs to be refactored into something event-based, not a stupid hack like this! 
 
-    public PaneUpdaterThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, JButton button) {
+    public PaneUpdaterThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, @Nullable JButton button) {
         this.decompiler = decompiler;
         this.paneId = paneId;
         this.target = target;
         this.viewer = viewer;
         this.button = button;
+        JDA.setBusy(true);
     }
 
     public void run() {
@@ -45,7 +47,7 @@ public class PaneUpdaterThread extends Thread {
             panelArea.setCodeFoldingEnabled(true);
             panelArea.setAntiAliasingEnabled(true);
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
-            String decompileResult = decompiler.decompileClassNode(viewer.container, viewer.cn);
+            String decompileResult = decompiler.decompileClassNode(viewer.getFile().container, viewer.cn);
             panelArea.setText(stripUndisplayableChars(decompileResult));
             panelArea.setCaretPosition(0);
             panelArea.setEditable(viewer.isPaneEditable(paneId));
@@ -58,7 +60,7 @@ public class PaneUpdaterThread extends Thread {
             new ExceptionUI(e);
         } finally {
             viewer.resetDivider();
-            JDA.viewer.setIcon(false);
+            JDA.setBusy(false);
             if (button != null)
                 button.setEnabled(true);
         }
@@ -70,14 +72,14 @@ public class PaneUpdaterThread extends Thread {
         while (idx < s.length()) {
             char c = s.charAt(idx);
             if (isUndisplayable(c)) {
-                result.append(s.substring(startIdx, idx));
+                result.append(s, startIdx, idx);
                 result.append("\\u").append(Integer.toHexString(c));
                 startIdx = idx + 1;
             }
             idx++;
         }
         if (idx > startIdx)
-            result.append(s.substring(startIdx, idx));
+            result.append(s, startIdx, idx);
         return result.toString();
     }
 

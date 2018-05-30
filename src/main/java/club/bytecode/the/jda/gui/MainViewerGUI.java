@@ -12,6 +12,7 @@ import club.bytecode.the.jda.gui.dialogs.IntroWindow;
 import club.bytecode.the.jda.gui.dialogs.TabbedPane;
 import club.bytecode.the.jda.gui.fileviewer.FileViewerPane;
 import club.bytecode.the.jda.gui.fileviewer.Viewer;
+import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.IPersistentWindow;
 import club.bytecode.the.jda.settings.Settings;
@@ -381,6 +382,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         fileViewerPane.resetWorkspace();
     }
 
+    /**
+     * Toggles the spinner icon on and off.
+     * DON'T CALL ME DIRECTLY. CALL JDA.setBusy INSTEAD!!!!
+     * @param busy whether to show the busy spinner icon or not
+     */
     public void setIcon(final boolean busy) {
         SwingUtilities.invokeLater(() -> {
             if (busy) {
@@ -401,15 +407,15 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     @Override
-    public void openClassFile(final String name, FileContainer container, final ClassNode cn) {
+    public void openClassFile(ViewerFile file, final ClassNode cn) {
         for (final JDAWindow vc : windows)
-            vc.openClassFile(name, container, cn);
+            vc.openClassFile(file, cn);
     }
 
     @Override
-    public void openFile(final String name, FileContainer container, byte[] content) {
+    public void openFile(ViewerFile file, byte[] content) {
         for (final JDAWindow vc : windows)
-            vc.openFile(name, container, content);
+            vc.openFile(file, content);
     }
 
     public void refreshView() {
@@ -429,13 +435,26 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                 result = k;
 
         if (result == 0) {
-            ArrayList<File> reopen = new ArrayList<>();
+            List<File> reopenContainers = new ArrayList<>();
             for (FileContainer container : JDA.files)
-                reopen.add(container.file);
+                reopenContainers.add(container.file);
 
             JDA.files.clear();
-            JDA.openFiles(reopen.toArray(new File[reopen.size()]), false);
+            navigator.resetWorkspace();
 
+            JDA.openFiles(reopenContainers.toArray(new File[reopenContainers.size()]), false);
+            JDA.waitForTasks(); // this is not really ideal, but whatever.
+            assert(JDA.files.size() > 0);
+            for (Viewer v : fileViewerPane.getLoadedViewers()) {
+                for (FileContainer newContainer : JDA.files) {
+                    if (newContainer.file.equals(v.getFile().container.file)) {
+                        v.setFile(new ViewerFile(newContainer, v.getFile().name));
+                        v.refresh(null);
+                        System.out.println("Found it");
+                        break;
+                    }
+                }
+            }
             refreshView();
         }
     }

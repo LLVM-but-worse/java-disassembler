@@ -283,7 +283,9 @@ public class InstructionPrinter {
 
     protected String printInvokeDynamicInsNode(InvokeDynamicInsnNode idin) {
         StringBuilder sb = new StringBuilder();
-        sb.append(nameOpcode(idin.opcode())).append(" ").append(idin.bsm.getName()).append("(");
+        final String bsmName = idin.bsm.getName();
+        final boolean isMetafactory = bsmName.equals("metafactory");
+        sb.append(nameOpcode(idin.opcode())).append(" ").append(bsmName).append("<");
 
         String desc = idin.desc;
         String partedDesc = idin.desc.substring(2);
@@ -298,8 +300,32 @@ public class InstructionPrinter {
         }
 
         sb.append(desc);
+        sb.append(">(\n");
+        Object[] bsmArgs = idin.bsmArgs;
+        for (int i = 0; i < bsmArgs.length; i++) {
+            Object arg = bsmArgs[i];
+            sb.append("                ");
+            sb.append(arg);
+            if (i < bsmArgs.length - 1) {
+                sb.append(", ");
+            }
+            if (isMetafactory) {
+                switch(i) {
+                    case 0:
+                        sb.append(" // caller");
+                        break;
+                    case 1:
+                        sb.append(" // invokedName");
+                        break;
+                    case 2:
+                        sb.append(" // invokedType");
+                        break;                        
+                }
+            }
+            sb.append("\n");
+        }
 
-        sb.append(");");
+        sb.append("             );");
 
         return sb.toString();
     }

@@ -1,7 +1,7 @@
 package club.bytecode.the.jda.gui;
 
 import club.bytecode.the.jda.FileChangeNotifier;
-import club.bytecode.the.jda.FileContainer;
+import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.settings.IPersistentWindow;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -19,6 +19,8 @@ import java.beans.PropertyVetoException;
  * @author WaterWolf
  */
 
+// TODO: why does this implement FileChangeNotifier?
+// that ought to be refactored
 public abstract class JDAWindow extends JInternalFrame implements FileChangeNotifier, IPersistentWindow {
     private String windowId;
 
@@ -88,10 +90,10 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
     }
 
     @Override
-    public abstract void openClassFile(final String name, FileContainer container, final ClassNode cn);
+    public abstract void openClassFile(ViewerFile file, final ClassNode cn);
 
     @Override
-    public abstract void openFile(final String name, FileContainer container, byte[] contents);
+    public abstract void openFile(ViewerFile file, byte[] contents);
 
     protected static Dimension defaultDimensions;
     protected static Point defaultPosition;
