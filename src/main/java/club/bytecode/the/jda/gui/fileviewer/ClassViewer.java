@@ -1,8 +1,8 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
-import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
+import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -99,9 +99,8 @@ public class ClassViewer extends Viewer {
     public List<RSyntaxTextArea> javas = Arrays.asList(null, null, null);
     public List<SearchPanel> searches = Arrays.asList(null, null, null);
 
-    public ClassViewer(final String name, final FileContainer container, final ClassNode cn) {
-        this.name = name;
-        this.container = container;
+    public ClassViewer(ViewerFile file, final ClassNode cn) {
+        super(file);
         this.cn = cn;
         updateName();
         this.setLayout(new BorderLayout());
@@ -110,8 +109,7 @@ public class ClassViewer extends Viewer {
         this.sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sp, panels.get(2));
         this.add(sp2, BorderLayout.CENTER);
 
-        JDA.viewer.setIcon(true);
-        startPaneUpdater(null);
+        refresh(null);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 resetDivider();
@@ -163,8 +161,9 @@ public class ClassViewer extends Viewer {
         }
     }
 
-    public void startPaneUpdater(final JButton button) {
-        this.cn = container.getClassNode(cn.name); //update the classnode
+    @Override
+    public void refresh(@Nullable final JButton button) {
+        this.cn = getFile().container.getClassNode(cn.name); //update the classnode
         setPanes();
 
         for (JPanel jpanel : panels) {

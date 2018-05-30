@@ -6,6 +6,7 @@ import club.bytecode.the.jda.api.PluginLoader;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeTokenizer;
+import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.Settings;
 import org.apache.commons.io.FileUtils;
@@ -27,10 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JDA {
     /*per version*/
-    public static final String version = "0.0.7";
+    public static final String version = "0.0.8";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
@@ -48,6 +50,7 @@ public class JDA {
     public static String lastDirectory = "";
     public static List<Process> createdProcesses = new ArrayList<>();
     public static List<JDAPlugin> plugins = new ArrayList<>();
+    private static AtomicInteger jobCount = new AtomicInteger(0);
 
     /**
      * Main startup
@@ -151,16 +154,44 @@ public class JDA {
             viewer.unmaximizedPos = viewer.getLocation();
         Settings.saveGUI();
     }
+    
+    /**
+     * Waits for all busy-setting tasks to complete.
+     */
+    public static void waitForTasks() {
+        while (jobCount.get() > 0) {
+            try {
+                Thread.sleep(10L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    public static byte[] getFileBytes(FileContainer container, String name) {
-        if (container != null)
-            return container.getFiles().get(name);
+    /**
+     * Sets the busy state, and toggles the spinner icon
+     * Make sure to call me OUTSIDE of your worker thread for busy=true!
+     * Then, you must call again busy=false once your worker thread finishes!
+     * @param busy whether a background task is running
+     */
+    public static void setBusy(boolean busy) {
+        if (busy)
+            jobCount.incrementAndGet();
+        else
+            jobCount.decrementAndGet();
+        assert (jobCount.get() >= 0);
+        viewer.setIcon(busy);
+    }
+
+    public static byte[] getFileBytes(ViewerFile file) {
+        if (file.container != null)
+            return file.container.getFiles().get(file.name);
         else
             return null;
     }
 
     public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
-        byte[] bytes = getFileBytes(container, container.findClassfile(cn.name));
+        byte[] bytes = getFileBytes(new ViewerFile(container, container.findClassfile(cn.name)));
         if (bytes == null)
             return null;
         if (cn.version < 49)
@@ -260,12 +291,12 @@ public class JDA {
     }
 
     public static void openFiles(final File[] files, boolean recentFiles, FileNavigationPane.FileNode parent) {
+        JDA.setBusy(true);
+        
         if (recentFiles)
             for (File f : files)
                 if (f.exists())
                     JDA.addRecentFile(f);
-
-        JDA.viewer.setIcon(true);
 
         FileNavigationPane fnp = MainViewerGUI.getComponent(FileNavigationPane.class);
 
@@ -303,7 +334,7 @@ public class JDA {
             } catch (final Exception e) {
                 new ExceptionUI(e);
             } finally {
-                JDA.viewer.setIcon(false);
+                JDA.setBusy(false);
             }
         })).start();
     }
@@ -565,12 +596,12 @@ public class JDA {
 
                         final File file2 = file;
 
-                        JDA.viewer.setIcon(true);
+                        JDA.setBusy(true);
                         Thread t = new Thread() {
                             @Override
                             public void run() {
                                 JarUtils.saveAsJar(JDA.getLoadedBytes(), file2.getAbsolutePath());
-                                JDA.viewer.setIcon(false);
+                                JDA.setBusy(false);
                             }
                         };
                         t.start();
@@ -601,9 +632,9 @@ public class JDA {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             JDA.lastDirectory = fc.getSelectedFile().getAbsolutePath();
             try {
-                JDA.viewer.setIcon(true);
+                JDA.setBusy(true);
                 JDA.openFiles(new File[]{fc.getSelectedFile()}, true);
-                JDA.viewer.setIcon(false);
+                JDA.setBusy(false);
             } catch (Exception e1) {
                 new ExceptionUI(e1);
             }
