@@ -36,12 +36,12 @@ public class ExportJar extends JFrame {
         getContentPane().add(btnNewButton);
 
         btnNewButton.addActionListener(arg0 -> {
-            JDA.viewer.setIcon(true);
+            JDA.setBusy(true);
             Thread t = new Thread() {
                 @Override
                 public void run() {
                     JarUtils.saveAsJar(JDA.getLoadedClasses(), jarPath, mani.getText());
-                    JDA.viewer.setIcon(false);
+                    JDA.setBusy(false);
                 }
             };
             t.start();

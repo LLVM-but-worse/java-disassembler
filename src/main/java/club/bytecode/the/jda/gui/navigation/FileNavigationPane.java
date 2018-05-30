@@ -448,7 +448,12 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
                 openClassFileToWorkSpace(file, cn);
             }
         } else {
-            openFileToWorkSpace(file, JDA.getFileBytes(file));
+            byte[] fileContents = JDA.getFileBytes(file);
+            if (fileContents != null) { // if it's null, it's a directory or some non-leaf tree node
+                openFileToWorkSpace(file, fileContents);
+            } else {
+                tree.expandPath(path);
+            }
         }
     }
 

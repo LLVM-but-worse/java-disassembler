@@ -382,6 +382,11 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         fileViewerPane.resetWorkspace();
     }
 
+    /**
+     * Toggles the spinner icon on and off.
+     * DON'T CALL ME DIRECTLY. CALL JDA.setBusy INSTEAD!!!!
+     * @param busy whether to show the busy spinner icon or not
+     */
     public void setIcon(final boolean busy) {
         SwingUtilities.invokeLater(() -> {
             if (busy) {
@@ -430,14 +435,26 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                 result = k;
 
         if (result == 0) {
-            ArrayList<File> reopen = new ArrayList<>();
+            List<File> reopenContainers = new ArrayList<>();
             for (FileContainer container : JDA.files)
-                reopen.add(container.file);
+                reopenContainers.add(container.file);
 
             JDA.files.clear();
-            closeResources();
+            navigator.resetWorkspace();
 
-            JDA.openFiles(reopen.toArray(new File[reopen.size()]), false);
+            JDA.openFiles(reopenContainers.toArray(new File[reopenContainers.size()]), false);
+            JDA.waitForTasks(); // this is not really ideal, but whatever.
+            assert(JDA.files.size() > 0);
+            for (Viewer v : fileViewerPane.getLoadedViewers()) {
+                for (FileContainer newContainer : JDA.files) {
+                    if (newContainer.file.equals(v.getFile().container.file)) {
+                        v.setFile(new ViewerFile(newContainer, v.getFile().name));
+                        v.refresh(null);
+                        System.out.println("Found it");
+                        break;
+                    }
+                }
+            }
             refreshView();
         }
     }

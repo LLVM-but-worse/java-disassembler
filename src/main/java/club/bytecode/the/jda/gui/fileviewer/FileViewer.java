@@ -1,6 +1,7 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
 import club.bytecode.the.jda.api.ExceptionUI;
+import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -159,9 +160,11 @@ public class FileViewer extends Viewer {
     }
 
     @Override
-    public void refresh(JButton src) {
+    public void refresh(@Nullable JButton src) {
         if (!canRefresh) {
-            src.setEnabled(true);
+            if (src != null) { // this is such a kludge
+                src.setEnabled(true);
+            }
             return;
         }
 
@@ -175,6 +178,8 @@ public class FileViewer extends Viewer {
         panel2.add(label, BorderLayout.CENTER);
         panel2.updateUI();
 
-        src.setEnabled(true);
+        if (src != null) {
+            src.setEnabled(true);
+        }
     }
 }
