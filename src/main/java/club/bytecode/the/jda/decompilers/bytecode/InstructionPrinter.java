@@ -1,9 +1,9 @@
 package club.bytecode.the.jda.decompilers.bytecode;
 
+import club.bytecode.the.jda.api.ExceptionUI;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
-import club.bytecode.the.jda.api.ExceptionUI;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -242,7 +242,7 @@ public class InstructionPrinter {
 
                 if (desc == null || desc.equals("null"))
                     desc = tin.desc;
-            } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+            } catch (java.lang.ArrayIndexOutOfBoundsException | UnsupportedOperationException e) {
 
             }
             return nameOpcode(tin.opcode()) + " " + desc;
@@ -293,7 +293,7 @@ public class InstructionPrinter {
 
             if (desc == null || desc.equals("null"))
                 desc = idin.desc;
-        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+        } catch (java.lang.ArrayIndexOutOfBoundsException | UnsupportedOperationException e) {
 
         }
 

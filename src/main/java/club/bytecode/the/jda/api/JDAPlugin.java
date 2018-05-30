@@ -2,7 +2,7 @@ package club.bytecode.the.jda.api;
 
 import club.bytecode.the.jda.FileContainer;
 
-public interface Plugin {
+public interface JDAPlugin {
     int onGUILoad();
 
     int onExit();
