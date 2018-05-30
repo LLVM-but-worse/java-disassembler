@@ -1,7 +1,7 @@
 package club.bytecode.the.jda;
 
 import club.bytecode.the.jda.api.ExceptionUI;
-import club.bytecode.the.jda.api.Plugin;
+import club.bytecode.the.jda.api.JDAPlugin;
 import club.bytecode.the.jda.api.PluginLoader;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
@@ -47,7 +47,7 @@ public class JDA {
     private static List<String> recentFiles = new ArrayList<>();
     public static String lastDirectory = "";
     public static List<Process> createdProcesses = new ArrayList<>();
-    public static List<Plugin> plugins = new ArrayList<>();
+    public static List<JDAPlugin> plugins = new ArrayList<>();
 
     /**
      * Main startup
@@ -94,7 +94,7 @@ public class JDA {
                 System.out.println("Skipping non-jar " + pluginFile.getName());
                 continue;
             }
-            Plugin pluginInstance = PluginLoader.tryLoadPlugin(pluginFile);
+            JDAPlugin pluginInstance = PluginLoader.tryLoadPlugin(pluginFile);
             if (pluginInstance != null)
                 plugins.add(pluginInstance);
         }
@@ -105,7 +105,7 @@ public class JDA {
         atmf.putMapping(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE, BytecodeTokenizer.class.getName());
         FoldParserManager.get().addFoldParserMapping(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE, new BytecodeFoldParser());
 
-        plugins.forEach(Plugin::onGUILoad);
+        plugins.forEach(JDAPlugin::onGUILoad);
     }
 
     // todo: rewrite
@@ -138,7 +138,7 @@ public class JDA {
     }
 
     private static void onExit() {
-        plugins.forEach(Plugin::onExit);
+        plugins.forEach(JDAPlugin::onExit);
 
         for (Process proc : createdProcesses)
             proc.destroy();
@@ -329,6 +329,13 @@ public class JDA {
 
     public static void addFile(FileContainer fc) {
         JDA.files.add(fc);
+        for (String cc : fc.getFiles().keySet()) {
+            try {
+                fc.add(fc.loadClass(cc));
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
         plugins.forEach((plugin -> plugin.onAddFile(fc)));
     }
 
