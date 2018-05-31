@@ -11,6 +11,7 @@ import org.mapleir.context.AnalysisContext;
 import org.mapleir.context.BasicAnalysisContext;
 import org.mapleir.context.IRCache;
 import org.mapleir.ir.cfg.builder.ControlFlowGraphBuilder;
+import org.mapleir.jdaplugin.gui.AboutDialog;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
@@ -69,5 +70,10 @@ public class MaplePlugin implements JDAPlugin {
 	@Override
 	public void onCloseFile(FileContainer fc) {
 		cxts.remove(fc);
+	}
+
+	@Override
+	public void onPluginButton() {
+		new AboutDialog().show();		
 	}
 }

@@ -4,6 +4,7 @@ import club.bytecode.the.jda.FileChangeNotifier;
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.Resources;
+import club.bytecode.the.jda.api.JDAPlugin;
 import club.bytecode.the.jda.decompilers.Decompilers;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.gui.dialogs.AboutWindow;
@@ -43,7 +44,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public JMenu viewMenu;
     public JMenu fileMenu;
     public JMenu windowMenu;
-    public JMenu settingsMenu;
+    public JMenu editMenu;
     public JMenu helpMenu;
 
     public boolean isMaximized = false;
@@ -64,6 +65,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     private JMenuItem spinnerMenu = new JMenuItem("");
     public FontOptionsDialog fontOptionsDialog = new FontOptionsDialog();
+    public JMenu settingsMenu;
+    public JMenu pluginsMenu;
 
     public MainViewerGUI() {
         initializeWindows();
@@ -123,6 +126,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         this.setIconImages(Resources.iconList);
 
         initializeMenubar();
+        initializePanelGroup();
 
         if (JDA.previewCopy)
             setTitle("JDA v" + JDA.version + " Preview");
@@ -161,12 +165,15 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         fileMenu = new JMenu("File");
         viewMenu = new JMenu("View");
         windowMenu = new JMenu("Window");
-        settingsMenu = new JMenu("Settings");
+        editMenu = new JMenu("Edit");
         helpMenu = new JMenu("Help");
         setJMenuBar(menuBar);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        // ===========================================================================================
+        // File menu
+        // ===========================================================================================
         menuBar.add(fileMenu);
 
         JMenuItem mntmLoadJar = new JMenuItem("Add..");
@@ -215,66 +222,24 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         fileMenu.add(mntmExit);
 
-        menuBar.add(viewMenu);
-        viewMenu.add(generatePane(0));
-        viewMenu.add(generatePane(1));
-        viewMenu.add(generatePane(2));
-
-        for (JDAWindow frame : windows) {
-            JMenuItem button = new JMenuItem(frame.getName());
-            button.addActionListener(e -> {
-                try {
-                    frame.setIcon(false);
-                    frame.setVisible(true);
-                } catch (PropertyVetoException e1) {
-                }
-            });
-            windowMenu.add(button);
-        }
-        windowMenu.add(new JSeparator());
-
-        mnSnapToEdges.setSelected(Settings.SNAP_TO_EDGES.getBool());
-        mnSnapToEdges.addItemListener(e -> Settings.SNAP_TO_EDGES.set(mnSnapToEdges.isSelected()));
-        windowMenu.add(mnSnapToEdges);
-
-        menuBar.add(windowMenu);
-
+        // ===========================================================================================
+        // Edit menu
+        // ===========================================================================================
+        menuBar.add(editMenu);
+        
+        // -------------------------------------------------------------------------------------------
+        // Settings menu
+        settingsMenu = new JMenu("Settings");
+        editMenu.add(settingsMenu);
+        
         refreshOnChange.addItemListener(e -> Settings.REFRESH_ON_VIEW_CHANGE.set(refreshOnChange.isSelected()));
         refreshOnChange.setSelected(Settings.REFRESH_ON_VIEW_CHANGE.getBool());
         settingsMenu.add(refreshOnChange);
-
-        settingsMenu.add(new JSeparator());
-
-        mntmSetOptionalLibrary.addActionListener(e -> setOptionalLibrary());
-
-        settingsMenu.add(mntmSetOptionalLibrary);
-
-        settingsMenu.add(new JSeparator());
-
-        for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
-            JMenuItem settingsButton = new JMenuItem(decompiler.getName());
-            settingsButton.addActionListener(e -> decompiler.getSettings().displayDialog());
-            settingsMenu.add(settingsButton);
-        }
-
-        menuBar.add(settingsMenu);
-
-        mntmAbout.addActionListener(arg0 -> aboutWindow.setVisible(true));
-        helpMenu.add(mntmAbout);
-
-        mntmIntro.addActionListener(arg0 -> introWindow.setVisible(true));
-        helpMenu.add(mntmIntro);
-
-        mntmUpdateCheck.setSelected(false);
-        mntmUpdateCheck.setEnabled(false);
-        mntmUpdateCheck.addActionListener(e -> Settings.DO_UPDATE_CHECK.set(mntmUpdateCheck.isSelected()));
-        helpMenu.add(mntmUpdateCheck);
-        menuBar.add(helpMenu);
-
-        menuBar.add(spinnerMenu);
-
+        
         mntmFontSettings.addActionListener(e -> fontOptionsDialog.display());
-        viewMenu.add(mntmFontSettings);
+        settingsMenu.add(mntmFontSettings);
+
+        settingsMenu.add(new JSeparator());
 
         mnShowContainer.setSelected(Settings.SHOW_CONTAINER_NAME.getBool());
         mnShowContainer.addItemListener(e -> {
@@ -292,7 +257,78 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             Settings.SHOW_CONTAINER_NAME.set(mnShowContainer.isSelected());
         });
         viewMenu.add(mnShowContainer);
+        mntmSetOptionalLibrary.addActionListener(e -> setOptionalLibrary());
+        settingsMenu.add(mntmSetOptionalLibrary);
 
+        settingsMenu.add(new JSeparator());
+
+        for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
+            JMenuItem settingsButton = new JMenuItem(decompiler.getName());
+            settingsButton.addActionListener(e -> decompiler.getSettings().displayDialog());
+            settingsMenu.add(settingsButton);
+        }
+        
+        // -------------------------------------------------------------------------------------------
+        // Plugins menu
+        pluginsMenu = new JMenu("Plugins");
+        editMenu.add(pluginsMenu);
+        for (JDAPlugin plugin : JDA.getLoadedPlugins()) {
+            JMenuItem button = new JMenuItem(plugin.getName());
+            button.addActionListener((e) -> plugin.onPluginButton());
+            pluginsMenu.add(button);
+        }
+        
+        // ===========================================================================================
+        // View menu
+        // ===========================================================================================
+        menuBar.add(viewMenu);
+        viewMenu.add(generatePane(0));
+        viewMenu.add(generatePane(1));
+        viewMenu.add(generatePane(2));
+        
+        // ===========================================================================================
+        // Windows menu
+        // ===========================================================================================
+        menuBar.add(windowMenu);
+        for (JDAWindow frame : windows) {
+            JMenuItem button = new JMenuItem(frame.getName());
+            button.addActionListener(e -> {
+                try {
+                    frame.setIcon(false);
+                    frame.setVisible(true);
+                } catch (PropertyVetoException e1) {
+                }
+            });
+            windowMenu.add(button);
+        }
+        windowMenu.add(new JSeparator());
+
+        mnSnapToEdges.setSelected(Settings.SNAP_TO_EDGES.getBool());
+        mnSnapToEdges.addItemListener(e -> Settings.SNAP_TO_EDGES.set(mnSnapToEdges.isSelected()));
+        windowMenu.add(mnSnapToEdges);
+        
+        // ===========================================================================================
+        // Help menu
+        // ===========================================================================================
+        menuBar.add(helpMenu);
+        mntmAbout.addActionListener(arg0 -> aboutWindow.setVisible(true));
+        helpMenu.add(mntmAbout);
+
+        mntmIntro.addActionListener(arg0 -> introWindow.setVisible(true));
+        helpMenu.add(mntmIntro);
+
+        mntmUpdateCheck.setSelected(false);
+        mntmUpdateCheck.setEnabled(false);
+        mntmUpdateCheck.addActionListener(e -> Settings.DO_UPDATE_CHECK.set(mntmUpdateCheck.isSelected()));
+        helpMenu.add(mntmUpdateCheck);
+        
+        // ===========================================================================================
+        // Spinner (must go last)
+        // ===========================================================================================
+        menuBar.add(spinnerMenu);
+    }
+    
+    private void initializePanelGroup() {
         panelGroup1.setSelected(allDecompilersRev.get(panelGroup1).get(Decompilers.FERNFLOWER).getModel(), true);
         panelGroup2.setSelected(allDecompilersRev.get(panelGroup2).get(Decompilers.BYTECODE).getModel(), true);
         panelGroup3.setSelected(allDecompilersRev.get(panelGroup3).get(null).getModel(), true);
