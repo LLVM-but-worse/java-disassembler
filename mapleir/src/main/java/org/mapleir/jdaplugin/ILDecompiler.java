@@ -15,7 +15,7 @@ import org.mapleir.stdlib.util.TabbedStringWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class ILDecompiler extends JDADecompiler {
+public class ILDecompiler extends JDADecompiler implements MapleComponent {
     @Override
     public String decompileClassNode(FileContainer container, ClassNode cn) {
         TabbedStringWriter sw = new TabbedStringWriter();

@@ -5,7 +5,7 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.Resources;
 import club.bytecode.the.jda.gui.JDAWindow;
 import club.bytecode.the.jda.gui.MainViewerGUI;
-import club.bytecode.the.jda.gui.dialogs.TabbedPane;
+import club.bytecode.the.jda.gui.components.TabbedPane;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import org.mapleir.stdlib.util.IndexedList;
 import org.objectweb.asm.tree.ClassNode;

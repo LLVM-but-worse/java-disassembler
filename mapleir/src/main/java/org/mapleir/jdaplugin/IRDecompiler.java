@@ -1,6 +1,5 @@
 package org.mapleir.jdaplugin;
 
-import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.decompilers.bytecode.*;
 import org.mapleir.ir.algorithms.BoissinotDestructor;
 import org.mapleir.ir.cfg.ControlFlowGraph;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class IRDecompiler extends BytecodeDecompiler {
+public class IRDecompiler extends BytecodeDecompiler implements MapleComponent {
     @Override
     protected MethodNodeDecompiler getMethodNodeDecompiler(PrefixedStringBuilder sb, ClassNode cn, Iterator<MethodNode> it) {
         return new IRMethodDecompiler(this, sb, it.next(), cn);
@@ -21,11 +20,6 @@ public class IRDecompiler extends BytecodeDecompiler {
     @Override
     public String getName() {
         return "MapleIR";
-    }
-    
-    @Override
-    public JDANamespace getNamespace() {
-        return MaplePlugin.getInstance().getNamespace();
     }
 }
 

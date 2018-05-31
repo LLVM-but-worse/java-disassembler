@@ -1,4 +1,4 @@
-package club.bytecode.the.jda.gui.dialogs;
+package club.bytecode.the.jda.gui.components;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;

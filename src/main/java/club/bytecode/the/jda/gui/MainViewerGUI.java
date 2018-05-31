@@ -7,10 +7,10 @@ import club.bytecode.the.jda.Resources;
 import club.bytecode.the.jda.api.JDAPlugin;
 import club.bytecode.the.jda.decompilers.Decompilers;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
+import club.bytecode.the.jda.gui.components.TabbedPane;
 import club.bytecode.the.jda.gui.dialogs.AboutWindow;
 import club.bytecode.the.jda.gui.dialogs.FontOptionsDialog;
 import club.bytecode.the.jda.gui.dialogs.IntroWindow;
-import club.bytecode.the.jda.gui.dialogs.TabbedPane;
 import club.bytecode.the.jda.gui.fileviewer.FileViewerPane;
 import club.bytecode.the.jda.gui.fileviewer.Viewer;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
@@ -400,7 +400,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
             JRadioButtonMenuItem button = new JRadioButtonMenuItem(decompiler.getName());
-            button.addActionListener((e) -> Settings.PANE_DECOMPILERS[id].set(decompiler.getName()));
+            button.addActionListener((e) -> Settings.PANE_DECOMPILERS[id].set(decompiler.getFullName()));
             allDecompilers.get(group).put(button, decompiler);
             allDecompilersRev.get(group).put(decompiler, button);
             group.add(button);
