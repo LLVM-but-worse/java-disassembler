@@ -1,6 +1,6 @@
 # JDA - The Java Disassembler
 
-![JDA Logo](icon.png)
+![JDA Logo](docs/icon.png)
 
 Java Disassembler (JDA) is a fork of Bytecode Viewer (BCV) that adds advanced code analysis features. The basic principles of BCV are maintained; however, many aspects are different.
 
@@ -28,10 +28,18 @@ In the future, JDA will have powerful static analysis tools, such as control and
 (copy and constant propagation), whole binary cross referencing (xrefs), and an IR engine. However, these standard
 core utilities will be distributed separately as the [MapleIR](https://github.com/LLVM-but-worse/maple-ir) plugin.
 
-![MapleIR demo](demo.png)
+![MapleIR demo](docs/demo.png)
+
+## Features
+ - Ergonomic design for low-level bytecode reversing
+ - [Data-flow analysis with copy and constant propagation](docs/propagation-analysis.png) (provided by MapleIR)
+ - Support for a variety of decompilers
+ - Cross-reference bytecode, decompilation, and IR.
+
+More to come in the future.
 
 ## Compiling
-See [compiling.md](./compiling.md) for compilation instructions.
+See [COMPILING.md](./docs/COMPILING.md) for compilation instructions.
 
 ## Credits
  - Logo (icosahedron) image by [Brayden Gregerson](http://braydengregerson.com), used with permission
