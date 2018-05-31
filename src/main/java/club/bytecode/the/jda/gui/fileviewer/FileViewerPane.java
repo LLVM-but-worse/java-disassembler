@@ -7,6 +7,7 @@ import club.bytecode.the.jda.gui.JDAWindow;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.dialogs.TabbedPane;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
+import org.mapleir.stdlib.util.IndexedList;
 import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
@@ -35,8 +36,7 @@ public class FileViewerPane extends JDAWindow {
     JPanel buttonPanel;
     public JButton refreshClass;
 
-    // todo: once we move to mapleir, we can convert this to an indexedlist!
-    List<ViewerFile> workingOn = new ArrayList<>();
+    List<ViewerFile> workingOn = new IndexedList<>();
 
     public FileViewerPane(final FileChangeNotifier fcn) {
         super("WorkPanel", "Work Space", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
