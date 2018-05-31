@@ -2,6 +2,7 @@ package club.bytecode.the.jda.decompilers.bytecode;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import org.objectweb.asm.Opcodes;
@@ -31,6 +32,11 @@ public class BytecodeDecompiler extends JDADecompiler {
     @Override
     public String getName() {
         return "Bytecode";
+    }
+    
+    @Override
+    public JDANamespace getNamespace() {
+        return JDA.namespace;
     }
 
     public String decompileClassNode(FileContainer container, ClassNode cn) {
@@ -152,10 +158,5 @@ public class BytecodeDecompiler extends JDADecompiler {
             sb.append(tokens.get(i));
         }
         return sb.toString();
-    }
-
-    @Override
-    public void decompileToZip(String zipName) {
-        throw new UnsupportedOperationException();
     }
 }

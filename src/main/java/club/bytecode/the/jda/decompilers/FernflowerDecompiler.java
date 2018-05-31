@@ -2,6 +2,7 @@ package club.bytecode.the.jda.decompilers;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import club.bytecode.the.jda.settings.Setting;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
@@ -50,6 +51,11 @@ public final class FernflowerDecompiler extends JDADecompiler {
     @Override
     public String getName() {
         return "Fernflower";
+    }
+
+    @Override
+    public JDANamespace getNamespace() {
+        return JDA.namespace;
     }
 
     @Override
@@ -135,11 +141,6 @@ public final class FernflowerDecompiler extends JDADecompiler {
         } catch (Exception e) {
             return parseException(e);
         }
-    }
-
-    @Override
-    public void decompileToZip(String zipName) {
-        throw new UnsupportedOperationException();
     }
 
     private Map<String, Object> generateFernflowerArgs() {

@@ -2,10 +2,9 @@ package club.bytecode.the.jda.decompilers;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
-import club.bytecode.the.jda.JarUtils;
+import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.settings.JDADecompilerSettings;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
-import org.apache.commons.io.FileUtils;
 import org.benf.cfr.reader.bytecode.analysis.types.JavaTypeInstance;
 import org.benf.cfr.reader.entities.ClassFile;
 import org.benf.cfr.reader.entities.Method;
@@ -23,11 +22,7 @@ import org.benf.cfr.reader.util.getopt.Options;
 import org.benf.cfr.reader.util.getopt.OptionsImpl;
 import org.benf.cfr.reader.util.output.*;
 import org.objectweb.asm.tree.ClassNode;
-import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
@@ -94,6 +89,11 @@ public final class CFRDecompiler extends JDADecompiler {
     public String getName() {
         return "CFR";
     }
+    
+    @Override
+    public JDANamespace getNamespace() {
+        return JDA.namespace;
+    }
 
     @Override
     public String decompileClassNode(FileContainer container, ClassNode cn) {
@@ -105,38 +105,6 @@ public final class CFRDecompiler extends JDADecompiler {
             return doClass(dcCommonState, bytes);
         } catch (Exception e) {
             return parseException(e);
-        }
-    }
-
-    @Override
-    public void decompileToZip(String zipName) {
-        try {
-            Path outputDir = Files.createTempDirectory("cfr_output");
-            Path tempJar = Files.createTempFile("cfr_input", ".jar");
-            File output = new File(zipName);
-            try {
-                JarUtils.saveAsJar(JDA.getLoadedBytes(), tempJar.toAbsolutePath().toString());
-                Options options = new GetOptParser().parse(generateMainMethod(), OptionsImpl.getFactory());
-                ClassFileSourceImpl classFileSource = new ClassFileSourceImpl(options);
-                DCCommonState dcCommonState = new DCCommonState(options, classFileSource);
-                doJar(dcCommonState, tempJar.toAbsolutePath(), outputDir.toAbsolutePath());
-                ZipUtil.pack(outputDir.toFile(), output);
-            } catch (Exception e) {
-                handleException(e);
-            } finally {
-                try {
-                    FileUtils.deleteDirectory(outputDir.toFile());
-                } catch (IOException e) {
-                    handleException(e);
-                }
-                try {
-                    Files.delete(tempJar);
-                } catch (IOException e) {
-                    handleException(e);
-                }
-            }
-        } catch (Exception e) {
-            handleException(e);
         }
     }
 
