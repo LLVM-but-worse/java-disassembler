@@ -439,6 +439,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
             for (FileContainer container : JDA.getOpenFiles())
                 reopenContainers.add(container.file);
 
+            JDA.waitForTasks();
             JDA.clearFiles();
             navigator.resetWorkspace();
 
@@ -450,7 +451,6 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
                     if (newContainer.file.equals(v.getFile().container.file)) {
                         v.setFile(new ViewerFile(newContainer, v.getFile().name));
                         v.refresh(null);
-                        System.out.println("Found it");
                         break;
                     }
                 }

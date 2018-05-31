@@ -48,7 +48,7 @@ public class JDA {
     public static String lastDirectory = "";
     public static List<Process> createdProcesses = new ArrayList<>();
     private static List<JDAPlugin> plugins = new ArrayList<>();
-    private static AtomicInteger jobCount = new AtomicInteger(0);
+    private static final AtomicInteger jobCount = new AtomicInteger(0);
     
     public static Supplier<JDAPlugin> injectedPlugin = null; // for testing purposes only.
 
@@ -246,19 +246,6 @@ public class JDA {
     }
 
     /**
-     * Replaces an old node with a new instance
-     *
-     * @param oldNode the old instance
-     * @param newNode the new instance
-     */
-    public static void updateNode(ClassNode oldNode, ClassNode newNode) {
-        for (FileContainer container : files) {
-            if (container.remove(oldNode))
-                container.add(newNode);
-        }
-    }
-
-    /**
      * Gets all of the loaded classes as an array list
      *
      * @return the loaded classes as an array list
@@ -270,22 +257,6 @@ public class JDA {
             for (ClassNode c : container.getClasses())
                 if (!a.contains(c))
                     a.add(c);
-
-        return a;
-    }
-
-    public static ArrayList<ClassNode> loadAllClasses() {
-        ArrayList<ClassNode> a = new ArrayList<>();
-        for (FileContainer container : files) {
-            for (String s : container.files.keySet()) {
-                if (!s.endsWith(".class"))
-                    continue;
-                ClassNode loaded = container.getClassNode(s);
-                if (loaded != null) {
-                    a.add(loaded);
-                }
-            }
-        }
 
         return a;
     }
@@ -388,7 +359,9 @@ public class JDA {
     }
     
     public static void clearFiles() {
-        JDA.files.forEach(JDA::closeFile);
+        while (!JDA.files.isEmpty()) {
+            JDA.closeFile(JDA.files.get(0));
+        }
     }
     
     public static List<FileContainer> getOpenFiles() {
@@ -439,8 +412,10 @@ public class JDA {
                     return;
         }
 
-        files.clear();
+        JDA.setBusy(true);
+        clearFiles();
         viewer.closeResources();
+        JDA.setBusy(false);
     }
 
     private static ArrayList<String> killList = new ArrayList<>();
