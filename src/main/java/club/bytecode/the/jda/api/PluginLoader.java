@@ -8,12 +8,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class PluginLoader {
-    public static Plugin tryLoadPlugin(File pluginFile) throws MalformedURLException {
+    public static JDAPlugin tryLoadPlugin(File pluginFile) throws MalformedURLException {
         String pluginFileName = pluginFile.getName();
         try {
             ClassLoader loader = new URLClassLoader(new URL[] { pluginFile.toURI().toURL() }) {
                 public URL getResource(String name) {
-                    if (name.startsWith("\0JDA-hack:"))
+                    if (name.startsWith(JDA.HACK_PREFIX))
                         return findResource(name.substring(name.indexOf(':') + 1));
                     else
                         return super.getResource(name);
@@ -32,7 +32,7 @@ public class PluginLoader {
                 return null;
             }
 
-            Class<? extends Plugin> clazz = Class.forName(mainClass, true, loader).asSubclass(Plugin.class);
+            Class<? extends JDAPlugin> clazz = Class.forName(mainClass, true, loader).asSubclass(JDAPlugin.class);
             return clazz.getConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
             System.err.println("Failed to load plugin " + pluginFileName);

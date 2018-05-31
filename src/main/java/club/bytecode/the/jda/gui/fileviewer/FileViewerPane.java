@@ -7,6 +7,7 @@ import club.bytecode.the.jda.gui.JDAWindow;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.dialogs.TabbedPane;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
+import org.mapleir.stdlib.util.IndexedList;
 import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
@@ -14,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -34,8 +36,7 @@ public class FileViewerPane extends JDAWindow {
     JPanel buttonPanel;
     public JButton refreshClass;
 
-    // todo: once we move to mapleir, we can convert this to an indexedlist!
-    List<ViewerFile> workingOn = new ArrayList<>();
+    List<ViewerFile> workingOn = new IndexedList<>();
 
     public FileViewerPane(final FileChangeNotifier fcn) {
         super("WorkPanel", "Work Space", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
@@ -101,7 +102,7 @@ public class FileViewerPane extends JDAWindow {
         return defaultPosition;
     }
 
-    private void addFile(ViewerFile file, Supplier<Viewer> viewerFactory) {
+    private void openFile(ViewerFile file, Supplier<Viewer> viewerFactory) {
         if (!workingOn.contains(file)) {
             final JPanel tabComp = viewerFactory.get();
             tabs.add(tabComp);
@@ -113,23 +114,15 @@ public class FileViewerPane extends JDAWindow {
             tabs.setSelectedIndex(workingOn.indexOf(file));
         }
     }
-    
-    public void addWorkingFile(ViewerFile file, final ClassNode cn) {
-        addFile(file, () -> new ClassViewer(file, cn));
-    }
 
-    public void addFile(ViewerFile file, byte[] contents) {
-        addFile(file, () -> new FileViewer(file, contents));
+    @Override
+    public void openFile(ViewerFile file, byte[] contents) {
+        openFile(file, () -> new FileViewer(file, contents));
     }
 
     @Override
     public void openClassFile(ViewerFile file, final ClassNode cn) {
-        addWorkingFile(file, cn);
-    }
-
-    @Override
-    public void openFile(ViewerFile file, byte[] content) {
-        addFile(file, content);
+        openFile(file, () -> new ClassViewer(file, cn));
     }
 
     public Viewer getCurrentViewer() {
@@ -149,7 +142,7 @@ public class FileViewerPane extends JDAWindow {
      * @return a copy of the files currently open
      */
     public List<ViewerFile> getOpenFiles() {
-        return new ArrayList<>(workingOn);
+        return Collections.unmodifiableList(workingOn);
     }
     
     public void resetWorkspace() {
