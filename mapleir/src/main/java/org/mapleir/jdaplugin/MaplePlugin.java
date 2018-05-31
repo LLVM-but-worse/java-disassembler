@@ -62,6 +62,7 @@ public class MaplePlugin implements JDAPlugin {
 				.setCache(new IRCache(ControlFlowGraphBuilder::build))
 				.setApplicationContext(new SimpleApplicationContext(app))
 				.build();
+		// when we get around to it, do tracing, IPA stuff here.
 		cxts.put(fileContainer, newCxt);
 	}
 	

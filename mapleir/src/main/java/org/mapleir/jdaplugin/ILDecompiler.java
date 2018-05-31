@@ -4,6 +4,7 @@ import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import org.mapleir.ir.algorithms.BoissinotDestructor;
 import org.mapleir.ir.cfg.ControlFlowGraph;
+import org.mapleir.ir.cfg.builder.ControlFlowGraphBuilder;
 import org.mapleir.ir.printer.ClassPrinter;
 import org.mapleir.ir.printer.FieldNodePrinter;
 import org.mapleir.ir.printer.MethodNodePrinter;
@@ -23,7 +24,7 @@ public class ILDecompiler extends JDADecompiler {
         final MethodNodePrinter methodPrinter = new MethodNodePrinter(sw, settings) {
             @Override
             protected ControlFlowGraph getCfg(MethodNode mn) {
-                ControlFlowGraph cfg = MaplePlugin.cxts.get(container).getIRCache().getFor(mn);
+                ControlFlowGraph cfg = ControlFlowGraphBuilder.build(mn);
                 BoissinotDestructor.leaveSSA(cfg);
                 cfg.getLocals().realloc(cfg);
                 return cfg;
