@@ -134,6 +134,10 @@ public class JDADecompilerSettings {
         pipelinePanel.add(pipelineListbox, "spanx, grow");
         dialog.add(pipelinePanel, "align center, spanx, grow, wrap");
     }
+    
+    public Collection<DecompileFilter> getEnabledFilters() {
+        return Collections.unmodifiableCollection(enabledFilters);
+    }
 
     public void loadFrom(JsonObject rootSettings) {
         initPipelineGui();

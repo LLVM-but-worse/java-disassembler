@@ -4,6 +4,7 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.decompilers.bytecode.BytecodeDecompiler;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
 import club.bytecode.the.jda.settings.Settings;
 import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -18,7 +19,7 @@ import java.awt.*;
  *
  * @author Konloch
  */
-public class PaneUpdaterThread extends Thread {
+public class DecompileThread extends Thread {
 
     private JDADecompiler decompiler;
     private int paneId;
@@ -26,7 +27,7 @@ public class PaneUpdaterThread extends Thread {
     private ClassViewer viewer;
     @Nullable private JButton button; // this needs to be refactored into something event-based, not a stupid hack like this! 
 
-    public PaneUpdaterThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, @Nullable JButton button) {
+    public DecompileThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, @Nullable JButton button) {
         this.decompiler = decompiler;
         this.paneId = paneId;
         this.target = target;
@@ -37,6 +38,12 @@ public class PaneUpdaterThread extends Thread {
 
     public void run() {
         try {
+            for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
+                filter.process(viewer.cn);
+            }
+            
+            String decompileResult = decompiler.decompileClassNode(viewer.getFile().container, viewer.cn);
+            
             RSyntaxTextArea panelArea;
             if (decompiler instanceof BytecodeDecompiler) {
                 panelArea = new BytecodeSyntaxArea();
@@ -46,8 +53,8 @@ public class PaneUpdaterThread extends Thread {
             }
             panelArea.setCodeFoldingEnabled(true);
             panelArea.setAntiAliasingEnabled(true);
+            
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
-            String decompileResult = decompiler.decompileClassNode(viewer.getFile().container, viewer.cn);
             panelArea.setText(stripUndisplayableChars(decompileResult));
             panelArea.setCaretPosition(0);
             panelArea.setEditable(viewer.isPaneEditable(paneId));

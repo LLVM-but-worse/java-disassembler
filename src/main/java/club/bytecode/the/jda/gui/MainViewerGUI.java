@@ -392,6 +392,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         ButtonGroup group = allPanes.get(id);
 
         JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
+        none.addItemListener((e) -> {
+            if (none.isSelected())
+                Settings.PANE_DECOMPILERS[id].set("None");
+        });
         allDecompilers.get(group).put(none, null);
         allDecompilersRev.get(group).put(null, none);
         group.add(none);
@@ -400,7 +404,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
             JRadioButtonMenuItem button = new JRadioButtonMenuItem(decompiler.getName());
-            button.addActionListener((e) -> Settings.PANE_DECOMPILERS[id].set(decompiler.getFullName()));
+            button.addActionListener((e) -> {
+                if (button.isSelected())
+                    Settings.PANE_DECOMPILERS[id].set(decompiler.getFullName());
+            });
             allDecompilers.get(group).put(button, decompiler);
             allDecompilersRev.get(group).put(decompiler, button);
             group.add(button);

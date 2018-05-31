@@ -34,6 +34,10 @@ public class FileContainer {
             classes.put(name, cn);
         return classes.get(name);
     }
+    
+    public void uncacheClassNode(String name) {
+        classes.remove(name);
+    }
 
     public ClassNode loadClass(String name) {
         byte[] bytes = files.get(name);

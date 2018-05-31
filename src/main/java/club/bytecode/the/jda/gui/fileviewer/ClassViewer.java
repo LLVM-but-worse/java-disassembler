@@ -163,6 +163,7 @@ public class ClassViewer extends Viewer {
 
     @Override
     public void refresh(@Nullable final JButton button) {
+        getFile().container.uncacheClassNode(cn.name); // uncache, incase a decompile filter was used, to get a fresh copy.
         this.cn = getFile().container.getClassNode(cn.name); //update the classnode
         setPanes();
 
@@ -182,7 +183,7 @@ public class ClassViewer extends Viewer {
 
         for (int i = 0; i < decompilers.size(); i++) {
             if (decompilers.get(i) != null) {
-                PaneUpdaterThread t = new PaneUpdaterThread(this, decompilers.get(i), i, panels.get(i), button);
+                DecompileThread t = new DecompileThread(this, decompilers.get(i), i, panels.get(i), button);
                 decompileThreads.add(t);
                 t.start();
             }
