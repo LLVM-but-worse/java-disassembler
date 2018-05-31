@@ -36,9 +36,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public static final long serialVersionUID = 1851409230530948543L;
     private static final Color COLOR_DESKTOP_BACKGROUND = new Color(58, 110, 165);
 
-    public final ButtonGroup panelGroup1 = new ButtonGroup();
-    public final ButtonGroup panelGroup2 = new ButtonGroup();
-    public final ButtonGroup panelGroup3 = new ButtonGroup();
+    public static final int NUM_PANEL_GROUPS = 3;
+    public final ButtonGroup[] panelGroups = new ButtonGroup[NUM_PANEL_GROUPS];
 
     public JMenuBar menuBar;
     public JMenu viewMenu;
@@ -58,7 +57,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
     public AboutWindow aboutWindow = new AboutWindow();
     public IntroWindow introWindow = new IntroWindow();
-    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroup1, panelGroup2, panelGroup3));
+    public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroups));
     public Map<ButtonGroup, Map<JRadioButtonMenuItem, JDADecompiler>> allDecompilers = new HashMap<>();
     public Map<ButtonGroup, Map<JDADecompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
     public Map<ButtonGroup, Map<JDADecompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
@@ -71,16 +70,13 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     public MainViewerGUI() {
         initializeWindows();
 
-        JDADecompiler.ensureInitted();
-        allDecompilers.put(panelGroup1, new HashMap<>());
-        allDecompilers.put(panelGroup2, new HashMap<>());
-        allDecompilers.put(panelGroup3, new HashMap<>());
-        allDecompilersRev.put(panelGroup1, new HashMap<>());
-        allDecompilersRev.put(panelGroup2, new HashMap<>());
-        allDecompilersRev.put(panelGroup3, new HashMap<>());
-        editButtons.put(panelGroup1, new HashMap<>());
-        editButtons.put(panelGroup2, new HashMap<>());
-        editButtons.put(panelGroup3, new HashMap<>());
+        for (int i = 0; i < panelGroups.length; i++) {
+            ButtonGroup panelGroup = new ButtonGroup();
+            allDecompilers.put(panelGroup, new HashMap<>());
+            allDecompilersRev.put(panelGroup, new HashMap<>());
+            editButtons.put(panelGroup, new HashMap<>());
+            panelGroups[i] = panelGroup;
+        }
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new JDAKeybindManager());
         this.addWindowStateListener(new WindowAdapter() {
             @Override
@@ -282,9 +278,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         // View menu
         // ===========================================================================================
         menuBar.add(viewMenu);
-        viewMenu.add(generatePane(0));
-        viewMenu.add(generatePane(1));
-        viewMenu.add(generatePane(2));
+        for (int i = 0; i < NUM_PANEL_GROUPS; i++)
+            viewMenu.add(generatePane(i));
         
         // ===========================================================================================
         // Windows menu
@@ -329,9 +324,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
     
     private void initializePanelGroup() {
-        panelGroup1.setSelected(allDecompilersRev.get(panelGroup1).get(Decompilers.FERNFLOWER).getModel(), true);
-        panelGroup2.setSelected(allDecompilersRev.get(panelGroup2).get(Decompilers.BYTECODE).getModel(), true);
-        panelGroup3.setSelected(allDecompilersRev.get(panelGroup3).get(null).getModel(), true);
+        for (int i = 0; i < panelGroups.length; i++) {
+            String decompilerName = Settings.PANE_DECOMPILERS[i].getString();
+            panelGroups[i].setSelected(allDecompilersRev.get(panelGroups[i]).get(Decompilers.getByName(decompilerName)).getModel(), true);
+        }
     }
 
     public static <T> T getComponent(final Class<T> clazz) {
@@ -404,6 +400,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
             JRadioButtonMenuItem button = new JRadioButtonMenuItem(decompiler.getName());
+            button.addActionListener((e) -> Settings.PANE_DECOMPILERS[id].set(decompiler.getName()));
             allDecompilers.get(group).put(button, decompiler);
             allDecompilersRev.get(group).put(decompiler, button);
             group.add(button);

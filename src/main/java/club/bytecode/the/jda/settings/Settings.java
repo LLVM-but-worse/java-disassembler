@@ -12,6 +12,7 @@ import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,9 +33,17 @@ public class Settings {
     public static final Setting FONT_SIZE = new Setting("font", "fontsize", 12, Setting.SettingType.INT);
     public static final Setting FONT_FAMILY = new Setting("font", "fontfamily", Font.MONOSPACED);
     public static final Setting FONT_OPTIONS = new Setting("font", "fontoptions", Font.PLAIN, Setting.SettingType.INT);
+    
+    public static final Setting[] PANE_DECOMPILERS;
 
     static
     {
+        PANE_DECOMPILERS = new Setting[MainViewerGUI.NUM_PANEL_GROUPS]; // bleh
+        PANE_DECOMPILERS[0] = new Setting("panedecompiler0", Decompilers.FERNFLOWER.getName());
+        PANE_DECOMPILERS[1] = new Setting("panedecompiler1", Decompilers.BYTECODE.getName());
+        for (int i = 2; i < PANE_DECOMPILERS.length; i++)
+            PANE_DECOMPILERS[i] = new Setting("panedecompiler" + i, "None");
+        
         ALL_SETTINGS.add(PATH);
         ALL_SETTINGS.add(SHOW_CONTAINER_NAME);
         ALL_SETTINGS.add(SNAP_TO_EDGES);
@@ -44,6 +53,8 @@ public class Settings {
         ALL_SETTINGS.add(FONT_SIZE);
         ALL_SETTINGS.add(FONT_FAMILY);
         ALL_SETTINGS.add(FONT_OPTIONS);
+
+        ALL_SETTINGS.addAll(Arrays.asList(PANE_DECOMPILERS));
     }
 
     public static void saveGUI() {

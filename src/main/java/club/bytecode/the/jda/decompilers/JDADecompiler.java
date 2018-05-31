@@ -43,8 +43,4 @@ public abstract class JDADecompiler {
     protected void handleException(Exception e) {
         new ExceptionUI(e);
     }
-
-    public static void ensureInitted() {
-        // Just to make sure the classes is loaded so all decompilers are loaded
-    }
 }
