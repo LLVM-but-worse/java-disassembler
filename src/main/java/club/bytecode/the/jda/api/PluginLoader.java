@@ -13,7 +13,7 @@ public class PluginLoader {
         try {
             ClassLoader loader = new URLClassLoader(new URL[] { pluginFile.toURI().toURL() }) {
                 public URL getResource(String name) {
-                    if (name.startsWith("\0JDA-hack:"))
+                    if (name.startsWith(JDA.HACK_PREFIX))
                         return findResource(name.substring(name.indexOf(':') + 1));
                     else
                         return super.getResource(name);

@@ -1,5 +1,8 @@
+package org.mapleir.jda;
+
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
+import org.mapleir.ir.algorithms.BoissinotDestructor;
 import org.mapleir.ir.cfg.ControlFlowGraph;
 import org.mapleir.ir.printer.ClassPrinter;
 import org.mapleir.ir.printer.FieldNodePrinter;
@@ -16,20 +19,21 @@ public class ILDecompiler extends JDADecompiler {
         TabbedStringWriter sw = new TabbedStringWriter();
         sw.setTabString("  ");
         IPropertyDictionary settings = PropertyHelper.createDictionary();
-        //			settings.put(new BooleanProperty(ASMPrinter.PROP_ACCESS_FLAG_SAFE, true));
-        ClassPrinter cp = new ClassPrinter(sw, settings,
-                new FieldNodePrinter(sw, settings),
-                new MethodNodePrinter(sw, settings) {
-                    @Override
-                    protected ControlFlowGraph getCfg(MethodNode mn) {
-                        return MaplePlugin.cxt.getIRCache().getFor(mn);
-                    }
-
-                });
+        final FieldNodePrinter fieldPrinter = new FieldNodePrinter(sw, settings);
+        final MethodNodePrinter methodPrinter = new MethodNodePrinter(sw, settings) {
+            @Override
+            protected ControlFlowGraph getCfg(MethodNode mn) {
+                ControlFlowGraph cfg = MaplePlugin.cxts.get(container).getIRCache().getFor(mn);
+                BoissinotDestructor.leaveSSA(cfg);
+                cfg.getLocals().realloc(cfg);
+                return cfg;
+            }
+        };
+        ClassPrinter cp = new ClassPrinter(sw, settings, fieldPrinter, methodPrinter);
         cp.print(cn);
         return sw.toString();
     }
-
+    
     @Override
     public void decompileToZip(String zipName) {
 

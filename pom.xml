@@ -146,5 +146,10 @@
             <artifactId>procyon-compilertools</artifactId>
             <version>0.5.32</version>
         </dependency>
+        <dependency>
+            <groupId>org.mapleir</groupId>
+            <artifactId>modasm</artifactId>
+            <version>0.0.1-ALPHA</version>
+        </dependency>
     </dependencies>
 </project>

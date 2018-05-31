@@ -436,17 +436,17 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         if (result == 0) {
             List<File> reopenContainers = new ArrayList<>();
-            for (FileContainer container : JDA.files)
+            for (FileContainer container : JDA.getOpenFiles())
                 reopenContainers.add(container.file);
 
-            JDA.files.clear();
+            JDA.clearFiles();
             navigator.resetWorkspace();
 
             JDA.openFiles(reopenContainers.toArray(new File[reopenContainers.size()]), false);
             JDA.waitForTasks(); // this is not really ideal, but whatever.
-            assert(JDA.files.size() > 0);
+            assert(JDA.getOpenFiles().size() > 0);
             for (Viewer v : fileViewerPane.getLoadedViewers()) {
-                for (FileContainer newContainer : JDA.files) {
+                for (FileContainer newContainer : JDA.getOpenFiles()) {
                     if (newContainer.file.equals(v.getFile().container.file)) {
                         v.setFile(new ViewerFile(newContainer, v.getFile().name));
                         v.refresh(null);
@@ -487,7 +487,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     private void decompileSaveAllClasses() {
-        if (JDA.files.isEmpty()) {
+        if (JDA.getOpenFiles().isEmpty()) {
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
