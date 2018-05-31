@@ -123,7 +123,7 @@ public class JarUtils {
     /**
      * Reads an InputStream and returns the read byte[]
      *
-     * @param the InputStream
+     * @param is the InputStream
      * @return the read byte[]
      * @throws IOException
      */
@@ -184,7 +184,7 @@ public class JarUtils {
             out.write((manifest.trim() + "\r\n\r\n").getBytes());
             out.closeEntry();
 
-            for (FileContainer container : JDA.files)
+            for (FileContainer container : JDA.getOpenFiles())
                 for (Entry<String, byte[]> entry : container.files.entrySet()) {
                     String filename = entry.getKey();
                     if (!filename.startsWith("META-INF")) {
@@ -266,7 +266,7 @@ public class JarUtils {
                 }
             }
 
-            for (FileContainer container : JDA.files)
+            for (FileContainer container : JDA.getOpenFiles())
                 for (Entry<String, byte[]> entry : container.files.entrySet()) {
                     String filename = entry.getKey();
                     if (!filename.startsWith("META-INF")) {

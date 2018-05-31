@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -31,7 +30,7 @@ import java.util.function.Consumer;
  */
 
 @SuppressWarnings("serial")
-public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
+public class FileNavigationPane extends JDAWindow {
     private static final String quickSearchText = "File search";
 
     FileChangeNotifier fcn;
@@ -118,7 +117,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         this.tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                openPath(tree.getPathForLocation(e.getX(), e.getY()));
+                openTreePath(tree.getPathForLocation(e.getX(), e.getY()));
             }
         });
         tree.setComponentPopupMenu(new TreeContextMenu(this));
@@ -137,7 +136,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
                 if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
                     if (arg0.getSource() instanceof FileTree) {
                         FileTree tree = (FileTree) arg0.getSource();
-                        openPath(tree.getSelectionPath());
+                        openTreePath(tree.getSelectionPath());
                     }
                 } else if (arg0.getKeyCode() == KeyEvent.VK_F && arg0.isControlDown()) {
                     quickSearch.grabFocus();
@@ -179,7 +178,11 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
 
         getContentPane().add(p2, BorderLayout.SOUTH);
 
-        new FileDrop(this, this);
+        new FileDrop(this, files -> {
+            if (files.length < 1)
+                return;
+            JDA.openFiles(files, true);
+        });
     }
 
     @Override
@@ -209,13 +212,6 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
 
     public void openFileToWorkSpace(ViewerFile file, byte[] contents) {
         fcn.openFile(file, contents);
-    }
-
-    @Override
-    public void filesDropped(final File[] files) {
-        if (files.length < 1)
-            return;
-        JDA.openFiles(files, true);
     }
 
     /**
@@ -409,7 +405,7 @@ public class FileNavigationPane extends JDAWindow implements FileDrop.Listener {
         tree.updateUI();
     }
 
-    public void openPath(TreePath path) {
+    public void openTreePath(TreePath path) {
         if (path == null)
             return;
 

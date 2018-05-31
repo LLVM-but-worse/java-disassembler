@@ -242,7 +242,7 @@ public class InstructionPrinter {
 
                 if (desc == null || desc.equals("null"))
                     desc = tin.desc;
-            } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+            } catch (java.lang.ArrayIndexOutOfBoundsException | UnsupportedOperationException e) {
 
             }
             return nameOpcode(tin.opcode()) + " " + desc;
@@ -295,7 +295,7 @@ public class InstructionPrinter {
 
             if (desc == null || desc.equals("null"))
                 desc = idin.desc;
-        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+        } catch (java.lang.ArrayIndexOutOfBoundsException | UnsupportedOperationException e) {
 
         }
 
