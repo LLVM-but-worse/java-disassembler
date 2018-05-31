@@ -26,7 +26,9 @@ tools to be built on top of.
 
 In the future, JDA will have powerful static analysis tools, such as control and data flow analysis, code contraction
 (copy and constant propagation), whole binary cross referencing (xrefs), and an IR engine. However, these standard
-core utilities will be distributed separately as a plugin.
+core utilities will be distributed separately as the [MapleIR](https://github.com/LLVM-but-worse/maple-ir) plugin.
+
+![MapleIR demo](demo.png)
 
 ## Compiling
 See [compiling.md](./compiling.md) for compilation instructions.
