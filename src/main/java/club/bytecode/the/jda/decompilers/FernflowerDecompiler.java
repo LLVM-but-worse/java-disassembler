@@ -126,7 +126,12 @@ public final class FernflowerDecompiler extends JDADecompiler {
             }
 
             baseDecompiler.decompileContext();
-            return result.get();
+            String decompileResult = result.get();
+            if (decompileResult == null) {
+                return "// Fernflower returned null; perhaps this class is an inner class? Fernflower didn't play nice.";
+            } else {
+                return decompileResult;
+            }
         } catch (Exception e) {
             return parseException(e);
         }
