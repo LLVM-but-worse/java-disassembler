@@ -1,5 +1,14 @@
 # Compiling - JDA
 
+## maple-ir
+
+This project now depends on [Maple-IR](https://github.com/LLVM-but-worse/maple-ir). To install it:
+```
+git clone https://github.com/LLVM-but-worse/maple-ir
+cd maple-ir
+mvn clean compile test install
+```
+
 ## Manual dependencies
  - [CFR](http://www.benf.org/other/cfr/)
 
