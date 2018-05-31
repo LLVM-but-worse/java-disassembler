@@ -39,8 +39,8 @@ public class Settings {
     static
     {
         PANE_DECOMPILERS = new Setting[MainViewerGUI.NUM_PANEL_GROUPS]; // bleh
-        PANE_DECOMPILERS[0] = new Setting("panedecompiler0", Decompilers.FERNFLOWER.getName());
-        PANE_DECOMPILERS[1] = new Setting("panedecompiler1", Decompilers.BYTECODE.getName());
+        PANE_DECOMPILERS[0] = new Setting("panedecompiler0", Decompilers.FERNFLOWER.getFullName());
+        PANE_DECOMPILERS[1] = new Setting("panedecompiler1", Decompilers.BYTECODE.getFullName());
         for (int i = 2; i < PANE_DECOMPILERS.length; i++)
             PANE_DECOMPILERS[i] = new Setting("panedecompiler" + i, "None");
         

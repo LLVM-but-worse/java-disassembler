@@ -4,7 +4,7 @@ import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.api.JDAPlugin;
 import club.bytecode.the.jda.api.JDAPluginNamespace;
 import club.bytecode.the.jda.decompilers.Decompilers;
-import club.bytecode.the.jda.decompilers.JDADecompiler;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilters;
 import org.mapleir.DefaultInvocationResolver;
 import org.mapleir.app.client.SimpleApplicationContext;
 import org.mapleir.app.service.ApplicationClassSource;
@@ -22,8 +22,6 @@ public class MaplePlugin implements JDAPlugin {
 	private static MaplePlugin instance;
 	
 	public final Map<FileContainer, AnalysisContext> cxts = new HashMap<>();
-	private final JDADecompiler MAPLEIR = new IRDecompiler();
-	private final JDADecompiler MAPLEIL = new ILDecompiler();
 	public final JDAPluginNamespace namespace = new JDAPluginNamespace(this);
 	
 	public MaplePlugin() {
@@ -50,8 +48,9 @@ public class MaplePlugin implements JDAPlugin {
 
 	@Override
 	public void onLoad() {
-		Decompilers.BY_NAME.put("MapleIR", MAPLEIR);
-		Decompilers.BY_NAME.put("MapleIL", MAPLEIL);
+		Decompilers.registerDecompiler(new IRDecompiler());
+		Decompilers.registerDecompiler(new ILDecompiler());
+		DecompileFilters.registerFilter(new DeobfuscateFilter());
 		System.out.println("MapleIR plugin loaded");
 	}
 	

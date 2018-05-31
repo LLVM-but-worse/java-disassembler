@@ -1,13 +1,21 @@
 package club.bytecode.the.jda.settings;
 
 import club.bytecode.the.jda.decompilers.JDADecompiler;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilters;
+import club.bytecode.the.jda.gui.components.CheckboxList;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * This is a really nasty hack, and must be rewritten to split up the actual settings code, and GUI code
+ */
 public class JDADecompilerSettings {
     private final JDADecompiler decompiler;
 
@@ -22,6 +30,13 @@ public class JDADecompilerSettings {
     private Map<SettingsEntry, JCheckBox> booleanSettings = new HashMap<>();
     private Map<SettingsEntry, JTextArea> stringSettings = new HashMap<>();
     private Map<SettingsEntry, JSpinner> intSettings = new HashMap<>();
+    
+    private static final String PIPELINE_KEY = "_pipeline";
+    private Set<DecompileFilter> enabledFilters = new HashSet<>();
+    private Map<DecompileFilter, JCheckBox> filterCheckboxes = new HashMap<>();
+    private JPanel pipelinePanel;
+    private JScrollPane pipelineListbox;
+    private CheckboxList availFilters;
 
     public JDADecompilerSettings(JDADecompiler decompiler) {
         this.decompiler = decompiler;
@@ -97,7 +112,32 @@ public class JDADecompilerSettings {
         dialog.add(new JLabel(entry.name), "wrap");
     }
 
+    /**
+     * This must be called OUTSIDE the constructor, because otherwise it will get called BEFORE any plugins load.
+     */
+    private void initPipelineGui() {
+        pipelinePanel = new JPanel(new MigLayout("gap rel 0", "grow"));
+        pipelinePanel.add(new JLabel("Preprocessing Pipeline"), "wrap");
+        availFilters = new CheckboxList();
+        for (DecompileFilter filter : DecompileFilters.getAllFilters()) {
+            JCheckBox checkbox = new JCheckBox(filter.getFullName());
+            checkbox.addItemListener((e) -> {
+                if (checkbox.isEnabled())
+                    enabledFilters.add(filter);
+                else
+                    enabledFilters.remove(filter);
+            });
+            filterCheckboxes.put(filter, checkbox);
+            availFilters.addCheckbox(checkbox);
+        }
+        pipelineListbox = new JScrollPane(availFilters);
+        pipelinePanel.add(pipelineListbox, "spanx, grow");
+        dialog.add(pipelinePanel, "align center, spanx, grow, wrap");
+    }
+
     public void loadFrom(JsonObject rootSettings) {
+        initPipelineGui();
+        
         if (rootSettings.get("decompilers") != null) {
             JsonObject decompilerSection = rootSettings.get("decompilers").asObject();
             if (decompilerSection.get(decompiler.getName()) != null) {
@@ -118,6 +158,19 @@ public class JDADecompilerSettings {
                 for (Map.Entry<SettingsEntry, JSpinner> entry : intSettings.entrySet()) {
                     if (thisDecompiler.get(entry.getKey().key) != null) {
                         entry.getValue().setValue(thisDecompiler.get(entry.getKey().key).asInt());
+                    }
+                }
+                
+                if (thisDecompiler.get(PIPELINE_KEY) != null) {
+                    JsonArray array = thisDecompiler.get(PIPELINE_KEY).asArray();
+                    for (JsonValue value : array) {
+                        if (!value.isString())
+                            continue;
+                        DecompileFilter filter = DecompileFilters.getByName(value.asString());
+                        if (filter != null) {
+                            enabledFilters.add(filter);
+                            filterCheckboxes.get(filter).setSelected(true);
+                        }
                     }
                 }
             }
@@ -142,6 +195,12 @@ public class JDADecompilerSettings {
         for (Map.Entry<SettingsEntry, JSpinner> entry : intSettings.entrySet()) {
             thisDecompiler.add(entry.getKey().key, (Integer)entry.getValue().getValue());
         }
+        
+        JsonArray pipelineArray = new JsonArray();
+        for (DecompileFilter filter : enabledFilters) {
+            pipelineArray.add(filter.getFullName());
+        }
+        thisDecompiler.add(PIPELINE_KEY, pipelineArray);
     }
 
     // TODO: Refactor to have a default entry class for each type of entry, etc.

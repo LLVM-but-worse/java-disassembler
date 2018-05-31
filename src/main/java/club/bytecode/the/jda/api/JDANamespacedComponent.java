@@ -6,6 +6,6 @@ public interface JDANamespacedComponent {
     JDANamespace getNamespace();
     
     default String getFullName() {
-        return getName() + ":" + getNamespace();
+        return getNamespace() + ":" + getName();
     }
 }
