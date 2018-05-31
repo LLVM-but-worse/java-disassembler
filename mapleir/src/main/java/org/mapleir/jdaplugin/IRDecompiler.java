@@ -1,4 +1,4 @@
-package org.mapleir.jda;
+package org.mapleir.jdaplugin;
 
 import club.bytecode.the.jda.decompilers.bytecode.*;
 import org.mapleir.ir.algorithms.BoissinotDestructor;
