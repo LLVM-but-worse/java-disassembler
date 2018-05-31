@@ -1,7 +1,7 @@
 package club.bytecode.the.jda;
 
 import club.bytecode.the.jda.api.ExceptionUI;
-import club.bytecode.the.jda.api.Plugin;
+import club.bytecode.the.jda.api.JDAPlugin;
 import club.bytecode.the.jda.api.PluginLoader;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
@@ -24,11 +24,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class JDA {
     /*per version*/
@@ -44,13 +42,15 @@ public class JDA {
     private static final long start = System.currentTimeMillis();
     /*the rest*/
     public static MainViewerGUI viewer = null;
-    public static List<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
+    private static List<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
     private static int maxRecentFiles = 25;
     private static List<String> recentFiles = new ArrayList<>();
     public static String lastDirectory = "";
     public static List<Process> createdProcesses = new ArrayList<>();
-    public static List<Plugin> plugins = new ArrayList<>();
+    private static List<JDAPlugin> plugins = new ArrayList<>();
     private static AtomicInteger jobCount = new AtomicInteger(0);
+    
+    public static Supplier<JDAPlugin> injectedPlugin = null; // for testing purposes only.
 
     /**
      * Main startup
@@ -85,6 +85,16 @@ public class JDA {
         }
     }
 
+    public static void loadPlugin(JDAPlugin plugin) {
+        plugins.add(plugin);
+        plugin.onLoad();
+    }
+    
+    public static void unloadPlugin(JDAPlugin plugin) {
+        plugin.onUnload();
+        plugins.remove(plugin);
+    }
+    
     private static void loadPlugins() throws MalformedURLException {
         if (!pluginsDir.exists())
             if (!pluginsDir.mkdirs())
@@ -97,9 +107,15 @@ public class JDA {
                 System.out.println("Skipping non-jar " + pluginFile.getName());
                 continue;
             }
-            Plugin pluginInstance = PluginLoader.tryLoadPlugin(pluginFile);
+            JDAPlugin pluginInstance = PluginLoader.tryLoadPlugin(pluginFile);
             if (pluginInstance != null)
-                plugins.add(pluginInstance);
+                loadPlugin(pluginInstance);
+        }
+
+        if (injectedPlugin != null) {
+            JDAPlugin plugin = injectedPlugin.get();
+            System.out.println("Loading dependency-injected plugin " + plugin.getName());
+            loadPlugin(injectedPlugin.get());
         }
     }
 
@@ -108,7 +124,7 @@ public class JDA {
         atmf.putMapping(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE, BytecodeTokenizer.class.getName());
         FoldParserManager.get().addFoldParserMapping(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE, new BytecodeFoldParser());
 
-        plugins.forEach(Plugin::onGUILoad);
+        plugins.forEach(JDAPlugin::onGUILoad);
     }
 
     // todo: rewrite
@@ -134,14 +150,17 @@ public class JDA {
 
         System.out.println("Start up took " + ((System.currentTimeMillis() - start) / 1000.) + " seconds");
 
-        if (args.length >= 1)
+        if (args.length >= 1) {
             for (String s : args) {
                 openFiles(new File[]{new File(s)}, true);
             }
+        }
     }
 
     private static void onExit() {
-        plugins.forEach(Plugin::onExit);
+        // unload all plugins
+        plugins.forEach(JDAPlugin::onExit);
+        plugins.forEach(JDA::unloadPlugin);
 
         for (Process proc : createdProcesses)
             proc.destroy();
@@ -312,14 +331,14 @@ public class JDA {
                     } else if (fn.endsWith(".jar") || fn.endsWith(".zip")) {
                         try {
                             FileContainer newContainer = JarUtils.load(fileToOpen);
-                            addFile(newContainer);
+                            openFile(newContainer);
                             fnp.addTreeElement(newContainer, parent);
                         } catch (final Exception e) {
                             new ExceptionUI(e);
                         }
                     } else if (fn.endsWith(".class")) {
                         FileContainer container = loadClassfile(fileToOpen, fn);
-                        addFile(container);
+                        openFile(container);
                         fnp.addTreeElement(container, parent);
                     } else {
                         HashMap<String, byte[]> files1 = new HashMap<>();
@@ -327,7 +346,7 @@ public class JDA {
                         files1.put(fileToOpen.getName(), bytes);
                         FileContainer container = new FileContainer(fileToOpen);
                         container.files = files1;
-                        addFile(container);
+                        openFile(container);
                         fnp.addTreeElement(container, parent);
                     }
                 }
@@ -358,9 +377,22 @@ public class JDA {
         return null;
     }
 
-    public static void addFile(FileContainer fc) {
+    public static void openFile(FileContainer fc) {
         JDA.files.add(fc);
-        plugins.forEach((plugin -> plugin.onAddFile(fc)));
+        plugins.forEach((plugin -> plugin.onOpenFile(fc)));
+    }
+    
+    public static void closeFile(FileContainer fc) {
+        JDA.files.remove(fc);
+        plugins.forEach(plugin -> plugin.onCloseFile(fc));
+    }
+    
+    public static void clearFiles() {
+        JDA.files.forEach(JDA::closeFile);
+    }
+    
+    public static List<FileContainer> getOpenFiles() {
+        return Collections.unmodifiableList(files);
     }
 
     /**

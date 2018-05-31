@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
+    <groupId>club.bytecode.the</groupId>
     <artifactId>jda</artifactId>
     <version>0.0.8</version>
 
@@ -48,6 +48,8 @@
                                     <mainClass>club.bytecode.the.jda.JDA</mainClass>
                                 </transformer>
                             </transformers>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>with-deps</shadedClassifierName> <!-- custom name -->
                         </configuration>
                     </execution>
                 </executions>
@@ -145,6 +147,11 @@
             <groupId>org.bitbucket.mstrobel</groupId>
             <artifactId>procyon-compilertools</artifactId>
             <version>0.5.32</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapleir</groupId>
+            <artifactId>modasm</artifactId>
+            <version>0.0.1-ALPHA</version>
         </dependency>
     </dependencies>
 </project>
