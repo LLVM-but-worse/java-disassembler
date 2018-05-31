@@ -39,4 +39,9 @@ public interface JDAPlugin {
      * Callback for when a file has been closed in JDA.
      */
     void onCloseFile(FileContainer container);
+
+    /**
+     * Called when the plugin's button in the Edit/Plugins menu is pressed.
+     */
+    void onPluginButton();
 }

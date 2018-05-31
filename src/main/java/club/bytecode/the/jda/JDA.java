@@ -95,7 +95,19 @@ public class JDA {
         plugins.remove(plugin);
     }
     
+    public static List<JDAPlugin> getLoadedPlugins() {
+        return Collections.unmodifiableList(plugins);
+    }
+    
     private static void loadPlugins() throws MalformedURLException {
+        if (injectedPlugin != null) {
+            JDAPlugin plugin = injectedPlugin.get();
+            System.out.println("Loading dependency-injected plugin " + plugin.getName());
+            loadPlugin(injectedPlugin.get());
+            System.out.println("Skipping other plugins.");
+            return;
+        }
+        
         if (!pluginsDir.exists())
             if (!pluginsDir.mkdirs())
                 throw new RuntimeException("Couldn't create plugins directory");
@@ -110,12 +122,6 @@ public class JDA {
             JDAPlugin pluginInstance = PluginLoader.tryLoadPlugin(pluginFile);
             if (pluginInstance != null)
                 loadPlugin(pluginInstance);
-        }
-
-        if (injectedPlugin != null) {
-            JDAPlugin plugin = injectedPlugin.get();
-            System.out.println("Loading dependency-injected plugin " + plugin.getName());
-            loadPlugin(injectedPlugin.get());
         }
     }
 
@@ -160,7 +166,8 @@ public class JDA {
     private static void onExit() {
         // unload all plugins
         plugins.forEach(JDAPlugin::onExit);
-        plugins.forEach(JDA::unloadPlugin);
+        while (!plugins.isEmpty())
+            unloadPlugin(plugins.get(0));
 
         for (Process proc : createdProcesses)
             proc.destroy();
