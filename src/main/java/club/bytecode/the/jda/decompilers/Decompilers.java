@@ -19,7 +19,11 @@ public class Decompilers {
     public static Collection<JDADecompiler> getAllDecompilers() {
         return Collections.unmodifiableCollection(BY_NAME.values());
     }
-
+    
+    public static JDADecompiler getByName(String name) {
+        return BY_NAME.get(name);
+    }
+    
     static
     {
         Decompilers.BY_NAME.put(PROCYON.getName(), PROCYON);
