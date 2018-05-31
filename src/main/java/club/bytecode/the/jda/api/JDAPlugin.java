@@ -2,11 +2,7 @@ package club.bytecode.the.jda.api;
 
 import club.bytecode.the.jda.FileContainer;
 
-public interface JDAPlugin {
-    /**
-     * Should return the human-readable name of the plugin.
-     */
-    String getName();
+public interface JDAPlugin extends JDANamespacedComponent{
     
     /**
      * Callback for when the plugin is loaded.
@@ -44,4 +40,10 @@ public interface JDAPlugin {
      * Called when the plugin's button in the Edit/Plugins menu is pressed.
      */
     void onPluginButton();
+
+    /**
+     * Should return the JDAPluginNamespace for this plugin
+     */
+    @Override
+    JDAPluginNamespace getNamespace();
 }

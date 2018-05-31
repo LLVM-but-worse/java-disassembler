@@ -2,6 +2,7 @@ package club.bytecode.the.jda.decompilers;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.*;
@@ -44,6 +45,11 @@ public final class ProcyonDecompiler extends JDADecompiler {
     @Override
     public String getName() {
         return "Procyon";
+    }
+    
+    @Override
+    public JDANamespace getNamespace() {
+        return JDA.namespace;
     }
 
     public DecompilerSettings getDecompilerSettings() {
@@ -110,12 +116,6 @@ public final class ProcyonDecompiler extends JDADecompiler {
         } catch (Throwable e) {
             return parseException(e);
         }
-    }
-
-    @Override
-    public void decompileToZip(String zipName) {
-        // todo: rewrite
-        throw new UnsupportedOperationException();
     }
 }
 

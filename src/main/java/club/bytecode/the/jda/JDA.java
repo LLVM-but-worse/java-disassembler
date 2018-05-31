@@ -1,6 +1,7 @@
 package club.bytecode.the.jda;
 
 import club.bytecode.the.jda.api.ExceptionUI;
+import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.api.JDAPlugin;
 import club.bytecode.the.jda.api.PluginLoader;
 import club.bytecode.the.jda.gui.MainViewerGUI;
@@ -47,8 +48,9 @@ public class JDA {
     private static List<String> recentFiles = new ArrayList<>();
     public static String lastDirectory = "";
     public static List<Process> createdProcesses = new ArrayList<>();
-    private static List<JDAPlugin> plugins = new ArrayList<>();
     private static final AtomicInteger jobCount = new AtomicInteger(0);
+    public static final JDANamespace namespace = JDADefaultNamespace.INSTANCE; 
+    private static List<JDAPlugin> plugins = new ArrayList<>();
     
     public static Supplier<JDAPlugin> injectedPlugin = null; // for testing purposes only.
 

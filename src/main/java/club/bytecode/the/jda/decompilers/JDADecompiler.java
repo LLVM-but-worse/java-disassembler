@@ -2,7 +2,7 @@ package club.bytecode.the.jda.decompilers;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
-import club.bytecode.the.jda.api.ExceptionUI;
+import club.bytecode.the.jda.api.JDANamespacedComponent;
 import club.bytecode.the.jda.settings.JDADecompilerSettings;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -15,14 +15,10 @@ import java.io.StringWriter;
  * @author Konloch
  */
 
-public abstract class JDADecompiler {
+public abstract class JDADecompiler implements JDANamespacedComponent {
     protected JDADecompilerSettings settings = new JDADecompilerSettings(this);
 
     public abstract String decompileClassNode(FileContainer container, ClassNode cn);
-
-    public abstract void decompileToZip(String zipName);
-
-    public abstract String getName();
 
     public JDADecompilerSettings getSettings() {
         return settings;
@@ -38,9 +34,5 @@ public abstract class JDADecompiler {
                 "Suggested Fix: Click refresh class, if it fails again try another decompiler." + JDA.nl +
                 JDA.nl +
                 exception;
-    }
-
-    protected void handleException(Exception e) {
-        new ExceptionUI(e);
     }
 }

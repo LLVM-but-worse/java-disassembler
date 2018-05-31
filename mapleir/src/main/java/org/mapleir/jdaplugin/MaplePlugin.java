@@ -2,6 +2,7 @@ package org.mapleir.jdaplugin;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.api.JDAPlugin;
+import club.bytecode.the.jda.api.JDAPluginNamespace;
 import club.bytecode.the.jda.decompilers.Decompilers;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import org.mapleir.DefaultInvocationResolver;
@@ -18,20 +19,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MaplePlugin implements JDAPlugin {
-	public static final Map<FileContainer, AnalysisContext> cxts = new HashMap<>();
-	public static final JDADecompiler MAPLEIR = new IRDecompiler();
-	public static final JDADecompiler MAPLEIL = new ILDecompiler();
+	private static MaplePlugin instance;
+	
+	public final Map<FileContainer, AnalysisContext> cxts = new HashMap<>();
+	private final JDADecompiler MAPLEIR = new IRDecompiler();
+	private final JDADecompiler MAPLEIL = new ILDecompiler();
+	public final JDAPluginNamespace namespace = new JDAPluginNamespace(this);
 	
 	public MaplePlugin() {
+		instance = this;
 	}
 
 	public static void main(String[] args) {
 		throw new NotImplementedException();
 	}
+	
+	public static MaplePlugin getInstance() {
+		return instance;
+	}
 
 	@Override
 	public String getName() {
 		return "MapleIR";
+	}
+	
+	@Override
+	public JDAPluginNamespace getNamespace() {
+		return namespace;
 	}
 
 	@Override
