@@ -122,7 +122,7 @@ public class JDADecompilerSettings {
         for (DecompileFilter filter : DecompileFilters.getAllFilters()) {
             JCheckBox checkbox = new JCheckBox(filter.getFullName());
             checkbox.addItemListener((e) -> {
-                if (checkbox.isEnabled())
+                if (checkbox.isSelected())
                     enabledFilters.add(filter);
                 else
                     enabledFilters.remove(filter);
