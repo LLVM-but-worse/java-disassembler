@@ -219,12 +219,15 @@ public class JDA {
     }
 
     public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
-        byte[] bytes = getFileBytes(new ViewerFile(container, container.findClassfile(cn.name)));
-        if (bytes == null)
-            return null;
-        if (cn.version < 49)
-            bytes = fixBytes(bytes); // this is inefficient!
-        return bytes;
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        cn.accept(writer);
+        return writer.toByteArray();
+        // byte[] bytes = getFileBytes(new ViewerFile(container, container.findClassfile(cn.name)));
+        // if (bytes == null)
+        //     return null;
+        // if (cn.version < 49)
+        //     bytes = fixBytes(bytes); // this is inefficient!
+        // return bytes;
     }
 
     public static final String HACK_PREFIX = "\0JDA-hack";
