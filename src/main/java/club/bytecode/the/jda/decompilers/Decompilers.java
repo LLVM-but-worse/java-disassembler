@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Decompilers {
-    static final Map<String, JDADecompiler> BY_NAME = new LinkedHashMap<>();
+    public static final Map<String, JDADecompiler> BY_NAME = new LinkedHashMap<>();
 
     public final static JDADecompiler PROCYON = new ProcyonDecompiler();
     public final static JDADecompiler CFR = new CFRDecompiler();
