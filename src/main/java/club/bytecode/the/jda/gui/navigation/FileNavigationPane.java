@@ -84,7 +84,7 @@ public class FileNavigationPane extends JDAWindow {
             StringBuilder fullPath = new StringBuilder();
             while (pathArray != null && k < pathArray.length) {
                 FileNode n = (FileNode) pathArray[k];
-                String s = (String) (n.getUserObject());
+                String s = (n.getUserObject()).toString();
                 fullPath.append(s);
                 if (k++ != pathArray.length - 1) {
                     fullPath.append(".");
