@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 public class JDA {
     /*per version*/
-    public static final String version = "0.0.8";
+    public static final String version = "1.0.0";
     public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
