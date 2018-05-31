@@ -28,6 +28,9 @@ In the future, JDA will have powerful static analysis tools, such as control and
 (copy and constant propagation), whole binary cross referencing (xrefs), and an IR engine. However, these standard
 core utilities will be distributed separately as a plugin.
 
+## Compiling
+See [compiling.md](./compiling.md) for compilation instructions.
+
 ## Credits
  - Logo (icosahedron) image by [Brayden Gregerson](http://braydengregerson.com), used with permission
  - [Bytecode Viewer](https://github.com/Konloch/bytecode-viewer) by [Konloch](https://github.com/Konloch)
