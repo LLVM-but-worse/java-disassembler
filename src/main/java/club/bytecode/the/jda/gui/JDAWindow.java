@@ -40,6 +40,9 @@ public abstract class JDAWindow extends JInternalFrame implements IPersistentWin
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
+                if (JDA.viewer == null)
+                    return;
+
                 if (!isMaximum()) {
                     if (JDA.viewer.isMaximized)
                         unmaximizedSize = getSize();
@@ -51,6 +54,9 @@ public abstract class JDAWindow extends JInternalFrame implements IPersistentWin
 
             @Override
             public void componentMoved(ComponentEvent e) {
+                if (JDA.viewer == null)
+                    return;
+                
                 if (!isMaximum())
                     unmaximizedPos = getLocation();
                 super.componentMoved(e);
@@ -59,6 +65,9 @@ public abstract class JDAWindow extends JInternalFrame implements IPersistentWin
 
         addPropertyChangeListener(evt ->
         {
+            if (JDA.viewer == null)
+                return;
+
             if (isNormalState()) {
                 setSize(JDA.viewer.isMaximized ? unmaximizedSize : smallUnmaxSize);
                 setLocation(unmaximizedPos);
