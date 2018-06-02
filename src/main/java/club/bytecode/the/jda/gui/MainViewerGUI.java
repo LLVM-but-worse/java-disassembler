@@ -1,6 +1,5 @@
 package club.bytecode.the.jda.gui;
 
-import club.bytecode.the.jda.FileChangeNotifier;
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.Resources;
@@ -31,7 +30,7 @@ import java.util.List;
  *
  * @author Konloch
  */
-public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersistentWindow {
+public class MainViewerGUI extends JFrame implements IPersistentWindow {
     public static final long serialVersionUID = 1851409230530948543L;
     private static final Color COLOR_DESKTOP_BACKGROUND = new Color(58, 110, 165);
 
@@ -338,8 +337,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     private void initializeWindows() {
-        navigator = new FileNavigationPane(this);
-        fileViewerPane = new FileViewerPane(this);
+        navigator = new FileNavigationPane();
+        fileViewerPane = new FileViewerPane();
 
         desktop = new JDesktopPane();
         setContentPane(desktop);
@@ -446,16 +445,12 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         Settings.loadWindows();
     }
 
-    @Override
     public void openClassFile(ViewerFile file) {
-        for (final JDAWindow vc : windows)
-            vc.openClassFile(file);
+        fileViewerPane.openClassFile(file);
     }
 
-    @Override
     public void openFile(ViewerFile file, byte[] content) {
-        for (final JDAWindow vc : windows)
-            vc.openFile(file, content);
+        fileViewerPane.openFile(file, content);
     }
 
     public void refreshView() {

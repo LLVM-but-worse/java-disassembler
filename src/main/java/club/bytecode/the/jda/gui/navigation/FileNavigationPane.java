@@ -1,8 +1,10 @@
 package club.bytecode.the.jda.gui.navigation;
 
-import club.bytecode.the.jda.*;
+import club.bytecode.the.jda.FileContainer;
+import club.bytecode.the.jda.FileDrop;
+import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.Resources;
 import club.bytecode.the.jda.gui.JDAWindow;
-import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 
 import javax.swing.*;
@@ -32,7 +34,6 @@ import java.util.function.Consumer;
 public class FileNavigationPane extends JDAWindow {
     private static final String quickSearchText = "File search";
 
-    FileChangeNotifier fcn;
     JCheckBox matchCase = new JCheckBox("Match case");
 
     FileNode treeRoot = new FileNode("Loaded Files:");
@@ -104,10 +105,9 @@ public class FileNavigationPane extends JDAWindow {
         }
     }
 
-    public FileNavigationPane(final FileChangeNotifier fcn) {
-        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
+    public FileNavigationPane() {
+        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon);
 
-        this.fcn = fcn;
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
         quickSearch.setForeground(Color.gray);
@@ -184,14 +184,6 @@ public class FileNavigationPane extends JDAWindow {
         });
     }
 
-    @Override
-    public void openClassFile(ViewerFile file) {
-    }
-
-    @Override
-    public void openFile(ViewerFile file, byte[] contents) {
-    }
-
     public static Dimension defaultDimension = new Dimension(350, -35);
     public static Point defaultPosition = new Point(0, 0);
 
@@ -206,11 +198,11 @@ public class FileNavigationPane extends JDAWindow {
     }
 
     public void openClassFileToWorkSpace(ViewerFile file) {
-        fcn.openClassFile(file);
+        JDA.viewer.openClassFile(file);
     }
 
     public void openFileToWorkSpace(ViewerFile file, byte[] contents) {
-        fcn.openFile(file, contents);
+        JDA.viewer.openFile(file, contents);
     }
 
     /**
