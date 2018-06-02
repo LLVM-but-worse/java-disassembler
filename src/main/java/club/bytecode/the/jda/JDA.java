@@ -14,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
-import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -223,17 +222,19 @@ public class JDA {
             return false;
         return file.container.getFiles().containsKey(file.name);
     }
-
-    public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
+    
+    public static byte[] getClassFileBytes(FileContainer container, String className) {
+        byte[] bytes = getFileBytes(new ViewerFile(container, container.findClassfile(className)));
+        if (bytes == null)
+            return null;
+        return bytes;
+    }
+    
+    public static byte[] dumpClassToBytes(ClassNode cn) {
+        // we have to do this, or else decompile filters don't work.
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         cn.accept(writer);
         return writer.toByteArray();
-        // byte[] bytes = getFileBytes(new ViewerFile(container, container.findClassfile(cn.name)));
-        // if (bytes == null)
-        //     return null;
-        // if (cn.version < 49)
-        //     bytes = fixBytes(bytes); // this is inefficient!
-        // return bytes;
     }
 
     public static final String HACK_PREFIX = "\0JDA-hack";
@@ -252,31 +253,6 @@ public class JDA {
 
     public static String getClassName(String fullyQualifiedName) {
         return fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf('/') + 1);
-    }
-
-    protected static byte[] fixBytes(byte[] in) {
-        ClassReader reader = new ClassReader(in);
-        ClassNode node = new ClassNode();
-        reader.accept(node, ClassReader.EXPAND_FRAMES);
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        node.accept(writer);
-        return writer.toByteArray();
-    }
-
-    /**
-     * Gets all of the loaded classes as an array list
-     *
-     * @return the loaded classes as an array list
-     */
-    public static ArrayList<ClassNode> getLoadedClasses() {
-        ArrayList<ClassNode> a = new ArrayList<>();
-
-        for (FileContainer container : files)
-            for (ClassNode c : container.getClasses())
-                if (!a.contains(c))
-                    a.add(c);
-
-        return a;
     }
 
     // WTF????
@@ -325,10 +301,6 @@ public class JDA {
                         } catch (final Exception e) {
                             new ExceptionUI(e);
                         }
-                    } else if (fn.endsWith(".class")) {
-                        FileContainer container = loadClassfile(fileToOpen, fn);
-                        openFile(container);
-                        fnp.addTreeElement(container, parent);
                     } else {
                         HashMap<String, byte[]> files1 = new HashMap<>();
                         byte[] bytes = JarUtils.getBytes(new FileInputStream(fileToOpen));
@@ -346,26 +318,7 @@ public class JDA {
             }
         })).start();
     }
-
-    public static FileContainer loadClassfile(File fileToOpen, String fn) {
-        try {
-            byte[] bytes = JarUtils.getBytes(new FileInputStream(fileToOpen));
-            String cafebabe = String.format("%02X%02X%02X%02X", bytes[0], bytes[1], bytes[2], bytes[3]);
-            if (cafebabe.toLowerCase().equals("cafebabe")) {
-                final ClassNode cn = JarUtils.getNode(bytes);
-                FileContainer container = new FileContainer(fileToOpen);
-                container.files.put(cn.name + ".class", bytes);
-                container.add(cn);
-                return container;
-            } else {
-                showMessage(fn + ": Header does not start with CAFEBABE, ignoring.");
-            }
-        } catch (final Exception e) {
-            new ExceptionUI(e);
-        }
-        return null;
-    }
-
+    
     public static void openFile(FileContainer fc) {
         JDA.files.add(fc);
         plugins.forEach((plugin -> plugin.onOpenFile(fc)));
@@ -565,68 +518,6 @@ public class JDA {
             viewer.refreshView();
         } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e) && isShiftDown(e)) {
             JDA.closeResources(true);
-        } else if ((e.getKeyCode() == KeyEvent.VK_S) && isCtrlDown(e)) {
-            if (JDA.getLoadedClasses().isEmpty()) {
-                JDA.showMessage("First open a class, jar, or zip file.");
-                return;
-            }
-
-            Thread t = new Thread() {
-                public void run() {
-                    JFileChooser fc = new JFileChooser();
-                    fc.setFileFilter(new FileFilter() {
-                        @Override
-                        public boolean accept(File f) {
-                            return f.isDirectory() || MiscUtils.extension(f.getAbsolutePath()).equals("zip");
-                        }
-
-                        @Override
-                        public String getDescription() {
-                            return "Zip Archives";
-                        }
-                    });
-                    fc.setFileHidingEnabled(false);
-                    fc.setAcceptAllFileFilterUsed(false);
-                    int returnVal = fc.showSaveDialog(viewer);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        if (!file.getAbsolutePath().endsWith(".zip"))
-                            file = new File(file.getAbsolutePath() + ".zip");
-
-                        if (file.exists()) {
-                            JOptionPane pane = new JOptionPane("Are you sure you wish to overwrite this existing file?");
-                            Object[] options = new String[]{"Yes", "No"};
-                            pane.setOptions(options);
-                            JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Overwrite File");
-                            dialog.setVisible(true);
-                            Object obj = pane.getValue();
-                            int result = -1;
-                            for (int k = 0; k < options.length; k++)
-                                if (options[k].equals(obj))
-                                    result = k;
-
-                            if (result == 0) {
-                                file.delete();
-                            } else {
-                                return;
-                            }
-                        }
-
-                        final File file2 = file;
-
-                        JDA.setBusy(true);
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                                JarUtils.saveAsJar(JDA.getLoadedBytes(), file2.getAbsolutePath());
-                                JDA.setBusy(false);
-                            }
-                        };
-                        t.start();
-                    }
-                }
-            };
-            t.start();
         } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e)) {
             if (viewer.fileViewerPane.getCurrentViewer() != null)
                 viewer.fileViewerPane.tabs.remove(viewer.fileViewerPane.getCurrentViewer());
