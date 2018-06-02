@@ -122,10 +122,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         initializeMenubar();
         initializePanelGroup();
 
-        if (JDA.previewCopy)
-            setTitle("JDA v" + JDA.version + " Preview");
-        else
-            setTitle("JDA v" + JDA.version);
+        setTitle("JDA v" + JDA.version);
 
         Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
         windowSize = new Dimension(windowSize.width * 3 / 4, windowSize.height * 2 / 3);
