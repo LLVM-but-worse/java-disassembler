@@ -4,7 +4,6 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.decompilers.bytecode.BytecodeDecompiler;
-import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
 import club.bytecode.the.jda.settings.Settings;
 import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -45,9 +44,7 @@ public class DecompileThread extends Thread {
             if (cn == null) {
                 decompileResult = "// The file was removed during the reload.";
             } else {
-                for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
-                    filter.process(cn);
-                }
+                decompiler.applyFilters(cn);
                 decompileResult = decompiler.decompileClassNode(viewer.getFile().container, cn);
             }
             

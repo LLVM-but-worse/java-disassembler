@@ -77,7 +77,7 @@ public final class ProcyonDecompiler extends JDADecompiler {
     @Override
     public String decompileClassNode(FileContainer container, final ClassNode cn) {
         try {
-            byte[] bytes = JDA.getClassBytes(container, cn);
+            byte[] bytes = JDA.dumpClassToBytes(cn);
             final Map<String, byte[]> loadedClasses = JDA.getLoadedBytes();
             MetadataSystem metadataSystem = new MetadataSystem(new ITypeLoader() {
                 private InputTypeLoader backLoader = new InputTypeLoader();

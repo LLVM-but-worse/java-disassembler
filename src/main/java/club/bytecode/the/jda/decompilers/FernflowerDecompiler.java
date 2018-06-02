@@ -62,17 +62,26 @@ public final class FernflowerDecompiler extends JDADecompiler {
     public String decompileClassNode(FileContainer container, final ClassNode cn) {
         try {
             Map<String, Object> options = generateFernflowerArgs();
+            Map<String, ClassNode> classCache = new HashMap<>();
 
             final AtomicReference<String> result = new AtomicReference<>();
             result.set(null);
 
             BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
-                ClassNode requestedCn = container.getClassNode(JDA.extractProxyClassName(externalPath));
-                if (requestedCn == null) {
-                    System.err.println("Couldn't load " + externalPath);
-                    throw new IOException(container + "$" + cn + " is missing");
+                String className = JDA.extractProxyClassName(externalPath);
+                ClassNode requestedCn;
+                if (classCache.containsKey(className)) {
+                    requestedCn = classCache.get(className);
+                } else {
+                    requestedCn = container.loadClass(container.findClassfile(className));
+                    if (requestedCn == null) {
+                        System.err.println("Couldn't load " + externalPath);
+                        throw new IOException(container + "$" + cn + " is missing");
+                    }
+                    applyFilters(requestedCn);
+                    classCache.put(className, requestedCn);
                 }
-                return JDA.getClassBytes(container, requestedCn);
+                return JDA.dumpClassToBytes(requestedCn);
             }, new IResultSaver() {
                 @Override
                 public void saveFolder(String s) {
@@ -116,16 +125,27 @@ public final class FernflowerDecompiler extends JDADecompiler {
             }, options, new PrintStreamLogger(System.out));
 
             // DFS for inner classes
-            Set<ClassNode> visited = new HashSet<>(); // necessary apparently...
+            Set<String> visited = new HashSet<>(); // necessary apparently...
             ArrayDeque<ClassNode> fifo = new ArrayDeque<>();
             fifo.add(cn);
             while (!fifo.isEmpty()) {
                 ClassNode curCn = fifo.pop();
-                visited.add(curCn);
+                visited.add(curCn.name);
                 baseDecompiler.addSpace(JDA.getClassFileProxy(curCn), true);
                 for (InnerClassNode innerClass : curCn.innerClasses) {
-                    ClassNode innerCn = container.getClassNode(innerClass.name);
-                    if (innerCn != null && !visited.contains(innerCn)) {
+                    if (visited.contains(innerClass.name))
+                        continue;
+                    ClassNode innerCn;
+                    if (classCache.containsKey(innerClass.name)) {
+                        innerCn = classCache.get(innerClass.name);
+                    } else {
+                        innerCn = container.loadClass(container.findClassfile(innerClass.name));
+                        if (innerCn != null) {
+                            applyFilters(innerCn);
+                            classCache.put(innerCn.name, innerCn);
+                        }
+                    }
+                    if (innerCn != null) {
                         fifo.add(innerCn);
                     }
                 }
