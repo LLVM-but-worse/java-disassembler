@@ -65,7 +65,7 @@ public abstract class JDAWindow extends JInternalFrame implements IPersistentWin
 
         addPropertyChangeListener(evt ->
         {
-            if (JDA.viewer == null)
+            if (JDA.viewer == null) // gui isn't loaded yet?
                 return;
 
             if (isNormalState()) {

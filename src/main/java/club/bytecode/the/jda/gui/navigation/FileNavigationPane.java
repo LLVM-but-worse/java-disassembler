@@ -201,8 +201,8 @@ public class FileNavigationPane extends JDAWindow {
         JDA.viewer.openClassFile(file);
     }
 
-    public void openFileToWorkSpace(ViewerFile file, byte[] contents) {
-        JDA.viewer.openFile(file, contents);
+    public void openFileToWorkSpace(ViewerFile file) {
+        JDA.viewer.openFile(file);
     }
 
     /**
@@ -428,15 +428,12 @@ public class FileNavigationPane extends JDAWindow {
         }
 
         ViewerFile file = new ViewerFile(container, nameBuffer.toString());
-        if (file.name.endsWith(".class")) {
+        if (!JDA.hasFile(file)) { // if it's null, it's a directory or some non-leaf tree node
+            tree.expandPath(path);
+        } else if (file.name.endsWith(".class")) {
             openClassFileToWorkSpace(file);
         } else {
-            byte[] fileContents = JDA.getFileBytes(file);
-            if (fileContents != null) { // if it's null, it's a directory or some non-leaf tree node
-                openFileToWorkSpace(file, fileContents);
-            } else {
-                tree.expandPath(path);
-            }
+            openFileToWorkSpace(file);
         }
     }
 
