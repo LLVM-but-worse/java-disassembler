@@ -4,7 +4,6 @@ import club.bytecode.the.jda.*;
 import club.bytecode.the.jda.gui.JDAWindow;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
-import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -186,7 +185,7 @@ public class FileNavigationPane extends JDAWindow {
     }
 
     @Override
-    public void openClassFile(ViewerFile file, ClassNode cn) {
+    public void openClassFile(ViewerFile file) {
     }
 
     @Override
@@ -206,8 +205,8 @@ public class FileNavigationPane extends JDAWindow {
         return defaultPosition;
     }
 
-    public void openClassFileToWorkSpace(ViewerFile file, final ClassNode node) {
-        fcn.openClassFile(file, node);
+    public void openClassFileToWorkSpace(ViewerFile file) {
+        fcn.openClassFile(file);
     }
 
     public void openFileToWorkSpace(ViewerFile file, byte[] contents) {
@@ -436,13 +435,9 @@ public class FileNavigationPane extends JDAWindow {
             nameBuffer.append(container.files.keySet().iterator().next());
         }
 
-        String name = nameBuffer.toString();
         ViewerFile file = new ViewerFile(container, nameBuffer.toString());
-        if (name.endsWith(".class")) {
-            final ClassNode cn = container.loadClass(name);
-            if (cn != null) {
-                openClassFileToWorkSpace(file, cn);
-            }
+        if (file.name.endsWith(".class")) {
+            openClassFileToWorkSpace(file);
         } else {
             byte[] fileContents = JDA.getFileBytes(file);
             if (fileContents != null) { // if it's null, it's a directory or some non-leaf tree node

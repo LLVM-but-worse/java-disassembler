@@ -10,6 +10,7 @@ import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,11 +39,17 @@ public class DecompileThread extends Thread {
 
     public void run() {
         try {
-            for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
-                filter.process(viewer.cn);
-            }
+            String decompileResult;
             
-            String decompileResult = decompiler.decompileClassNode(viewer.getFile().container, viewer.cn);
+            ClassNode cn = viewer.getFile().container.loadClass(viewer.getFile().name);
+            if (cn == null) {
+                decompileResult = "The file was removed during the reload.";
+            } else {
+                for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
+                    filter.process(cn);
+                }
+                decompileResult = decompiler.decompileClassNode(viewer.getFile().container, cn);
+            }
             
             RSyntaxTextArea panelArea;
             if (decompiler instanceof BytecodeDecompiler) {

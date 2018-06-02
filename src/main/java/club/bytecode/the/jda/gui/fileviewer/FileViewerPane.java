@@ -8,7 +8,6 @@ import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.components.TabbedPane;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import org.mapleir.stdlib.util.IndexedList;
-import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -121,8 +120,8 @@ public class FileViewerPane extends JDAWindow {
     }
 
     @Override
-    public void openClassFile(ViewerFile file, final ClassNode cn) {
-        openFile(file, () -> new ClassViewer(file, cn));
+    public void openClassFile(ViewerFile file) {
+        openFile(file, () -> new ClassViewer(file));
     }
 
     public Viewer getCurrentViewer() {
