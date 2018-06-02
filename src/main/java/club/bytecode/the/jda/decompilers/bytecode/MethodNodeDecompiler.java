@@ -124,7 +124,7 @@ public class MethodNodeDecompiler {
         // Code
         if (!access.contains("abstract")) {
             if (mn.signature != null) {
-                sb.append("         <sig:").append(mn.signature).append(">");
+                sb.append("         <sig:").append(mn.signature).append(">\n");
             }
 
             if (mn.annotationDefault != null) {

@@ -235,23 +235,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         settingsMenu.add(mntmFontSettings);
 
         settingsMenu.add(new JSeparator());
-
-        mnShowContainer.setSelected(Settings.SHOW_CONTAINER_NAME.getBool());
-        mnShowContainer.addItemListener(e -> {
-            JTabbedPane tabs = fileViewerPane.tabs;
-            Component[] components = tabs.getComponents();
-            for (int i = 0; i < components.length; i++) {
-                Component c = components[i];
-                if (c instanceof Viewer) {
-                    ((Viewer) c).updateName();
-                    int idx = tabs.indexOfComponent(c);
-                    tabs.setTabComponentAt(idx, new TabbedPane(c.getName(), tabs));
-                    fileViewerPane.tabs.setTitleAt(idx, c.getName());
-                }
-            }
-            Settings.SHOW_CONTAINER_NAME.set(mnShowContainer.isSelected());
-        });
-        viewMenu.add(mnShowContainer);
+        
         mntmSetOptionalLibrary.addActionListener(e -> setOptionalLibrary());
         settingsMenu.add(mntmSetOptionalLibrary);
 
@@ -279,6 +263,23 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         menuBar.add(viewMenu);
         for (int i = 0; i < NUM_PANEL_GROUPS; i++)
             viewMenu.add(generatePane(i));
+        
+        mnShowContainer.setSelected(Settings.SHOW_CONTAINER_NAME.getBool());
+        mnShowContainer.addActionListener(e -> {
+            Settings.SHOW_CONTAINER_NAME.set(mnShowContainer.isSelected());
+            JTabbedPane tabs = fileViewerPane.tabs;
+            Component[] components = tabs.getComponents();
+            for (int i = 0; i < components.length; i++) {
+                Component c = components[i];
+                if (c instanceof Viewer) {
+                    ((Viewer) c).updateName();
+                    int idx = tabs.indexOfComponent(c);
+                    tabs.setTabComponentAt(idx, new TabbedPane(c.getName(), tabs));
+                    fileViewerPane.tabs.setTitleAt(idx, c.getName());
+                }
+            }
+        });
+        viewMenu.add(mnShowContainer);
         
         // ===========================================================================================
         // Windows menu
