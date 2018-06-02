@@ -4,6 +4,7 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.decompilers.bytecode.BytecodeDecompiler;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
 import club.bytecode.the.jda.settings.Settings;
 import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -62,7 +63,11 @@ public class DecompileThread extends Thread {
             panelArea.setText(stripUndisplayableChars(decompileResult));
             panelArea.setCaretPosition(0);
             panelArea.setEditable(viewer.isPaneEditable(paneId));
-            scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
+            StringBuilder topLabelText = new StringBuilder(decompiler.getName());
+            for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
+                topLabelText.append(" + ").append(filter.getName());
+            }
+            scrollPane.setColumnHeaderView(new JLabel(topLabelText.toString()));
             panelArea.setFont(new Font(Settings.FONT_FAMILY.getString(), Settings.FONT_OPTIONS.getInt(), Settings.FONT_SIZE.getInt()));
 
             SwingUtilities.invokeLater(() -> target.add(scrollPane));
