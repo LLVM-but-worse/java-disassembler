@@ -17,7 +17,6 @@ import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.IPersistentWindow;
 import club.bytecode.the.jda.settings.Settings;
-import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -447,9 +446,9 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     @Override
-    public void openClassFile(ViewerFile file, final ClassNode cn) {
+    public void openClassFile(ViewerFile file) {
         for (final JDAWindow vc : windows)
-            vc.openClassFile(file, cn);
+            vc.openClassFile(file);
     }
 
     @Override
