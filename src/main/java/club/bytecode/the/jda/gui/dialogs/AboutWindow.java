@@ -1,8 +1,8 @@
 package club.bytecode.the.jda.gui.dialogs;
 
-import org.apache.commons.io.IOUtils;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.Resources;
+import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
 import javax.swing.text.html.HTMLEditorKit;
@@ -37,7 +37,7 @@ public class AboutWindow extends JFrame {
         editorPane.setEditable(false);
         try {
             String text = IOUtils.toString(Resources.class.getResourceAsStream("/club/bytecode/the/jda/html/about.html"), "UTF-8");
-            text = text.replace("$JDA_VERSION$", JDA.version + (JDA.previewCopy ? " (preview)" : ""));
+            text = text.replace("$JDA_VERSION$", JDA.version);
             text = text.replace("$JDA_ICON$", Resources.class.getClass().getResource("/club/bytecode/the/jda/images/icon.png").toString());
             editorPane.setText(text);
         } catch (IOException e) {

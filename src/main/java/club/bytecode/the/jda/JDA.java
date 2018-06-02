@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 public class JDA {
     /*per version*/
     public static final String version = "1.1.0";
-    public static final boolean previewCopy = false;
     /* Constants */
     public static final String fs = System.getProperty("file.separator");
     public static final String nl = System.getProperty("line.separator");
@@ -66,9 +65,6 @@ public class JDA {
         }
         try {
             System.out.println("JDA (BCV Fork) v" + version);
-            if (previewCopy)
-                showMessage("WARNING: This is a preview/dev copy, you WON'T be alerted when " + version + " is actually out if you use this." + nl +
-                        "Make sure to watch the repo: https://github.com/ecx86/jda for " + version + "'s release");
             getJDADirectory();
 
             loadPlugins();
