@@ -43,7 +43,7 @@ public class DecompileThread extends Thread {
             
             ClassNode cn = viewer.getFile().container.loadClass(viewer.getFile().name);
             if (cn == null) {
-                decompileResult = "The file was removed during the reload.";
+                decompileResult = "// The file was removed during the reload.";
             } else {
                 for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
                     filter.process(cn);

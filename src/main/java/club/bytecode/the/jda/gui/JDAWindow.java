@@ -1,7 +1,6 @@
 package club.bytecode.the.jda.gui;
 
-import club.bytecode.the.jda.FileChangeNotifier;
-import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
+import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.settings.IPersistentWindow;
 
 import javax.swing.*;
@@ -20,22 +19,19 @@ import java.beans.PropertyVetoException;
 
 // TODO: why does this implement FileChangeNotifier?
 // that ought to be refactored
-public abstract class JDAWindow extends JInternalFrame implements FileChangeNotifier, IPersistentWindow {
+public abstract class JDAWindow extends JInternalFrame implements IPersistentWindow {
     private String windowId;
 
     public Point unmaximizedPos;
     public Dimension unmaximizedSize; // unmaximized size for when JDA is maximized
     public Dimension smallUnmaxSize; // unmaximized size for when JDA is unmaximized
 
-    protected final MainViewerGUI viewer;
-
-    public JDAWindow(final String id, final String title, final Icon icon, final MainViewerGUI viewer) {
+    public JDAWindow(final String id, final String title, final Icon icon) {
         super(title, true, true, true, true);
         windowId = id;
         setName(title);
         setFrameIcon(icon);
         setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-        this.viewer = viewer;
 
         unmaximizedPos = getDefaultPosition();
         unmaximizedSize = getDefaultSize();
@@ -45,7 +41,7 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
             @Override
             public void componentResized(ComponentEvent e) {
                 if (!isMaximum()) {
-                    if (viewer.isMaximized)
+                    if (JDA.viewer.isMaximized)
                         unmaximizedSize = getSize();
                     else
                         smallUnmaxSize = getSize();
@@ -64,7 +60,7 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
         addPropertyChangeListener(evt ->
         {
             if (isNormalState()) {
-                setSize(viewer.isMaximized ? unmaximizedSize : smallUnmaxSize);
+                setSize(JDA.viewer.isMaximized ? unmaximizedSize : smallUnmaxSize);
                 setLocation(unmaximizedPos);
             }
         });
@@ -87,12 +83,6 @@ public abstract class JDAWindow extends JInternalFrame implements FileChangeNoti
         if (isNormalState())
             setSize(unmaximizedSize);
     }
-
-    @Override
-    public abstract void openClassFile(ViewerFile file);
-
-    @Override
-    public abstract void openFile(ViewerFile file, byte[] contents);
 
     protected static Dimension defaultDimensions;
     protected static Point defaultPosition;

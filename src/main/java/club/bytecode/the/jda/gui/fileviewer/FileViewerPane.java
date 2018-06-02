@@ -1,10 +1,8 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
-import club.bytecode.the.jda.FileChangeNotifier;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.Resources;
 import club.bytecode.the.jda.gui.JDAWindow;
-import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.components.TabbedPane;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import org.mapleir.stdlib.util.IndexedList;
@@ -29,7 +27,6 @@ public class FileViewerPane extends JDAWindow {
 
     private static final long serialVersionUID = 6542337997679487946L;
 
-    FileChangeNotifier fcn;
     public JTabbedPane tabs;
 
     JPanel buttonPanel;
@@ -37,11 +34,10 @@ public class FileViewerPane extends JDAWindow {
 
     List<ViewerFile> workingOn = new IndexedList<>();
 
-    public FileViewerPane(final FileChangeNotifier fcn) {
-        super("WorkPanel", "Work Space", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
+    public FileViewerPane() {
+        super("WorkPanel", "Work Space", Resources.fileNavigatorIcon);
 
         this.tabs = new JTabbedPane();
-        this.fcn = fcn;
 
         getContentPane().setLayout(new BorderLayout());
 
@@ -114,12 +110,10 @@ public class FileViewerPane extends JDAWindow {
         }
     }
 
-    @Override
     public void openFile(ViewerFile file, byte[] contents) {
         openFile(file, () -> new FileViewer(file, contents));
     }
 
-    @Override
     public void openClassFile(ViewerFile file) {
         openFile(file, () -> new ClassViewer(file));
     }
