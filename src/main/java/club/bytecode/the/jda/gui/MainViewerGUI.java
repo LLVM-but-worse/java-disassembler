@@ -449,8 +449,8 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         fileViewerPane.openClassFile(file);
     }
 
-    public void openFile(ViewerFile file, byte[] content) {
-        fileViewerPane.openFile(file, content);
+    public void openFile(ViewerFile file) {
+        fileViewerPane.openFile(file);
     }
 
     public void refreshView() {

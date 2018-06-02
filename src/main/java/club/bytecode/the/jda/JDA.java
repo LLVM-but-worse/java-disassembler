@@ -217,6 +217,12 @@ public class JDA {
         else
             return null;
     }
+    
+    public static boolean hasFile(ViewerFile file) {
+        if (file.container == null)
+            return false;
+        return file.container.getFiles().containsKey(file.name);
+    }
 
     public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);

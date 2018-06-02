@@ -110,8 +110,8 @@ public class FileViewerPane extends JDAWindow {
         }
     }
 
-    public void openFile(ViewerFile file, byte[] contents) {
-        openFile(file, () -> new FileViewer(file, contents));
+    public void openFile(ViewerFile file) {
+        openFile(file, () -> new FileViewer(file));
     }
 
     public void openClassFile(ViewerFile file) {
