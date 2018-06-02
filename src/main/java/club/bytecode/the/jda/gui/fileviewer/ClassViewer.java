@@ -99,6 +99,7 @@ public class ClassViewer extends Viewer {
 
     public ClassViewer(ViewerFile file) {
         super(file);
+        updateName();
         this.setLayout(new BorderLayout());
 
         this.sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panels.get(0), panels.get(1));
