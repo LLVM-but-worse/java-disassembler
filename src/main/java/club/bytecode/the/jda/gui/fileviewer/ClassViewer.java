@@ -4,7 +4,6 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +24,6 @@ import java.util.Map;
  */
 
 public class ClassViewer extends Viewer {
-    public ClassNode cn;
     private static final long serialVersionUID = -8650495368920680024L;
     private List<Thread> decompileThreads = new ArrayList<>();
 
@@ -99,9 +97,8 @@ public class ClassViewer extends Viewer {
     public List<RSyntaxTextArea> javas = Arrays.asList(null, null, null);
     public List<SearchPanel> searches = Arrays.asList(null, null, null);
 
-    public ClassViewer(ViewerFile file, final ClassNode cn) {
+    public ClassViewer(ViewerFile file) {
         super(file);
-        this.cn = cn;
         updateName();
         this.setLayout(new BorderLayout());
 
@@ -163,7 +160,6 @@ public class ClassViewer extends Viewer {
 
     @Override
     public void refresh(@Nullable final JButton button) {
-        this.cn = getFile().container.getClassNode(cn.name); //update the classnode
         setPanes();
 
         for (JPanel jpanel : panels) {
@@ -173,32 +169,16 @@ public class ClassViewer extends Viewer {
             javas.set(i, null);
         }
         resetDivider();
-        if (this.cn == null) {
-            for (JPanel jpanel : panels) {
-                jpanel.add(new JLabel("This file has been removed from the reload."));
-            }
-            return;
-        }
 
         for (int i = 0; i < decompilers.size(); i++) {
             if (decompilers.get(i) != null) {
-                PaneUpdaterThread t = new PaneUpdaterThread(this, decompilers.get(i), i, panels.get(i), button);
+                DecompileThread t = new DecompileThread(this, decompilers.get(i), i, panels.get(i), button);
                 decompileThreads.add(t);
                 t.start();
             }
         }
     }
-
-    public Object[] getJava() {
-        for (int i = 0; i < javas.size(); i++) {
-            RSyntaxTextArea text = javas.get(i);
-            if (text != null) {
-                return new Object[]{cn, text.getText()};
-            }
-        }
-        return null;
-    }
-
+    
     public void reset() {
         for (Thread t : decompileThreads) {
             t.stop();

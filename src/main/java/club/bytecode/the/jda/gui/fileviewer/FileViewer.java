@@ -1,5 +1,6 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
+import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -12,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
@@ -26,14 +26,12 @@ public class FileViewer extends Viewer {
 
     private static final long serialVersionUID = 6103372882168257164L;
 
-    private byte[] contents;
     RSyntaxTextArea panelArea = new RSyntaxTextArea();
     SearchPanel searchPanel;
     JPanel panel2 = new JPanel(new BorderLayout());
     public BufferedImage image;
-    boolean canRefresh = false;
 
-    public void setContents() {
+    public void setContents(byte[] contents) {
         String name = getFile().name.toLowerCase();
         panelArea.setCodeFoldingEnabled(true);
         panelArea.setAntiAliasingEnabled(true);
@@ -45,7 +43,6 @@ public class FileViewer extends Viewer {
         if (!isPureAscii(contentsS)) {
             if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg") ||
                     name.endsWith(".gif") || name.endsWith(".tif") || name.endsWith(".bmp")) {
-                canRefresh = true;
                 try {
                     image = ImageIO.read(new ByteArrayInputStream(contents)); //gifs fail cause of this
                     JLabel label = new JLabel("", new ImageIcon(image), JLabel.CENTER);
@@ -148,36 +145,21 @@ public class FileViewer extends Viewer {
         return asciiEncoder.canEncode(v);
     }
 
-    public FileViewer(ViewerFile file, final byte[] contents) {
+    public FileViewer(ViewerFile file) {
         super(file);
-        this.contents = contents;
         updateName();
         this.setLayout(new BorderLayout());
 
         this.add(panel2, BorderLayout.CENTER);
 
-        setContents();
+        refresh(null);
     }
 
     @Override
     public void refresh(@Nullable JButton src) {
-        if (!canRefresh) {
-            if (src != null) { // this is such a kludge
-                src.setEnabled(true);
-            }
-            return;
-        }
-
         panel2.removeAll();
-        try {
-            image = ImageIO.read(new ByteArrayInputStream(contents));
-        } catch (IOException e) {
-            new ExceptionUI(e);
-        }
-        JLabel label = new JLabel("", new ImageIcon(image), JLabel.CENTER);
-        panel2.add(label, BorderLayout.CENTER);
+        setContents(JDA.getFileBytes(getFile()));
         panel2.updateUI();
-
         if (src != null) {
             src.setEnabled(true);
         }

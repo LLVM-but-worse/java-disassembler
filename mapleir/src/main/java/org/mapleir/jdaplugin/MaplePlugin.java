@@ -16,6 +16,7 @@ import org.mapleir.jdaplugin.gui.AboutDialog;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class MaplePlugin implements JDAPlugin {
@@ -69,7 +70,8 @@ public class MaplePlugin implements JDAPlugin {
 
 	@Override
 	public void onOpenFile(FileContainer fileContainer) {
-		ApplicationClassSource app = new ApplicationClassSource(fileContainer.name, fileContainer.getClasses());
+		// todo
+		ApplicationClassSource app = new ApplicationClassSource(fileContainer.name, new HashSet<>());
 		AnalysisContext newCxt = new BasicAnalysisContext.BasicContextBuilder()
 				.setApplication(app)
 				.setInvocationResolver(new DefaultInvocationResolver(app))

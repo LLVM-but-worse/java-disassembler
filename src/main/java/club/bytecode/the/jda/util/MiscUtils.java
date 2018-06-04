@@ -1,4 +1,4 @@
-package club.bytecode.the.jda;
+package club.bytecode.the.jda.util;
 
 import java.io.BufferedReader;
 import java.io.File;

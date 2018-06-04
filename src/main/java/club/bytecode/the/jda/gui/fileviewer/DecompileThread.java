@@ -4,11 +4,13 @@ import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
 import club.bytecode.the.jda.decompilers.bytecode.BytecodeDecompiler;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
 import club.bytecode.the.jda.settings.Settings;
 import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +20,7 @@ import java.awt.*;
  *
  * @author Konloch
  */
-public class PaneUpdaterThread extends Thread {
+public class DecompileThread extends Thread {
 
     private JDADecompiler decompiler;
     private int paneId;
@@ -26,7 +28,7 @@ public class PaneUpdaterThread extends Thread {
     private ClassViewer viewer;
     @Nullable private JButton button; // this needs to be refactored into something event-based, not a stupid hack like this! 
 
-    public PaneUpdaterThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, @Nullable JButton button) {
+    public DecompileThread(ClassViewer viewer, JDADecompiler decompiler, int paneId, JPanel target, @Nullable JButton button) {
         this.decompiler = decompiler;
         this.paneId = paneId;
         this.target = target;
@@ -37,6 +39,16 @@ public class PaneUpdaterThread extends Thread {
 
     public void run() {
         try {
+            String decompileResult;
+            
+            ClassNode cn = viewer.getFile().container.loadClass(viewer.getFile().name);
+            if (cn == null) {
+                decompileResult = "// The file was removed during the reload.";
+            } else {
+                decompiler.applyFilters(cn);
+                decompileResult = decompiler.decompileClassNode(viewer.getFile().container, cn);
+            }
+            
             RSyntaxTextArea panelArea;
             if (decompiler instanceof BytecodeDecompiler) {
                 panelArea = new BytecodeSyntaxArea();
@@ -46,12 +58,16 @@ public class PaneUpdaterThread extends Thread {
             }
             panelArea.setCodeFoldingEnabled(true);
             panelArea.setAntiAliasingEnabled(true);
+            
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
-            String decompileResult = decompiler.decompileClassNode(viewer.getFile().container, viewer.cn);
             panelArea.setText(stripUndisplayableChars(decompileResult));
             panelArea.setCaretPosition(0);
             panelArea.setEditable(viewer.isPaneEditable(paneId));
-            scrollPane.setColumnHeaderView(new JLabel(decompiler.getName() + " Decompiler - Editable: " + panelArea.isEditable()));
+            StringBuilder topLabelText = new StringBuilder(decompiler.getName());
+            for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
+                topLabelText.append(" + ").append(filter.getName());
+            }
+            scrollPane.setColumnHeaderView(new JLabel(topLabelText.toString()));
             panelArea.setFont(new Font(Settings.FONT_FAMILY.getString(), Settings.FONT_OPTIONS.getInt(), Settings.FONT_SIZE.getInt()));
 
             SwingUtilities.invokeLater(() -> target.add(scrollPane));

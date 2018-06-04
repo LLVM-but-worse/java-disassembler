@@ -4,7 +4,6 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,17 +22,7 @@ public class FileContainer {
     public final File file;
     public final String name;
 
-    public HashMap<String, byte[]> files = new HashMap<>();
-    private Map<String, ClassNode> classes = new HashMap<>();
-
-    public ClassNode getClassNode(String name) {
-        if (classes.containsKey(name))
-            return classes.get(name);
-        ClassNode cn = loadClass(findClassfile(name));
-        if (cn != null)
-            classes.put(name, cn);
-        return classes.get(name);
-    }
+    public HashMap<String, byte[]> files = new HashMap<>(); // this is assigned outside the class?!
 
     public ClassNode loadClass(String name) {
         byte[] bytes = files.get(name);
@@ -54,18 +43,6 @@ public class FileContainer {
 
     public Map<String, byte[]> getFiles() {
         return files;
-    }
-
-    public boolean remove(ClassNode classNode) {
-        return classes.remove(classNode.name) != null;
-    }
-
-    public void add(ClassNode classNode) {
-        classes.put(classNode.name, classNode);
-    }
-
-    public Collection<ClassNode> getClasses() {
-        return classes.values();
     }
 
     @Override

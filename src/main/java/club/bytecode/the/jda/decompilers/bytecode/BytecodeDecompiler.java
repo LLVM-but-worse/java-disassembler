@@ -88,7 +88,8 @@ public class BytecodeDecompiler extends JDADecompiler {
                 String innerClassName = innerClassNode.name;
                 if ((innerClassName != null) && !decompiledClasses.contains(innerClassName)) {
                     decompiledClasses.add(innerClassName);
-                    ClassNode cn1 = container.getClassNode(innerClassName);
+                    ClassNode cn1 = container.loadClass(container.findClassfile(innerClassName));
+                    applyFilters(cn1);
                     if (cn1 != null) {
                         sb.appendPrefix("     ");
                         sb.append(JDA.nl + JDA.nl);

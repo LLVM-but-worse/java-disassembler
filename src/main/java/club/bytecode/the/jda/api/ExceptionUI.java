@@ -62,9 +62,7 @@ public class ExceptionUI extends JFrame {
         e.printStackTrace(new PrintWriter(sw));
         e.printStackTrace();
 
-        txtrBytecodeViewerIs.setText("JDA v" + JDA.version +
-                ", Preview Copy: " + JDA.previewCopy +
-                JDA.nl + JDA.nl + sw.toString());
+        txtrBytecodeViewerIs.setText("JDA v" + JDA.version + JDA.nl + JDA.nl + sw.toString());
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }

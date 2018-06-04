@@ -3,6 +3,7 @@ package club.bytecode.the.jda.decompilers;
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.JDANamespacedComponent;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
 import club.bytecode.the.jda.settings.JDADecompilerSettings;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -34,5 +35,11 @@ public abstract class JDADecompiler implements JDANamespacedComponent {
                 "Suggested Fix: Click refresh class, if it fails again try another decompiler." + JDA.nl +
                 JDA.nl +
                 exception;
+    }
+    
+    public void applyFilters(ClassNode cn) {
+        for (DecompileFilter filter : getSettings().getEnabledFilters()) {
+            filter.process(cn);
+        }
     }
 }

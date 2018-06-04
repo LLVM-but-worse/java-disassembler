@@ -1,6 +1,5 @@
 package club.bytecode.the.jda.gui;
 
-import club.bytecode.the.jda.FileChangeNotifier;
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.Resources;
@@ -17,7 +16,6 @@ import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.IPersistentWindow;
 import club.bytecode.the.jda.settings.Settings;
-import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +30,7 @@ import java.util.List;
  *
  * @author Konloch
  */
-public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersistentWindow {
+public class MainViewerGUI extends JFrame implements IPersistentWindow {
     public static final long serialVersionUID = 1851409230530948543L;
     private static final Color COLOR_DESKTOP_BACKGROUND = new Color(58, 110, 165);
 
@@ -124,10 +122,7 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         initializeMenubar();
         initializePanelGroup();
 
-        if (JDA.previewCopy)
-            setTitle("JDA v" + JDA.version + " Preview");
-        else
-            setTitle("JDA v" + JDA.version);
+        setTitle("JDA v" + JDA.version);
 
         Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
         windowSize = new Dimension(windowSize.width * 3 / 4, windowSize.height * 2 / 3);
@@ -339,8 +334,8 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
     }
 
     private void initializeWindows() {
-        navigator = new FileNavigationPane(this);
-        fileViewerPane = new FileViewerPane(this);
+        navigator = new FileNavigationPane();
+        fileViewerPane = new FileViewerPane();
 
         desktop = new JDesktopPane();
         setContentPane(desktop);
@@ -393,6 +388,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         ButtonGroup group = allPanes.get(id);
 
         JRadioButtonMenuItem none = new JRadioButtonMenuItem("None");
+        none.addItemListener((e) -> {
+            if (none.isSelected())
+                Settings.PANE_DECOMPILERS[id].set("None");
+        });
         allDecompilers.get(group).put(none, null);
         allDecompilersRev.get(group).put(null, none);
         group.add(none);
@@ -401,7 +400,10 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
 
         for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
             JRadioButtonMenuItem button = new JRadioButtonMenuItem(decompiler.getName());
-            button.addActionListener((e) -> Settings.PANE_DECOMPILERS[id].set(decompiler.getFullName()));
+            button.addActionListener((e) -> {
+                if (button.isSelected())
+                    Settings.PANE_DECOMPILERS[id].set(decompiler.getFullName());
+            });
             allDecompilers.get(group).put(button, decompiler);
             allDecompilersRev.get(group).put(decompiler, button);
             group.add(button);
@@ -440,16 +442,12 @@ public class MainViewerGUI extends JFrame implements FileChangeNotifier, IPersis
         Settings.loadWindows();
     }
 
-    @Override
-    public void openClassFile(ViewerFile file, final ClassNode cn) {
-        for (final JDAWindow vc : windows)
-            vc.openClassFile(file, cn);
+    public void openClassFile(ViewerFile file) {
+        fileViewerPane.openClassFile(file);
     }
 
-    @Override
-    public void openFile(ViewerFile file, byte[] content) {
-        for (final JDAWindow vc : windows)
-            vc.openFile(file, content);
+    public void openFile(ViewerFile file) {
+        fileViewerPane.openFile(file);
     }
 
     public void refreshView() {

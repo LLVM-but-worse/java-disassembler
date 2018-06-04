@@ -122,7 +122,7 @@ public class JDADecompilerSettings {
         for (DecompileFilter filter : DecompileFilters.getAllFilters()) {
             JCheckBox checkbox = new JCheckBox(filter.getFullName());
             checkbox.addItemListener((e) -> {
-                if (checkbox.isEnabled())
+                if (checkbox.isSelected())
                     enabledFilters.add(filter);
                 else
                     enabledFilters.remove(filter);
@@ -133,6 +133,10 @@ public class JDADecompilerSettings {
         pipelineListbox = new JScrollPane(availFilters);
         pipelinePanel.add(pipelineListbox, "spanx, grow");
         dialog.add(pipelinePanel, "align center, spanx, grow, wrap");
+    }
+    
+    public Collection<DecompileFilter> getEnabledFilters() {
+        return Collections.unmodifiableCollection(enabledFilters);
     }
 
     public void loadFrom(JsonObject rootSettings) {

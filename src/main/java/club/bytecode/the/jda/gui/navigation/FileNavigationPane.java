@@ -1,10 +1,11 @@
 package club.bytecode.the.jda.gui.navigation;
 
-import club.bytecode.the.jda.*;
+import club.bytecode.the.jda.FileContainer;
+import club.bytecode.the.jda.FileDrop;
+import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.Resources;
 import club.bytecode.the.jda.gui.JDAWindow;
-import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
-import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -33,7 +34,6 @@ import java.util.function.Consumer;
 public class FileNavigationPane extends JDAWindow {
     private static final String quickSearchText = "File search";
 
-    FileChangeNotifier fcn;
     JCheckBox matchCase = new JCheckBox("Match case");
 
     FileNode treeRoot = new FileNode("Loaded Files:");
@@ -105,10 +105,9 @@ public class FileNavigationPane extends JDAWindow {
         }
     }
 
-    public FileNavigationPane(final FileChangeNotifier fcn) {
-        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon, (MainViewerGUI) fcn);
+    public FileNavigationPane() {
+        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon);
 
-        this.fcn = fcn;
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
         quickSearch.setForeground(Color.gray);
@@ -185,14 +184,6 @@ public class FileNavigationPane extends JDAWindow {
         });
     }
 
-    @Override
-    public void openClassFile(ViewerFile file, ClassNode cn) {
-    }
-
-    @Override
-    public void openFile(ViewerFile file, byte[] contents) {
-    }
-
     public static Dimension defaultDimension = new Dimension(350, -35);
     public static Point defaultPosition = new Point(0, 0);
 
@@ -206,12 +197,12 @@ public class FileNavigationPane extends JDAWindow {
         return defaultPosition;
     }
 
-    public void openClassFileToWorkSpace(ViewerFile file, final ClassNode node) {
-        fcn.openClassFile(file, node);
+    public void openClassFileToWorkSpace(ViewerFile file) {
+        JDA.viewer.openClassFile(file);
     }
 
-    public void openFileToWorkSpace(ViewerFile file, byte[] contents) {
-        fcn.openFile(file, contents);
+    public void openFileToWorkSpace(ViewerFile file) {
+        JDA.viewer.openFile(file);
     }
 
     /**
@@ -436,20 +427,13 @@ public class FileNavigationPane extends JDAWindow {
             nameBuffer.append(container.files.keySet().iterator().next());
         }
 
-        String name = nameBuffer.toString();
         ViewerFile file = new ViewerFile(container, nameBuffer.toString());
-        if (name.endsWith(".class")) {
-            final ClassNode cn = container.loadClass(name);
-            if (cn != null) {
-                openClassFileToWorkSpace(file, cn);
-            }
+        if (!JDA.hasFile(file)) { // if it's null, it's a directory or some non-leaf tree node
+            tree.expandPath(path);
+        } else if (file.name.endsWith(".class")) {
+            openClassFileToWorkSpace(file);
         } else {
-            byte[] fileContents = JDA.getFileBytes(file);
-            if (fileContents != null) { // if it's null, it's a directory or some non-leaf tree node
-                openFileToWorkSpace(file, fileContents);
-            } else {
-                tree.expandPath(path);
-            }
+            openFileToWorkSpace(file);
         }
     }
 
