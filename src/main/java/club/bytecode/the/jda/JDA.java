@@ -10,6 +10,8 @@ import club.bytecode.the.jda.gui.fileviewer.BytecodeTokenizer;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.Settings;
+import club.bytecode.the.jda.util.GuiUtils;
+import club.bytecode.the.jda.util.MiscUtils;
 import org.apache.commons.io.FileUtils;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -59,6 +61,10 @@ public class JDA {
      */
     public static void main(String[] args) {
         try {
+            // Fix antialiasing
+            System.setProperty("awt.useSystemAAFontSettings", "lcd");
+            System.setProperty("swing.aatext", "true");
+            GuiUtils.setWmClassName("JDA");
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             new ExceptionUI(e);
