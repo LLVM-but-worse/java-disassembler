@@ -234,7 +234,7 @@ public class JDA {
     
     public static byte[] dumpClassToBytes(ClassNode cn) {
         // we have to do this, or else decompile filters don't work.
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cn.accept(writer);
         return writer.toByteArray();
     }
