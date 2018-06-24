@@ -12,12 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BytecodeSyntaxArea extends RSyntaxTextArea {
+public class BytecodeSyntaxArea extends JDATextArea {
     public Map<Fold, List<Token>> tokenIndex;
     public final Map<Token, Fold> parentFoldCache;
     public boolean foldsBuilt;
 
-    public BytecodeSyntaxArea() {
+    public BytecodeSyntaxArea(String text) {
+        super(text);
         setSyntaxEditingStyle(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE);
 
         setLinkScanningMask(0);

@@ -58,7 +58,6 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
     public List<ButtonGroup> allPanes = Collections.unmodifiableList(Arrays.asList(panelGroups));
     public Map<ButtonGroup, Map<JRadioButtonMenuItem, JDADecompiler>> allDecompilers = new HashMap<>();
     public Map<ButtonGroup, Map<JDADecompiler, JRadioButtonMenuItem>> allDecompilersRev = new HashMap<>();
-    public Map<ButtonGroup, Map<JDADecompiler, JCheckBoxMenuItem>> editButtons = new HashMap<>();
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     private JMenuItem spinnerMenu = new JMenuItem("");
     public FontOptionsDialog fontOptionsDialog = new FontOptionsDialog();
@@ -72,7 +71,6 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
             ButtonGroup panelGroup = new ButtonGroup();
             allDecompilers.put(panelGroup, new HashMap<>());
             allDecompilersRev.put(panelGroup, new HashMap<>());
-            editButtons.put(panelGroup, new HashMap<>());
             panelGroups[i] = panelGroup;
         }
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new JDAKeybindManager());

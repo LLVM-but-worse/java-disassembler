@@ -38,16 +38,6 @@ public class ClassViewer extends Viewer {
         }
     }
 
-    public boolean isPaneEditable(int pane) {
-        setPanes();
-        ButtonGroup buttonGroup = JDA.viewer.allPanes.get(pane);
-        JDADecompiler selected = decompilers.get(pane);
-        if (buttonGroup != null && JDA.viewer.editButtons.get(buttonGroup) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected) != null && JDA.viewer.editButtons.get(buttonGroup).get(selected).isSelected()) {
-            return true;
-        }
-        return false;
-    }
-
     public void updatePane(int pane, RSyntaxTextArea text, JDADecompiler decompiler) {
         javas.set(pane, text);
         SearchPanel search = new SearchPanel(text);
