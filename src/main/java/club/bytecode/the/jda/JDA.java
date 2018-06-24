@@ -224,6 +224,15 @@ public class JDA {
             return false;
         return file.container.getFiles().containsKey(file.name);
     }
+
+    // try to get class bytes by exporting classnode, else fallback to getting the bytes from the actual file itself
+    public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
+        byte[] result = dumpClassToBytes(cn);
+        if (result != null)
+            return result;
+        result = getClassFileBytes(container, cn.name);
+        return result;
+    }
     
     public static byte[] getClassFileBytes(FileContainer container, String className) {
         byte[] bytes = getFileBytes(new ViewerFile(container, container.findClassfile(className)));
@@ -234,9 +243,15 @@ public class JDA {
     
     public static byte[] dumpClassToBytes(ClassNode cn) {
         // we have to do this, or else decompile filters don't work.
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        cn.accept(writer);
-        return writer.toByteArray();
+        try {
+            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+            cn.accept(writer);
+            return writer.toByteArray();
+        } catch (Exception e) {
+            System.err.println("Exception while dumping class " + cn.name + ": ");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static final String HACK_PREFIX = "\0JDA-hack";

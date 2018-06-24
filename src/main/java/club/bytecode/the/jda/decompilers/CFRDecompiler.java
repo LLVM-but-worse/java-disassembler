@@ -98,7 +98,7 @@ public final class CFRDecompiler extends JDADecompiler {
     @Override
     public String decompileClassNode(FileContainer container, ClassNode cn) {
         try {
-            byte[] bytes = JDA.dumpClassToBytes(cn);
+            byte[] bytes = JDA.getClassBytes(container, cn);
             Options options = new GetOptParser().parse(generateMainMethod(), OptionsImpl.getFactory());
             ClassFileSourceImpl classFileSource = new ClassFileSourceImpl(options);
             DCCommonState dcCommonState = new DCCommonState(options, classFileSource);

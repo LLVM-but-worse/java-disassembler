@@ -81,7 +81,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
                     applyFilters(requestedCn);
                     classCache.put(className, requestedCn);
                 }
-                return JDA.dumpClassToBytes(requestedCn);
+                return JDA.getClassBytes(container, requestedCn);
             }, new IResultSaver() {
                 @Override
                 public void saveFolder(String s) {
