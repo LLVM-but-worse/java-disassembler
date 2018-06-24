@@ -1,6 +1,6 @@
 package club.bytecode.the.jda;
 
-import org.imgscalr.Scalr;
+import club.bytecode.the.jda.util.GuiUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -36,6 +36,7 @@ public class Resources {
     public static ImageIcon javaIcon = new ImageIcon(Resources.class.getClass().getResource("/club/bytecode/the/jda/images/java.png"));
 
     public static ImageIcon fileNavigatorIcon = new ImageIcon(Resources.class.getClass().getResource("/club/bytecode/the/jda/images/icon.png"));
+    public static ImageIcon fileViewerIcon = new ImageIcon(Resources.class.getClass().getResource("/club/bytecode/the/jda/images/icon.png"));
 
     public static ArrayList<BufferedImage> iconList;
     public static BufferedImage icon;
@@ -50,11 +51,8 @@ public class Resources {
 
         iconList = new ArrayList<>();
         for (int size : new int[]{8, 16, 24, 32, 48, 64, 96, 128, 192, 256}) {
-            iconList.add(resize(icon, size, size));
+            iconList.add(GuiUtils.resize(icon, size, size));
         }
     }
 
-    public static BufferedImage resize(BufferedImage image, int width, int height) {
-        return Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, width, height);
-    }
 }

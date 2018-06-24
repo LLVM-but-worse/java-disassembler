@@ -106,7 +106,7 @@ public class FileNavigationPane extends JDAWindow {
     }
 
     public FileNavigationPane() {
-        super("ClassNavigation", "File Navigator", Resources.fileNavigatorIcon);
+        super("ClassNavigation", "File Navigator", Resources.fileViewerIcon);
 
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);

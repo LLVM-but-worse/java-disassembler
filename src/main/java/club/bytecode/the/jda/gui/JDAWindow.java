@@ -2,8 +2,10 @@ package club.bytecode.the.jda.gui;
 
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.settings.IPersistentWindow;
+import club.bytecode.the.jda.util.GuiUtils;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -30,7 +32,7 @@ public abstract class JDAWindow extends JInternalFrame implements IPersistentWin
         super(title, true, true, true, true);
         windowId = id;
         setName(title);
-        setFrameIcon(icon);
+        setFrameIcon(GuiUtils.resize(icon, (int)  getTitleHeight(), (int) getTitleHeight()));
         setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 
         unmaximizedPos = getDefaultPosition();
@@ -91,6 +93,10 @@ public abstract class JDAWindow extends JInternalFrame implements IPersistentWin
     public void onJDAMaximized() {
         if (isNormalState())
             setSize(unmaximizedSize);
+    }
+
+    private double getTitleHeight() {
+        return (((BasicInternalFrameUI) this.getUI()).getNorthPane()).getPreferredSize().getHeight();
     }
 
     protected static Dimension defaultDimensions;
