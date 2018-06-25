@@ -52,7 +52,7 @@ public class JDATextArea extends RSyntaxTextArea {
                     int cursorPos = e.getDot();
                     int line = getLineOfOffset(cursorPos);
                     for (Token t = getTokenListForLine(line); t != null; t = t.getNextToken()) {
-                        if (t.getOffset() <= cursorPos && t.getEndOffset() >= cursorPos) {
+                        if (t.getOffset() <= cursorPos && t.getEndOffset() > cursorPos) {
                             currentlySelectedToken = new TokenWrapper(t);
                             break;
                         }
