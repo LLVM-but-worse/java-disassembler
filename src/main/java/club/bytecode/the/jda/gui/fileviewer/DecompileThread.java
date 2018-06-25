@@ -7,7 +7,6 @@ import club.bytecode.the.jda.decompilers.bytecode.BytecodeDecompiler;
 import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
 import com.strobel.annotations.Nullable;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -53,7 +52,6 @@ public class DecompileThread extends Thread {
                 panelArea = new BytecodeSyntaxArea(text);
             } else {
                 panelArea = new JDATextArea(text);
-                panelArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
             }
 
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);

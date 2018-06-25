@@ -7,6 +7,7 @@ import club.bytecode.the.jda.api.PluginLoader;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeTokenizer;
+import club.bytecode.the.jda.gui.fileviewer.JDAJavaTokenizer;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.Settings;
@@ -15,6 +16,7 @@ import club.bytecode.the.jda.util.MiscUtils;
 import org.apache.commons.io.FileUtils;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.folding.CurlyFoldParser;
 import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
@@ -131,7 +133,9 @@ public class JDA {
     public static void onGUILoad() {
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
         atmf.putMapping(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE, BytecodeTokenizer.class.getName());
+        atmf.putMapping(JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA, JDAJavaTokenizer.class.getName());
         FoldParserManager.get().addFoldParserMapping(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE, new BytecodeFoldParser());
+        FoldParserManager.get().addFoldParserMapping(JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA, new CurlyFoldParser());
 
         plugins.forEach(JDAPlugin::onGUILoad);
     }
