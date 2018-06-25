@@ -137,39 +137,46 @@ public class JDATextArea extends RSyntaxTextArea {
         }
     }
 
-    public class JDATextAreaKeyListener extends NonRepeatKeyListener {
-        public JDATextAreaKeyListener() {
-        }
+    private boolean isIdentifierSelected() {
+        return currentlySelectedToken != null && currentlySelectedToken.getType() == TokenTypes.IDENTIFIER;
+    }
 
+    private void doXrefDialog() {
+        if (!isIdentifierSelected())
+            return;
+        JOptionPane.showMessageDialog(this, "Not implemented");
+    }
+
+    private void doRenameDialog() {
+        if (!isIdentifierSelected())
+            return;
+        String oldName = currentlySelectedToken.getLexeme();
+        String newName = JOptionPane.showInputDialog("Choose a new name", oldName);
+        JOptionPane.showMessageDialog(this, "Not implemented");
+    }
+
+    public class JDATextAreaKeyListener implements KeyListener {
         @Override
         public void keyTyped(KeyEvent e) {
-            if (e.getKeyChar() != 0xFFFF)
-                e.consume();
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            super.keyPressed(e);
-            if (e.getKeyChar() != 0xFFFF)
-                e.consume();
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            super.keyReleased(e);
-        }
-
-        @Override
-        protected void onDown(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_SLASH:
                     addCommentDialog();
+                    break;
+                case KeyEvent.VK_X:
+                    doXrefDialog();
+                    break;
+                case KeyEvent.VK_N:
+                    doRenameDialog();
+                    break;
             }
         }
 
         @Override
-        protected void onUp(KeyEvent e) {
-
+        public void keyReleased(KeyEvent e) {
         }
     }
 
