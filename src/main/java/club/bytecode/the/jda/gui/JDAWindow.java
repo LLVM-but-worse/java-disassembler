@@ -153,7 +153,10 @@ public abstract class JDAWindow extends JInternalFrame implements IPersistentWin
 
     @Override
     public Dimension getPersistentSize() {
-        return unmaximizedSize;
+        if (JDA.viewer.isMaximized)
+            return unmaximizedSize;
+        else
+            return smallUnmaxSize;
     }
 
     @Override

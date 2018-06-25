@@ -77,6 +77,8 @@ public class Settings {
             FileOutputStream out = new FileOutputStream(JDA.settingsFile);
             out.write(settings.toString().getBytes("UTF-8"));
             out.close();
+
+            System.out.println("Saved all settings successfully");
         } catch (Exception e) {
             e.printStackTrace();
         }
