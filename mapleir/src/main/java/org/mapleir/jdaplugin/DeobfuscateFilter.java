@@ -2,9 +2,9 @@ package org.mapleir.jdaplugin;
 
 import club.bytecode.the.jda.decompilers.filter.DecompileFilter;
 import org.mapleir.ir.algorithms.BoissinotDestructor;
-import org.mapleir.ir.algorithms.ControlFlowGraphDumper;
 import org.mapleir.ir.cfg.ControlFlowGraph;
 import org.mapleir.ir.cfg.builder.ControlFlowGraphBuilder;
+import org.mapleir.ir.codegen.ControlFlowGraphDumper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
