@@ -1,9 +1,13 @@
 package club.bytecode.the.jda.gui.fileviewer;
 
+import club.bytecode.the.jda.FileContainer;
+import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.settings.Settings;
+import net.miginfocom.swing.MigLayout;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenTypes;
+import org.mapleir.stdlib.util.Pair;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -123,6 +127,46 @@ public class JDATextArea extends RSyntaxTextArea {
         resetLine(line);
     }
 
+    private void search(String needle) {
+        List<ViewerFile> matches = new ArrayList<>();
+        for (FileContainer fc : JDA.getOpenFiles()) {
+            for (Map.Entry<String, byte[]> e : fc.getFiles().entrySet()) {
+                if (e.getKey().endsWith(".class")) {
+                    try {
+                        // ClassNode cn = fc.loadClassFile(e.getKey());
+                        String fileBytes = new String(e.getValue());
+                        if (fileBytes.contains(needle)) {
+                            matches.add(new ViewerFile(fc, e.getKey()));
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        final JDialog frame = new JDialog(new JFrame(), "Search Results", true);
+        Container pane = frame.getContentPane();
+        pane.setLayout(new MigLayout());
+        pane.add(new JLabel(needle + "found in:"), "spanx, grow, wrap, align center");
+        JList<Pair<FileContainer, String>> list = new JList(matches.toArray());
+        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list.setLayoutOrientation(JList.VERTICAL);
+        list.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList)evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    int index = list.locationToIndex(evt.getPoint());
+                    ViewerFile vf = matches.get(index);
+                    JDA.viewer.navigator.openClassFileToWorkSpace(vf);
+                }
+            }
+        });
+        JScrollPane listScroller = new JScrollPane(list);
+        pane.add(listScroller);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     private void resetLine(int line) {
         if (line > lines.size())
             return;
@@ -144,7 +188,9 @@ public class JDATextArea extends RSyntaxTextArea {
     private void doXrefDialog() {
         if (!isIdentifierSelected())
             return;
-        JOptionPane.showMessageDialog(this, "Not implemented");
+        String oldName = currentlySelectedToken.getLexeme();
+        search(oldName);
+        // JOptionPane.showMessageDialog(this, "Not implemented");
     }
 
     private void doRenameDialog() {

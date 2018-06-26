@@ -38,7 +38,7 @@ public class DecompileThread extends Thread {
         try {
             String decompileResult;
             
-            ClassNode cn = viewer.getFile().container.loadClass(viewer.getFile().name);
+            ClassNode cn = viewer.getFile().container.loadClassFile(viewer.getFile().name);
             if (cn == null) {
                 decompileResult = "// The file was removed during the reload.";
             } else {

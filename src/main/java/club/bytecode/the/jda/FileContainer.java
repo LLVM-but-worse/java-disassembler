@@ -24,8 +24,8 @@ public class FileContainer {
 
     public HashMap<String, byte[]> files = new HashMap<>(); // this is assigned outside the class?!
 
-    public ClassNode loadClass(String name) {
-        byte[] bytes = files.get(name);
+    public ClassNode loadClassFile(String filename) {
+        byte[] bytes = files.get(filename);
         if (bytes == null)
             return null;
         ClassReader reader = new ClassReader(bytes);

@@ -73,7 +73,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
                 if (classCache.containsKey(className)) {
                     requestedCn = classCache.get(className);
                 } else {
-                    requestedCn = container.loadClass(container.findClassfile(className));
+                    requestedCn = container.loadClassFile(container.findClassfile(className));
                     if (requestedCn == null) {
                         System.err.println("Couldn't load " + externalPath);
                         throw new IOException(container + "$" + cn + " is missing");
@@ -139,7 +139,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
                     if (classCache.containsKey(innerClass.name)) {
                         innerCn = classCache.get(innerClass.name);
                     } else {
-                        innerCn = container.loadClass(container.findClassfile(innerClass.name));
+                        innerCn = container.loadClassFile(container.findClassfile(innerClass.name));
                         if (innerCn != null) {
                             applyFilters(innerCn);
                             classCache.put(innerCn.name, innerCn);
