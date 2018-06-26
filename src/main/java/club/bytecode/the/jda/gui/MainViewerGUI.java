@@ -14,6 +14,7 @@ import club.bytecode.the.jda.gui.fileviewer.FileViewerPane;
 import club.bytecode.the.jda.gui.fileviewer.Viewer;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
+import club.bytecode.the.jda.gui.search.SearchDialog;
 import club.bytecode.the.jda.settings.IPersistentWindow;
 import club.bytecode.the.jda.settings.Settings;
 
@@ -215,7 +216,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         // Edit menu
         // ===========================================================================================
         menuBar.add(editMenu);
-        
+
         // -------------------------------------------------------------------------------------------
         // Settings menu
         settingsMenu = new JMenu("Settings");
@@ -250,6 +251,15 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
             button.addActionListener((e) -> plugin.onPluginButton());
             pluginsMenu.add(button);
         }
+
+        // -------------------------------------------------------------------------------------------
+        // Search menu
+        JMenu searchMenu = new JMenu("Search...");
+        editMenu.add(searchMenu);
+        JMenuItem constantButton = new JMenuItem("Raw constant");
+        constantButton.addActionListener((e) -> doSearchDialog());
+        searchMenu.add(constantButton);
+
         
         // ===========================================================================================
         // View menu
@@ -316,7 +326,13 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         // ===========================================================================================
         menuBar.add(spinnerMenu);
     }
-    
+
+    public void doSearchDialog() {
+        String constant = JOptionPane.showInputDialog("Enter a constant...");
+        if (constant != null && !constant.isEmpty())
+            new SearchDialog(constant, JDA.search(constant)).setVisible(true);
+    }
+
     private void initializePanelGroup() {
         for (int i = 0; i < panelGroups.length; i++) {
             String decompilerName = Settings.PANE_DECOMPILERS[i].getString();

@@ -35,7 +35,7 @@ public class FileViewerPane extends JDAWindow {
     List<ViewerFile> workingOn = new IndexedList<>();
 
     public FileViewerPane() {
-        super("WorkPanel", "Work Space", Resources.fileNavigatorIcon);
+        super("WorkPanel", "File Viewer", Resources.fileNavigatorIcon);
 
         this.tabs = new JTabbedPane();
 

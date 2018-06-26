@@ -542,6 +542,8 @@ public class JDA {
         } else if ((e.getKeyCode() == KeyEvent.VK_W) && isCtrlDown(e)) {
             if (viewer.fileViewerPane.getCurrentViewer() != null)
                 viewer.fileViewerPane.tabs.remove(viewer.fileViewerPane.getCurrentViewer());
+        } else if ((e.getKeyCode() == KeyEvent.VK_F) && isCtrlDown(e) && isShiftDown(e)) {
+            viewer.doSearchDialog();
         }
     }
 
