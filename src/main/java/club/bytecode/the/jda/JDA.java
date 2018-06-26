@@ -589,4 +589,24 @@ public class JDA {
             return "Class Files or Zip/Jar Archives";
         }
     }
+
+    public static List<ViewerFile> search(String needle) {
+        List<ViewerFile> matches = new ArrayList<>();
+        for (FileContainer fc : JDA.getOpenFiles()) {
+            for (Map.Entry<String, byte[]> e : fc.getFiles().entrySet()) {
+                if (e.getKey().endsWith(".class")) {
+                    try {
+                        // ClassNode cn = fc.loadClassFile(e.getKey());
+                        String fileBytes = new String(e.getValue());
+                        if (fileBytes.contains(needle)) {
+                            matches.add(new ViewerFile(fc, e.getKey()));
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        return matches;
+    }
 }

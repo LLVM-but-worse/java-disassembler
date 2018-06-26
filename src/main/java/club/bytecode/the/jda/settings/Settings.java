@@ -150,4 +150,8 @@ public class Settings {
             f.restoreSize(size);
         }
     }
+
+    public static Font getCodeFont() {
+        return new Font(Settings.FONT_FAMILY.getString(), Settings.FONT_OPTIONS.getInt(), Settings.FONT_SIZE.getInt());
+    }
 }
