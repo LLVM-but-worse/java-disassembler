@@ -1,5 +1,7 @@
 package club.bytecode.the.jda.util;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
