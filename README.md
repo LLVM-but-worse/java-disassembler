@@ -38,6 +38,10 @@ core utilities will be distributed separately as the [MapleIR](https://github.co
 
 More to come in the future.
 
+## Maple-IR Plugin
+
+To install the plugin put the plugin jar in `~/.jda/plugins` (or equivalently, `%USERPROFILE%\.jda\plugins` on Windows), then restart.
+
 ## Compiling
 See [COMPILING.md](./docs/COMPILING.md) for compilation instructions.
 
