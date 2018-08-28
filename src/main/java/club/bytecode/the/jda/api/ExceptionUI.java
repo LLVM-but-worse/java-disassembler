@@ -22,14 +22,14 @@ public class ExceptionUI extends JFrame {
      * @param e The exception to be shown
      */
     public ExceptionUI(Throwable e) {
-        setup(e, "https://github.com/ecx86/jda/issues");
+        setup(e, JDA.ISSUE_TRACKER_URL);
     }
 
     /**
      * @param e The exception to be shown
      */
     public ExceptionUI(String e) {
-        setup(e, "https://github.com/ecx86/jda/issues");
+        setup(e, JDA.ISSUE_TRACKER_URL);
     }
 
     /**

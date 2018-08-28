@@ -37,6 +37,7 @@ public class JDA {
     /*per version*/
     public static final String version = "1.1.0";
     /* Constants */
+    public static final String ISSUE_TRACKER_URL = "https://github.com/LLVM-but-worse/jda/issues";
     public static final String fs = System.getProperty("file.separator");
     public static final String nl = System.getProperty("line.separator");
     public static final File dataDir = new File(System.getProperty("user.home") + fs + ".jda");
