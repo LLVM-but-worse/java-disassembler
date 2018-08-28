@@ -27,8 +27,9 @@ import java.util.*;
 import java.util.List;
 
 /**
- * The main file for the GUI.n
+ * The main file for the GUI.
  *
+ * @author ecx86
  * @author Konloch
  */
 public class MainViewerGUI extends JFrame implements IPersistentWindow {
@@ -43,7 +44,9 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
     public JMenu fileMenu;
     public JMenu windowMenu;
     public JMenu editMenu;
+    public JMenu optionsMenu;
     public JMenu helpMenu;
+    public JMenu pluginsMenu;
 
     public boolean isMaximized = false;
     public Point unmaximizedPos;
@@ -62,8 +65,6 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     private JMenuItem spinnerMenu = new JMenuItem("");
     public FontOptionsDialog fontOptionsDialog = new FontOptionsDialog();
-    public JMenu settingsMenu;
-    public JMenu pluginsMenu;
 
     public MainViewerGUI() {
         initializeWindows();
@@ -81,11 +82,11 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
                 int oldState = evt.getOldState();
                 int newState = evt.getNewState();
 
-                if ((oldState & Frame.ICONIFIED) == 0 && (newState & Frame.ICONIFIED) != 0) {
-                    //System.out.println("Frame was iconized");
-                } else if ((oldState & Frame.ICONIFIED) != 0 && (newState & Frame.ICONIFIED) == 0) {
-                    //System.out.println("Frame was deiconized");
-                }
+//                if ((oldState & Frame.ICONIFIED) == 0 && (newState & Frame.ICONIFIED) != 0) {
+//                    System.out.println("Frame was iconized");
+//                } else if ((oldState & Frame.ICONIFIED) != 0 && (newState & Frame.ICONIFIED) == 0) {
+//                    System.out.println("Frame was deiconized");
+//                }
 
                 if ((oldState & Frame.MAXIMIZED_BOTH) == 0 && (newState & Frame.MAXIMIZED_BOTH) != 0) {
                     isMaximized = true;
@@ -156,6 +157,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         viewMenu = new JMenu("View");
         windowMenu = new JMenu("Window");
         editMenu = new JMenu("Edit");
+        optionsMenu = new JMenu("Settings");
         helpMenu = new JMenu("Help");
         setJMenuBar(menuBar);
 
@@ -218,31 +220,6 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         menuBar.add(editMenu);
 
         // -------------------------------------------------------------------------------------------
-        // Settings menu
-        settingsMenu = new JMenu("Settings");
-        editMenu.add(settingsMenu);
-        
-        refreshOnChange.addItemListener(e -> Settings.REFRESH_ON_VIEW_CHANGE.set(refreshOnChange.isSelected()));
-        refreshOnChange.setSelected(Settings.REFRESH_ON_VIEW_CHANGE.getBool());
-        settingsMenu.add(refreshOnChange);
-        
-        mntmFontSettings.addActionListener(e -> fontOptionsDialog.display());
-        settingsMenu.add(mntmFontSettings);
-
-        settingsMenu.add(new JSeparator());
-        
-        mntmSetOptionalLibrary.addActionListener(e -> setOptionalLibrary());
-        settingsMenu.add(mntmSetOptionalLibrary);
-
-        settingsMenu.add(new JSeparator());
-
-        for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
-            JMenuItem settingsButton = new JMenuItem(decompiler.getName());
-            settingsButton.addActionListener(e -> decompiler.getSettings().displayDialog());
-            settingsMenu.add(settingsButton);
-        }
-        
-        // -------------------------------------------------------------------------------------------
         // Plugins menu
         pluginsMenu = new JMenu("Plugins");
         editMenu.add(pluginsMenu);
@@ -252,13 +229,15 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
             pluginsMenu.add(button);
         }
 
-        // -------------------------------------------------------------------------------------------
+        // ===========================================================================================
         // Search menu
-        JMenu searchMenu = new JMenu("Search...");
+        // ===========================================================================================
+        JMenu searchMenu = new JMenu("Search");
         editMenu.add(searchMenu);
         JMenuItem constantButton = new JMenuItem("Raw constant");
         constantButton.addActionListener((e) -> doSearchDialog());
         searchMenu.add(constantButton);
+        menuBar.add(searchMenu);
 
         
         // ===========================================================================================
@@ -273,8 +252,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
             Settings.SHOW_CONTAINER_NAME.set(mnShowContainer.isSelected());
             JTabbedPane tabs = fileViewerPane.tabs;
             Component[] components = tabs.getComponents();
-            for (int i = 0; i < components.length; i++) {
-                Component c = components[i];
+            for (Component c : components) {
                 if (c instanceof Viewer) {
                     ((Viewer) c).updateName();
                     int idx = tabs.indexOfComponent(c);
@@ -305,7 +283,34 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         mnSnapToEdges.setSelected(Settings.SNAP_TO_EDGES.getBool());
         mnSnapToEdges.addItemListener(e -> Settings.SNAP_TO_EDGES.set(mnSnapToEdges.isSelected()));
         windowMenu.add(mnSnapToEdges);
-        
+
+        // ===========================================================================================
+        // Options menu
+        // ===========================================================================================
+        optionsMenu = new JMenu("Options");
+        editMenu.add(optionsMenu);
+
+        refreshOnChange.addItemListener(e -> Settings.REFRESH_ON_VIEW_CHANGE.set(refreshOnChange.isSelected()));
+        refreshOnChange.setSelected(Settings.REFRESH_ON_VIEW_CHANGE.getBool());
+        optionsMenu.add(refreshOnChange);
+
+        mntmFontSettings.addActionListener(e -> fontOptionsDialog.display());
+        optionsMenu.add(mntmFontSettings);
+
+        optionsMenu.add(new JSeparator());
+
+        mntmSetOptionalLibrary.addActionListener(e -> setOptionalLibrary());
+        optionsMenu.add(mntmSetOptionalLibrary);
+
+        optionsMenu.add(new JSeparator());
+
+        for (JDADecompiler decompiler : Decompilers.getAllDecompilers()) {
+            JMenuItem settingsButton = new JMenuItem(decompiler.getName());
+            settingsButton.addActionListener(e -> decompiler.getSettings().displayDialog());
+            optionsMenu.add(settingsButton);
+        }
+        menuBar.add(optionsMenu);
+
         // ===========================================================================================
         // Help menu
         // ===========================================================================================

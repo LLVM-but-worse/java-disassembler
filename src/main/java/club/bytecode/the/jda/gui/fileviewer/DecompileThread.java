@@ -63,7 +63,7 @@ public class DecompileThread extends Thread {
             SwingUtilities.invokeLater(() -> target.add(scrollPane));
             viewer.updatePane(paneId, panelArea, decompiler);
         } catch (Exception e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "decompiling " + viewer.getFile().name);
         } finally {
             viewer.resetDivider();
             JDA.setBusy(false);

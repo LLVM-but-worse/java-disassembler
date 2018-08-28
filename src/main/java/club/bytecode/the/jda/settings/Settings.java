@@ -7,13 +7,16 @@ import club.bytecode.the.jda.gui.JDAWindow;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.google.common.collect.Lists;
 
 import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static club.bytecode.the.jda.settings.Setting.SettingType.BOOLEAN;
+import static club.bytecode.the.jda.settings.Setting.SettingType.INT;
 
 /**
  * Used to handle loading/saving the GUI (options).
@@ -21,19 +24,21 @@ import java.util.List;
  * @author Konloch
  */
 public class Settings {
-    static final List<Setting> ALL_SETTINGS = new ArrayList<>();
-
     // todo: I should really refactor this
     public static final Setting PATH = new Setting("path", "");
-    public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", false, Setting.SettingType.BOOLEAN);
-    public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", false, Setting.SettingType.BOOLEAN);
-    public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", false, Setting.SettingType.BOOLEAN);
-    public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", false, Setting.SettingType.BOOLEAN);
+    public static final Setting SHOW_CONTAINER_NAME = new Setting("showfilename", false, BOOLEAN);
+    public static final Setting SNAP_TO_EDGES = new Setting("snaptoedges", false, BOOLEAN);
+    public static final Setting DO_UPDATE_CHECK = new Setting("doupdatecheck", false, BOOLEAN);
+    public static final Setting REFRESH_ON_VIEW_CHANGE = new Setting("refreshonviewchange", false, BOOLEAN);
+    public static final Setting DONT_SHOW_EXCEPTIONS = new Setting("dontshowexceptions", false, BOOLEAN);
 
-    public static final Setting FONT_SIZE = new Setting("font", "fontsize", 12, Setting.SettingType.INT);
+    public static final Setting FONT_SIZE = new Setting("font", "fontsize", 12, INT);
     public static final Setting FONT_FAMILY = new Setting("font", "fontfamily", Font.MONOSPACED);
-    public static final Setting FONT_OPTIONS = new Setting("font", "fontoptions", Font.PLAIN, Setting.SettingType.INT);
-    
+    public static final Setting FONT_OPTIONS = new Setting("font", "fontoptions", Font.PLAIN, INT);
+
+    static final List<Setting> ALL_SETTINGS = Lists.newArrayList(PATH, SHOW_CONTAINER_NAME, SNAP_TO_EDGES, DO_UPDATE_CHECK,
+            REFRESH_ON_VIEW_CHANGE, DONT_SHOW_EXCEPTIONS, FONT_SIZE, FONT_FAMILY, FONT_OPTIONS);
+
     public static final Setting[] PANE_DECOMPILERS;
 
     static
@@ -43,17 +48,6 @@ public class Settings {
         PANE_DECOMPILERS[1] = new Setting("panedecompiler1", Decompilers.BYTECODE.getFullName());
         for (int i = 2; i < PANE_DECOMPILERS.length; i++)
             PANE_DECOMPILERS[i] = new Setting("panedecompiler" + i, "None");
-        
-        ALL_SETTINGS.add(PATH);
-        ALL_SETTINGS.add(SHOW_CONTAINER_NAME);
-        ALL_SETTINGS.add(SNAP_TO_EDGES);
-        ALL_SETTINGS.add(DO_UPDATE_CHECK);
-        ALL_SETTINGS.add(REFRESH_ON_VIEW_CHANGE);
-
-        ALL_SETTINGS.add(FONT_SIZE);
-        ALL_SETTINGS.add(FONT_FAMILY);
-        ALL_SETTINGS.add(FONT_OPTIONS);
-
         ALL_SETTINGS.addAll(Arrays.asList(PANE_DECOMPILERS));
     }
 

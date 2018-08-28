@@ -41,7 +41,7 @@ public class JarUtils {
                     }
                 }
             } catch (Exception e) {
-                new ExceptionUI(e);
+                new ExceptionUI(e, "loading jar");
             } finally {
                 jis.closeEntry();
             }
@@ -75,7 +75,7 @@ public class JarUtils {
                 }
 
             } catch (Exception e) {
-                new ExceptionUI(e);
+                new ExceptionUI(e, "loading classes from jarfile");
             } finally {
                 jis.closeEntry();
             }
@@ -109,7 +109,7 @@ public class JarUtils {
                     continue;
                 }
             } catch (Exception e) {
-                new ExceptionUI(e);
+                new ExceptionUI(e, "loading resources from file");
             } finally {
                 jis.closeEntry();
             }
@@ -196,7 +196,7 @@ public class JarUtils {
 
             out.close();
         } catch (IOException e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "saving as jar");
         }
     }
 
@@ -227,7 +227,7 @@ public class JarUtils {
             noDupe.clear();
             out.close();
         } catch (IOException e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "saving as jar");
         }
     }
 
@@ -248,7 +248,7 @@ public class JarUtils {
             noDupe.clear();
             out.close();
         } catch (IOException e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "saving as jar");
         }
     }
 
@@ -282,7 +282,7 @@ public class JarUtils {
             noDupe.clear();
             out.close();
         } catch (IOException e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "saving as jar");
         }
     }
 }
