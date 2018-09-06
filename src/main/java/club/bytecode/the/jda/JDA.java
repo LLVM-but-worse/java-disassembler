@@ -14,6 +14,7 @@ import club.bytecode.the.jda.settings.Settings;
 import club.bytecode.the.jda.util.GuiUtils;
 import club.bytecode.the.jda.util.MiscUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.folding.CurlyFoldParser;
@@ -36,6 +37,7 @@ public class JDA {
     /*per version*/
     public static final String version = "1.1.0";
     /* Constants */
+    public static final String ISSUE_TRACKER_URL = "https://github.com/LLVM-but-worse/jda/issues";
     public static final String fs = System.getProperty("file.separator");
     public static final String nl = System.getProperty("line.separator");
     public static final File dataDir = new File(System.getProperty("user.home") + fs + ".jda");
@@ -62,15 +64,13 @@ public class JDA {
      * @param args files you want to open or CLI
      */
     public static void main(String[] args) {
-        try {
-            // Fix antialiasing
-            System.setProperty("awt.useSystemAAFontSettings", "lcd");
-            System.setProperty("swing.aatext", "true");
+        // Fix antialiasing
+        System.setProperty("awt.useSystemAAFontSettings", "lcd");
+        System.setProperty("swing.aatext", "true");
+        if (SystemUtils.IS_OS_LINUX) {
             GuiUtils.setWmClassName("JDA");
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            new ExceptionUI(e);
         }
+        GuiUtils.setLookAndFeel();
         try {
             System.out.println("JDA (BCV Fork) v" + version);
             getJDADirectory();
@@ -86,7 +86,7 @@ public class JDA {
             Boot.boot();
             JDA.boot(args);
         } catch (Exception e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "initializing");
         }
     }
 
@@ -181,7 +181,7 @@ public class JDA {
         try {
             FileUtils.writeLines(recentsFile, recentFiles);
         } catch (IOException e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "saving recent files");
         }
         if (!viewer.isMaximized)
             viewer.unmaximizedPos = viewer.getLocation();
@@ -320,7 +320,7 @@ public class JDA {
                             openFile(newContainer);
                             fnp.addTreeElement(newContainer, parent);
                         } catch (final Exception e) {
-                            new ExceptionUI(e);
+                            new ExceptionUI(e, "loading jar");
                         }
                     } else {
                         HashMap<String, byte[]> files1 = new HashMap<>();
@@ -332,8 +332,8 @@ public class JDA {
                         fnp.addTreeElement(container, parent);
                     }
                 }
-            } catch (final Exception e) {
-                new ExceptionUI(e);
+            } catch (Exception e) {
+                new ExceptionUI(e, "loading file");
             } finally {
                 JDA.setBusy(false);
             }
@@ -486,19 +486,10 @@ public class JDA {
         while (!dataDir.exists())
             dataDir.mkdirs();
 
-        if (!dataDir.isHidden() && isWindows())
-            hideFile(dataDir);
+        if (!dataDir.isHidden() && SystemUtils.IS_OS_WINDOWS)
+            hideFileWindows(dataDir);
 
         return dataDir.getAbsolutePath();
-    }
-
-    /**
-     * Checks if the OS contains 'win'
-     *
-     * @return true if the os.name property contains 'win'
-     */
-    private static boolean isWindows() {
-        return System.getProperty("os.name").toLowerCase().contains("win");
     }
 
     /**
@@ -506,12 +497,12 @@ public class JDA {
      *
      * @param f file you want hidden
      */
-    private static void hideFile(File f) {
+    private static void hideFileWindows(File f) {
         try {
             // Hide file by running attrib system command (on Windows)
             Runtime.getRuntime().exec("attrib +H " + f.getAbsolutePath());
         } catch (Exception e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "hiding file");
         }
     }
 
@@ -568,7 +559,7 @@ public class JDA {
                 JDA.openFiles(new File[]{fc.getSelectedFile()}, true);
                 JDA.setBusy(false);
             } catch (Exception e1) {
-                new ExceptionUI(e1);
+                new ExceptionUI(e1, "choosing file");
             }
         }
     }

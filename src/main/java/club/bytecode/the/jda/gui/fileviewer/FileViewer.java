@@ -64,7 +64,7 @@ public class FileViewer extends Viewer {
                     });
                     return;
                 } catch (Exception e) {
-                    new ExceptionUI(e);
+                    new ExceptionUI(e, "setting pane contents to image");
                 }
             } else {
                 // todo: fallback

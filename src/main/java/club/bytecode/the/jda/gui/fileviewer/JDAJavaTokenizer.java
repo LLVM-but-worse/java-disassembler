@@ -10,12 +10,10 @@
  */
 package club.bytecode.the.jda.gui.fileviewer;
 
-import org.fife.ui.rsyntaxtextarea.AbstractJFlexCTokenMaker;
-import org.fife.ui.rsyntaxtextarea.Token;
-import org.fife.ui.rsyntaxtextarea.TokenImpl;
-
+import java.io.*;
 import javax.swing.text.Segment;
-import java.io.IOException;
+
+import org.fife.ui.rsyntaxtextarea.*;
 
 
 /**
@@ -4986,11 +4984,11 @@ public class JDAJavaTokenizer extends AbstractJFlexCTokenMaker {
 		switch (initialTokenType) {
 			case Token.COMMENT_MULTILINE:
 				state = MLC;
-				start = text.offset;
+				start = 0;
 				break;
 			case Token.COMMENT_DOCUMENTATION:
 				state = DOCCOMMENT;
-				start = text.offset;
+				start = 0;
 				break;
 			default:
 				state = Token.NULL;

@@ -1,5 +1,13 @@
 # Compiling - JDA
 
+## Subrepositories
+
+You will need to clone the subrepositories in the `libs` folder.
+```
+git submodule init
+git submodule clone
+```
+
 ## maple-ir
 
 This project now depends on [Maple-IR](https://github.com/LLVM-but-worse/maple-ir). To install it:

@@ -15,7 +15,7 @@ public class Boot {
         try {
             screen = new InitialBootScreen();
         } catch (Exception e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "displaying boot screen");
         }
     }
 

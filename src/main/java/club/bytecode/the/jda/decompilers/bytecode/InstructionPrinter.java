@@ -247,7 +247,7 @@ public class InstructionPrinter {
             }
             return nameOpcode(tin.opcode()) + " " + desc;
         } catch (Exception e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "printing instruction");
         }
         return "// error";
     }
@@ -342,19 +342,6 @@ public class InstructionPrinter {
             int newLabelIndex = labels.size() + 1;
             labels.put(label, newLabelIndex);
             return newLabelIndex;
-        }
-    }
-
-    public static void saveTo(File file, InstructionPrinter printer) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-            for (String s : printer.createPrint()) {
-                bw.write(s);
-                bw.newLine();
-            }
-            bw.close();
-        } catch (IOException e) {
-            new ExceptionUI(e);
         }
     }
 }

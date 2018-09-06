@@ -150,7 +150,7 @@ public class SearchPanel extends JPanel {
             }
             highlight(area, search);
         } catch (Exception e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "peforming search");
         }
     }
 
@@ -180,7 +180,7 @@ public class SearchPanel extends JPanel {
                 pos += pattern.length();
             }
         } catch (Exception e) {
-            new ExceptionUI(e);
+            new ExceptionUI(e, "highlighting search result");
         }
     }
 }

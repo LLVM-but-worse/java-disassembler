@@ -6,6 +6,9 @@
  * This library is distributed under a modified BSD license.  See the included
  * RSyntaxTextArea.License.txt file for details.
  */
+ // COMPILE THIS FILE WITH GRAMMARKIT PLUGIN FOR INTELLIJ
+ // (JFLEX 1.7.0)
+ // OR ELSE IT WON'T FUCKING WORK
 package club.bytecode.the.jda.gui.fileviewer;
 
 import java.io.*;
@@ -156,11 +159,11 @@ import org.fife.ui.rsyntaxtextarea.*;
 		switch (initialTokenType) {
 			case Token.COMMENT_MULTILINE:
 				state = MLC;
-				start = text.offset;
+				start = 0;
 				break;
 			case Token.COMMENT_DOCUMENTATION:
 				state = DOCCOMMENT;
-				start = text.offset;
+				start = 0;
 				break;
 			default:
 				state = Token.NULL;
