@@ -17,7 +17,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-            <url>file://${project.basedir}/libs</url>
+            <url>${project.baseUri}libs</url>
         </repository>
     </repositories>
 
