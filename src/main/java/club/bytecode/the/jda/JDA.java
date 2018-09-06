@@ -600,7 +600,6 @@ public class JDA {
                 }
             }
         }
-        matches.sort(Comparator.comparing(ViewerFile::toString));
         return matches;
     }
 }
