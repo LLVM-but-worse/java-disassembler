@@ -38,7 +38,7 @@ public class AboutWindow extends JFrame {
         try {
             String text = IOUtils.toString(Resources.class.getResourceAsStream("/club/bytecode/the/jda/html/about.html"), "UTF-8");
             text = text.replace("$JDA_VERSION$", JDA.version);
-            text = text.replace("$JDA_ICON$", Resources.class.getClass().getResource("/club/bytecode/the/jda/images/icon.png").toString());
+            text = text.replace("$JDA_ICON$", Resources.class.getResource("/club/bytecode/the/jda/images/icon.png").toString());
             editorPane.setText(text);
         } catch (IOException e) {
             System.err.println("Couldn't load about html:");
