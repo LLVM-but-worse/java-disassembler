@@ -21,6 +21,7 @@ public class SearchDialog extends JDialog {
     private final List<ViewerFile> searchResults;
     private final JList<ViewerFile> list;
     private final JTextArea searchBox;
+    private final ListModel<ViewerFile> listModel;
 
     private String oldFilter = "";
 
@@ -31,7 +32,8 @@ public class SearchDialog extends JDialog {
         pane.setPreferredSize(new Dimension(850, 400));
         pane.setLayout(new MigLayout("fill"));
         pane.add(new JLabel(needle + " found in:"), "pushx, growx, wrap");
-        list = new JList<>(createSortedListModel());
+        listModel = createSortedListModel();
+        list = new JList<>(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL);
 
@@ -105,7 +107,7 @@ public class SearchDialog extends JDialog {
     }
 
     public void openResult(int index) {
-        ViewerFile vf = searchResults.get(index);
+        ViewerFile vf = listModel.getElementAt(index);
         JDA.viewer.navigator.openClassFileToWorkSpace(vf);
     }
 
