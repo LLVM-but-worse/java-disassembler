@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class JDA {
@@ -579,6 +580,8 @@ public class JDA {
             return "Class Files or Zip/Jar Archives";
         }
     }
+
+    public static Function<String, List<ViewerFile>> searchCallback = JDA::search;
 
     public static List<ViewerFile> search(String needle) {
         List<ViewerFile> matches = new ArrayList<>();

@@ -159,7 +159,7 @@ public class JDATextArea extends RSyntaxTextArea {
         } else
             return;
 
-        new SearchDialog(tokenName, JDA.search(tokenName)).setVisible(true);
+        new SearchDialog(tokenName, JDA.searchCallback.apply(tokenName)).setVisible(true);
     }
 
     private void doRenameDialog() {
