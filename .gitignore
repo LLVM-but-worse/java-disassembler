@@ -6,7 +6,9 @@
 *.iml
 .idea/
 dependency-reduced-pom.xml
+classes/
 
 libs/**.jar
 libs/*.jar
 libs/org
+
