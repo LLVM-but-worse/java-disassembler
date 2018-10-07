@@ -194,11 +194,7 @@ public class JDA {
      */
     public static void waitForTasks() {
         while (jobCount.get() > 0) {
-            try {
-                Thread.sleep(10L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            GuiUtils.sleep(10L);
         }
     }
 
