@@ -3,6 +3,7 @@ package club.bytecode.the.jda.decompilers;
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.JDANamespace;
+import club.bytecode.the.jda.gui.fileviewer.JDAJavaTokenizer;
 import club.bytecode.the.jda.settings.JDADecompilerSettings;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import org.benf.cfr.reader.bytecode.analysis.parse.utils.Pair;
@@ -212,5 +213,10 @@ public final class CFRDecompiler extends JDADecompiler {
             }
         }
         return "";
+    }
+
+    @Override
+    public String getTarget() {
+        return JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA;
     }
 }

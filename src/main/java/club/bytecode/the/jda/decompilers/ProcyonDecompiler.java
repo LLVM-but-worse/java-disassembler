@@ -3,6 +3,7 @@ package club.bytecode.the.jda.decompilers;
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.JDANamespace;
+import club.bytecode.the.jda.gui.fileviewer.JDAJavaTokenizer;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.*;
@@ -117,5 +118,9 @@ public final class ProcyonDecompiler extends JDADecompiler {
             return parseException(e);
         }
     }
-}
 
+    @Override
+    public String getTarget() {
+        return JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA;
+    }
+}

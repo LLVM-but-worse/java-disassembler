@@ -18,8 +18,7 @@ public class BytecodeSyntaxArea extends JDATextArea {
     public boolean foldsBuilt;
 
     public BytecodeSyntaxArea(String text) {
-        super(text);
-        setSyntaxEditingStyle(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE);
+        super(text, BytecodeTokenizer.SYNTAX_STYLE_BYTECODE);
 
         setLinkScanningMask(0);
         setLinkGenerator(new BytecodeLinkGenerator());

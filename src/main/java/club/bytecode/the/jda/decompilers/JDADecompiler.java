@@ -21,6 +21,13 @@ public abstract class JDADecompiler implements JDANamespacedComponent {
 
     public abstract String decompileClassNode(FileContainer container, ClassNode cn);
 
+    /**
+     * BytecodeTokenizer.SYNTAX_STYLE_BYTECODE for bytecode
+     * JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA for java
+     * @return target (output) language
+     */
+    public abstract String getTarget();
+
     public JDADecompilerSettings getSettings() {
         return settings;
     }

@@ -4,6 +4,7 @@ import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.decompilers.JDADecompiler;
+import club.bytecode.the.jda.gui.fileviewer.BytecodeTokenizer;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -159,5 +160,10 @@ public class BytecodeDecompiler extends JDADecompiler {
             sb.append(tokens.get(i));
         }
         return sb.toString();
+    }
+
+    @Override
+    public String getTarget() {
+        return BytecodeTokenizer.SYNTAX_STYLE_BYTECODE;
     }
 }

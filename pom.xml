@@ -153,5 +153,10 @@
             <artifactId>modasm</artifactId>
             <version>0.0.1-ALPHA</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-symbol-solver-core</artifactId>
+            <version>3.6.24</version>
+        </dependency>
     </dependencies>
 </project>

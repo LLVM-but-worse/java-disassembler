@@ -581,7 +581,10 @@ public class JDA {
         }
     }
 
-    public static Function<String, List<ViewerFile>> searchCallback = JDA::search;
+    public static Function<String, List<ViewerFile>> constantSearchCallback = JDA::search;
+    public static Function<String, List<ViewerFile>> methodSearchCallback = JDA::search;
+    public static Function<String, List<ViewerFile>> fieldSearchCallback = JDA::search;
+    public static Function<String, List<ViewerFile>> classSearchCallback = JDA::search;
 
     public static List<ViewerFile> search(String needle) {
         List<ViewerFile> matches = new ArrayList<>();

@@ -48,10 +48,12 @@ public class DecompileThread extends Thread {
             
             String text = stripUndisplayableChars(decompileResult);
             RSyntaxTextArea panelArea;
-            if (decompiler instanceof BytecodeDecompiler) {
+            if (decompiler.getTarget().equals(BytecodeTokenizer.SYNTAX_STYLE_BYTECODE)) {
                 panelArea = new BytecodeSyntaxArea(text);
-            } else {
+            } else if (decompiler.getTarget().equals(JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA)) {
                 panelArea = new JDATextArea(text);
+            } else {
+                panelArea = new JDATextArea(text, decompiler.getTarget());
             }
 
             final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);

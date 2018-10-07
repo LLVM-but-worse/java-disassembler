@@ -3,6 +3,7 @@ package club.bytecode.the.jda.decompilers;
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
 import club.bytecode.the.jda.api.JDANamespace;
+import club.bytecode.the.jda.gui.fileviewer.JDAJavaTokenizer;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import club.bytecode.the.jda.settings.Setting;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
@@ -172,6 +173,11 @@ public final class FernflowerDecompiler extends JDADecompiler {
             options.put(setting.key, value);
         }
         return options;
+    }
+
+    @Override
+    public String getTarget() {
+        return JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA;
     }
 }
 
