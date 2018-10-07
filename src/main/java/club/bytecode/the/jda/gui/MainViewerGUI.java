@@ -40,13 +40,13 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
     public final ButtonGroup[] panelGroups = new ButtonGroup[NUM_PANEL_GROUPS];
 
     public JMenuBar menuBar;
-    public JMenu viewMenu;
     public JMenu fileMenu;
-    public JMenu windowMenu;
     public JMenu editMenu;
+    public JMenu searchMenu;
+    public JMenu viewMenu;
+    public JMenu windowMenu;
     public JMenu optionsMenu;
     public JMenu helpMenu;
-    public JMenu pluginsMenu;
 
     public boolean isMaximized = false;
     public Point unmaximizedPos;
@@ -65,6 +65,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
     public JMenu mnRecentFiles = new JMenu("Recent Files");
     private JMenuItem spinnerMenu = new JMenuItem("");
     public FontOptionsDialog fontOptionsDialog = new FontOptionsDialog();
+
 
     public MainViewerGUI() {
         initializeWindows();
@@ -132,8 +133,6 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         unmaximizedPos = getLocation();
 
         this.setLocationRelativeTo(null);
-
-        JDA.onGUILoad();
     }
 
     private void initializeMenubar() {
@@ -221,7 +220,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
 
         // -------------------------------------------------------------------------------------------
         // Plugins menu
-        pluginsMenu = new JMenu("Plugins");
+        JMenu pluginsMenu = new JMenu("Plugins");
         editMenu.add(pluginsMenu);
         for (JDAPlugin plugin : JDA.getLoadedPlugins()) {
             JMenuItem button = new JMenuItem(plugin.getName());
@@ -232,9 +231,9 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
         // ===========================================================================================
         // Search menu
         // ===========================================================================================
-        JMenu searchMenu = new JMenu("Search");
+        searchMenu = new JMenu("Search");
         editMenu.add(searchMenu);
-        JMenuItem constantButton = new JMenuItem("Raw constant");
+        JMenuItem constantButton = new JMenuItem("Binary constant");
         constantButton.addActionListener((e) -> doSearchDialog());
         searchMenu.add(constantButton);
         menuBar.add(searchMenu);

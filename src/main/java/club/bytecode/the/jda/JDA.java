@@ -83,6 +83,7 @@ public class JDA {
             recentFiles.addAll(FileUtils.readLines(recentsFile, "UTF-8"));
 
             viewer = new MainViewerGUI();
+            JDA.onGUILoad();
             Boot.boot();
             JDA.boot(args);
         } catch (Exception e) {
@@ -213,7 +214,7 @@ public class JDA {
         else
             jobCount.decrementAndGet();
         assert (jobCount.get() >= 0);
-        viewer.setIcon(busy);
+        viewer.setIcon(jobCount.get() > 0);
     }
 
     public static byte[] getFileBytes(ViewerFile file) {
