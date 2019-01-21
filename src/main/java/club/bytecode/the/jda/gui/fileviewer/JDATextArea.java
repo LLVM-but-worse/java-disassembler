@@ -2,6 +2,7 @@ package club.bytecode.the.jda.gui.fileviewer;
 
 import club.bytecode.the.jda.FileContainer;
 import club.bytecode.the.jda.JDA;
+import club.bytecode.the.jda.decompilers.FernflowerDecompiler;
 import club.bytecode.the.jda.gui.search.SearchDialog;
 import club.bytecode.the.jda.settings.Settings;
 import com.github.javaparser.*;
@@ -26,6 +27,8 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeS
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenTypes;
+import org.jetbrains.java.decompiler.modules.decompiler.exps.Exprent;
+import org.jetbrains.java.decompiler.util.TextRange;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -46,7 +49,11 @@ public class JDATextArea extends RSyntaxTextArea {
 
     public JDATextArea(String text) {
         this(text, JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA);
-        ast = JavaParser.parse(text);
+        try {
+            ast = JavaParser.parse(text);
+        } catch(ParseProblemException e) {
+            ast = null;
+        }
     }
 
     public JDATextArea(String text, String language) {
@@ -84,6 +91,11 @@ public class JDATextArea extends RSyntaxTextArea {
                         if (t.getOffset() <= cursorPos && t.getEndOffset() > cursorPos) {
                             currentlySelectedToken = new TokenWrapper(t);
                             break;
+                        }
+                    }
+                    for (Map.Entry<TextRange, String> wtf : FernflowerDecompiler.dank.entrySet()) {
+                        if (wtf.getKey().contains(cursorPos)) {
+                            System.out.println(wtf.getValue());
                         }
                     }
                 } catch (BadLocationException e1) {
@@ -178,85 +190,6 @@ public class JDATextArea extends RSyntaxTextArea {
                         boolean handle(Node node);
                     }
     private void doXrefDialog() {
-        class NodeIterator {
-
-
-            private NodeHandler nodeHandler;
-
-            public NodeIterator(NodeHandler nodeHandler) {
-                this.nodeHandler = nodeHandler;
-            }
-
-            public void explore(Node node) {
-             if(   nodeHandler.handle(node)){
-                    for (Node child : node.getChildNodes()) {
-                        explore(child);
-                    }}
-            }
-        }
-
-        if (ast != null) {
-            int startOff = Math.min(getCaret().getDot(), getCaret().getMark());
-            int endOff = Math.max(getCaret().getDot(), getCaret().getMark());
-            int caretLine = getCaretLineNumber()+1;
-            Position caretPos = new Position(getCaretLineNumber()+1, getCaretOffsetFromLineStart());
-            CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver();
-            JavaParser.getStaticConfiguration().setSymbolResolver(new JavaSymbolSolver(combinedTypeSolver));
-            // combinedTypeSolver.add(new JavaParserTypeSolver(getText()));
-            for(FileContainer fc : JDA.getOpenFiles()) {
-
-                try {
-                    combinedTypeSolver.add(new JarTypeSolver(fc.file));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            combinedTypeSolver.add(new ReflectionTypeSolver());
-            try {
-                combinedTypeSolver.add(new JarTypeSolver(new File("C:\\Program Files\\Java\\jdk1.8.0_144\\jre\\lib\\rt.jar")));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            JavaParserFacade solver = JavaParserFacade.get(combinedTypeSolver);
-                new NodeIterator(node -> {
-                    Range r = node.getRange().orElse(null);
-                    if (r == null) return false;
-                    if (r.begin.compareTo(caretPos) <= 0 && r.end.compareTo(caretPos) >= 0) {
-                        // if (r.begin.line == caretLine && r.end.line == caretLine) {
-                        if (node instanceof MethodCallExpr) {
-                            System.out.println(solver.solve((MethodCallExpr) node));
-                        } else if (node instanceof ClassOrInterfaceType) {
-                            System.out.println(JavaParserFactory.getContext(node, solver.getTypeSolver()).solveType(((ClassOrInterfaceType) node).getName().getId(), solver.getTypeSolver()));
-                        } else if (node instanceof NameExpr) {
-                            System.out.println(JavaParserFactory.getContext(node, solver.getTypeSolver()).solveType(((NameExpr) node).getName().getId(), solver.getTypeSolver()));
-                        } else if (node instanceof SimpleName) {
-                            System.out.println(JavaParserFactory.getContext(node, solver.getTypeSolver()).solveType(((SimpleName) node).getId(), solver.getTypeSolver()));
-                        } else if (node instanceof FieldAccessExpr) {
-                            System.out.println(solver.solve((FieldAccessExpr) node));
-                        } else if (node instanceof ExplicitConstructorInvocationStmt) {
-                            System.out.println(solver.solve((ExplicitConstructorInvocationStmt) node));
-                        } else if (node instanceof MethodDeclaration) {
-                            System.out.println(solver.getTypeOfThisIn(node));
-                        } else if (node instanceof FieldDeclaration) {
-                            System.out.println(solver.getTypeOfThisIn(node));
-                        } else if (node instanceof ClassOrInterfaceDeclaration) {
-                            System.out.println(solver.getTypeOfThisIn(node));
-                        } else if (node instanceof ImportDeclaration) {
-                            System.out.println(((ImportDeclaration) node).getName());
-                        }
-                        // }
-                        //         System.out.println(node);
-                        //         System.out.println();
-                        // }
-                        return true;
-                    }
-                    return false;
-                }).explore(ast);
-            // for (JavaToken tok = tr.getBegin(); tok != null; tok = tok.getNextToken().orElse(null)) {
-            // Range r = tok.getRange().orElse(null);
-            return;
-        }
-
         String tokenName;
         if (getSelectedText() != null) {
             tokenName = getSelectedText();

@@ -6,9 +6,15 @@ import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.gui.fileviewer.JDAJavaTokenizer;
 import club.bytecode.the.jda.settings.JDADecompilerSettings.SettingsEntry;
 import club.bytecode.the.jda.settings.Setting;
+import org.jetbrains.java.decompiler.main.Fernflower;
 import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
+import org.jetbrains.java.decompiler.modules.decompiler.exps.Exprent;
+import org.jetbrains.java.decompiler.struct.StructClass;
+import org.jetbrains.java.decompiler.struct.StructContext;
+import org.jetbrains.java.decompiler.util.TextBuffer;
+import org.jetbrains.java.decompiler.util.TextRange;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InnerClassNode;
 
@@ -68,7 +74,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
             final AtomicReference<String> result = new AtomicReference<>();
             result.set(null);
 
-            BaseDecompiler baseDecompiler = new BaseDecompiler((externalPath, internalPath) -> {
+            Fernflower fernflower = new Fernflower((externalPath, internalPath) -> {
                 String className = JDA.extractProxyClassName(externalPath);
                 ClassNode requestedCn;
                 if (classCache.containsKey(className)) {
@@ -132,7 +138,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
             while (!fifo.isEmpty()) {
                 ClassNode curCn = fifo.pop();
                 visited.add(curCn.name);
-                baseDecompiler.addSpace(JDA.getClassFileProxy(curCn), true);
+                fernflower.addSource(JDA.getClassFileProxy(curCn));
                 for (InnerClassNode innerClass : curCn.innerClasses) {
                     if (visited.contains(innerClass.name))
                         continue;
@@ -152,13 +158,37 @@ public final class FernflowerDecompiler extends JDADecompiler {
                 }
             }
 
-            baseDecompiler.decompileContext();
-            String decompileResult = result.get();
-            if (decompileResult == null) {
-                return "// Fernflower returned null; perhaps this class is an inner class? Fernflower didn't play nice.";
-            } else {
-                return decompileResult;
+            fernflower.decompileContext();
+            // String decompileResult = result.get();
+            // if (decompileResult == null) {
+            //     return "// Fernflower returned null; perhaps this class is an inner class? Fernflower didn't play nice.";
+            // } else {
+            //     return decompileResult;
+            // }
+            String resultTxt = "";
+            for (StructClass cl : fernflower.getStructContext().getClasses().values()) {
+                if (cl.isOwn()) {
+                    if (cl.qualifiedName.equals(cn.name)) {
+                        TextBuffer buf = fernflower.getClassContentBuffer(cl);
+                        dank = new HashMap<>();
+                        for (Map.Entry<TextRange, Exprent> wtf : buf.getTokenMapping().entrySet()) {
+                            if (wtf.getValue() != null) {
+                                try {
+                                    dank.put(wtf.getKey(), wtf.getValue().toString());
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        if (buf != null) {
+                            resultTxt += buf.toString() + "\n";
+                        } else {
+                            resultTxt += "// fake news\n";
+                        }
+                    }
+                }
             }
+            return resultTxt;
         } catch (Exception e) {
             return parseException(e);
         }
@@ -179,5 +209,6 @@ public final class FernflowerDecompiler extends JDADecompiler {
     public String getTarget() {
         return JDAJavaTokenizer.SYNTAX_STYLE_JDA_JAVA;
     }
+    public static Map<TextRange,String> dank;
 }
 
