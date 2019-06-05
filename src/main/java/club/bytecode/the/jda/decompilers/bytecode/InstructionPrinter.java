@@ -332,7 +332,7 @@ public class InstructionPrinter {
     }
 
     protected String nameOpcode(int opcode) {
-        return "    " + OpcodeInfo.OPCODES.get(opcode).toLowerCase();
+        return "    " + OpcodeInfo.OPCODES.getOrDefault(opcode, String.format("unknown#%02x", opcode)).toLowerCase();
     }
 
     protected int resolveLabel(LabelNode label) {
