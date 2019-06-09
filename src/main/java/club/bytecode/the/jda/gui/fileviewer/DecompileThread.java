@@ -45,30 +45,34 @@ public class DecompileThread extends Thread {
                 decompiler.applyFilters(cn);
                 decompileResult = decompiler.decompileClassNode(viewer.getFile().container, cn);
             }
-            
             String text = stripUndisplayableChars(decompileResult);
-            RSyntaxTextArea panelArea;
-            if (decompiler instanceof BytecodeDecompiler) {
-                panelArea = new BytecodeSyntaxArea(text);
-            } else {
-                panelArea = new JDATextArea(text);
-            }
 
-            final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
-            StringBuilder topLabelText = new StringBuilder(decompiler.getName());
-            for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
-                topLabelText.append(" + ").append(filter.getName());
-            }
-            scrollPane.setColumnHeaderView(new JLabel(topLabelText.toString()));
-            SwingUtilities.invokeLater(() -> target.add(scrollPane));
-            viewer.updatePane(paneId, panelArea, decompiler);
+            SwingUtilities.invokeLater(() -> {
+                RSyntaxTextArea panelArea;
+                if (decompiler instanceof BytecodeDecompiler) {
+                    panelArea = new BytecodeSyntaxArea(text);
+                } else {
+                    panelArea = new JDATextArea(text);
+                }
+
+                final RTextScrollPane scrollPane = new RTextScrollPane(panelArea);
+                StringBuilder topLabelText = new StringBuilder(decompiler.getName());
+                for (DecompileFilter filter : decompiler.getSettings().getEnabledFilters()) {
+                    topLabelText.append(" + ").append(filter.getName());
+                }
+                scrollPane.setColumnHeaderView(new JLabel(topLabelText.toString()));
+                target.add(scrollPane);
+                viewer.updatePane(paneId, panelArea, decompiler);
+            });
         } catch (Exception e) {
             new ExceptionUI(e, "decompiling " + viewer.getFile().name);
         } finally {
-            viewer.resetDivider();
-            JDA.setBusy(false);
-            if (button != null)
-                button.setEnabled(true);
+            SwingUtilities.invokeLater(() -> {
+                viewer.resetDivider();
+                JDA.setBusy(false);
+                if (button != null)
+                    button.setEnabled(true);
+            });
         }
     }
 
