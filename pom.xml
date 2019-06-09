@@ -99,7 +99,7 @@
                         <configuration>
                             <sources>
                                 <source>${project.basedir}/libs/fernflower/src</source>
-                                <source>${project.basedir}/libs/RSyntaxTextArea/src/main/java</source>
+                                <source>${project.basedir}/libs/RSyntaxTextArea/RSyntaxTextArea/src/main/java</source>
                                 ...
                             </sources>
                         </configuration>
@@ -112,7 +112,7 @@
                 <directory>${project.basedir}/src/main/resources</directory>
             </resource>
             <resource>
-                <directory>${project.basedir}/libs/RSyntaxTextArea/src/main/resources</directory>
+                <directory>${project.basedir}/libs/RSyntaxTextArea/RSyntaxTextArea/src/main/resources</directory>
             </resource>
         </resources>
     </build>
