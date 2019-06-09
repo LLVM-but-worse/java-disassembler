@@ -72,7 +72,7 @@ public class OpcodeInfo implements Opcodes {
 	public static final String opcodesToString(AbstractInsnNode[] ains) {
 		String[] ops = new String[ains.length];
 		for(int i = 0; i < ains.length; i++) {
-			ops[i] = OPCODES.get(ains[i].opcode());
+			ops[i] = OPCODES.get(ains[i].getOpcode());
 		}
 		return Arrays.toString(ops).replace("[", "").replace("]", "");
 	}

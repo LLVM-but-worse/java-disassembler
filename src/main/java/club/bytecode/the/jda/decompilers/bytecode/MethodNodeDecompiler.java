@@ -41,7 +41,7 @@ public class MethodNodeDecompiler {
         // Descriptor
         if (createDescriptors()) {
             sb.append("     // ");
-            sb.append(mn.owner.name);
+            sb.append(cn.name);
             sb.append(".");
             sb.append(mn.name);
             sb.append(mn.desc);

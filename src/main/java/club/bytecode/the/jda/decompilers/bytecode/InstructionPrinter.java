@@ -142,7 +142,7 @@ public class InstructionPrinter {
             } else if (ain instanceof MultiANewArrayInsnNode) {
                 line = printMultiANewArrayInsnNode((MultiANewArrayInsnNode) ain);
             } else {
-                line = "// UNADDED OPCODE: " + nameOpcode(ain.opcode()) + " " + ain.toString();
+                line = "// UNADDED OPCODE: " + nameOpcode(ain.getOpcode()) + " " + ain.toString();
             }
             if (!line.equals("")) {
                 if (match)
@@ -159,7 +159,7 @@ public class InstructionPrinter {
 
     protected String printVarInsnNode(VarInsnNode vin, ListIterator<?> it) {
         StringBuilder sb = new StringBuilder();
-        sb.append(nameOpcode(vin.opcode()));
+        sb.append(nameOpcode(vin.getOpcode()));
         sb.append(" ");
         sb.append(vin.var);
         if (parent.createComments()) {
@@ -177,31 +177,19 @@ public class InstructionPrinter {
     }
 
     protected String printIntInsnNode(IntInsnNode iin, ListIterator<?> it) {
-        return nameOpcode(iin.opcode()) + " " + iin.operand;
+        return nameOpcode(iin.getOpcode()) + " " + iin.operand;
     }
 
     protected String printFieldInsnNode(FieldInsnNode fin, ListIterator<?> it) {
-        String desc = Type.getType(fin.desc).getClassName();
-        if (desc == null || desc.equals("null"))
-            desc = fin.desc;
-        return nameOpcode(fin.opcode()) + " " + fin.owner + "." + fin.name + ":" + desc;
+        String desc = fin.desc;
+        return nameOpcode(fin.getOpcode()) + " " + fin.owner + "." + fin.name + ":" + desc;
     }
 
     protected String printMethodInsnNode(MethodInsnNode min, ListIterator<?> it) {
         StringBuilder sb = new StringBuilder();
-        sb.append(nameOpcode(min.opcode())).append(" ").append(min.owner).append(" ").append(min.name).append("(");
+        sb.append(nameOpcode(min.getOpcode())).append(" ").append(min.owner).append(" ").append(min.name).append("(");
 
         String desc = min.desc;
-        try {
-            if (Type.getType(min.desc) != null)
-                desc = Type.getType(min.desc).getClassName();
-
-            if (desc == null || desc.equals("null"))
-                desc = min.desc;
-        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
-
-        }
-
         sb.append(desc);
 
         sb.append(");");
@@ -211,17 +199,17 @@ public class InstructionPrinter {
 
     protected String printLdcInsnNode(LdcInsnNode ldc, ListIterator<?> it) {
         if (ldc.cst instanceof String)
-            return nameOpcode(ldc.opcode()) + " \"" + StringEscapeUtils.escapeJava(ldc.cst.toString()) + "\" (" + ldc.cst.getClass().getCanonicalName() + ")";
+            return nameOpcode(ldc.getOpcode()) + " \"" + StringEscapeUtils.escapeJava(ldc.cst.toString()) + "\" (" + ldc.cst.getClass().getCanonicalName() + ")";
 
-        return nameOpcode(ldc.opcode()) + " " + StringEscapeUtils.escapeJava(ldc.cst.toString()) + " (" + ldc.cst.getClass().getCanonicalName() + ")";
+        return nameOpcode(ldc.getOpcode()) + " " + StringEscapeUtils.escapeJava(ldc.cst.toString()) + " (" + ldc.cst.getClass().getCanonicalName() + ")";
     }
 
     protected String printInsnNode(InsnNode in, ListIterator<?> it) {
-        return nameOpcode(in.opcode());
+        return nameOpcode(in.getOpcode());
     }
 
     protected String printJumpInsnNode(JumpInsnNode jin, ListIterator<?> it) {
-        String line = nameOpcode(jin.opcode()) + " L" + resolveLabel(jin.label);
+        String line = nameOpcode(jin.getOpcode()) + " L" + resolveLabel(jin.label);
         return line;
     }
 
@@ -236,16 +224,7 @@ public class InstructionPrinter {
     protected String printTypeInsnNode(TypeInsnNode tin) {
         try {
             String desc = tin.desc;
-            try {
-                if (Type.getType(tin.desc) != null)
-                    desc = Type.getType(tin.desc).getClassName();
-
-                if (desc == null || desc.equals("null"))
-                    desc = tin.desc;
-            } catch (java.lang.ArrayIndexOutOfBoundsException | UnsupportedOperationException e) {
-
-            }
-            return nameOpcode(tin.opcode()) + " " + desc;
+            return nameOpcode(tin.getOpcode()) + " " + desc;
         } catch (Exception e) {
             new ExceptionUI(e, "printing instruction");
         }
@@ -253,11 +232,11 @@ public class InstructionPrinter {
     }
 
     protected String printIincInsnNode(IincInsnNode iin) {
-        return nameOpcode(iin.opcode()) + " " + iin.var + " " + iin.incr;
+        return nameOpcode(iin.getOpcode()) + " " + iin.var + " " + iin.incr;
     }
 
     protected String printTableSwitchInsnNode(TableSwitchInsnNode tin) {
-        String line = nameOpcode(tin.opcode()) + " \n";
+        String line = nameOpcode(tin.getOpcode()) + " \n";
         List<?> labels = tin.labels;
         int count = 0;
         for (int i = tin.min; i < tin.max + 1; i++) {
@@ -268,7 +247,7 @@ public class InstructionPrinter {
     }
 
     protected String printLookupSwitchInsnNode(LookupSwitchInsnNode lin) {
-        String line = nameOpcode(lin.opcode()) + ": \n";
+        String line = nameOpcode(lin.getOpcode()) + ": \n";
         List<?> keys = lin.keys;
         List<?> labels = lin.labels;
 
@@ -284,20 +263,9 @@ public class InstructionPrinter {
     protected String printInvokeDynamicInsNode(InvokeDynamicInsnNode idin) {
         StringBuilder sb = new StringBuilder();
         final String bsmName = idin.bsm.getName();
-        sb.append(nameOpcode(idin.opcode())).append(" ").append(bsmName).append("<");
+        sb.append(nameOpcode(idin.getOpcode())).append(" ").append(bsmName).append("<");
 
         String desc = idin.desc;
-        String partedDesc = idin.desc.substring(2);
-        try {
-            if (Type.getType(partedDesc) != null)
-                desc = Type.getType(partedDesc).getClassName();
-
-            if (desc == null || desc.equals("null"))
-                desc = idin.desc;
-        } catch (java.lang.ArrayIndexOutOfBoundsException | UnsupportedOperationException e) {
-
-        }
-
         sb.append(desc);
         sb.append(">(\n");
         Object[] bsmArgs = idin.bsmArgs;
@@ -328,7 +296,7 @@ public class InstructionPrinter {
     }
 
     protected String printMultiANewArrayInsnNode(MultiANewArrayInsnNode manain) {
-        return nameOpcode(manain.opcode()) + " " + manain.desc;
+        return nameOpcode(manain.getOpcode()) + " " + manain.desc;
     }
 
     protected String nameOpcode(int opcode) {
