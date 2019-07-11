@@ -259,7 +259,7 @@ public class JDA {
     public static final String HACK_PREFIX = "\0JDA-hack";
 
     public static File getClassFileProxy(ClassNode cn) {
-        return new File('/' + HACK_PREFIX, cn + ".class");
+        return new File('/' + HACK_PREFIX, cn.name + ".class");
     }
 
     public static String extractProxyClassName(String fileName) {

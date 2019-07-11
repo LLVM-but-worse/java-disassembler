@@ -76,7 +76,7 @@ public final class FernflowerDecompiler extends JDADecompiler {
                     requestedCn = container.loadClassFile(container.findClassfile(className));
                     if (requestedCn == null) {
                         System.err.println("Couldn't load " + externalPath);
-                        throw new IOException(container + "$" + cn + " is missing");
+                        throw new IOException(container + "$" + cn.name + " is missing");
                     }
                     applyFilters(requestedCn);
                     classCache.put(className, requestedCn);
