@@ -10,6 +10,7 @@ public class DecompileFilters {
     
     public static void registerFilter(DecompileFilter filter) {
         BY_NAME.put(filter.getFullName(), filter);
+        System.out.println("Decompile filter registered: " + filter.getFullName());
     }
     
     public static Collection<DecompileFilter> getAllFilters() {

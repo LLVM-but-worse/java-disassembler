@@ -4,6 +4,9 @@ import club.bytecode.the.jda.api.ExceptionUI;
 import club.bytecode.the.jda.api.JDANamespace;
 import club.bytecode.the.jda.api.JDAPlugin;
 import club.bytecode.the.jda.api.PluginLoader;
+import club.bytecode.the.jda.decompilers.filter.DecompileFilters;
+import club.bytecode.the.jda.decompilers.filter.DropLocalVariableTableFilter;
+import club.bytecode.the.jda.decompilers.filter.IllegalAnnotationFilter;
 import club.bytecode.the.jda.gui.MainViewerGUI;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeFoldParser;
 import club.bytecode.the.jda.gui.fileviewer.BytecodeTokenizer;
@@ -73,6 +76,7 @@ public class JDA {
             System.out.println("JDA v" + version);
             getJDADirectory();
 
+            registerModules();
             loadPlugins();
 
             Settings.loadGUI();
@@ -102,7 +106,12 @@ public class JDA {
     public static List<JDAPlugin> getLoadedPlugins() {
         return Collections.unmodifiableList(plugins);
     }
-    
+
+    private static void registerModules() {
+        DecompileFilters.registerFilter(new IllegalAnnotationFilter());
+        DecompileFilters.registerFilter(new DropLocalVariableTableFilter());
+    }
+
     private static void loadPlugins() throws MalformedURLException {
         if (autoloadPlugin != null) {
             JDAPlugin plugin = autoloadPlugin.get();
