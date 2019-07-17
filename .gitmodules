@@ -7,3 +7,6 @@
 [submodule "libs/RSyntaxTextArea"]
 	path = libs/RSyntaxTextArea
 	url = git@github.com:LLVM-but-worse/RSyntaxTextArea.git
+[submodule "mapleir"]
+	path = mapleir
+	url = git@github.com:ecx86/jda-mapleir.git
