@@ -17,13 +17,13 @@ import java.util.*;
  * @author Bibl
  */
 public class InstructionPrinter {
-    private final MethodNodeDecompiler parent;
+    protected final MethodNodeDecompiler parent;
 
     /**
      * The MethodNode to print
      **/
-    protected MethodNode mNode;
-    private TypeAndName[] args;
+    protected final MethodNode mNode;
+    protected final TypeAndName[] args;
 
     protected int[] pattern;
     protected boolean match;

@@ -15,10 +15,11 @@ import java.util.List;
  */
 
 public class MethodNodeDecompiler {
-    private final BytecodeDecompiler parent;
+    protected final BytecodeDecompiler parent;
     protected final PrefixedStringBuilder sb;
     protected final MethodNode mn;
     protected final ClassNode cn;
+    protected boolean printDetailedMetadata = true;
 
     public MethodNodeDecompiler(BytecodeDecompiler parent, PrefixedStringBuilder sb, MethodNode mn, ClassNode cn) {
         this.parent = parent;
@@ -134,31 +135,33 @@ public class MethodNodeDecompiler {
 
             InstructionPrinter insnPrinter = getInstructionPrinter(mn, args);
 
-            addAttrList(mn.attrs, "attr", sb, insnPrinter);
-            addAttrList(mn.invisibleAnnotations, "invisAnno", sb, insnPrinter);
-            addAttrList(mn.invisibleAnnotations, "invisLocalVarAnno", sb, insnPrinter);
-            addAttrList(mn.invisibleTypeAnnotations, "invisTypeAnno", sb, insnPrinter);
-            addAttrList(mn.localVariables, "localVar", sb, insnPrinter);
-            addAttrList(mn.visibleAnnotations, "visAnno", sb, insnPrinter);
-            addAttrList(mn.visibleLocalVariableAnnotations, "visLocalVarAnno", sb, insnPrinter);
-            addAttrList(mn.visibleTypeAnnotations, "visTypeAnno", sb, insnPrinter);
+            if (printDetailedMetadata) {
+                addAttrList(mn.attrs, "attr", sb, insnPrinter);
+                addAttrList(mn.invisibleAnnotations, "invisAnno", sb, insnPrinter);
+                addAttrList(mn.invisibleAnnotations, "invisLocalVarAnno", sb, insnPrinter);
+                addAttrList(mn.invisibleTypeAnnotations, "invisTypeAnno", sb, insnPrinter);
+                addAttrList(mn.localVariables, "localVar", sb, insnPrinter);
+                addAttrList(mn.visibleAnnotations, "visAnno", sb, insnPrinter);
+                addAttrList(mn.visibleLocalVariableAnnotations, "visLocalVarAnno", sb, insnPrinter);
+                addAttrList(mn.visibleTypeAnnotations, "visTypeAnno", sb, insnPrinter);
 
-            // Exception table
-            for (Object o : mn.tryCatchBlocks) {
-                TryCatchBlockNode tcbn = (TryCatchBlockNode) o;
-                sb.append("         ");
-                sb.append("TryCatch: L");
-                sb.append(insnPrinter.resolveLabel(tcbn.start));
-                sb.append(" to L");
-                sb.append(insnPrinter.resolveLabel(tcbn.end));
-                sb.append(" handled by L");
-                sb.append(insnPrinter.resolveLabel(tcbn.handler));
-                sb.append(": ");
-                if (tcbn.type != null)
-                    sb.append(tcbn.type);
-                else
-                    sb.append("Type is null.");
-                sb.append(JDA.nl);
+                // Exception table
+                for (Object o : mn.tryCatchBlocks) {
+                    TryCatchBlockNode tcbn = (TryCatchBlockNode) o;
+                    sb.append("         ");
+                    sb.append("TryCatch: L");
+                    sb.append(insnPrinter.resolveLabel(tcbn.start));
+                    sb.append(" to L");
+                    sb.append(insnPrinter.resolveLabel(tcbn.end));
+                    sb.append(" handled by L");
+                    sb.append(insnPrinter.resolveLabel(tcbn.handler));
+                    sb.append(": ");
+                    if (tcbn.type != null)
+                        sb.append(tcbn.type);
+                    else
+                        sb.append("Type is null.");
+                    sb.append(JDA.nl);
+                }
             }
 
             // Instructions
@@ -268,5 +271,9 @@ public class MethodNodeDecompiler {
 
     boolean appendHandlerComments() {
         return parent.getSettings().getEntry("append-handler-comments").getBool();
+    }
+
+    public BytecodeDecompiler getParent() {
+        return parent;
     }
 }
