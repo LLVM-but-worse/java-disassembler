@@ -36,6 +36,9 @@ public class FileContainer {
 
     public String findClassfile(String className) {
         String candidate = className + ".class";
+        if (name.endsWith(".class")) { // this is a single .class file. we need to strip the package path out.
+            candidate = JDA.getClassName(candidate);
+        }
         if (files.containsKey(candidate))
             return candidate;
         return "";

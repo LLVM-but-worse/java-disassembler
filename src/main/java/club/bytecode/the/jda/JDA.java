@@ -270,6 +270,11 @@ public class JDA {
         return fileName.replace(File.separator, "/").substring(0, fileName.length() - ".class".length());
     }
 
+    /**
+     * Returns the last part of a fully qualified name, e.g. the class name.
+     * @param fullyQualifiedName a fully qualified name like "java/lang/String"
+     * @return just the name without the package name, e.g. "String"
+     */
     public static String getClassName(String fullyQualifiedName) {
         return fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf('/') + 1);
     }
