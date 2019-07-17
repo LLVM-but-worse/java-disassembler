@@ -47,7 +47,7 @@ public class JDA {
     private static final long start = System.currentTimeMillis();
 
     public static MainViewerGUI viewer = null;
-    private static List<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
+    private static List<FileContainer> files = new ArrayList<>(); //all of JDA's loaded files/classes/etc
     private static int maxRecentFiles = 25;
     private static List<String> recentFiles = new ArrayList<>();
     public static String lastDirectory = "";
@@ -70,7 +70,7 @@ public class JDA {
         }
         GuiUtils.setLookAndFeel();
         try {
-            System.out.println("JDA (BCV Fork) v" + version);
+            System.out.println("JDA v" + version);
             getJDADirectory();
 
             loadPlugins();
@@ -450,9 +450,9 @@ public class JDA {
     }
 
     /**
-     * Returns the BCV directory
+     * Returns the JDA directory
      *
-     * @return the static BCV directory
+     * @return the static JDA directory
      */
     public static String getJDADirectory() {
         while (!dataDir.exists())

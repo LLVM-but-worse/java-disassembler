@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Used to represent all of the decompilers/disassemblers BCV contains.
+ * Used to represent all of the decompilers/disassemblers JDA contains.
  *
  * @author Konloch
  */
