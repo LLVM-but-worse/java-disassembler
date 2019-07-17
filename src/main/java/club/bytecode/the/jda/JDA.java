@@ -38,7 +38,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class JDA {
-    public static final String version = "1.1.1";
+    public static final String version = "1.2.0";
 
     public static final String ISSUE_TRACKER_URL = "https://github.com/LLVM-but-worse/jda/issues";
     public static final String fs = System.getProperty("file.separator");
