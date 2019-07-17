@@ -1,10 +1,12 @@
+// COMPILE THIS FILE WITH GRAMMARKIT PLUGIN FOR INTELLIJ
+// (JFLEX 1.7.0)
+// OR ELSE IT WON'T FUCKING WORK
 package club.bytecode.the.jda.gui.fileviewer;
 
 import java.io.*;
 import javax.swing.text.Segment;
 
 import org.fife.ui.rsyntaxtextarea.*;
-
 
 /**
  * Scanner the JDA Bytecode.<p>
@@ -64,7 +66,6 @@ import org.fife.ui.rsyntaxtextarea.*;
 	public BytecodeTokenizer() {
 	}
 
-
 	/**
 	 * Adds the token specified to the current linked list of tokens.
 	 *
@@ -73,7 +74,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 	 */
 	private void addHyperlinkToken(int start, int end, int tokenType) {
 		int so = start + offsetShift;
-		addToken(zzBuffer, start,end, tokenType, so, true);
+		addToken(zzBuffer.toString().toCharArray(), start,end, tokenType, so, true);
 	}
 
 
@@ -95,7 +96,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 	 */
 	private void addToken(int start, int end, int tokenType) {
 		int so = start + offsetShift;
-		addToken(zzBuffer, start,end, tokenType, so, false);
+		addToken(zzBuffer.toString().toCharArray(), start,end, tokenType, so, false);
 	}
 
 
@@ -142,18 +143,18 @@ import org.fife.ui.rsyntaxtextarea.*;
 	public Token getTokenList(Segment text, int initialTokenType, int startOffset) {
 
 		resetTokenList();
-		this.offsetShift = -text.offset + startOffset;
+		this.offsetShift = startOffset;
 
 		// Start off in the proper state.
 		int state = Token.NULL;
 		switch (initialTokenType) {
 			case Token.COMMENT_MULTILINE:
 				state = MLC;
-				start = text.offset;
+				start = 0;
 				break;
 			case Token.COMMENT_DOCUMENTATION:
 				state = DOCCOMMENT;
-				start = text.offset;
+				start = 0;
 				break;
 			default:
 				state = Token.NULL;
@@ -161,59 +162,13 @@ import org.fife.ui.rsyntaxtextarea.*;
 
 		s = text;
 		try {
-			yyreset(zzReader);
-			yybegin(state);
+			reset(text, 0, text.count, state);
 			return yylex();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			return new TokenImpl();
 		}
 
-	}
-
-
-	/**
-	 * Refills the input buffer.
-	 *
-	 * Note: this is the correct zzRefill. Delete the other one.
-	 *
-	 * @return      <code>true</code> if EOF was reached, otherwise
-	 *              <code>false</code>.
-	 */
-	private boolean zzRefill() {
-		return zzCurrentPos>=s.offset+s.count;
-	}
-
-
-	/**
-	 * Resets the scanner to read from a new input stream.
-	 * Does not close the old reader.
-	 *
-	 * All internal variables are reset, the old input stream
-	 * <b>cannot</b> be reused (internal buffer is discarded and lost).
-	 * Lexical state is set to <tt>YY_INITIAL</tt>.
-	 *
-	 * Note: this is the correct yyreset. Delete the other one.
-	 *
-	 * @param reader   the new input stream
-	 */
-	public final void yyreset(Reader reader) {
-		// 's' has been updated.
-		zzBuffer = s.array;
-		/*
-		 * We replaced the line below with the two below it because zzRefill
-		 * no longer "refills" the buffer (since the way we do it, it's always
-		 * "full" the first time through, since it points to the segment's
-		 * array).  So, we assign zzEndRead here.
-		 */
-		zzStartRead = zzEndRead = s.offset;
-		zzStartRead = s.offset;
-		zzEndRead = zzStartRead + s.count - 1;
-		zzCurrentPos = zzMarkedPos = s.offset;
-		zzLexicalState = YYINITIAL;
-		zzReader = reader;
-		zzAtBOL  = true;
-		zzAtEOF  = false;
 	}
 
 
@@ -346,6 +301,7 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
     "super"  |
     "switch" |
     "synchronized" |
+    "synthetic" |
     "this"   |
     "throw"  |
     "throws" |
