@@ -11,6 +11,7 @@ import club.bytecode.the.jda.gui.fileviewer.JDAJavaTokenizer;
 import club.bytecode.the.jda.gui.fileviewer.ViewerFile;
 import club.bytecode.the.jda.gui.navigation.FileNavigationPane;
 import club.bytecode.the.jda.settings.Settings;
+import club.bytecode.the.jda.util.BytecodeUtils;
 import club.bytecode.the.jda.util.GuiUtils;
 import club.bytecode.the.jda.util.MiscUtils;
 import org.apache.commons.io.FileUtils;
@@ -19,7 +20,6 @@ import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.folding.CurlyFoldParser;
 import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
 import javax.swing.*;
@@ -35,9 +35,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class JDA {
-    /*per version*/
     public static final String version = "1.1.1";
-    /* Constants */
+
     public static final String ISSUE_TRACKER_URL = "https://github.com/LLVM-but-worse/jda/issues";
     public static final String fs = System.getProperty("file.separator");
     public static final String nl = System.getProperty("line.separator");
@@ -46,7 +45,7 @@ public class JDA {
     public static final File recentsFile = new File(dataDir, "recentfiles.jda");
     public static final File settingsFile = new File(dataDir, "settings.jda");
     private static final long start = System.currentTimeMillis();
-    /*the rest*/
+
     public static MainViewerGUI viewer = null;
     private static List<FileContainer> files = new ArrayList<>(); //all of BCV's loaded files/classes/etc
     private static int maxRecentFiles = 25;
@@ -57,7 +56,7 @@ public class JDA {
     public static final JDANamespace namespace = JDADefaultNamespace.INSTANCE; 
     private static List<JDAPlugin> plugins = new ArrayList<>();
     
-    public static Supplier<JDAPlugin> injectedPlugin = null; // for testing purposes only.
+    public static Supplier<JDAPlugin> autoloadPlugin = null; // for testing purposes, a plugin to load on startup.
 
     /**
      * Main startup
@@ -65,9 +64,7 @@ public class JDA {
      * @param args files you want to open or CLI
      */
     public static void main(String[] args) {
-        // Fix antialiasing
-        System.setProperty("awt.useSystemAAFontSettings", "lcd");
-        System.setProperty("swing.aatext", "true");
+        GuiUtils.setAntialiasingSettings();
         if (SystemUtils.IS_OS_LINUX) {
             GuiUtils.setWmClassName("JDA");
         }
@@ -107,10 +104,10 @@ public class JDA {
     }
     
     private static void loadPlugins() throws MalformedURLException {
-        if (injectedPlugin != null) {
-            JDAPlugin plugin = injectedPlugin.get();
-            System.out.println("Loading dependency-injected plugin " + plugin.getName());
-            loadPlugin(injectedPlugin.get());
+        if (autoloadPlugin != null) {
+            JDAPlugin plugin = autoloadPlugin.get();
+            System.out.println("Loading statically-loaded plugin " + plugin.getName());
+            loadPlugin(autoloadPlugin.get());
             System.out.println("Skipping other plugins.");
             return;
         }
@@ -142,7 +139,6 @@ public class JDA {
         plugins.forEach(JDAPlugin::onGUILoad);
     }
 
-    // todo: rewrite
     /**
      * The version checker thread
      */
@@ -229,7 +225,7 @@ public class JDA {
 
     // try to get class bytes by exporting classnode, else fallback to getting the bytes from the actual file itself
     public static byte[] getClassBytes(FileContainer container, ClassNode cn) {
-        byte[] result = dumpClassToBytes(cn);
+        byte[] result = BytecodeUtils.dumpClassToBytes(cn);
         if (result != null)
             return result;
         result = getClassFileBytes(container, cn.name);
@@ -241,19 +237,6 @@ public class JDA {
         if (bytes == null)
             return null;
         return bytes;
-    }
-    
-    public static byte[] dumpClassToBytes(ClassNode cn) {
-        // we have to do this, or else decompile filters don't work.
-        try {
-            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-            cn.accept(writer);
-            return writer.toByteArray();
-        } catch (Exception e) {
-            System.err.println("Exception while dumping class " + cn.name + ": ");
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public static final String HACK_PREFIX = "\0JDA-hack";
@@ -277,15 +260,6 @@ public class JDA {
      */
     public static String getClassName(String fullyQualifiedName) {
         return fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf('/') + 1);
-    }
-
-    // WTF????
-    public static Map<String, byte[]> getLoadedBytes() {
-        Map<String, byte[]> data = new HashMap<>();
-        for (FileContainer container : files) {
-            data.putAll(container.getFiles());
-        }
-        return data;
     }
 
     /**
@@ -315,7 +289,7 @@ public class JDA {
                     if (!fileToOpen.exists()) {
                         showMessage("The file " + fileToOpen.getAbsolutePath() + " could not be found.");
                     } else if (fileToOpen.isDirectory()) {
-                        FileNavigationPane.FileNode newNode = fnp.addTreeElement(new FileContainer(fileToOpen), parent);
+                        FileNavigationPane.FileNode newNode = fnp.addTreeElement(new FileContainer(fileToOpen, new HashMap<>()), parent);
                         openFiles(fileToOpen.listFiles(), false, newNode);
                     } else if (fn.endsWith(".jar") || fn.endsWith(".zip")) {
                         try {
@@ -329,8 +303,7 @@ public class JDA {
                         HashMap<String, byte[]> files1 = new HashMap<>();
                         byte[] bytes = JarUtils.getBytes(new FileInputStream(fileToOpen));
                         files1.put(fileToOpen.getName(), bytes);
-                        FileContainer container = new FileContainer(fileToOpen);
-                        container.files = files1;
+                        FileContainer container = new FileContainer(fileToOpen, files1);
                         openFile(container);
                         fnp.addTreeElement(container, parent);
                     }
@@ -364,6 +337,20 @@ public class JDA {
     }
 
     /**
+     *
+     * @param filename the filename to search all open FileContainers for
+     * @return the FileContainer which holds the specified file or null if not found
+     */
+    public static FileContainer findContainerForFile(String filename) {
+        for (FileContainer container : files) {
+            if (container.getFiles().containsKey(filename)) {
+                return container;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Send a message to alert the user
      *
      * @param message the message you need to send
@@ -373,21 +360,33 @@ public class JDA {
     }
 
     /**
+     * Ask a yes/no dialog
+     * @param question the body text of the dialog box to be created
+     * @param title the window title of the dialog box to be created
+     * @return true or false for yes or no
+     */
+    public static boolean askYesNoDialog(String question, String title) {
+        JOptionPane pane = new JOptionPane(question);
+        Object[] options = new String[]{"Yes", "No"};
+        pane.setOptions(options);
+        JDialog dialog = pane.createDialog(viewer, "JDA - " + title);
+        dialog.setVisible(true);
+        Object obj = pane.getValue();
+        for (int k = 0; k < options.length; k++)
+            if (options[k].equals(obj) && k == 0)
+                return true;
+        return false;
+    }
+
+    /**
      * Resets the workspace with optional user input required
      *
      * @param ask if should require user input or not
      */
     public static void resetWorkSpace(boolean ask) {
         if (ask) {
-            JOptionPane pane = new JOptionPane("Are you sure you want to reset the workspace?\n\rIt will also reset your file navigator and search.");
-            Object[] options = new String[]{"Yes", "No"};
-            pane.setOptions(options);
-            JDialog dialog = pane.createDialog(viewer, "JDA - Reset Workspace");
-            dialog.setVisible(true);
-            Object obj = pane.getValue();
-            for (int k = 0; k < options.length; k++)
-                if (options[k].equals(obj) && k != 0)
-                    return;
+            if (!askYesNoDialog("Are you sure you want to reset the workspace?\n\rIt will also reset your file navigator and search.", "Reset Workspace"))
+                return;
         }
 
         closeResources(false);
@@ -396,15 +395,8 @@ public class JDA {
 
     public static void closeResources(boolean ask) {
         if (ask) {
-            JOptionPane pane = new JOptionPane("Are you sure you want to close all resources?");
-            Object[] options = new String[]{"Yes", "No"};
-            pane.setOptions(options);
-            JDialog dialog = pane.createDialog(viewer, "JDA - Close Resources");
-            dialog.setVisible(true);
-            Object obj = pane.getValue();
-            for (int k = 0; k < options.length; k++)
-                if (options[k].equals(obj) && k != 0)
-                    return;
+            if (!askYesNoDialog("Are you sure you want to close all resources?", "Close Resources"))
+                return;
         }
 
         JDA.setBusy(true);
@@ -441,8 +433,6 @@ public class JDA {
         resetRecentFilesMenu();
     }
 
-    private static ArrayList<String> killList2 = new ArrayList<>();
-
     /**
      * resets the recent files menu
      */
@@ -457,27 +447,6 @@ public class JDA {
                 });
                 viewer.mnRecentFiles.add(m);
             }
-    }
-
-    public static ArrayList<String> createdRandomizedNames = new ArrayList<>();
-
-    /**
-     * Ensures it will only return a uniquely generated names, contains a dupe checker to be sure
-     *
-     * @return the unique randomized name of 25 characters.
-     */
-    public static String getRandomizedName() {
-        boolean generated = false;
-        String name = "";
-        while (!generated) {
-            String randomizedName = MiscUtils.randomString(25);
-            if (!createdRandomizedNames.contains(randomizedName)) {
-                createdRandomizedNames.add(randomizedName);
-                name = randomizedName;
-                generated = true;
-            }
-        }
-        return name;
     }
 
     /**
@@ -519,8 +488,6 @@ public class JDA {
 
     /**
      * Checks the hotkeys
-     *
-     * @param e
      */
     public static void checkHotKey(KeyEvent e) {
         if ((e.getKeyCode() == KeyEvent.VK_O) && isCtrlDown(e)) {

@@ -56,4 +56,9 @@ public class GuiUtils {
             e.printStackTrace();
         }
     }
+
+    public static void setAntialiasingSettings() {
+        System.setProperty("awt.useSystemAAFontSettings", "lcd");
+        System.setProperty("swing.aatext", "true");
+    }
 }

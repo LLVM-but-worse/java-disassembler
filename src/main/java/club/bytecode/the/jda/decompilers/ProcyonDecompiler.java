@@ -78,7 +78,6 @@ public final class ProcyonDecompiler extends JDADecompiler {
     public String decompileClassNode(FileContainer container, final ClassNode cn) {
         try {
             byte[] bytes = JDA.getClassBytes(container, cn);
-            final Map<String, byte[]> loadedClasses = JDA.getLoadedBytes();
             MetadataSystem metadataSystem = new MetadataSystem(new ITypeLoader() {
                 private InputTypeLoader backLoader = new InputTypeLoader();
 
@@ -89,14 +88,17 @@ public final class ProcyonDecompiler extends JDADecompiler {
                         buffer.position(0);
                         return true;
                     } else {
-                        byte[] toUse = loadedClasses.get(s + ".class");
-                        if (toUse != null) {
-                            buffer.putByteArray(toUse, 0, toUse.length);
-                            buffer.position(0);
-                            return true;
-                        } else {
-                            return backLoader.tryLoadType(s, buffer);
+                        String classFilename = s + ".class";
+                        FileContainer otherContainer = JDA.findContainerForFile(classFilename);
+                        if (otherContainer != null) {
+                            byte[] toUse = otherContainer.getFiles().get(classFilename);
+                            if (toUse != null) {
+                                buffer.putByteArray(toUse, 0, toUse.length);
+                                buffer.position(0);
+                                return true;
+                            }
                         }
+                        return backLoader.tryLoadType(s, buffer);
                     }
                 }
             });

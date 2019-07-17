@@ -7,7 +7,7 @@ import club.bytecode.the.jda.JDA;
  */
 public class MapleInjectedJDA {
     public static void main(String[] args) {
-        JDA.injectedPlugin = MaplePlugin::new;
+        JDA.autoloadPlugin = MaplePlugin::new;
         JDA.main(args);
     }
 }

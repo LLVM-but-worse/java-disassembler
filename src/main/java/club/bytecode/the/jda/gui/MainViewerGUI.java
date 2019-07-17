@@ -473,18 +473,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
     }
 
     public void reloadResources() {
-        JOptionPane pane = new JOptionPane("Are you sure you wish to reload the resources?");
-        Object[] options = new String[]{"Yes", "No"};
-        pane.setOptions(options);
-        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Reload Resources");
-        dialog.setVisible(true);
-        Object obj = pane.getValue();
-        int result = -1;
-        for (int k = 0; k < options.length; k++)
-            if (options[k].equals(obj))
-                result = k;
-
-        if (result == 0) {
+        if (JDA.askYesNoDialog("Are you sure you wish to reload the resources?", "Reload Resources")) {
             List<File> reopenContainers = new ArrayList<>();
             for (FileContainer container : JDA.getOpenFiles())
                 reopenContainers.add(container.file);
@@ -510,21 +499,19 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
     }
 
     private void saveAsZip() {
-        if (JDA.getLoadedBytes().isEmpty()) {
+        if (JDA.getOpenFiles().isEmpty()) {
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-        (new Thread(() -> {
-        })).start();
+        JDA.showMessage("This feature hasn't been implemented yet. Please submit an issue if you are interested!");
     }
 
     private void saveAsRunnableJar() {
-        if (JDA.getLoadedBytes().isEmpty()) {
+        if (JDA.getOpenFiles().isEmpty()) {
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-        (new Thread(() -> {
-        })).start();
+        JDA.showMessage("This feature hasn't been implemented yet. Please submit an issue if you are interested!");
     }
 
     private void decompileSaveOpenedClasses() {
@@ -532,8 +519,7 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-        (new Thread(() -> {
-        })).start();
+        JDA.showMessage("This feature hasn't been implemented yet. Please submit an issue if you are interested!");
     }
 
     private void decompileSaveAllClasses() {
@@ -541,23 +527,11 @@ public class MainViewerGUI extends JFrame implements IPersistentWindow {
             JDA.showMessage("First open a class, jar, or zip file.");
             return;
         }
-        (new Thread(() -> {
-        })).start();
+        JDA.showMessage("This feature hasn't been implemented yet. Please submit an issue if you are interested!");
     }
 
     private void exitPrompt() {
-        JOptionPane pane = new JOptionPane("Are you sure you want to exit?");
-        Object[] options = new String[]{"Yes", "No"};
-        pane.setOptions(options);
-        JDialog dialog = pane.createDialog(JDA.viewer, "JDA - Exit");
-        dialog.setVisible(true);
-        Object obj = pane.getValue();
-        int result = -1;
-        for (int k = 0; k < options.length; k++)
-            if (options[k].equals(obj))
-                result = k;
-
-        if (result == 0) {
+        if (JDA.askYesNoDialog("Are you sure you want to exit?", "Exit")) {
             System.exit(0);
         }
     }

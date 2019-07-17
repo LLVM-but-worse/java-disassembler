@@ -1,10 +1,9 @@
 package club.bytecode.the.jda;
 
-import org.objectweb.asm.ClassReader;
+import club.bytecode.the.jda.util.BytecodeUtils;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,24 +13,22 @@ import java.util.Map;
  */
 
 public class FileContainer {
-    public FileContainer(File f) {
+    public FileContainer(File f, Map<String, byte[]> files) {
         this.file = f;
         this.name = f.getAbsolutePath();
+        this.files = files;
     }
 
     public final File file;
     public final String name;
+    public final Map<String, byte[]> files;
 
-    public HashMap<String, byte[]> files = new HashMap<>(); // this is assigned outside the class?!
 
     public ClassNode loadClassFile(String filename) {
         byte[] bytes = files.get(filename);
         if (bytes == null)
             return null;
-        ClassReader reader = new ClassReader(bytes);
-        ClassNode classNode = new ClassNode();
-        reader.accept(classNode, ClassReader.EXPAND_FRAMES);
-        return classNode;
+        return BytecodeUtils.loadClass(bytes);
     }
 
     public String findClassfile(String className) {
