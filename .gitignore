@@ -12,3 +12,5 @@ libs/**.jar
 libs/*.jar
 libs/org
 
+idea-flex.skeleton
+jflex-1.7.0-2.jar
