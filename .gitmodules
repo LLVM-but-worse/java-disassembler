@@ -9,4 +9,4 @@
 	url = git@github.com:LLVM-but-worse/RSyntaxTextArea.git
 [submodule "mapleir"]
 	path = mapleir
-	url = git@github.com:ecx86/jda-mapleir.git
+	url = git@github.com:llvm-but-worse/jda-mapleir.git
